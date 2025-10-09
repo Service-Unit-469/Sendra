@@ -39,7 +39,7 @@
 		"framer-motion": "^11.3.7",
 		"jotai": "2.9.0",
 		"lucide-react": "^0.408.0",
-		"next": "14.2.5",
+		"next": "14.2.32",
 		"next-seo": "^6.5.0",
 		"nprogress": "^0.2.0",
 		"prosemirror-commands": "^1.5.2",
