@@ -1,5 +1,5 @@
-import type { Campaign } from "@plunk/shared";
-import { CampaignSchema } from "@plunk/shared";
+import type { Campaign } from "@sendra/shared";
+import { CampaignSchema } from "@sendra/shared";
 import { BasePersistence, type Embeddable, type IndexInfo } from "./BasePersistence";
 import { embedHelper } from "./utils/EmbedHelper";
 import { HttpException } from "./utils/HttpException";

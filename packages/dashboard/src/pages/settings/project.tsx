@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ProjectSchemas, type ProjectUpdate } from "@plunk/shared";
+import { ProjectSchemas, type ProjectUpdate } from "@sendra/shared";
 import { network } from "dashboard/src/lib/network";
 import { motion } from "framer-motion";
 import { useRouter } from "next/router";
@@ -65,18 +65,6 @@ export default function Index() {
 
   const deleteProject = async () => {
     setShowDeleteModal(!showDeleteModal);
-
-    await fetch("/api/plunk", {
-      method: "POST",
-      body: JSON.stringify({
-        event: "project-deleted",
-        email: user.email,
-        data: {
-          project: activeProject.name,
-        },
-      }),
-      headers: { "Content-Type": "application/json" },
-    });
 
     toast.promise(
       network

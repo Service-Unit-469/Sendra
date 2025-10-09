@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { Credentials, UserGet } from "@plunk/shared";
-import { UserSchemas } from "@plunk/shared";
+import type { Credentials, UserGet } from "@sendra/shared";
+import { UserSchemas } from "@sendra/shared";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
@@ -68,8 +68,7 @@ export default function Index() {
       <div className="flex flex-1 flex-col justify-center px-4 py-12 sm:border-r-2 sm:border-neutral-100 sm:px-6 lg:flex-none lg:px-20 xl:px-32">
         <div className="mx-auto w-full max-w-sm">
           <div>
-            <Image width={35} height={35} src={logo} alt={"Plunk logo"} placeholder={"blur"} />
-            <h2 className="mt-6 text-3xl font-extrabold text-neutral-800">Create a Plunk account</h2>
+            <h2 className="mt-6 text-3xl font-extrabold text-neutral-800">Create a Sendra account</h2>
             <div>
               <Link href={"/auth/login"} className={"text-sm text-neutral-500 underline transition ease-in-out hover:text-neutral-600"}>
                 Already have an account?
@@ -89,7 +88,7 @@ export default function Index() {
                       type={"email"}
                       className={"block w-full rounded border-neutral-300 transition ease-in-out focus:border-neutral-800 focus:ring-neutral-800 sm:text-sm"}
                       autoComplete={"email"}
-                      placeholder={"hello@useplunk.com"}
+                      placeholder={"hello@email.com"}
                       {...register("email")}
                     />
                   </div>

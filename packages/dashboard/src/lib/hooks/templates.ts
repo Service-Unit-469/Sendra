@@ -1,4 +1,4 @@
-import type { Action, Template } from "@plunk/shared";
+import type { Action, Template } from "@sendra/shared";
 import useSWR from "swr";
 import { useActiveProject } from "./projects";
 

@@ -1,4 +1,4 @@
-import type { User } from "@plunk/shared";
+import type { User } from "@sendra/shared";
 import useSWR from "swr";
 
 /**

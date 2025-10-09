@@ -1,5 +1,5 @@
-import { rootLogger } from "@plunk/lib";
-import { TaskSchema } from "@plunk/shared";
+import { rootLogger } from "@sendra/lib";
+import { TaskSchema } from "@sendra/shared";
 import type { Context, SQSBatchItemFailure, SQSBatchResponse, SQSEvent, SQSRecord } from "aws-lambda";
 import { handleDelete } from "./handlers/DeleteTask";
 import { sendEmail } from "./handlers/SendEmailTask";

@@ -1,5 +1,5 @@
-import type { Project } from "@plunk/shared";
-import { ProjectSchema } from "@plunk/shared";
+import type { Project } from "@sendra/shared";
+import { ProjectSchema } from "@sendra/shared";
 import { TaskQueue } from "../services/TaskQueue";
 import { type IndexInfo, UnembeddingBasePersistence } from "./BasePersistence";
 import { HttpException } from "./utils/HttpException";

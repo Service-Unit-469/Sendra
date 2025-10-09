@@ -1,4 +1,4 @@
-import { MembershipPersistence, ProjectPersistence } from "@plunk/lib";
+import { MembershipPersistence, ProjectPersistence } from "@sendra/lib";
 import type { HonoRequest } from "hono";
 import { createMiddleware } from "hono/factory";
 import { HttpException } from "../exceptions";

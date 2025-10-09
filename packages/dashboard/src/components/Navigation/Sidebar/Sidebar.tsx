@@ -1,10 +1,8 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Home, LayoutTemplate, LineChart, LogOut, Send, Settings, TerminalSquare, Users2, Workflow } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { type ReactElement, useState } from "react";
-import logo from "../../../../public/assets/logo.png";
 import { ProjectSelector } from "../../index";
 
 interface SidebarLinkType {
@@ -180,7 +178,7 @@ export default function Sidebar({ mobileOpen, onSidebarVisibilityChange }: Sideb
               <div className="h-0 flex-1 overflow-y-auto pb-4 pt-5">
                 <div className="flex flex-shrink-0 items-center px-4">
                   <Link href={"/"} passHref>
-                    <Image className={"cursor-pointer"} width={40} height={40} quality={40} src={logo} alt="Logo" />
+                    Sendra
                   </Link>
                 </div>
 
@@ -229,7 +227,7 @@ export default function Sidebar({ mobileOpen, onSidebarVisibilityChange }: Sideb
             <div className="flex flex-1 flex-col overflow-y-auto pb-4 pt-5">
               <div className="flex flex-shrink-0 items-center justify-center px-4">
                 <Link href={"/"} passHref>
-                  <Image className={"cursor-pointer"} width={35} height={35} quality={80} src={logo} alt="Logo" />
+                  Sendra
                 </Link>
               </div>
 

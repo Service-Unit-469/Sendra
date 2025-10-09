@@ -1,4 +1,4 @@
-import { Contact } from '@plunk/shared';
+import { Contact } from '@sendra/shared';
 import { useEffect, useMemo, useState } from 'react';
 import { Dropdown } from "../Dropdown";
 import { Condition, conditions, MetadataFilterType } from './types';

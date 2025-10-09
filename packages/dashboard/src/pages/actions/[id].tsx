@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ActionSchemas, type ActionUpdate } from "@plunk/shared";
+import { ActionSchemas, type ActionUpdate } from "@sendra/shared";
 import dayjs from "dayjs";
 import { AnimatePresence, motion } from "framer-motion";
 import { Save } from "lucide-react";

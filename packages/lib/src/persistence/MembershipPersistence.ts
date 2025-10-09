@@ -1,5 +1,5 @@
-import type { Membership, MembershipRole } from "@plunk/shared";
-import { MembershipSchema } from "@plunk/shared";
+import type { Membership, MembershipRole } from "@sendra/shared";
+import { MembershipSchema } from "@sendra/shared";
 import { type IndexInfo, LOCAL_INDEXES, UnembeddingBasePersistence } from "./BasePersistence";
 import { UserPersistence } from "./UserPersistence";
 import { HttpException } from "./utils/HttpException";

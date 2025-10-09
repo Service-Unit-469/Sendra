@@ -1,5 +1,5 @@
-import type { Action } from "@plunk/shared";
-import { ActionSchema } from "@plunk/shared";
+import type { Action } from "@sendra/shared";
+import { ActionSchema } from "@sendra/shared";
 import { BasePersistence, type Embeddable, type EmbeddedObject, type IndexInfo, LOCAL_INDEXES } from "./BasePersistence";
 import { embedHelper } from "./utils/EmbedHelper";
 import { HttpException } from "./utils/HttpException";

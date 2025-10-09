@@ -1,5 +1,5 @@
-import { ActionPersistence, ActionsService, CampaignPersistence, ContactPersistence, EmailPersistence, EventPersistence, ProjectPersistence, rootLogger, TriggerPersistence } from "@plunk/lib";
-import type { Contact, Email, Event, Project } from "@plunk/shared";
+import { ActionPersistence, ActionsService, CampaignPersistence, ContactPersistence, EmailPersistence, EventPersistence, ProjectPersistence, rootLogger, TriggerPersistence } from "@sendra/lib";
+import type { Contact, Email, Event, Project } from "@sendra/shared";
 import type { SESMessage, SNSEvent, SNSEventRecord } from "aws-lambda";
 
 type Message = SESMessage & { eventType: string; click: { link: string } };

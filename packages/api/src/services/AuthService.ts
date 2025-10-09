@@ -1,6 +1,6 @@
 import { z } from "@hono/zod-openapi";
-import { rootLogger, UserPersistence } from "@plunk/lib";
-import { type User, UserSchemas } from "@plunk/shared";
+import { rootLogger, UserPersistence } from "@sendra/lib";
+import { type User, UserSchemas } from "@sendra/shared";
 import type { Context, HonoRequest } from "hono";
 import { getCookie, setCookie } from "hono/cookie";
 import { type JwtPayload, sign, verify } from "jsonwebtoken";

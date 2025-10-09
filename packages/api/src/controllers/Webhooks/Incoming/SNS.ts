@@ -10,7 +10,7 @@
 // 	type Project,
 // 	ProjectPersistence,
 // 	TriggerPersistence,
-// } from "@plunk/shared";
+// } from "@sendra/shared";
 // import signale from "signale";
 // import type { AppType } from "../../../app";
 // import { ActionsService } from "../../../services/ActionsService";

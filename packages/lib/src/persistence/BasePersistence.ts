@@ -8,7 +8,7 @@ import type { ZodType } from "zod";
 import { logMethodReturningPromise, rootLogger } from "../logging";
 import { HttpException } from "./utils/HttpException";
 
-export const TABLE_NAME = Resource.PlunkMain.name;
+export const TABLE_NAME = Resource.SendraDatabase.name;
 
 // Initialize DynamoDB client
 const client = new DynamoDBClient();

@@ -28,8 +28,8 @@ import Slash from "./extensions/Slash";
 
 export interface MarkdownEditorProps {
   value: string;
-  mode: "PLUNK" | "HTML";
-  onChange: (value: string, type: "PLUNK" | "HTML") => void;
+  mode: "SIMPLE" | "HTML";
+  onChange: (value: string, type: "SIMPLE" | "HTML") => void;
   modeSwitcher?: boolean;
 }
 
@@ -127,7 +127,7 @@ export default function Editor({ value, onChange, mode, modeSwitcher }: Markdown
       },
     },
     onUpdate: ({ editor }) => {
-      onChange(editor.getHTML(), "PLUNK");
+      onChange(editor.getHTML(), "SIMPLE");
     },
     immediatelyRender: false,
   });
@@ -250,10 +250,10 @@ export default function Editor({ value, onChange, mode, modeSwitcher }: Markdown
         isOpen={confirmModal}
         onToggle={() => setConfirmModal(!confirmModal)}
         onAction={() => {
-          if (mode === "PLUNK") {
+          if (mode === "SIMPLE") {
             void onChange("", "HTML");
           } else {
-            void onChange("", "PLUNK");
+            void onChange("", "SIMPLE");
           }
 
           editor.chain().clearContent().run();
@@ -263,7 +263,7 @@ export default function Editor({ value, onChange, mode, modeSwitcher }: Markdown
       >
         <div className={"flex flex-col gap-3"}>
           <p className={"text-sm text-neutral-700"}>
-            Are you sure you want to switch to {mode === "PLUNK" ? "HTML" : "the Plunk Editor"}? <br /> This will clear your current content.
+            Are you sure you want to switch to {mode === "SIMPLE" ? "HTML" : "the Simple Editor"}? <br /> This will clear your current content.
           </p>
         </div>
       </Modal>
@@ -274,9 +274,9 @@ export default function Editor({ value, onChange, mode, modeSwitcher }: Markdown
               e.preventDefault();
               setConfirmModal(true);
             }}
-            className={`w-full flex-1 rounded p-2 text-sm font-medium ${mode === "PLUNK" ? "bg-white" : "hover:bg-neutral-50"} transition ease-in-out`}
+            className={`w-full flex-1 rounded p-2 text-sm font-medium ${mode === "SIMPLE" ? "bg-white" : "hover:bg-neutral-50"} transition ease-in-out`}
           >
-            Plunk Editor
+            Simple Editor
           </button>
           <button
             onClick={(e) => {
@@ -539,7 +539,7 @@ export default function Editor({ value, onChange, mode, modeSwitcher }: Markdown
         </form>
       </Modal>
       <div>
-        {mode === "PLUNK" ? (
+        {mode === "SIMPLE" ? (
           <div
             onClick={() => {
               editor.chain().focus().run();

@@ -10,8 +10,8 @@ import {
   rootLogger,
   TaskQueue,
   UserPersistence,
-} from "@plunk/lib";
-import { CampaignSchema, CampaignSchemas, EmailSchema, type Project } from "@plunk/shared";
+} from "@sendra/lib";
+import { CampaignSchema, CampaignSchemas, EmailSchema, type Project } from "@sendra/shared";
 import type { AppType } from "../../app";
 import { HttpException, NotFound } from "../../exceptions";
 import { getProblemResponseSchema } from "../../exceptions/responses";
@@ -221,7 +221,7 @@ export const registerCampaignsRoutes = (app: AppType) => {
         await EmailService.send({
           from: {
             name: project.from ?? project.name,
-            email: project.verified && project.email ? project.email : "no-reply@useplunk.dev",
+            email: project.verified && project.email ? project.email : process.env.DEFAULT_EMAIL as string, // TODO: Add env variable to configure default email
           },
           to: users.map((m) => m.email),
           content: {
@@ -232,6 +232,7 @@ export const registerCampaignsRoutes = (app: AppType) => {
                 unsubscribe: false,
               },
               contact: {
+                email: "",
                 id: "",
               },
               project: {

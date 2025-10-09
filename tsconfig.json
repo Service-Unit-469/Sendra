@@ -18,10 +18,10 @@
     "experimentalDecorators": true,
     "baseUrl": "packages",
     "paths": {
-      "@plunk/shared": [
+      "@sendra/shared": [
         "./packages/shared/"
       ],
-      "@plunk/lib": [
+      "@sendra/lib": [
         "./packages/lib/"
       ]
     }

@@ -1,7 +1,7 @@
 import { QueryCommand } from "@aws-sdk/client-dynamodb";
 import { unmarshall } from "@aws-sdk/util-dynamodb";
-import type { Contact } from "@plunk/shared";
-import { ContactSchema } from "@plunk/shared";
+import type { Contact } from "@sendra/shared";
+import { ContactSchema } from "@sendra/shared";
 import { Resource } from "sst";
 import { rootLogger } from "../logging";
 import { BasePersistence, docClient, type Embeddable, type IndexInfo, LOCAL_INDEXES } from "./BasePersistence";
@@ -11,7 +11,7 @@ const logger = rootLogger.child({
   module: "ContactPersistence",
 });
 
-const TABLE_NAME = Resource.PlunkMain.name;
+const TABLE_NAME = Resource.SendraDatabase.name;
 
 export class ContactPersistence extends BasePersistence<Contact> {
   constructor(projectId: string) {

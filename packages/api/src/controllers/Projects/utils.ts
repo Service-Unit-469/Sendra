@@ -1,4 +1,4 @@
-import { ProjectPersistence } from "@plunk/lib";
+import { ProjectPersistence } from "@sendra/lib";
 import { NotAllowed } from "../../exceptions";
 
 export const validateEmail = async (projectId: string, email?: string) => {

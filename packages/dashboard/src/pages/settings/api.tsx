@@ -95,7 +95,7 @@ export default function Index() {
                 {activeProjectKeys?.secret}
               </p>
 
-              <p className="text-sm text-neutral-500">Use this key for any secure back-end services. This key gives complete access to your Plunk setup.</p>
+              <p className="text-sm text-neutral-500">Use this key for any secure back-end services. This key gives complete access to your Sendra setup.</p>
             </button>
           </div>
         </Card>

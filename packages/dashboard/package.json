@@ -1,5 +1,5 @@
 {
-	"name": "@plunk/dashboard",
+	"name": "@sendra/dashboard",
 	"version": "1.0.0",
 	"private": true,
 	"scripts": {
@@ -15,7 +15,7 @@
 	"dependencies": {
 		"@hookform/resolvers": "^5.2.2",
 		"@monaco-editor/react": "^4.6.0",
-		"@plunk/shared": "1.0.0",
+		"@sendra/shared": "1.0.0",
 		"@svgr/webpack": "^8.1.0",
 		"@tippyjs/react": "^4.2.6",
 		"@tiptap/core": "^2.5.4",

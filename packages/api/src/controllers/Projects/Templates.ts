@@ -1,6 +1,6 @@
 import { z } from "@hono/zod-openapi";
-import { ActionPersistence, TemplatePersistence } from "@plunk/lib";
-import { ActionSchema, TemplateSchema, TemplateSchemas } from "@plunk/shared";
+import { ActionPersistence, TemplatePersistence } from "@sendra/lib";
+import { ActionSchema, TemplateSchema, TemplateSchemas } from "@sendra/shared";
 import type { AppType } from "../../app";
 import { NotAllowed } from "../../exceptions";
 import { registerProjectEntityCrudRoutes } from "./ProjectEntity";

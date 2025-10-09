@@ -1,4 +1,4 @@
-import type { Action, BaseType, Email, Template, Trigger } from "@plunk/shared";
+import type { Action, BaseType, Email, Template, Trigger } from "@sendra/shared";
 import { ActionPersistence } from "../ActionPersistence";
 import type { Embeddable, EmbeddedObject } from "../BasePersistence";
 import { EmailPersistence } from "../EmailPersistence";

@@ -1,5 +1,5 @@
-import { ActionPersistence, CampaignPersistence, ContactPersistence, EmailPersistence, EventPersistence, MembershipPersistence, rootLogger, TemplatePersistence, TriggerPersistence } from "@plunk/lib";
-import type { BatchDeleteRelatedSchema } from "@plunk/shared";
+import { ActionPersistence, CampaignPersistence, ContactPersistence, EmailPersistence, EventPersistence, MembershipPersistence, rootLogger, TemplatePersistence, TriggerPersistence } from "@sendra/lib";
+import type { BatchDeleteRelatedSchema } from "@sendra/shared";
 import type { z } from "zod";
 
 type DeleteTask = z.infer<typeof BatchDeleteRelatedSchema>;

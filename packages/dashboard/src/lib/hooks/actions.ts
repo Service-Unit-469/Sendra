@@ -1,4 +1,4 @@
-import type { Action, Email, Event, Template, Trigger } from "@plunk/shared";
+import type { Action, Email, Event, Template, Trigger } from "@sendra/shared";
 import useSWR from "swr";
 import { useActiveProject } from "./projects";
 

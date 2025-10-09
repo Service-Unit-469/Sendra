@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { Membership, MembershipInvite, PublicProject } from "@plunk/shared";
-import { MembershipSchemas } from "@plunk/shared";
+import type { Membership, MembershipInvite, PublicProject } from "@sendra/shared";
+import { MembershipSchemas } from "@sendra/shared";
 import { motion } from "framer-motion";
 import { useRouter } from "next/router";
 import { useState } from "react";
@@ -139,7 +139,7 @@ export default function Index() {
         onAction={handleSubmit(inviteAccount)}
         type={"info"}
         title={"Invite a new member"}
-        description={"Enter the email of the account you want to invite to this project. The person you want to invite needs to have an account on Plunk."}
+        description="Enter the email of the account you want to invite to this project. The person you want to invite needs to have an account on Sendra."
       >
         <Input register={register("email")} error={errors.email} label={"Email"} placeholder={"hello@example.com"} />
         <Dropdown

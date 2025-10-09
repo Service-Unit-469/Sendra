@@ -1,5 +1,5 @@
-import type { Template } from "@plunk/shared";
-import { TemplateSchema } from "@plunk/shared";
+import type { Template } from "@sendra/shared";
+import { TemplateSchema } from "@sendra/shared";
 import { BasePersistence, type Embeddable, type EmbeddedObject, type IndexInfo } from "./BasePersistence";
 import { embedHelper } from "./utils/EmbedHelper";
 import { HttpException } from "./utils/HttpException";

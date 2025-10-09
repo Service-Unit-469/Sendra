@@ -2,7 +2,7 @@ import {
   type MetadataFilterType,
   type MetadataFilterGroupType,
 } from "../../components";
-import { type Contact, type Trigger } from "@plunk/shared";
+import { type Contact, type Trigger } from "@sendra/shared";
 import dayjs from "dayjs";
 import { useMemo } from "react";
 

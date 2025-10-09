@@ -1,4 +1,4 @@
-import type { Contact, Event, Project } from "@plunk/shared";
+import type { Contact, Event, Project } from "@sendra/shared";
 import { rootLogger } from "../logging";
 import { ActionPersistence, TemplatePersistence, TriggerPersistence } from "../persistence";
 import { TaskQueue } from "./TaskQueue";

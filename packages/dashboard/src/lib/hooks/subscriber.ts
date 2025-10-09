@@ -1,4 +1,4 @@
-import type { Subscriber } from "@plunk/shared";
+import type { Subscriber } from "@sendra/shared";
 import useSWR from "swr";
 
 export function useSubscriber(email: string) {

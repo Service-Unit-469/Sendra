@@ -37,6 +37,6 @@ export const ProjectEntitySchema = BaseSchema.extend({
 
 export const SEND_TYPES = ["MARKETING", "TRANSACTIONAL"] as const;
 
-export const TEMPLATE_STYLES = ["PLUNK", "HTML"] as const;
+export const TEMPLATE_STYLES = ["SIMPLE", "HTML"] as const;
 
 export const DataSchema = z.record(z.string(), z.union([z.string(), z.array(z.string()), z.number(), z.boolean(), z.null()]));

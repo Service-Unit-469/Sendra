@@ -1,12 +1,11 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { type Credentials, UserSchemas } from "@plunk/shared";
+import { type Credentials, UserSchemas } from "@sendra/shared";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import logo from "../../../public/assets/logo.png";
 import { FullscreenLoader, Redirect } from "../../components";
 import { API_URI } from "../../lib/constants";
 import { useUser } from "../../lib/hooks/users";
@@ -73,7 +72,6 @@ export default function Index() {
   return (
     <div className="bg-off-white flex min-h-screen flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="flex flex-col items-center sm:mx-auto sm:w-full sm:max-w-md">
-        <Image src={logo} placeholder={"blur"} width={35} height={35} alt={"Plunk Logo"} />
         <h2 className="mt-4 text-center text-3xl font-bold text-neutral-800">Sign in to your account</h2>
       </div>
 
@@ -89,7 +87,7 @@ export default function Index() {
                   type={"email"}
                   className={"block w-full rounded border-neutral-300 transition ease-in-out focus:border-neutral-800 focus:ring-neutral-800 sm:text-sm"}
                   autoComplete={"email"}
-                  placeholder={"hello@useplunk.com"}
+                  placeholder={"hello@email.com"}
                   {...register("email")}
                 />
               </div>

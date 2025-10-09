@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { CampaignUpdate, Email } from "@plunk/shared";
-import { CampaignSchemas } from "@plunk/shared";
+import type { CampaignUpdate, Email } from "@sendra/shared";
+import { CampaignSchemas } from "@sendra/shared";
 import { Ring } from "@uiball/loaders";
 import dayjs from "dayjs";
 import { AnimatePresence, motion } from "framer-motion";
@@ -730,7 +730,7 @@ export default function Index() {
             <div className={"sm:col-span-6"}>
               <Editor
                 value={watch("body")}
-                mode={watch("style") ?? "PLUNK"}
+                mode={watch("style") ?? "SIMPLE"}
                 onChange={(value, type) => {
                   setValue("body", value);
                   setValue("style", type);

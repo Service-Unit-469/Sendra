@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { TemplateCreate } from "@plunk/shared";
-import { TemplateSchemas, type TemplateStyles } from "@plunk/shared";
+import type { TemplateCreate } from "@sendra/shared";
+import { TemplateSchemas, type TemplateStyles } from "@sendra/shared";
 import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
@@ -33,7 +33,7 @@ export default function Index() {
     resolver: zodResolver(TemplateSchemas.create),
     defaultValues: {
       templateType: "MARKETING",
-      style: "PLUNK",
+      style: "SIMPLE",
       subject: "",
       body: "",
     },
@@ -139,7 +139,7 @@ export default function Index() {
               modeSwitcher
               onChange={(value, type) => {
                 setValue("body", value);
-                setValue("style", type ?? "PLUNK");
+                setValue("style", type ?? "SIMPLE");
               }}
             />
             <AnimatePresence>

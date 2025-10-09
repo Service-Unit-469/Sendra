@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { TemplateUpdate } from "@plunk/shared";
-import { TemplateSchemas, type TemplateStyles } from "@plunk/shared";
+import type { TemplateUpdate } from "@sendra/shared";
+import { TemplateSchemas, type TemplateStyles } from "@sendra/shared";
 import { AnimatePresence, motion } from "framer-motion";
 import { Save } from "lucide-react";
 import { useRouter } from "next/router";
@@ -178,7 +178,7 @@ export default function Index() {
                       <li className={"mb-6"}>
                         <span className={"font-semibold"}>Marketing</span>
                         <br />
-                        Promotional emails with a Plunk-hosted unsubscribe link
+                        Promotional emails with a hosted unsubscribe link
                         <br />
                         <span className={"text-neutral-400"}>(e.g. welcome emails, promotions)</span>
                       </li>
@@ -224,7 +224,7 @@ export default function Index() {
           <div className={"sm:col-span-6"}>
             <Editor
               value={watch("body")}
-              mode={watch("style") ?? "PLUNK"}
+              mode={watch("style") ?? "SIMPLE"}
               modeSwitcher
               onChange={(value, type) => {
                 setValue("style", type as TemplateStyles);

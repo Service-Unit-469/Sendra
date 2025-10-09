@@ -2,8 +2,8 @@
 // React Hook Form messes up our types, ignore the entire file
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { Email } from "@plunk/shared";
-import { ContactSchemas, type ContactUpdate, EventSchemas } from "@plunk/shared";
+import type { Email } from "@sendra/shared";
+import { ContactSchemas, type ContactUpdate, EventSchemas } from "@sendra/shared";
 import dayjs from "dayjs";
 import DOMPurify from "dompurify";
 import { motion } from "framer-motion";

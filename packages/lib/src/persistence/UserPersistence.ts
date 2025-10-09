@@ -1,5 +1,5 @@
-import type { User } from "@plunk/shared";
-import { UserSchema } from "@plunk/shared";
+import type { User } from "@sendra/shared";
+import { UserSchema } from "@sendra/shared";
 import { TaskQueue } from "../services/TaskQueue";
 import { type IndexInfo, LOCAL_INDEXES, UnembeddingBasePersistence } from "./BasePersistence";
 import { HttpException } from "./utils/HttpException";

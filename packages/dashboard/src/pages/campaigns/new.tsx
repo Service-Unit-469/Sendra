@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CampaignSchemas } from "@plunk/shared";
-import type { Campaign } from "@plunk/shared";
+import { CampaignSchemas } from "@sendra/shared";
+import type { Campaign } from "@sendra/shared";
 import { Ring } from "@uiball/loaders";
 import dayjs from "dayjs";
 import { AnimatePresence, motion } from "framer-motion";
@@ -24,7 +24,7 @@ interface CampaignValues {
   email?: string;
   from?: string;
   recipients: string[];
-  style: "PLUNK" | "HTML";
+  style: "SIMPLE" | "HTML";
 }
 
 const templates = {
@@ -71,7 +71,7 @@ export default function Index() {
     defaultValues: {
       recipients: [],
       ...templates.blank,
-      style: "PLUNK",
+      style: "SIMPLE",
     },
   });
 

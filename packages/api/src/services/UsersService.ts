@@ -1,4 +1,4 @@
-import { UserPersistence } from "@plunk/lib";
+import { UserPersistence } from "@sendra/lib";
 import { verifyHash } from "../util/hash";
 
 export class UsersService {

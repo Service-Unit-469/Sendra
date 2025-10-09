@@ -22,7 +22,7 @@ declare module "sst" {
       "arn": string
       "type": "sst.aws.SnsTopic"
     }
-    "PlunkMain": {
+    "SendraDatabase": {
       "name": string
       "type": "sst.aws.Dynamo"
     }

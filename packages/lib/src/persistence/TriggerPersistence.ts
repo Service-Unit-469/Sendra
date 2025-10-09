@@ -1,5 +1,5 @@
-import type { Trigger } from "@plunk/shared";
-import { TriggerSchema } from "@plunk/shared";
+import type { Trigger } from "@sendra/shared";
+import { TriggerSchema } from "@sendra/shared";
 import { type IndexInfo, LOCAL_INDEXES, UnembeddingBasePersistence } from "./BasePersistence";
 import { HttpException } from "./utils/HttpException";
 

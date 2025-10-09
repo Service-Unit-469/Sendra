@@ -14,6 +14,7 @@ export const api = new sst.aws.Function("Api", {
     JWT_SECRET: "test",
     LOG_LEVEL: "debug",
     LOG_PRETTY: "true",
+    DEFAULT_EMAIL: "no-reply@email.com", // TODO: replace this with your own default email
   },
   nodejs: {
     loader: {

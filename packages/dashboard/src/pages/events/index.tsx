@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { EventSchemas } from "@plunk/shared";
+import { EventSchemas } from "@sendra/shared";
 import dayjs from "dayjs";
 import { motion } from "framer-motion";
 import { Plus, TerminalSquare, Trash } from "lucide-react";
@@ -119,7 +119,7 @@ export default function Index() {
 
         <Card
           title={"Events"}
-          description={"View the events your application has sent to Plunk"}
+          description={"View the events your application has sent to Sendra"}
           actions={
             <motion.button
               onClick={() => setEventModal(true)}
@@ -254,7 +254,7 @@ export default function Index() {
                   })}
               />
             ) : (
-              <Empty title={"No events"} description={"You have not yet posted an event to Plunk"} />
+              <Empty title={"No events"} description={"You have not yet posted an event to Sendra"} />
             )
           ) : (
             <Skeleton type={"table"} />

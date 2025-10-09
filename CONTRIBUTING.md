@@ -1,29 +1,24 @@
 # Contributing
 
-You can greatly support Plunk by contributing to this repository.
-
-Support can be asked in the `#contributions` channel of the [Plunk Discord server](https://useplunk.com/discord)
+You can greatly support Sendra by contributing to this repository.
 
 ### 1. Requirements
 
-- Docker needs to be [installed](https://docs.docker.com/engine/install/) on your system.
+- [Node JS v20](https://nodejs.org/en/download)
 
 ### 2. Install dependencies
 
-- Run `yarn install` to install the dependencies.
+- Run `npm install` to install the dependencies.
 
-### 3. Set your environment variables
+### 3. Start Sendra
 
-- Copy the `.env.example` files in the `api`, `dashboard` and `prisma` folder to `.env` in their respective folders.
-- Set AWS credentials in the `api` `.env` file.
+- Run `npm start dev` to start Sendra
 
-### 4. Start resources
+### 4. Linting
 
-- Run `yarn services:up` to start a local database and a local redis server.
-- Run `yarn migrate` to apply the migrations to the database.
-- Run `yarn build:shared` to build the shared package.
+- Run the following commands to lint Sendra:
 
-
-- Run `yarn dev:api` to start the API server.
-- Run `yarn dev:dashboard` to start the dashboard server.
-
+```
+npm run lint
+npm run build
+```

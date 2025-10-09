@@ -1,6 +1,6 @@
 import { createRoute } from "@hono/zod-openapi";
-import { UserPersistence } from "@plunk/lib";
-import { UserSchemas } from "@plunk/shared";
+import { UserPersistence } from "@sendra/lib";
+import { UserSchemas } from "@sendra/shared";
 import type { AppType } from "../app";
 import { NotAuthenticated } from "../exceptions";
 import { isAuthenticatedUser } from "../middleware/auth";

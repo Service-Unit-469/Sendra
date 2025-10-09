@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { OpenAPIHono } from "@hono/zod-openapi";
-import { rootLogger, setRequestInfo } from "@plunk/lib";
+import { rootLogger, setRequestInfo } from "@sendra/lib";
 import type { Context, Next } from "hono";
 import { handle } from "hono/aws-lambda";
 import { bodyLimit } from "hono/body-limit";
@@ -92,7 +92,7 @@ app.doc("/doc", {
   openapi: "3.0.0",
   info: {
     version: "1.0.0",
-    title: "Plunk API",
+    title: "Sendra API",
   },
 });
 

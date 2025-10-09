@@ -1,5 +1,20 @@
-import { ActionPersistence, CampaignPersistence, ContactPersistence, EmailPersistence, EmailService, ProjectPersistence, rootLogger, TemplatePersistence, TriggerPersistence } from "@plunk/lib";
-import type { Action, Campaign, SendEmailTaskSchema, Template } from "@plunk/shared";
+import {
+  ActionPersistence,
+  CampaignPersistence,
+  ContactPersistence,
+  EmailPersistence,
+  EmailService,
+  ProjectPersistence,
+  rootLogger,
+  TemplatePersistence,
+  TriggerPersistence,
+} from "@sendra/lib";
+import type {
+  Action,
+  Campaign,
+  SendEmailTaskSchema,
+  Template,
+} from "@sendra/shared";
 import type { z } from "zod";
 
 type SendEmailTask = z.infer<typeof SendEmailTaskSchema>;
@@ -8,7 +23,12 @@ export const sendEmail = async (task: SendEmailTask, recordId: string) => {
   const logger = rootLogger.child({
     recordId,
   });
-  const { action: actionId, campaign: campaignId, contact: contactId, project: projectId } = task.payload;
+  const {
+    action: actionId,
+    campaign: campaignId,
+    contact: contactId,
+    project: projectId,
+  } = task.payload;
 
   const projectPersistence = new ProjectPersistence();
   const project = await projectPersistence.get(projectId);
@@ -63,7 +83,11 @@ export const sendEmail = async (task: SendEmailTask, recordId: string) => {
         value: contactId,
       });
 
-      if (notevents.some((e) => triggers.some((t) => t.contact === contactId && t.event === e))) {
+      if (
+        notevents.some((e) =>
+          triggers.some((t) => t.contact === contactId && t.event === e)
+        )
+      ) {
         logger.info({ actionId, contactId, projectId }, "Action not triggered");
         return;
       }
@@ -75,29 +99,35 @@ export const sendEmail = async (task: SendEmailTask, recordId: string) => {
       return;
     }
 
-    email = project.verified && project.email ? (template.email ?? project.email) : "no-reply@useplunk.dev"; // TODO: Add env variable to configure default email
+    email =
+      project.verified && project.email
+        ? template.email ?? project.email
+        : process.env.DEFAULT_EMAIL as string;
     name = template.from ?? project.from ?? project.name;
 
     ({ subject, body } = EmailService.format({
       subject: template.subject,
       body: template.body,
       data: {
-        plunk_id: contactId,
-        plunk_email: contact.email,
         ...contact.data,
+        contact_id: contactId,
+        contact_email: contact.email,
       },
     }));
   } else if (campaign) {
-    email = project.verified && project.email ? (campaign.email ?? project.email) : "no-reply@useplunk.dev";
+    email =
+      project.verified && project.email
+        ? campaign.email ?? project.email
+        : process.env.DEFAULT_EMAIL as string;
     name = campaign.from ?? project.from ?? project.name;
 
     ({ subject, body } = EmailService.format({
       subject: campaign.subject,
       body: campaign.body,
       data: {
-        plunk_id: contact.id,
-        plunk_email: contact.email,
         ...contact.data,
+        contact_email: contact.email,
+        contact_id: contact.id,
       },
     }));
   }
@@ -113,15 +143,20 @@ export const sendEmail = async (task: SendEmailTask, recordId: string) => {
       html: EmailService.compile({
         content: body,
         footer: {
-          unsubscribe: campaign ? true : !!action && template?.templateType === "MARKETING",
+          unsubscribe: campaign
+            ? true
+            : !!action && template?.templateType === "MARKETING",
         },
         contact: {
           id: contact.id,
+          email: contact.email,
         },
         project: {
           name: project.name,
         },
-        isHtml: (campaign && campaign.style === "HTML") ?? (!!action && template?.style === "HTML"),
+        isHtml:
+          (campaign && campaign.style === "HTML") ??
+          (!!action && template?.style === "HTML"),
       }),
     },
   });
@@ -140,5 +175,8 @@ export const sendEmail = async (task: SendEmailTask, recordId: string) => {
     contact: contact.id,
   });
 
-  logger.info({ contact: contact.email, project: project.name }, "Task completed");
+  logger.info(
+    { contact: contact.email, project: project.name },
+    "Task completed"
+  );
 };

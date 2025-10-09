@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { Action, ActionCreate } from "@plunk/shared";
-import { ActionSchemas } from "@plunk/shared";
+import type { Action, ActionCreate } from "@sendra/shared";
+import { ActionSchemas } from "@sendra/shared";
 import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";

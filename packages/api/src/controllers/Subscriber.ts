@@ -1,6 +1,6 @@
 import { createRoute, z } from "@hono/zod-openapi";
-import { ContactPersistence, ProjectPersistence } from "@plunk/lib";
-import { type Contact, SubscriberSchema, SubscriberUpdateSchema } from "@plunk/shared";
+import { ContactPersistence, ProjectPersistence } from "@sendra/lib";
+import { type Contact, SubscriberSchema, SubscriberUpdateSchema } from "@sendra/shared";
 import type { AppType } from "../app";
 import { NotFound } from "../exceptions";
 import { getProblemResponseSchema } from "../exceptions/responses";

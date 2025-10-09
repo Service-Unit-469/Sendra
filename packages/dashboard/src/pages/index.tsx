@@ -112,12 +112,12 @@ export default function Index() {
           </div>
           <div className="mt-2 flex h-4/6 flex-col justify-end">
             <h3 className="text-lg font-medium">
-              <a href={"https://docs.useplunk.com"} target={"_blank"} className="focus:outline-none" rel="noreferrer">
+              <a href={"https://github.com/Service-Unit-469/Sendra"} target={"_blank"} className="focus:outline-none" rel="noreferrer">
                 <span className="absolute inset-0" aria-hidden="true" />
                 Documentation
               </a>
             </h3>
-            <p className="mt-2 text-sm text-neutral-500">Discover how to use Plunk</p>
+            <p className="mt-2 text-sm text-neutral-500">Discover how to use Sendra</p>
           </div>
           <span className="pointer-events-none absolute right-6 top-6 text-neutral-300 transition group-hover:text-neutral-400" aria-hidden="true">
             <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">

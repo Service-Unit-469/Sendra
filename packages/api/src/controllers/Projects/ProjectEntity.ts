@@ -1,5 +1,5 @@
 import { createRoute, z } from "@hono/zod-openapi";
-import { type BaseItem, type BasePersistence, type Embeddable, ProjectPersistence, type QueryResult } from "@plunk/lib";
+import { type BaseItem, type BasePersistence, type Embeddable, ProjectPersistence, type QueryResult } from "@sendra/lib";
 import type { EmbeddedObject } from "lib/dist/persistence/BasePersistence";
 import type { AppType } from "../../app";
 import { BadRequest, NotFound } from "../../exceptions";
@@ -215,7 +215,7 @@ export const registerProjectEntityReadRoutes = <T extends BaseItem>(
         throw new NotFound(config.entityName);
       }
 
-      // @ts-expect-error
+      // @ts-ignore
       return c.json(entity, 200);
     },
   );
@@ -269,7 +269,7 @@ export const registerProjectEntityCrudRoutes = <T extends BaseItem>(app: AppType
         ...toCreate,
         project: projectId,
       } as Omit<T, "id" | "createdAt" | "updatedAt">);
-      // @ts-expect-error
+      // @ts-ignore
       return c.json(entity, 201);
     },
   );

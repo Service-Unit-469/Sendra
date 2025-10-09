@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { ProjectCreate, PublicProject } from "@plunk/shared";
-import { ProjectSchemas } from "@plunk/shared";
+import type { ProjectCreate, PublicProject } from "@sendra/shared";
+import { ProjectSchemas } from "@sendra/shared";
 import { AnimatePresence, motion } from "framer-motion";
 import { useAtom } from "jotai";
 import Link from "next/link";
@@ -51,8 +51,6 @@ export default function Index() {
 
   const create = async (data: ProjectCreate) => {
     setSubmitted(true);
-
-    localStorage.removeItem("skip_onboarding");
 
     try {
       const result = await network.fetch<PublicProject, ProjectCreate>("/projects", {

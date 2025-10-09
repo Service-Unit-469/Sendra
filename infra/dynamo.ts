@@ -1,4 +1,4 @@
-export const dynamo = new sst.aws.Dynamo("PlunkMain", {
+export const dynamo = new sst.aws.Dynamo("SendraDatabase", {
   fields: {
     id: "string",
     type: "string",

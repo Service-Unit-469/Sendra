@@ -1,6 +1,6 @@
 import { createRoute, z } from "@hono/zod-openapi";
-import { ActionsService, ContactPersistence, EmailPersistence, EmailService, EventPersistence, ProjectPersistence, rootLogger, TriggerPersistence } from "@plunk/lib";
-import { type Contact, type ContactSchemas, EventSchema, EventSchemas, TriggerSchema } from "@plunk/shared";
+import { ActionsService, ContactPersistence, EmailPersistence, EmailService, EventPersistence, ProjectPersistence, rootLogger, TriggerPersistence } from "@sendra/lib";
+import { type Contact, type ContactSchemas, EventSchema, EventSchemas, TriggerSchema } from "@sendra/shared";
 import type { AppType } from "../../app";
 import { BadRequest, HttpException, NotAllowed, NotFound } from "../../exceptions";
 import { getProblemResponseSchema } from "../../exceptions/responses";
@@ -133,9 +133,9 @@ export const registerEventsRoutes = (app: AppType) => {
           subject,
           body,
           data: {
-            plunk_id: contact.id,
-            plunk_email: contact.email,
             ...(contact.data ?? {}),
+            contact_id: contact.id,
+            contact_email: contact.email,
           },
         });
 
@@ -158,6 +158,7 @@ export const registerEventsRoutes = (app: AppType) => {
               },
               contact: {
                 id: contact.id,
+                email: contact.email,
               },
               project: {
                 name: project.name,

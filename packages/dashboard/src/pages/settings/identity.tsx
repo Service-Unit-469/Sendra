@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { IdentitySchemas } from "@plunk/shared";
+import { IdentitySchemas } from "@sendra/shared";
 import { motion } from "framer-motion";
 import { Copy, Unlink } from "lucide-react";
 import { useEffect } from "react";
@@ -149,11 +149,11 @@ export default function Index() {
                       <button
                         className={"flex cursor-pointer items-center gap-3"}
                         onClick={() => {
-                          void navigator.clipboard.writeText("plunk");
+                          void navigator.clipboard.writeText("sendra");
                           toast.success("Copied key to clipboard");
                         }}
                       >
-                        <p className={"font-mono text-sm"}>plunk</p>
+                        <p className={"font-mono text-sm"}>sendra</p>
                         <Copy size={14} />
                       </button>
                     ),
@@ -175,11 +175,11 @@ export default function Index() {
                       <button
                         className={"flex cursor-pointer items-center gap-3"}
                         onClick={() => {
-                          void navigator.clipboard.writeText("plunk");
+                          void navigator.clipboard.writeText("sendra");
                           toast.success("Copied key to clipboard");
                         }}
                       >
-                        <p className={"font-mono text-sm"}>plunk</p>
+                        <p className={"font-mono text-sm"}>sendra</p>
                         <Copy size={14} />
                       </button>
                     ),
@@ -233,7 +233,7 @@ export default function Index() {
           </>
         ) : activeProject.email && activeProject.verified ? (
           <Alert type={"success"} title={"Domain verified"}>
-            You have confirmed {activeProject.email} as your domain. Any emails sent by Plunk will now use this address.
+            You have confirmed {activeProject.email} as your domain. Any emails sent by Sendra will now use this address.
           </Alert>
         ) : (
           <form onSubmit={handleSubmit(create)} className="space-y-6">
@@ -253,7 +253,7 @@ export default function Index() {
         )}
       </Card>
 
-      <Card title={"Sender name"} description={"The name that will be used when sending emails from Plunk. Your project name will be used by default"}>
+      <Card title={"Sender name"} description={"The name that will be used when sending emails from Sendra. Your project name will be used by default"}>
         <form onSubmit={handleSubmitUpdate(update)} className="space-y-6">
           <Input register={registerUpdate("from")} placeholder={activeProject.name} label={"Name"} error={errorsUpdate.from} />
 

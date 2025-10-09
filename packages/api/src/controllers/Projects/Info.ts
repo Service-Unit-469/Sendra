@@ -1,6 +1,6 @@
 import { createRoute, z } from "@hono/zod-openapi";
-import { ActionPersistence, ContactPersistence, EmailPersistence, EventPersistence, ProjectPersistence, TriggerPersistence } from "@plunk/lib";
-import type { Action, Contact, Email, Event, Trigger } from "@plunk/shared";
+import { ActionPersistence, ContactPersistence, EmailPersistence, EventPersistence, ProjectPersistence, TriggerPersistence } from "@sendra/lib";
+import type { Action, Contact, Email, Event, Trigger } from "@sendra/shared";
 import dayjs from "dayjs";
 import type { AppType } from "../../app";
 import { NotFound } from "../../exceptions";

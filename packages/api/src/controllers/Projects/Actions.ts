@@ -1,6 +1,6 @@
 import { createRoute, z } from "@hono/zod-openapi";
-import { ActionPersistence, TemplatePersistence } from "@plunk/lib";
-import { ActionSchema, ActionSchemas, EmailSchema, TriggerSchema } from "@plunk/shared";
+import { ActionPersistence, TemplatePersistence } from "@sendra/lib";
+import { ActionSchema, ActionSchemas, EmailSchema, TriggerSchema } from "@sendra/shared";
 import type { AppType } from "../../app";
 import { NotFound } from "../../exceptions";
 import { getProblemResponseSchema } from "../../exceptions/responses";

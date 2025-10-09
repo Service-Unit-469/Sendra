@@ -1,8 +1,8 @@
 import { QueryCommand } from "@aws-sdk/client-dynamodb";
 import { PutCommand } from "@aws-sdk/lib-dynamodb";
 import { unmarshall } from "@aws-sdk/util-dynamodb";
-import type { Email } from "@plunk/shared";
-import { EmailSchema } from "@plunk/shared";
+import type { Email } from "@sendra/shared";
+import { EmailSchema } from "@sendra/shared";
 import { rootLogger } from "../logging";
 import { docClient, type IndexInfo, LOCAL_INDEXES, TABLE_NAME, UnembeddingBasePersistence } from "./BasePersistence";
 import { HttpException } from "./utils/HttpException";

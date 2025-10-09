@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { type Contact, type ContactCreate, ContactSchemas, type Trigger } from "@plunk/shared";
+import { type Contact, type ContactCreate, ContactSchemas, type Trigger } from "@sendra/shared";
 import dayjs from "dayjs";
 import { AnimatePresence, motion } from "framer-motion";
 import { Edit2, Plus } from "lucide-react";
@@ -259,7 +259,7 @@ export default function Index() {
               type={"text"}
               autoComplete={"off"}
               className={"block w-full rounded border-neutral-300 transition ease-in-out focus:border-neutral-800 focus:ring-neutral-800 sm:text-sm"}
-              placeholder={"hello@useplunk.com"}
+              placeholder={"hello@email.com"}
               {...register("email")}
             />
           </div>

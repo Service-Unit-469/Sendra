@@ -34,7 +34,7 @@ if (!APP_URI.startsWith("http")) {
   throw new Error("APP_URI must start with 'http'");
 }
 
-export const AUTH_ISSUER = validateEnv("AUTH_ISSUER", "plunk");
+export const AUTH_ISSUER = validateEnv("AUTH_ISSUER", "sendra");
 export const AUTH_TTL_SECRET = validateEnv("AUTH_TTL_SECRET", "90 days");
 export const AUTH_TTL_PUBLIC = validateEnv("AUTH_TTL_PUBLIC", "265 days");
 export const AUTH_TTL_USER = validateEnv("AUTH_TTL_USER", "24 hours");

@@ -1,4 +1,4 @@
-import { type Subscriber, type SubscriberUpdate } from "@plunk/shared";
+import { type Subscriber, type SubscriberUpdate } from "@sendra/shared";
 import { motion } from "framer-motion";
 import { NextSeo } from "next-seo";
 import { useRouter } from "next/router";

@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { createRoute, z } from "@hono/zod-openapi";
-import { ProjectPersistence } from "@plunk/lib";
+import { ProjectPersistence } from "@sendra/lib";
 import type { AppType } from "../../app";
 import { NotFound } from "../../exceptions";
 import { getProblemResponseSchema } from "../../exceptions/responses";

@@ -45,7 +45,7 @@ export const IdentitySchemas = {
   create: z.object({
     email: email.refine(
       (e) => {
-        return !["gmail.com", "outlook.com", "hotmail.com", "yahoo.com", "useplunk.com", "useplunk.dev"].includes(e.split("@")[1]);
+        return !["gmail.com", "outlook.com", "hotmail.com", "yahoo.com"].includes(e.split("@")[1]);
       },
       { message: "Please use your own domain" },
     ),

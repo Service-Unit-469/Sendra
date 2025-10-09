@@ -1,6 +1,6 @@
 import { z } from "@hono/zod-openapi";
-import { EmailPersistence } from "@plunk/lib";
-import { EmailSchema } from "@plunk/shared";
+import { EmailPersistence } from "@sendra/lib";
+import { EmailSchema } from "@sendra/shared";
 import type { AppType } from "../../app";
 import { registerProjectEntityReadRoutes } from "./ProjectEntity";
 

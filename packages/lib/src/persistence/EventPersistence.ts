@@ -1,5 +1,5 @@
-import type { Event } from "@plunk/shared";
-import { EventSchema } from "@plunk/shared";
+import type { Event } from "@sendra/shared";
+import { EventSchema } from "@sendra/shared";
 import { TaskQueue } from "../services/TaskQueue";
 import { BasePersistence, type Embeddable, type EmbeddedObject, type IndexInfo, LOCAL_INDEXES } from "./BasePersistence";
 import { embedHelper } from "./utils/EmbedHelper";

@@ -1,4 +1,4 @@
-import { Contact } from '@plunk/shared';
+import { Contact } from '@sendra/shared';
 import { useEffect, useState } from 'react';
 import Toggle from '../Toggle/Toggle';
 import Filter from './Filter';

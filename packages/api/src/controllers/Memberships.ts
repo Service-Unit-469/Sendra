@@ -1,6 +1,6 @@
 import { createRoute, z } from "@hono/zod-openapi";
-import { MembershipPersistence, ProjectPersistence, UserPersistence } from "@plunk/lib";
-import { MembershipSchema, MembershipSchemas, ProjectSchema } from "@plunk/shared";
+import { MembershipPersistence, ProjectPersistence, UserPersistence } from "@sendra/lib";
+import { MembershipSchema, MembershipSchemas, ProjectSchema } from "@sendra/shared";
 import type { AppType } from "../app";
 import { Conflict, HttpException, NotAllowed, NotFound } from "../exceptions";
 import { getProblemResponseSchema } from "../exceptions/responses";

@@ -14,17 +14,6 @@ export default function Index() {
 
   return (
     <Dashboard>
-      {templates?.length === 0 && (
-        <Alert type={"info"} title={"Need a hand?"}>
-          <div className={"mt-3 grid items-center sm:grid-cols-4"}>
-            <p className={"sm:col-span-3"}>Want us to help you get started? We can help you build your first action in less than 5 minutes.</p>
-
-            <Link href={"/onboarding/actions"} className={"inline-block rounded bg-neutral-800 px-6 py-2 text-center text-sm font-medium text-white sm:col-span-1"}>
-              Build an action
-            </Link>
-          </div>
-        </Alert>
-      )}
 
       <Card
         title={"Templates"}

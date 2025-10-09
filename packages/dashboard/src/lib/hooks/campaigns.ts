@@ -1,4 +1,4 @@
-import type { Campaign, Email } from "@plunk/shared";
+import type { Campaign, Email } from "@sendra/shared";
 import useSWR from "swr";
 import { useActiveProject } from "./projects";
 

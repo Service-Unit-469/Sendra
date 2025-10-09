@@ -1,6 +1,6 @@
 import { createRoute, z } from "@hono/zod-openapi";
-import { UserPersistence } from "@plunk/lib";
-import { email, id, UserSchemas, UtilitySchemas } from "@plunk/shared";
+import { UserPersistence } from "@sendra/lib";
+import { email, id, UserSchemas, UtilitySchemas } from "@sendra/shared";
 import type { AppType } from "../app";
 import { NotAllowed, NotFound } from "../exceptions";
 import { getProblemResponseSchema, RedirectResponseSchema } from "../exceptions/responses";
