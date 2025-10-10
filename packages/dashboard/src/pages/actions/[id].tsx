@@ -15,7 +15,7 @@ import { useEvents } from "../../lib/hooks/events";
 import { useActiveProject } from "../../lib/hooks/projects";
 import { useTemplates } from "../../lib/hooks/templates";
 import { network } from "../../lib/network";
-import Trash from "../../icons/Trash";
+import {Trash} from "lucide-react";
 
 /**
  *

@@ -3,12 +3,11 @@ import { EventSchemas } from "@sendra/shared";
 import dayjs from "dayjs";
 import { motion } from "framer-motion";
 import { Plus, TerminalSquare, Trash } from "lucide-react";
-import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Area, AreaChart, ResponsiveContainer, YAxis } from "recharts";
 import { toast } from "sonner";
-import { Alert, Badge, Card, Empty, FullscreenLoader, Input, Modal, Skeleton, Table } from "../../components";
+import { Badge, Card, Empty, FullscreenLoader, Input, Modal, Skeleton, Table } from "../../components";
 import { Dashboard } from "../../layouts";
 import { useAllContacts } from "../../lib/hooks/contacts";
 import { useEventsWithTriggers } from "../../lib/hooks/events";
@@ -105,17 +104,6 @@ export default function Index() {
       </Modal>
 
       <Dashboard>
-        {events?.length === 0 && (
-          <Alert type={"info"} title={"Need a hand?"}>
-            <div className={"mt-3 grid items-center sm:grid-cols-4"}>
-              <p className={"sm:col-span-3"}>Want us to help you get started? We can help you build your first action in less than 5 minutes.</p>
-
-              <Link href={"/onboarding/actions"} className={"inline-block rounded bg-neutral-800 px-6 py-2 text-center text-sm font-medium text-white sm:col-span-1"}>
-                Build an action
-              </Link>
-            </div>
-          </Alert>
-        )}
 
         <Card
           title={"Events"}

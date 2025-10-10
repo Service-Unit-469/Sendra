@@ -2,7 +2,7 @@ import { Contact } from '@sendra/shared';
 import { useEffect, useMemo, useState } from 'react';
 import { Dropdown } from "../Dropdown";
 import { Condition, conditions, MetadataFilterType } from './types';
-import Trash from '../../../icons/Trash';
+import {Trash} from 'lucide-react';
 
 /**
  * A single filter for the metadata filter editor

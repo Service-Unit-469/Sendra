@@ -16,6 +16,7 @@ export default $config({
     };
   },
   async run() {
+    
     const web =  await import("./infra/web");
     const emailTopic =  await import("./infra/email-topic");
     const taskQueue =  await import("./infra/task-queue");

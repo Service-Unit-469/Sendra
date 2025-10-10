@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import type React from "react";
 
-export interface ModalProps {
+export type ModalProps = {
   title: string;
   description?: string;
   isOpen: boolean;
@@ -11,21 +11,10 @@ export interface ModalProps {
   action?: string;
   type: "info" | "danger";
   icon?: React.ReactNode;
+  hideActionButtons?: boolean;
 }
 
-/**
- * @param root0
- * @param root0.isOpen
- * @param root0.onToggle
- * @param root0.onAction
- * @param root0.children
- * @param root0.action
- * @param root0.type
- * @param root0.title
- * @param root0.description
- * @param root0.icon
- */
-export default function Modal({ title, description, isOpen, onToggle, onAction, children, action, type, icon }: ModalProps) {
+export default function Modal({ title, description, isOpen, onToggle, onAction, children, action, type, icon, hideActionButtons = false }: ModalProps) {
   return (
     <AnimatePresence>
       {isOpen && (
@@ -118,14 +107,14 @@ export default function Modal({ title, description, isOpen, onToggle, onAction, 
                   {children}
                 </div>
               </div>
-              <div className={`${children ? "mt-5" : ""} sm:flex sm:flex-row-reverse`}>
+
+              {!hideActionButtons && <div className={`${children ? "mt-5" : ""} sm:flex sm:flex-row-reverse`}>
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   type="button"
-                  className={`${
-                    type === "info" ? "bg-neutral-800 focus:ring-neutral-800" : "bg-red-600 hover:bg-red-700 focus:ring-red-500"
-                  } inline-flex w-full justify-center rounded border border-transparent px-6 py-2 text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm`}
+                  className={`${type === "info" ? "bg-neutral-800 focus:ring-neutral-800" : "bg-red-600 hover:bg-red-700 focus:ring-red-500"
+                    } inline-flex w-full justify-center rounded border border-transparent px-6 py-2 text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm`}
                   onClick={onAction}
                 >
                   {action ? action : "Confirm"}
@@ -139,7 +128,7 @@ export default function Modal({ title, description, isOpen, onToggle, onAction, 
                 >
                   Cancel
                 </motion.button>
-              </div>
+              </div>}
             </motion.div>
           </div>
         </div>

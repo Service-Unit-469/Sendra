@@ -1,25 +1,23 @@
 // @ts-nocheck
 // React Hook Form messes up our types, ignore the entire file
 
-import { zodResolver } from "@hookform/resolvers/zod";
 import type { Email } from "@sendra/shared";
-import { ContactSchemas, type ContactUpdate, EventSchemas } from "@sendra/shared";
+import { EventSchemas } from "@sendra/shared";
 import dayjs from "dayjs";
 import DOMPurify from "dompurify";
 import { motion } from "framer-motion";
-import { Save } from "lucide-react";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { z } from "zod";
-import { Badge, Card, Empty, FullscreenLoader, Input, Modal, Toggle } from "../../components";
+import { Badge, Card, ContactForm, Empty, FullscreenLoader, Input, Modal } from "../../components";
 import { Dashboard } from "../../layouts";
 import { useContact } from "../../lib/hooks/contacts";
 import { useActiveProject } from "../../lib/hooks/projects";
 import { network } from "../../lib/network";
-import Trash from "../../icons/Trash";
+import {Trash} from "lucide-react";
 import Trigger from "../../icons/Trigger";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 export default function Index() {
   const router = useRouter();
@@ -28,39 +26,6 @@ export default function Index() {
   const project = useActiveProject();
   const { data: contact, mutate } = useContact(router.query.id as string);
 
-  const { handleSubmit, watch, setValue, reset } = useForm({
-    resolver: zodResolver(ContactSchemas.update.omit({ id: true, data: true })),
-    defaultValues: {
-      subscribed: contact?.subscribed,
-      email: contact?.email,
-    },
-  });
-
-  const {
-    register: dataRegister,
-    control,
-    getValues: getDataValues,
-    reset: dataReset,
-  } = useForm({
-    defaultValues: {
-      data: Object.entries(contact?.data ?? {}).map(([key]) => ({
-        value: { key },
-      })),
-    },
-    resolver: zodResolver(
-      z.object({
-        data: z
-          .array(
-            z.object({
-              value: z.object({ key: z.string(), value: z.string() }),
-            }),
-          )
-          .min(0),
-      }),
-    ),
-  });
-
-  const { fields, append: fieldAppend, remove: fieldRemove } = useFieldArray({ control, name: "data" });
 
   const {
     register: eventRegister,
@@ -71,21 +36,6 @@ export default function Index() {
     resolver: zodResolver(EventSchemas.track.pick({ event: true })),
   });
 
-  useEffect(() => {
-    if (!contact) {
-      return;
-    }
-
-    reset({
-      email: contact.email,
-      subscribed: contact.subscribed,
-    });
-    dataReset({
-      data: Object.entries(contact.data).map(([key, value]) => ({
-        value: { key, value },
-      })),
-    });
-  }, [dataReset, reset, contact]);
 
   if (!contact || !router.isReady) {
     return <FullscreenLoader />;
@@ -114,34 +64,8 @@ export default function Index() {
     setEventModal(false);
   };
 
-  const update = (data: Omit<ContactUpdate, "data" | "id">) => {
-    const entries = getDataValues().data.map(({ value }) => [value.key, value.value]);
-    let dataObject = {};
-
-    entries.forEach(([key, value]) => {
-      Object.assign(dataObject, { [key]: value });
-    });
-
-    dataObject = Object.fromEntries(Object.entries(dataObject).filter(([, value]) => value !== ""));
-
-    toast.promise(
-      network.fetch(`/projects/${project.id}/contacts/${contact.id}`, {
-        method: "PUT",
-        body: {
-          ...data,
-          data: dataObject,
-          id: contact.id,
-        },
-      }),
-      {
-        loading: "Saving your changes",
-        success: () => {
-          void mutate();
-          return "Saved your changes";
-        },
-        error: "Could not save your changes!",
-      },
-    );
+  const handleContactUpdateSuccess = () => {
+    void mutate();
   };
 
   const remove = async (e: { preventDefault: () => void }) => {
@@ -192,8 +116,8 @@ export default function Index() {
             </>
           }
         >
-          <form onSubmit={handleSubmit(update)} className="space-y-6 sm:grid sm:gap-x-5 sm:space-y-9 sm:grid-cols-2">
-            <div className={"col-span-2 flex items-center gap-6"}>
+          <div className="space-y-6">
+            <div className={"flex items-center gap-6"}>
               <span className="inline-flex h-20 w-20 items-center justify-center rounded-full bg-neutral-100">
                 <span className="text-xl font-semibold leading-none text-neutral-800">{contact.email[0].toUpperCase()}</span>
               </span>
@@ -203,95 +127,19 @@ export default function Index() {
               </h1>
             </div>
 
-            <div className={"grid sm:col-span-2"}>
-              <div className={"grid items-center gap-3 sm:grid-cols-9"}>
-                <label htmlFor={"data"} className="block text-sm font-medium text-neutral-700 sm:col-span-8">
-                  Metadata
-                </label>
-                <button
-                  onClick={(e) => {
-                    e.preventDefault();
-                    fieldAppend({ value: { key: "", value: "" } });
-                  }}
-                  className={
-                    "ml-auto flex w-full items-center justify-center gap-x-0.5 rounded border border-neutral-200 bg-white py-1 text-center text-sm text-neutral-700 transition ease-in-out hover:bg-neutral-50 sm:col-span-1"
-                  }
-                >
-                  <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
-                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 5.75V18.25" />
-                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M18.25 12L5.75 12" />
-                  </svg>
-                  Add
-                </button>
-              </div>
-
-              {fields.length > 0 ? (
-                fields.map((field, index) => {
-                  return (
-                    <div key={field.id}>
-                      <div className="grid w-full grid-cols-9 items-end gap-3">
-                        <div className={"col-span-4"}>
-                          <label htmlFor={"data"} className="text-xs font-light">
-                            Key
-                          </label>
-                          <input
-                            type={"text"}
-                            placeholder={"Key"}
-                            className={"block w-full rounded border-neutral-300 transition ease-in-out focus:border-neutral-800 focus:ring-neutral-800 sm:text-sm"}
-                            key={field.id}
-                            {...dataRegister(`data.${index}.value.key`)}
-                          />
-                        </div>
-
-                        <div className={"col-span-4"}>
-                          <label htmlFor={"data"} className="text-xs font-light">
-                            Value
-                          </label>
-                          <input
-                            type={"text"}
-                            placeholder={"Value"}
-                            className={"block w-full rounded border-neutral-300 transition ease-in-out focus:border-neutral-800 focus:ring-neutral-800 sm:text-sm"}
-                            key={field.id}
-                            {...dataRegister(`data.${index}.value.value`)}
-                          />
-                        </div>
-                        <button
-                          className={"col-span-1 flex h-10 items-center justify-center rounded bg-red-100 text-sm text-red-800 transition hover:bg-red-200"}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            fieldRemove(index);
-                          }}
-                        >
-                          <Trash />
-                        </button>
-                      </div>
-                    </div>
-                  );
-                })
-              ) : (
-                <p className={"text-sm text-neutral-500"}>No fields added</p>
-              )}
-            </div>
-
-            <div className={"col-span-2"}>
-              <Toggle
-                title={"Subscribed"}
-                description={watch("subscribed") ? "This contact has opted-in to receive marketing emails" : "This contact prefers not to receive marketing emails"}
-                toggled={watch("subscribed")}
-                onToggle={() => setValue("subscribed", !watch("subscribed"))}
-              />
-            </div>
-            <div className={"col-span-2 ml-auto flex justify-end gap-x-5"}>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.9 }}
-                className={"ml-auto mt-6 flex items-center gap-x-2 rounded bg-neutral-800 px-6 py-2 text-center text-sm font-medium text-white"}
-              >
-                <Save strokeWidth={1.5} size={18} />
-                Save
-              </motion.button>
-            </div>
-          </form>
+            <ContactForm
+              projectId={project.id}
+              contactId={contact.id}
+              onSuccess={handleContactUpdateSuccess}
+              initialData={{
+                email: contact.email,
+                subscribed: contact.subscribed,
+                data: contact.data,
+              }}
+              showEmailField={false}
+              submitButtonText="Save"
+            />
+          </div>
         </Card>
         <Card title={"Journey"}>
           {contact.triggers.length > 0 || contact.emails.length > 0 ? (

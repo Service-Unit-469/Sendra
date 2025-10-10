@@ -12,7 +12,7 @@ import { Dashboard } from "../../layouts";
 import { useActiveProject } from "../../lib/hooks/projects";
 import { useTemplate, useTemplates } from "../../lib/hooks/templates";
 import { network } from "../../lib/network";
-import Trash from "../../icons/Trash";
+import {Trash} from "lucide-react";
 
 /**
  *
