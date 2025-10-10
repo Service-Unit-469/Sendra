@@ -26,10 +26,6 @@ export default function Index() {
   const project = useActiveProject();
   const { mutate } = useTemplates();
   const { data: template } = useTemplate(router.query.id as string);
-  useEffect(() => {
-    // Client-side-only code
-  });
-
   const {
     register,
     handleSubmit,
