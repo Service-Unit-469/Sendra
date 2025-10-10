@@ -135,25 +135,4 @@ export const registerAuthRoutes = (app: AppType) => {
       return c.json({ success: true }, 200);
     },
   );
-
-  app.openapi(
-    createRoute({
-      method: "post",
-      path: "/auth/logout",
-      responses: {
-        200: {
-          content: {
-            "application/json": {
-              schema: z.object({ success: z.boolean() }),
-            },
-          },
-          description: "Logout the user",
-        },
-      },
-    }),
-    async (c) => {
-      await AuthService.logout(c);
-      return c.json({ success: true }, 200);
-    },
-  );
 };

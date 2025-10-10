@@ -1,6 +1,6 @@
 import pino from "pino";
 import pinoPretty from "pino-pretty";
-import { logConfig } from "../services/AppSettings";
+import { logConfig } from "../services/AppConfig";
 import { getRequestInfo } from "./RequestInfo";
 
 const { level, pretty } = logConfig;

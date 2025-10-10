@@ -13,6 +13,7 @@
 		"clean": "rimraf .next node_modules .turbo"
 	},
 	"dependencies": {
+		"@grapesjs/react": "^1.0.0",
 		"@hookform/resolvers": "^5.2.2",
 		"@monaco-editor/react": "^4.6.0",
 		"@sendra/shared": "1.0.0",
@@ -37,8 +38,11 @@
 		"dayjs": "^1.11.12",
 		"dompurify": "^3.2.6",
 		"framer-motion": "^11.3.7",
+		"grapesjs": "^0.22.13",
+		"grapesjs-mjml": "^1.0.7",
 		"jotai": "2.9.0",
 		"lucide-react": "^0.408.0",
+		"mjml-browser": "^4.16.1",
 		"next": "14.2.5",
 		"next-seo": "^6.5.0",
 		"nprogress": "^0.2.0",
@@ -50,6 +54,7 @@
 		"prosemirror-schema-list": "^1.4.1",
 		"react": "18.3.1",
 		"react-dom": "18.3.1",
+		"react-final-form": "^6.5.7",
 		"react-hook-form": "^7.52.1",
 		"react-syntax-highlighter": "^15.5.0",
 		"react-window": "^1.8.10",

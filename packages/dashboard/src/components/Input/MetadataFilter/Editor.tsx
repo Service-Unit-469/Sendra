@@ -18,7 +18,7 @@ export default function MetadataFilterEditor({ onChange, contacts }: { onChange:
 
   useEffect(() => {
     onChange(group);
-  }, [group]);
+  }, [group, onChange]);
 
   return (
     <>
@@ -32,9 +32,9 @@ export default function MetadataFilterEditor({ onChange, contacts }: { onChange:
       </div>
 
       {group.filters.map((filter, index) => (
-        <div className={"sm:col-span-4"}>
+        // biome-ignore lint/suspicious/noArrayIndexKey: Filters don't have unique IDs and order is stable
+        <div className={"sm:col-span-4"} key={`filter-${index}`}>
           <Filter
-            key={index}
             initialFilter={filter}
             onFilterChange={(filter) => setGroup({ ...group, filters: group.filters.map((f, i) => (i === index ? filter : f)) })}
             contacts={contacts}

@@ -6,7 +6,6 @@ import type { Email } from "@sendra/shared";
 import { EventSchemas } from "@sendra/shared";
 import dayjs from "dayjs";
 import DOMPurify from "dompurify";
-import { motion } from "framer-motion";
 import { Trash } from "lucide-react";
 import { useRouter } from "next/router";
 import { useState } from "react";
@@ -198,6 +197,7 @@ export default function Index() {
                                 <div>
                                   <span className="font-semibold text-neutral-700 block mb-1">Body</span>
                                   <div
+                                    // biome-ignore lint/security/noDangerouslySetInnerHtml: Content is sanitized with DOMPurify
                                     dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(email.body) }}
                                     className="rounded bg-white p-3 text-neutral-800 whitespace-pre-line max-h-64 overflow-y-auto"
                                   />

@@ -1,6 +1,7 @@
 /// <reference path="../.sst/platform/config.d.ts" />
 
 import { dynamo } from "./dynamo";
+import { getEnvironment } from "./env";
 
 export const emailTopic = new sst.aws.SnsTopic("EmailTopic");
 
@@ -11,6 +12,7 @@ emailTopic.subscribe("EmailTopicSubscriber", {
   logging: {
     retention: "1 week",
   },
+  environment: getEnvironment("EmailTopicSubscriber"),
 });
 
 export const configurationSet: aws.ses.ConfigurationSet =

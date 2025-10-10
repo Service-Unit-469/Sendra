@@ -1,3 +1,5 @@
+import { getEnvironment } from "./env";
+
 const deadLetterQueue = new sst.aws.Queue("TaskDeadLetterQueue");
 
 export const taskQueue = new sst.aws.Queue("TaskQueue", {
@@ -12,6 +14,7 @@ taskQueue.subscribe(
     logging: {
       retention: "1 week",
     },
+    environment: getEnvironment("TaskQueueSubscriber"),
   },
   {
     batch: {

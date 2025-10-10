@@ -22,6 +22,10 @@ declare module "sst" {
       "arn": string
       "type": "sst.aws.SnsTopic"
     }
+    "JwtSecret": {
+      "type": "sst.sst.Secret"
+      "value": string
+    }
     "SendraDatabase": {
       "name": string
       "type": "sst.aws.Dynamo"

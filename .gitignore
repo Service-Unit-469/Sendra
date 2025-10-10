@@ -3,7 +3,7 @@ dist
 .idea
 .vscode
 *.log
-.env
+.env*
 .tscache
 .next
 .out

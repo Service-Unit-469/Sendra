@@ -29,7 +29,7 @@ export default function Filter({
 
   useEffect(() => {
     onFilterChange(filter);
-  }, [filter]);
+  }, [filter, onFilterChange]);
 
   const isValueDropdown = useMemo(() => filter.condition && (filter.condition === "is" || filter.condition === "is not"), [filter.condition]);
 

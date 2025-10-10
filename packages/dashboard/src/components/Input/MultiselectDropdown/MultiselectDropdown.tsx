@@ -14,6 +14,47 @@ export interface MultiselectDropdownProps {
   className?: string;
 }
 
+interface RowProps {
+  index: number;
+  style: React.CSSProperties;
+  data: {
+    filteredValues: readonly { name: string; value: string; tag?: string }[];
+    selectedValues: readonly string[];
+    onChange: (value: string[]) => void;
+    setSelectedValues: (value: readonly string[]) => void;
+  };
+}
+
+const Row = ({ index, style, data }: RowProps) => {
+  const { filteredValues, selectedValues, onChange, setSelectedValues } = data;
+  const value = filteredValues[index];
+  return (
+    <li
+      style={style}
+      key={`multiselect-${index}`}
+      className="relative flex cursor-default select-none items-center rounded-md py-2.5 pl-2.5 text-neutral-800 transition ease-in-out hover:bg-neutral-100"
+      onClick={() => {
+        const isAlreadySelected = selectedValues.find((selection) => value.value === selection);
+
+        const updatedArray = isAlreadySelected ? selectedValues.filter((selection) => selection !== value.value) : [...selectedValues, value.value];
+
+        onChange(updatedArray);
+        setSelectedValues(updatedArray);
+      }}
+    >
+      {value.tag && <span className={"mr-3 whitespace-nowrap rounded bg-blue-100 px-3 py-0.5 text-xs text-blue-900"}>{value.tag}</span>}
+      <span className="truncate font-normal">{value.name.charAt(0).toUpperCase() + value.name.slice(1).toLowerCase()}</span>
+      {value.value === selectedValues.find((selection) => value.value === selection) ? (
+        <span className="absolute inset-y-0 right-0 flex items-center pr-3 text-black">
+          <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+          </svg>
+        </span>
+      ) : null}
+    </li>
+  );
+};
+
 export default function MultiselectDropdown({ onChange, values, selectedValues: PropsselectedValues, className, disabled = false }: MultiselectDropdownProps) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -42,36 +83,14 @@ export default function MultiselectDropdown({ onChange, values, selectedValues: 
     };
   }, [ref, open]);
 
-  const Row = ({ index, style }: { index: number; style: React.CSSProperties }) => {
-    const value = filteredValues[index];
-    return (
-      <li
-        style={style}
-        key={`multiselect-${index}`}
-        className="relative flex cursor-default select-none items-center rounded-md py-2.5 pl-2.5 text-neutral-800 transition ease-in-out hover:bg-neutral-100"
-        onClick={() => {
-          const isAlreadySelected = selectedValues.find((selection) => value.value === selection);
-
-          const updatedArray = isAlreadySelected ? selectedValues.filter((selection) => selection !== value.value) : [...selectedValues, value.value];
-
-          onChange(updatedArray);
-          setSelectedValues(updatedArray);
-        }}
-      >
-        {value.tag && <span className={"mr-3 whitespace-nowrap rounded bg-blue-100 px-3 py-0.5 text-xs text-blue-900"}>{value.tag}</span>}
-        <span className="truncate font-normal">{value.name.charAt(0).toUpperCase() + value.name.slice(1).toLowerCase()}</span>
-        {value.value === selectedValues.find((selection) => value.value === selection) ? (
-          <span className="absolute inset-y-0 right-0 flex items-center pr-3 text-black">
-            <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-            </svg>
-          </span>
-        ) : null}
-      </li>
-    );
-  };
-
   const filteredValues = values.filter((value) => value.name.toLowerCase().includes(query.toLowerCase()));
+
+  const itemData = {
+    filteredValues,
+    selectedValues,
+    onChange,
+    setSelectedValues,
+  };
 
   return (
     <div ref={ref} className={className ?? ""}>
@@ -133,7 +152,7 @@ export default function MultiselectDropdown({ onChange, values, selectedValues: 
               {filteredValues.length === 0 ? (
                 <li className="relative cursor-default select-none py-2 pl-3 pr-9 text-neutral-800">No results found</li>
               ) : (
-                <List height={500} itemCount={filteredValues.length} itemSize={40} width={"100%"}>
+                <List height={500} itemCount={filteredValues.length} itemSize={40} width={"100%"} itemData={itemData}>
                   {Row}
                 </List>
               )}

@@ -84,6 +84,7 @@ export default function Editor({ value, onChange, mode, modeSwitcher }: Markdown
       }).extend({
         addKeyboardShortcuts() {
           return {
+            // biome-ignore lint/correctness/noNestedComponentDefinitions: This is a TipTap keyboard shortcut handler, not a React component
             Space: ({ editor }) => {
               if (editor.isActive("link")) {
                 // Toggle the link and add a space
@@ -541,6 +542,13 @@ export default function Editor({ value, onChange, mode, modeSwitcher }: Markdown
       <div>
         {mode === "SIMPLE" ? (
           <div
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                editor.chain().focus().run();
+              }
+            }}
             onClick={() => {
               editor.chain().focus().run();
             }}

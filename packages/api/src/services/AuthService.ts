@@ -2,12 +2,13 @@ import { z } from "@hono/zod-openapi";
 import { authConfig, rootLogger, UserPersistence } from "@sendra/lib";
 import { type User, UserSchemas } from "@sendra/shared";
 import type { Context, HonoRequest } from "hono";
-import { getCookie, setCookie } from "hono/cookie";
 import { type JwtPayload, sign, verify } from "jsonwebtoken";
 import type { StringValue } from "ms";
-import ms from "ms";
+import { Resource } from "sst";
 import { Conflict, HttpException } from "../exceptions";
 import { createHash, verifyHash } from "../util/hash";
+
+const JWT_SECRET = Resource.JwtSecret.value;
 
 const logger = rootLogger.child({
   module: "AuthService",
@@ -78,19 +79,9 @@ export class AuthService {
       throw new HttpException(401, "Invalid username or password");
     }
 
-    const token = AuthService.setUserToken(c, user.id, email);
+    const token = AuthService.createUserToken(user.id, email);
 
     return { email: user.email, id: user.id, token };
-  }
-
-  public static async logout(c: Context): Promise<void> {
-    setCookie(c, authConfig.cookieName, "", {
-      httpOnly: true,
-      expires: new Date(0),
-      secure: true,
-      sameSite: "lax",
-      path: "/",
-    });
   }
 
   public static async signup(c: Context): Promise<User> {
@@ -113,7 +104,7 @@ export class AuthService {
       password: await createHash(password),
     });
 
-    AuthService.setUserToken(c, created_user.id, email);
+    AuthService.createUserToken(created_user.id, email);
 
     return created_user;
   }
@@ -124,7 +115,7 @@ export class AuthService {
         type: "user",
         email,
       },
-      authConfig.jwtSecret,
+      JWT_SECRET,
       {
         expiresIn: authConfig.ttl.user as number | StringValue,
         issuer: authConfig.issuer,
@@ -138,7 +129,7 @@ export class AuthService {
       {
         type,
       },
-      authConfig.jwtSecret,
+      JWT_SECRET,
       {
         expiresIn: authConfig.ttl[type] as number | StringValue,
         issuer: authConfig.issuer,
@@ -149,18 +140,13 @@ export class AuthService {
   }
 
   public static parseToken(c: Context, type?: AuthType): Auth {
-    let token = getCookie(c, authConfig.cookieName);
-
-    if (!token) {
-      token = AuthService.parseBearer(c.req);
-    }
-
+    const token = AuthService.parseBearer(c.req);
     if (!token) {
       throw new HttpException(401, "No authorization passed");
     }
 
     try {
-      const verified = verify(token, authConfig.jwtSecret);
+      const verified = verify(token, JWT_SECRET);
       const auth = authSchema.parse(verified);
       if (type && auth.type !== type) {
         throw new HttpException(400, "Invalid authorization token for request");
@@ -190,23 +176,5 @@ export class AuthService {
     }
 
     return split[1];
-  }
-
-  private static setUserToken(c: Context, userId: string, email: string): string {
-    const token = AuthService.createUserToken(userId, email);
-    let expiresIn: number;
-    if (typeof authConfig.ttl.user === "number") {
-      expiresIn = authConfig.ttl.user & 1000;
-    } else {
-      expiresIn = ms(authConfig.ttl.user as StringValue);
-    }
-    setCookie(c, authConfig.cookieName, token, {
-      httpOnly: true,
-      expires: new Date(Date.now() + expiresIn),
-      secure: true,
-      sameSite: "lax",
-      path: "/",
-    });
-    return token;
   }
 }

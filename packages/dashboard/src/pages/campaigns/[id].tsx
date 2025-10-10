@@ -26,11 +26,6 @@ import useFilterContacts from "./filter";
  */
 export default function Index() {
   const router = useRouter();
-
-  if (!router.isReady) {
-    return <FullscreenLoader />;
-  }
-
   const project = useActiveProject();
   const { mutate: campaignsMutate } = useCampaignsWithEmails();
   const { data: campaign, mutate: campaignMutate } = useCampaign(router.query.id as string);
@@ -77,7 +72,7 @@ export default function Index() {
   const filteredContacts = useFilterContacts(contacts ?? [], query);
 
   useEffect(() => {
-    watch((value, { name, type }) => {
+    watch((value, { name }) => {
       if (name === "email") {
         if (value.email && project?.email && !value.email.endsWith(project.email.split("@")[1])) {
           setError("email", {
@@ -90,6 +85,10 @@ export default function Index() {
       }
     });
   }, [watch, project, setError, clearErrors]);
+
+  if (!router.isReady) {
+    return <FullscreenLoader />;
+  }
 
   if (!project || !campaign || !events || (watch("body") as string | undefined) === undefined) {
     return <FullscreenLoader />;
@@ -235,10 +234,12 @@ export default function Index() {
         title={"Send campaign"}
         description={`Once you start sending this campaign to ${watch("recipients").length} contacts, you can no longer make changes or undo it.`}
       >
-        <label className="block text-sm font-medium text-neutral-700">Delay</label>
+        <label htmlFor="campaign-delay" className="block text-sm font-medium text-neutral-700">
+          Delay
+        </label>
         <Dropdown
           inModal={true}
-          onChange={(val) => setDelay(Number.parseInt(val))}
+          onChange={(val) => setDelay(Number.parseInt(val, 10))}
           values={[
             {
               name: "Send immediately",
@@ -555,15 +556,13 @@ export default function Index() {
               </>
             ) : (
               campaign.status === "DRAFT" && (
-                <>
-                  <div className={"flex items-center gap-6 rounded border border-neutral-300 px-8 py-3 sm:col-span-6"}>
-                    <Ring size={20} />
-                    <div>
-                      <h1 className={"text-lg font-semibold text-neutral-800"}>Hang on!</h1>
-                      <p className={"text-sm text-neutral-600"}>We're still loading your contacts. This might take up to a minute. You can already start writing your campaign in the editor below.</p>
-                    </div>
+                <div className={"flex items-center gap-6 rounded border border-neutral-300 px-8 py-3 sm:col-span-6"}>
+                  <Ring size={20} />
+                  <div>
+                    <h1 className={"text-lg font-semibold text-neutral-800"}>Hang on!</h1>
+                    <p className={"text-sm text-neutral-600"}>We're still loading your contacts. This might take up to a minute. You can already start writing your campaign in the editor below.</p>
                   </div>
-                </>
+                </div>
               )
             )}
 

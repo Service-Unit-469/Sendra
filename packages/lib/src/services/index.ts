@@ -1,4 +1,4 @@
 export * from "./ActionsService";
-export * from "./AppSettings";
+export * from "./AppConfig";
 export * from "./EmailService";
 export * from "./TaskQueue";

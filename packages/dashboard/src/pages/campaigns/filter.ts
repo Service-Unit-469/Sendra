@@ -34,11 +34,11 @@ function matchesMetadataFilter(contact: Contact, filter: MetadataFilterType) {
     return false;
   }
 
-  let letFilterValue: string | number | boolean = filter.value;
+  let _letFilterValue: string | number | boolean = filter.value;
   if (typeof value === "number") {
-    letFilterValue = Number(filter.value);
+    _letFilterValue = Number(filter.value);
   } else if (typeof filter.value === "boolean") {
-    letFilterValue = Boolean(filter.value);
+    _letFilterValue = Boolean(filter.value);
   }
   switch (filter.condition) {
     case "is":
@@ -46,9 +46,11 @@ function matchesMetadataFilter(contact: Contact, filter: MetadataFilterType) {
     case "is not":
       return value !== filter.value;
     default: {
+      // biome-ignore lint/suspicious/noExplicitAny: Needed for dynamic function detection
       if (typeof (value as any)[functionMapping[filter.condition]] !== "function") {
         return false;
       }
+      // biome-ignore lint/suspicious/noExplicitAny: Needed for dynamic function detection
       const matches = (value as any)[functionMapping[filter.condition]](filter.value) as boolean;
       if (filter.condition.includes("does not")) {
         return !matches;
@@ -111,7 +113,7 @@ export default function useFilterContacts(
     let filteredContacts = contacts;
 
     if (query.events && query.events.length > 0) {
-      query.events.map((e) => {
+      query.events.forEach((e) => {
         filteredContacts = filteredContacts.filter((c) => c.triggers.some((t) => t.event === e));
       });
     }
@@ -133,7 +135,7 @@ export default function useFilterContacts(
     }
 
     if (query.notevents && query.notevents.length > 0 && query.notlast) {
-      query.notevents.map((e) => {
+      query.notevents.forEach((e) => {
         filteredContacts = filteredContacts.filter((c) => {
           if (c.triggers.length === 0) {
             return true;
@@ -149,7 +151,7 @@ export default function useFilterContacts(
         });
       });
     } else if (query.notevents && query.notevents.length > 0) {
-      query.notevents.map((e) => {
+      query.notevents.forEach((e) => {
         filteredContacts = filteredContacts.filter((c) => c.triggers.every((t) => t.event !== e));
       });
     } else if (query.notlast) {

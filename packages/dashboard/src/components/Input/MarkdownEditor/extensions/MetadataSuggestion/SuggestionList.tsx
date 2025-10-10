@@ -54,7 +54,7 @@ export default forwardRef((props, ref) => {
         props.items.map((item, index) => (
           <button
             className={`flex w-full items-center gap-2 px-4 py-2 text-sm text-neutral-700 transition hover:bg-neutral-100 ${index === selectedIndex ? "bg-neutral-50" : ""}`}
-            key={index}
+            key={item}
             onClick={() => selectItem(index)}
           >
             {item}

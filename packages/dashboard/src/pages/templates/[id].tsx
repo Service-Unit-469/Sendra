@@ -1,17 +1,22 @@
+"use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { TemplateUpdate } from "@sendra/shared";
-import { TemplateSchemas, type TemplateStyles } from "@sendra/shared";
+import { TemplateSchemas } from "@sendra/shared";
 import { AnimatePresence, motion } from "framer-motion";
 import { Save, Trash } from "lucide-react";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { Card, Dropdown, Editor, FullscreenLoader, Input, Tooltip } from "../../components";
+import { Card, Dropdown, FullscreenLoader, Input, Tooltip } from "../../components";
 import { Dashboard } from "../../layouts";
 import { useActiveProject } from "../../lib/hooks/projects";
 import { useTemplate, useTemplates } from "../../lib/hooks/templates";
 import { network } from "../../lib/network";
+
+// Dynamically import the EmailEditorComponent to prevent SSR issues
+const DynamicEmailEditorComponent = dynamic(() => import("../../components/EmailEditor"), { ssr: false });
 
 /**
  *
@@ -21,6 +26,9 @@ export default function Index() {
   const project = useActiveProject();
   const { mutate } = useTemplates();
   const { data: template } = useTemplate(router.query.id as string);
+  useEffect(() => {
+    // Client-side-only code
+  });
 
   const {
     register,
@@ -47,7 +55,7 @@ export default function Index() {
   }, [reset, template]);
 
   useEffect(() => {
-    watch((value, { name, type }) => {
+    watch((value, { name }) => {
       if (name === "email") {
         if (value.email && project?.email && !value.email.endsWith(project.email.split("@")[1])) {
           setError("email", {
@@ -221,15 +229,8 @@ export default function Index() {
           {project.verified && <Input className={"sm:col-span-3"} label={"Sender Name"} placeholder={`${project.from ?? project.name}`} register={register("from")} error={errors.from} />}
 
           <div className={"sm:col-span-6"}>
-            <Editor
-              value={watch("body")}
-              mode={watch("style") ?? "SIMPLE"}
-              modeSwitcher
-              onChange={(value, type) => {
-                setValue("style", type as TemplateStyles);
-                setValue("body", value);
-              }}
-            />
+            <DynamicEmailEditorComponent />
+
             <AnimatePresence>
               {errors.body?.message && (
                 <motion.p initial={{ height: 0 }} animate={{ height: "auto" }} exit={{ height: 0 }} className="mt-1 text-xs text-red-500">

@@ -1,21 +1,18 @@
 import { dynamo } from "./dynamo";
+import { getEnvironment } from "./env";
 import { delayedTaskStateMachine, taskQueue } from "./task-queue";
+import { jwtSecret } from "./secrets";
 
 export const api = new sst.aws.Function("Api", {
   url: {
     cors: false,
   },
   handler: "packages/api/src/app.handler",
-  link: [dynamo, taskQueue, delayedTaskStateMachine],
+  link: [dynamo, taskQueue, delayedTaskStateMachine, jwtSecret],
   logging: {
     retention: "1 week",
   },
-  environment: {
-    JWT_SECRET: "test",
-    LOG_LEVEL: "debug",
-    LOG_PRETTY: "true",
-    DEFAULT_EMAIL: "no-reply@email.com", // TODO: replace this with your own default email
-  },
+  environment: getEnvironment("Api"),
   nodejs: {
     loader: {
       ".html": "file",

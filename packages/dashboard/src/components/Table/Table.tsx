@@ -25,7 +25,7 @@ export default function Table({ values }: TableProps) {
                 <tr>
                   {Object.keys(values[0]).map((header) => {
                     return (
-                      <th scope="col" className={`${typeof values[0][header] === "boolean" ? "text-center" : "text-left"} px-6 py-3 text-xs font-medium text-neutral-800`}>
+                      <th key={header} scope="col" className={`${typeof values[0][header] === "boolean" ? "text-center" : "text-left"} px-6 py-3 text-xs font-medium text-neutral-800`}>
                         {header}
                       </th>
                     );
@@ -33,9 +33,10 @@ export default function Table({ values }: TableProps) {
                 </tr>
               </thead>
               <tbody>
-                {values.map((row) => {
+                {values.map((row, rowIndex) => {
                   return (
-                    <tr className={"border-t border-neutral-100 bg-white transition ease-in-out hover:bg-neutral-50"}>
+                    // biome-ignore lint/suspicious/noArrayIndexKey: Table rows don't have unique IDs and order is stable
+                    <tr key={rowIndex} className={"border-t border-neutral-100 bg-white transition ease-in-out hover:bg-neutral-50"}>
                       {Object.entries(row).map((value) => {
                         if (value[1] === null || value[1] === undefined) {
                           return <td className="whitespace-nowrap px-6 py-4 text-sm text-neutral-500">Not specified</td>;

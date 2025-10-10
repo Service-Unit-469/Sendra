@@ -1,31 +1,21 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { Campaign } from "@sendra/shared";
-import { CampaignSchemas } from "@sendra/shared";
+import { type CampaignCreate, CampaignSchemas } from "@sendra/shared";
 import { Ring } from "@uiball/loaders";
 import dayjs from "dayjs";
 import { AnimatePresence, motion } from "framer-motion";
 import { Search, Users2, XIcon } from "lucide-react";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { type FieldError, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { Alert, Card, Dropdown, Editor, FullscreenLoader, Input, MetadataFilterEditor, type MetadataFilterGroupType, MultiselectDropdown } from "../../components";
 import { Dashboard } from "../../layouts";
 import { useCampaignsWithEmails } from "../../lib/hooks/campaigns";
-import { useAllContacts, useAllContactsWithTriggers, useContactsWithTriggers } from "../../lib/hooks/contacts";
+import { useAllContactsWithTriggers } from "../../lib/hooks/contacts";
 import { useEvents } from "../../lib/hooks/events";
 import { useActiveProject } from "../../lib/hooks/projects";
 import { network } from "../../lib/network";
 import useFilterContacts from "./filter";
-
-interface CampaignValues {
-  subject: string;
-  body: string;
-  email?: string;
-  from?: string;
-  recipients: string[];
-  style: "SIMPLE" | "HTML";
-}
 
 const templates = {
   blank: {
@@ -64,8 +54,8 @@ export default function Index() {
     watch,
     setError,
     clearErrors,
-  } = useForm<CampaignValues>({
-    resolver: zodResolver(CampaignSchemas.create) as any,
+  } = useForm({
+    resolver: zodResolver(CampaignSchemas.create),
     defaultValues: {
       recipients: [],
       ...templates.blank,
@@ -74,7 +64,7 @@ export default function Index() {
   });
 
   useEffect(() => {
-    watch((value, { name, type }) => {
+    watch((value, { name }) => {
       if (name === "email") {
         if (value.email && project?.email && !value.email.endsWith(project.email.split("@")[1])) {
           setError("email", {
@@ -92,7 +82,7 @@ export default function Index() {
     return <FullscreenLoader />;
   }
 
-  const create = async (data: CampaignValues) => {
+  const create = async (data: CampaignCreate) => {
     toast.promise(
       network.fetch(`/projects/${project.id}/campaigns`, {
         method: "POST",
@@ -115,324 +105,315 @@ export default function Index() {
   };
 
   return (
-    <>
-      <Dashboard>
-        <Card title={"Create a new campaign"}>
-          <form onSubmit={handleSubmit(create)} className="space-y-6 sm:grid sm:grid-cols-6 sm:gap-6">
-            <div className={"sm:col-span-6 sm:grid sm:grid-cols-6 sm:gap-6 space-y-6 sm:space-y-0"}>
-              <Input className={"sm:col-span-6"} label={"Subject"} placeholder={`Welcome to ${project.name}!`} register={register("subject")} error={errors.subject} />
+    <Dashboard>
+      <Card title={"Create a new campaign"}>
+        <form onSubmit={handleSubmit(create)} className="space-y-6 sm:grid sm:grid-cols-6 sm:gap-6">
+          <div className={"sm:col-span-6 sm:grid sm:grid-cols-6 sm:gap-6 space-y-6 sm:space-y-0"}>
+            <Input className={"sm:col-span-6"} label={"Subject"} placeholder={`Welcome to ${project.name}!`} register={register("subject")} error={errors.subject} />
 
-              {project.verified && <Input className={"sm:col-span-3"} label={"Sender Email"} placeholder={`${project.email}`} register={register("email")} error={errors.email} />}
+            {project.verified && <Input className={"sm:col-span-3"} label={"Sender Email"} placeholder={`${project.email}`} register={register("email")} error={errors.email} />}
 
-              {project.verified && <Input className={"sm:col-span-3"} label={"Sender Name"} placeholder={`${project.from ?? project.name}`} register={register("from")} error={errors.from} />}
-            </div>
+            {project.verified && <Input className={"sm:col-span-3"} label={"Sender Name"} placeholder={`${project.from ?? project.name}`} register={register("from")} error={errors.from} />}
+          </div>
 
-            {contacts ? (
-              <>
-                <div className={"sm:col-span-3"}>
-                  <label htmlFor={"recipients"} className="block text-sm font-medium text-neutral-700">
-                    Recipients
-                  </label>
-                  <MultiselectDropdown
-                    onChange={(c) => setValue("recipients", c)}
-                    values={contacts
-                      .filter((c) => c.subscribed)
-                      .map((c) => {
-                        return { name: c.email, value: c.id };
-                      })}
-                    selectedValues={watch("recipients")}
-                  />
-                  <AnimatePresence>
-                    {(errors.recipients as FieldError | undefined)?.message && (
-                      <motion.p initial={{ height: 0 }} animate={{ height: "auto" }} exit={{ height: 0 }} className="mt-1 text-xs text-red-500">
-                        {(errors.recipients as FieldError | undefined)?.message}
-                      </motion.p>
-                    )}
-                  </AnimatePresence>
-                </div>
-
-                <div className={"grid gap-6 sm:col-span-3 sm:grid-cols-2"}>
-                  <button
-                    onClick={(e) => {
-                      e.preventDefault();
-
-                      if (watch("recipients").length > 0) {
-                        return setValue("recipients", []);
-                      }
-
-                      setValue(
-                        "recipients",
-                        contacts.filter((c) => c.subscribed).map((c) => c.id),
-                      );
-                    }}
-                    className={
-                      "mt-6 flex items-center justify-center gap-x-1 rounded border border-neutral-300 bg-white px-8 py-1 text-center text-sm font-medium text-neutral-800 transition ease-in-out hover:bg-neutral-100"
-                    }
-                  >
-                    {watch("recipients").length === 0 ? <Users2 size={18} /> : <XIcon size={18} />}
-                    {watch("recipients").length === 0 ? "All contacts" : "Clear selection"}
-                  </button>
-                  <button
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setSelector(!advancedSelector);
-                    }}
-                    className={
-                      "mt-6 flex items-center justify-center gap-x-1 rounded border border-neutral-300 bg-white px-8 py-1 text-center text-sm font-medium text-neutral-800 transition ease-in-out hover:bg-neutral-100"
-                    }
-                  >
-                    {advancedSelector ? <XIcon size={18} /> : <Search size={18} />}
-                    {advancedSelector ? "Close" : "Advanced selector"}
-                  </button>
-                </div>
-
+          {contacts ? (
+            <>
+              <div className={"sm:col-span-3"}>
+                <label htmlFor={"recipients"} className="block text-sm font-medium text-neutral-700">
+                  Recipients
+                </label>
+                <MultiselectDropdown
+                  onChange={(c) => setValue("recipients", c)}
+                  values={contacts
+                    .filter((c) => c.subscribed)
+                    .map((c) => {
+                      return { name: c.email, value: c.id };
+                    })}
+                  selectedValues={watch("recipients")}
+                />
                 <AnimatePresence>
-                  {advancedSelector && (
-                    <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: "auto" }}
-                      exit={{ opacity: 0, height: 0 }}
-                      transition={{ duration: 0.2 }}
-                      className={"relative z-20 grid gap-6 rounded border border-neutral-300 px-6 py-6 sm:col-span-6 sm:grid-cols-4"}
-                    >
-                      <div className={"sm:col-span-2"}>
-                        <label htmlFor={"event"} className="block text-sm font-medium text-neutral-700">
-                          Has triggers for events
-                        </label>
-                        <MultiselectDropdown
-                          onChange={(e) =>
-                            setQuery(
-                              e.length > 0
-                                ? { ...query, events: e }
-                                : {
-                                    ...query,
-                                    events: undefined,
-                                    last: undefined,
-                                  },
-                            )
-                          }
-                          values={[
-                            ...events
-                              .filter((e) => !query.notevents?.includes(e.id))
-                              .sort((a, b) => {
-                                if (!a.template && !a.campaign) {
-                                  return -1;
-                                }
-                                if (!b.template && !b.campaign) {
-                                  return 1;
-                                }
-
-                                if (a.name.includes("delivered") && !b.name.includes("delivered")) {
-                                  return -1;
-                                }
-
-                                return 0;
-                              })
-                              .map((e) => {
-                                return {
-                                  name: e.name,
-                                  value: e.id,
-                                  tag: (e.template ?? e.campaign) ? (e.name.includes("opened") ? "On Open" : "On Delivery") : undefined,
-                                };
-                              }),
-                          ]}
-                          selectedValues={query.events ?? []}
-                        />
-                      </div>
-
-                      <div className={"sm:col-span-2"}>
-                        {query.events && query.events.length > 0 && (
-                          <>
-                            <label htmlFor={"event"} className="block text-sm font-medium text-neutral-700">
-                              Has triggered {query.events.length} selected events
-                            </label>
-                            <Dropdown
-                              onChange={(e) =>
-                                setQuery({
-                                  ...query,
-                                  last: (e as "" | "day" | "week" | "month") === "" ? undefined : (e as "day" | "week" | "month"),
-                                })
-                              }
-                              values={[
-                                { name: "Anytime", value: "" },
-                                { name: "In the last day", value: "day" },
-                                { name: "In the last week", value: "week" },
-                                { name: "In the last month", value: "month" },
-                              ]}
-                              selectedValue={query.last ?? ""}
-                            />
-                          </>
-                        )}
-                      </div>
-
-                      <div className={"sm:col-span-2"}>
-                        <label htmlFor={"event"} className="block text-sm font-medium text-neutral-700">
-                          No triggers for events
-                        </label>
-                        <MultiselectDropdown
-                          onChange={(e) => {
-                            setQuery(
-                              e.length > 0
-                                ? { ...query, notevents: e }
-                                : {
-                                    ...query,
-                                    notevents: undefined,
-                                    notlast: undefined,
-                                  },
-                            );
-                          }}
-                          values={[
-                            ...events
-                              .filter((e) => !query.events?.includes(e.id))
-                              .sort((a, b) => {
-                                if (!a.template && !a.campaign) {
-                                  return -1;
-                                }
-                                if (!b.template && !b.campaign) {
-                                  return 1;
-                                }
-
-                                if (a.name.includes("delivered") && !b.name.includes("delivered")) {
-                                  return -1;
-                                }
-
-                                return 0;
-                              })
-                              .map((e) => {
-                                return {
-                                  name: e.name,
-                                  value: e.id,
-                                  tag: (e.template ?? e.campaign) ? (e.name.includes("opened") ? "On Open" : "On Delivery") : undefined,
-                                };
-                              }),
-                          ]}
-                          selectedValues={query.notevents ?? []}
-                        />
-                      </div>
-
-                      <div className={"sm:col-span-2"}>
-                        {query.notevents && query.notevents.length > 0 && (
-                          <>
-                            <label htmlFor={"event"} className="block text-sm font-medium text-neutral-700">
-                              Not triggered {query.notevents.length} selected events
-                            </label>
-                            <Dropdown
-                              onChange={(e) =>
-                                setQuery({
-                                  ...query,
-                                  notlast: (e as "" | "day" | "week" | "month") === "" ? undefined : (e as "day" | "week" | "month"),
-                                })
-                              }
-                              values={[
-                                { name: "Anytime", value: "" },
-                                { name: "In the last day", value: "day" },
-                                { name: "In the last week", value: "week" },
-                                { name: "In the last month", value: "month" },
-                              ]}
-                              selectedValue={query.notlast ?? ""}
-                            />
-                          </>
-                        )}
-                      </div>
-
-                      <MetadataFilterEditor onChange={(filter) => setQuery({ ...query, metadataFilter: filter })} contacts={contacts} />
-
-                      <div className={"sm:col-span-4"}>
-                        <motion.button
-                          onClick={(e) => {
-                            e.preventDefault();
-                            setValue(
-                              "recipients",
-                              filteredContacts.map((c) => c.id),
-                            );
-                          }}
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.9 }}
-                          className={"ml-auto flex items-center justify-center gap-x-0.5 rounded bg-neutral-800 px-8 py-2 text-center text-sm font-medium text-white"}
-                        >
-                          <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
-                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 5.75V18.25" />
-                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M18.25 12L5.75 12" />
-                          </svg>
-                          Select {filteredContacts.length} contacts
-                        </motion.button>
-                      </div>
-                    </motion.div>
+                  {(errors.recipients as FieldError | undefined)?.message && (
+                    <motion.p initial={{ height: 0 }} animate={{ height: "auto" }} exit={{ height: 0 }} className="mt-1 text-xs text-red-500">
+                      {(errors.recipients as FieldError | undefined)?.message}
+                    </motion.p>
                   )}
                 </AnimatePresence>
-              </>
-            ) : (
-              <>
-                <div className={"flex items-center gap-6 rounded border border-neutral-300 px-8 py-3 sm:col-span-6"}>
-                  <Ring size={20} />
-                  <div>
-                    <h1 className={"text-lg font-semibold text-neutral-800"}>Hang on!</h1>
-                    <p className={"text-sm text-neutral-600"}>We're still loading your contacts. This might take up to a minute. You can already start writing your campaign in the editor below.</p>
-                  </div>
-                </div>
-              </>
-            )}
+              </div>
 
-            <AnimatePresence>
-              {watch("recipients").length >= 10 && (
-                <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className={"relative z-10 sm:col-span-6"}>
-                  <Alert type={"info"} title={"Automatic batching"}>
-                    Your campaign will be sent out in batches of 80 recipients each. It will be delivered to all contacts{" "}
-                    {dayjs().to(dayjs().add(Math.ceil(watch("recipients").length / 80), "minutes"))}
-                  </Alert>
-                </motion.div>
-              )}
-            </AnimatePresence>
+              <div className={"grid gap-6 sm:col-span-3 sm:grid-cols-2"}>
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
 
-            <div className={"sm:col-span-6"}>
-              <Editor
-                value={watch("body")}
-                mode={watch("style")}
-                onChange={(value, type) => {
-                  setValue("body", value);
-                  setValue("style", type);
-                }}
-                modeSwitcher
-              />
+                    if (watch("recipients").length > 0) {
+                      return setValue("recipients", []);
+                    }
+
+                    setValue(
+                      "recipients",
+                      contacts.filter((c) => c.subscribed).map((c) => c.id),
+                    );
+                  }}
+                  className={
+                    "mt-6 flex items-center justify-center gap-x-1 rounded border border-neutral-300 bg-white px-8 py-1 text-center text-sm font-medium text-neutral-800 transition ease-in-out hover:bg-neutral-100"
+                  }
+                >
+                  {watch("recipients").length === 0 ? <Users2 size={18} /> : <XIcon size={18} />}
+                  {watch("recipients").length === 0 ? "All contacts" : "Clear selection"}
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setSelector(!advancedSelector);
+                  }}
+                  className={
+                    "mt-6 flex items-center justify-center gap-x-1 rounded border border-neutral-300 bg-white px-8 py-1 text-center text-sm font-medium text-neutral-800 transition ease-in-out hover:bg-neutral-100"
+                  }
+                >
+                  {advancedSelector ? <XIcon size={18} /> : <Search size={18} />}
+                  {advancedSelector ? "Close" : "Advanced selector"}
+                </button>
+              </div>
+
               <AnimatePresence>
-                {errors.body?.message && (
-                  <motion.p initial={{ height: 0 }} animate={{ height: "auto" }} exit={{ height: 0 }} className="mt-1 text-xs text-red-500">
-                    {errors.body.message}
-                  </motion.p>
+                {advancedSelector && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className={"relative z-20 grid gap-6 rounded border border-neutral-300 px-6 py-6 sm:col-span-6 sm:grid-cols-4"}
+                  >
+                    <div className={"sm:col-span-2"}>
+                      <label htmlFor={"event"} className="block text-sm font-medium text-neutral-700">
+                        Has triggers for events
+                      </label>
+                      <MultiselectDropdown
+                        onChange={(e) =>
+                          setQuery(
+                            e.length > 0
+                              ? { ...query, events: e }
+                              : {
+                                  ...query,
+                                  events: undefined,
+                                  last: undefined,
+                                },
+                          )
+                        }
+                        values={[
+                          ...events
+                            .filter((e) => !query.notevents?.includes(e.id))
+                            .sort((a, b) => {
+                              if (!a.template && !a.campaign) {
+                                return -1;
+                              }
+                              if (!b.template && !b.campaign) {
+                                return 1;
+                              }
+
+                              if (a.name.includes("delivered") && !b.name.includes("delivered")) {
+                                return -1;
+                              }
+
+                              return 0;
+                            })
+                            .map((e) => {
+                              return {
+                                name: e.name,
+                                value: e.id,
+                                tag: (e.template ?? e.campaign) ? (e.name.includes("opened") ? "On Open" : "On Delivery") : undefined,
+                              };
+                            }),
+                        ]}
+                        selectedValues={query.events ?? []}
+                      />
+                    </div>
+
+                    <div className={"sm:col-span-2"}>
+                      {query.events && query.events.length > 0 && (
+                        <>
+                          <label htmlFor={"event"} className="block text-sm font-medium text-neutral-700">
+                            Has triggered {query.events.length} selected events
+                          </label>
+                          <Dropdown
+                            onChange={(e) =>
+                              setQuery({
+                                ...query,
+                                last: (e as "" | "day" | "week" | "month") === "" ? undefined : (e as "day" | "week" | "month"),
+                              })
+                            }
+                            values={[
+                              { name: "Anytime", value: "" },
+                              { name: "In the last day", value: "day" },
+                              { name: "In the last week", value: "week" },
+                              { name: "In the last month", value: "month" },
+                            ]}
+                            selectedValue={query.last ?? ""}
+                          />
+                        </>
+                      )}
+                    </div>
+
+                    <div className={"sm:col-span-2"}>
+                      <label htmlFor={"event"} className="block text-sm font-medium text-neutral-700">
+                        No triggers for events
+                      </label>
+                      <MultiselectDropdown
+                        onChange={(e) => {
+                          setQuery(
+                            e.length > 0
+                              ? { ...query, notevents: e }
+                              : {
+                                  ...query,
+                                  notevents: undefined,
+                                  notlast: undefined,
+                                },
+                          );
+                        }}
+                        values={[
+                          ...events
+                            .filter((e) => !query.events?.includes(e.id))
+                            .sort((a, b) => {
+                              if (!a.template && !a.campaign) {
+                                return -1;
+                              }
+                              if (!b.template && !b.campaign) {
+                                return 1;
+                              }
+
+                              if (a.name.includes("delivered") && !b.name.includes("delivered")) {
+                                return -1;
+                              }
+
+                              return 0;
+                            })
+                            .map((e) => {
+                              return {
+                                name: e.name,
+                                value: e.id,
+                                tag: (e.template ?? e.campaign) ? (e.name.includes("opened") ? "On Open" : "On Delivery") : undefined,
+                              };
+                            }),
+                        ]}
+                        selectedValues={query.notevents ?? []}
+                      />
+                    </div>
+
+                    <div className={"sm:col-span-2"}>
+                      {query.notevents && query.notevents.length > 0 && (
+                        <>
+                          <label htmlFor={"event"} className="block text-sm font-medium text-neutral-700">
+                            Not triggered {query.notevents.length} selected events
+                          </label>
+                          <Dropdown
+                            onChange={(e) =>
+                              setQuery({
+                                ...query,
+                                notlast: (e as "" | "day" | "week" | "month") === "" ? undefined : (e as "day" | "week" | "month"),
+                              })
+                            }
+                            values={[
+                              { name: "Anytime", value: "" },
+                              { name: "In the last day", value: "day" },
+                              { name: "In the last week", value: "week" },
+                              { name: "In the last month", value: "month" },
+                            ]}
+                            selectedValue={query.notlast ?? ""}
+                          />
+                        </>
+                      )}
+                    </div>
+
+                    <MetadataFilterEditor onChange={(filter) => setQuery({ ...query, metadataFilter: filter })} contacts={contacts} />
+
+                    <div className={"sm:col-span-4"}>
+                      <motion.button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setValue(
+                            "recipients",
+                            filteredContacts.map((c) => c.id),
+                          );
+                        }}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.9 }}
+                        className={"ml-auto flex items-center justify-center gap-x-0.5 rounded bg-neutral-800 px-8 py-2 text-center text-sm font-medium text-white"}
+                      >
+                        <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
+                          <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 5.75V18.25" />
+                          <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M18.25 12L5.75 12" />
+                        </svg>
+                        Select {filteredContacts.length} contacts
+                      </motion.button>
+                    </div>
+                  </motion.div>
                 )}
               </AnimatePresence>
+            </>
+          ) : (
+            <div className={"flex items-center gap-6 rounded border border-neutral-300 px-8 py-3 sm:col-span-6"}>
+              <Ring size={20} />
+              <div>
+                <h1 className={"text-lg font-semibold text-neutral-800"}>Hang on!</h1>
+                <p className={"text-sm text-neutral-600"}>We're still loading your contacts. This might take up to a minute. You can already start writing your campaign in the editor below.</p>
+              </div>
             </div>
+          )}
 
-            <div className={"ml-auto mt-6 flex justify-end gap-3 sm:col-span-6"}>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.9 }}
-                onClick={(e) => {
-                  e.preventDefault();
-                  return router.push("/campaigns");
-                }}
-                className={
-                  "flex w-fit justify-center rounded border border-neutral-300 bg-white px-6 py-2 text-base font-medium text-neutral-800 focus:outline-none focus:ring-2 focus:ring-neutral-800 focus:ring-offset-2 sm:mt-0 sm:w-auto sm:text-sm"
-                }
-              >
-                Cancel
-              </motion.button>
+          <AnimatePresence>
+            {watch("recipients").length >= 10 && (
+              <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className={"relative z-10 sm:col-span-6"}>
+                <Alert type={"info"} title={"Automatic batching"}>
+                  Your campaign will be sent out in batches of 80 recipients each. It will be delivered to all contacts {dayjs().to(dayjs().add(Math.ceil(watch("recipients").length / 80), "minutes"))}
+                </Alert>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.9 }}
-                className={"flex items-center gap-x-0.5 rounded bg-neutral-800 px-8 py-2 text-center text-sm font-medium text-white"}
-              >
-                <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
-                  <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 5.75V18.25" />
-                  <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M18.25 12L5.75 12" />
-                </svg>
-                Create
-              </motion.button>
-            </div>
-          </form>
-        </Card>
-      </Dashboard>
-    </>
+          <div className={"sm:col-span-6"}>
+            <Editor
+              value={watch("body")}
+              mode={watch("style") ?? "SIMPLE"}
+              onChange={(value, type) => {
+                setValue("body", value);
+                setValue("style", type);
+              }}
+              modeSwitcher
+            />
+            <AnimatePresence>
+              {errors.body?.message && (
+                <motion.p initial={{ height: 0 }} animate={{ height: "auto" }} exit={{ height: 0 }} className="mt-1 text-xs text-red-500">
+                  {errors.body.message}
+                </motion.p>
+              )}
+            </AnimatePresence>
+          </div>
+
+          <div className={"ml-auto mt-6 flex justify-end gap-3 sm:col-span-6"}>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.9 }}
+              onClick={(e) => {
+                e.preventDefault();
+                return router.push("/campaigns");
+              }}
+              className={
+                "flex w-fit justify-center rounded border border-neutral-300 bg-white px-6 py-2 text-base font-medium text-neutral-800 focus:outline-none focus:ring-2 focus:ring-neutral-800 focus:ring-offset-2 sm:mt-0 sm:w-auto sm:text-sm"
+              }
+            >
+              Cancel
+            </motion.button>
+
+            <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.9 }} className={"flex items-center gap-x-0.5 rounded bg-neutral-800 px-8 py-2 text-center text-sm font-medium text-white"}>
+              <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 5.75V18.25" />
+                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M18.25 12L5.75 12" />
+              </svg>
+              Create
+            </motion.button>
+          </div>
+        </form>
+      </Card>
+    </Dashboard>
   );
 }
