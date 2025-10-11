@@ -1,10 +1,12 @@
 name: Build
 
 on:
-  pull_request:
+  push:
+    branches:
+      - main
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Check out the repo
@@ -26,3 +28,5 @@ jobs:
 
       - name: Run linting
         run: npm run lint
+
+      # TODO: Deploy to AWS
