@@ -5,6 +5,7 @@ on:
     branches:
       - main
 
+permissions: write-all
 jobs:
   validate:
     runs-on: ubuntu-latest
