@@ -1,5 +1,10 @@
 import { z } from "@hono/zod-openapi";
-import { authConfig, rootLogger, UserPersistence } from "@sendra/lib";
+import {
+  authConfig,
+  MembershipPersistence,
+  rootLogger,
+  UserPersistence,
+} from "@sendra/lib";
 import { type User, UserSchemas } from "@sendra/shared";
 import type { Context, HonoRequest } from "hono";
 import { type JwtPayload, sign, verify } from "jsonwebtoken";
@@ -51,6 +56,15 @@ const authSchema = z.union([
 ]);
 
 export class AuthService {
+  private static async checkForMemberships(email: string) {
+    const membershipPersistence = new MembershipPersistence();
+    const memberships = await membershipPersistence.findAllBy({
+      key: "email",
+      value: email,
+    });
+    return memberships;
+  }
+
   public static async login(c: Context): Promise<{
     email: string;
     id: string;
@@ -68,6 +82,7 @@ export class AuthService {
     }
 
     if (!user.password) {
+      logger.info({ email }, "User has no password");
       throw new HttpException(302, "Please reset your password", {
         Location: `/auth/reset?id=${user.id}`,
       });
@@ -85,17 +100,21 @@ export class AuthService {
   }
 
   public static async signup(c: Context): Promise<User> {
-    if (authConfig.disableSignups) {
-      throw new HttpException(400, "Signups are currently disabled");
-    }
-
     const body = await c.req.json();
     const { email, password } = UserSchemas.credentials.parse(body);
+    logger.info({ email }, "Signing up user");
+
+    const memberships = await AuthService.checkForMemberships(email);
+    if (authConfig.disableSignups && memberships.length === 0) {
+      logger.info({ email }, "Signups are currently disabled");
+      throw new HttpException(400, "Signups are currently disabled");
+    }
 
     const userPersistence = new UserPersistence();
     const user = await userPersistence.getByEmail(email);
 
     if (user) {
+      logger.info({ email }, "User already exists");
       throw new Conflict("That email is already associated with another user");
     }
 
@@ -103,6 +122,21 @@ export class AuthService {
       email,
       password: await createHash(password),
     });
+
+    if (memberships.length > 0) {
+      logger.info({ email, memberships }, "Assigning memberships to user");
+      const membershipPersistence = new MembershipPersistence();
+      await Promise.all(
+        memberships.map((membership) =>
+          membershipPersistence.put({
+            ...membership,
+            user: created_user.id,
+          })
+        )
+      );
+    }
+
+    logger.info({ email, created_user }, "Created user");
 
     AuthService.createUserToken(created_user.id, email);
 
@@ -120,11 +154,15 @@ export class AuthService {
         expiresIn: authConfig.ttl.user as number | StringValue,
         issuer: authConfig.issuer,
         subject: userId,
-      },
+      }
     );
   }
 
-  public static createProjectToken(key: string, type: "secret" | "public", projectId: string) {
+  public static createProjectToken(
+    key: string,
+    type: "secret" | "public",
+    projectId: string
+  ) {
     return sign(
       {
         type,
@@ -135,7 +173,7 @@ export class AuthService {
         issuer: authConfig.issuer,
         subject: projectId,
         keyid: key,
-      },
+      }
     );
   }
 
@@ -149,6 +187,7 @@ export class AuthService {
       const verified = verify(token, JWT_SECRET);
       const auth = authSchema.parse(verified);
       if (type && auth.type !== type) {
+        logger.warn({ auth, type }, "Invalid authorization token for request");
         throw new HttpException(400, "Invalid authorization token for request");
       }
       return auth;
@@ -167,11 +206,13 @@ export class AuthService {
     const bearer: string | undefined = request.header("Authorization");
 
     if (!bearer || !bearer.includes("Bearer")) {
+      logger.warn({ bearer }, "Invalid authorization token");
       return undefined;
     }
 
     const split = bearer.split(" ");
     if (!(split[0] === "Bearer") || split.length > 2 || !split[1]) {
+      logger.warn({ bearer }, "Invalid authorization token");
       return undefined;
     }
 

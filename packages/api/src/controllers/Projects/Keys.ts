@@ -4,7 +4,7 @@ import { ProjectPersistence } from "@sendra/lib";
 import type { AppType } from "../../app";
 import { NotFound } from "../../exceptions";
 import { getProblemResponseSchema } from "../../exceptions/responses";
-import { isAuthenticatedProjectAdmin } from "../../middleware/auth";
+import { BearerAuth, isAuthenticatedProjectAdmin } from "../../middleware/auth";
 import { AuthService } from "../../services/AuthService";
 
 const keysResponse = z.object({
@@ -36,7 +36,9 @@ export const registerProjectKeysRoutes = (app: AppType) => {
         404: getProblemResponseSchema(404),
         403: getProblemResponseSchema(403),
       },
+      ...BearerAuth,
       middleware: [isAuthenticatedProjectAdmin],
+      hide: true,
     }),
     async (c) => {
       const projectId = c.req.param("projectId");
@@ -88,7 +90,9 @@ export const registerProjectKeysRoutes = (app: AppType) => {
         404: getProblemResponseSchema(404),
         403: getProblemResponseSchema(403),
       },
+      ...BearerAuth,
       middleware: [isAuthenticatedProjectAdmin],
+      hide: true,
     }),
     async (c) => {
       const projectId = c.req.param("projectId");

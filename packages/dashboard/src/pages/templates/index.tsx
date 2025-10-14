@@ -31,10 +31,10 @@ export default function Index() {
             <div className={"grid grid-cols-1 gap-6 lg:grid-cols-3"}>
               {templates
                 .sort((a, b) => {
-                  if (a.actions.length > 0 && b.actions.length === 0) {
+                  if (a._embed.actions.length > 0 && b._embed.actions.length === 0) {
                     return -1;
                   }
-                  if (a.actions.length === 0 && b.actions.length > 0) {
+                  if (a._embed.actions.length === 0 && b._embed.actions.length > 0) {
                     return 1;
                   }
                   if (a.subject < b.subject) {
@@ -55,7 +55,7 @@ export default function Index() {
                         <div className="flex-1 truncate">
                           <div className="flex items-center space-x-3">
                             <h3 className="truncate text-sm font-medium text-neutral-800">{t.subject}</h3>
-                            {t.actions.length > 0 && <Badge type={"success"}>Active</Badge>}
+                            {t._embed.actions.length > 0 && <Badge type={"success"}>Active</Badge>}
                           </div>
                           <p className="mt-1 truncate text-sm text-neutral-500">Last edited {dayjs().to(t.updatedAt)}</p>
                         </div>

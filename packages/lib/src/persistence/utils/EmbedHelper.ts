@@ -1,21 +1,29 @@
-import type { Action, BaseType, Email, Template, Trigger } from "@sendra/shared";
+import type { Action, BaseType, Email, Event, Template } from "@sendra/shared";
 import { ActionPersistence } from "../ActionPersistence";
 import type { Embeddable, EmbeddedObject } from "../BasePersistence";
 import { EmailPersistence } from "../EmailPersistence";
+import { EventPersistence } from "../EventPersistence";
 import { TemplatePersistence } from "../TemplatePersistence";
-import { TriggerPersistence } from "../TriggerPersistence";
 import { HttpException } from "./HttpException";
 
 export type ProjectEntity = BaseType & {
   project: string;
 };
 
-export const embedHelper = async <T extends ProjectEntity>(items: T[], key: string, supportedEmbed: Embeddable[], embed?: Embeddable[]): Promise<EmbeddedObject<T>[]> => {
+export const embedHelper = async <T extends ProjectEntity>(
+  items: T[],
+  key: string,
+  supportedEmbed: Embeddable[],
+  embed?: Embeddable[]
+): Promise<EmbeddedObject<T>[]> => {
   if (!embed || embed.length === 0) {
     return items as EmbeddedObject<T>[];
   }
   if (embed.some((e) => !supportedEmbed.includes(e))) {
-    throw new HttpException(400, `Only ${supportedEmbed.join(", ")} are supported`);
+    throw new HttpException(
+      400,
+      `Only ${supportedEmbed.join(", ")} are supported`
+    );
   }
 
   return await Promise.all(
@@ -33,7 +41,7 @@ export const embedHelper = async <T extends ProjectEntity>(items: T[], key: stri
       if (embed.includes("emails")) {
         const emailPersistence = new EmailPersistence(item.project);
         emails = await emailPersistence.findAllBy({
-          key: ["campaign", "action"].includes(key) ? "source" : key,
+          key: ["action", "campaign"].includes(key) ? "source" : key,
           value: item.id,
         });
       }
@@ -47,22 +55,26 @@ export const embedHelper = async <T extends ProjectEntity>(items: T[], key: stri
         });
       }
 
-      let triggers: Trigger[] | undefined;
-      if (embed.includes("triggers")) {
-        const triggerPersistence = new TriggerPersistence(item.project);
-        triggers = await triggerPersistence.findAllBy({
-          key,
+      let events: Event[] | undefined;
+      if (embed.includes("events")) {
+        const eventPersistence = new EventPersistence(item.project);
+        events = await eventPersistence.findAllBy({
+          key: ["action", "campaign"].includes(key) ? "relation" : key,
           value: item.id,
         });
       }
-
-      return {
-        ...item,
-        actions,
-        emails,
-        templates,
-        triggers,
-      };
-    }),
+      if (events || emails || templates || actions) {
+        return {
+          ...item,
+          _embed: {
+            actions,
+            emails,
+            events,
+            templates,
+          },
+        };
+      }
+      return item;
+    })
   );
 };

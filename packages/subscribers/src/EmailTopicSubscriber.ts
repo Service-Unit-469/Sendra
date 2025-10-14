@@ -1,39 +1,158 @@
-import { ActionPersistence, ActionsService, CampaignPersistence, ContactPersistence, EmailPersistence, EventPersistence, ProjectPersistence, rootLogger, TriggerPersistence } from "@sendra/lib";
-import type { Contact, Email, Event, Project } from "@sendra/shared";
-import type { SESMessage, SNSEvent, SNSEventRecord } from "aws-lambda";
-
-type Message = SESMessage & { eventType: string; click: { link: string } };
+import {
+  ActionsService,
+  ContactPersistence,
+  EmailPersistence,
+  EventPersistence,
+  EventTypePersistence,
+  ProjectPersistence,
+  rootLogger,
+} from "@sendra/lib";
+import { DeliveryEvent, DeliveryEventSchema, type Email } from "@sendra/shared";
+import type { SNSEvent, SNSEventRecord } from "aws-lambda";
+import type { Logger } from "pino";
 
 const eventMap = {
   Bounce: "BOUNCED",
   Delivery: "DELIVERED",
   Open: "OPENED",
   Complaint: "COMPLAINT",
-  Click: "CLICKED",
-} as const;
+  Reject: "REJECTED",
+} as Record<DeliveryEvent["eventType"], Email["status"]>;
 
-async function handleClick(project: Project, contact: Contact, email: Email, body: Message, eventPersistence: EventPersistence, triggerPersistence: TriggerPersistence) {
-  rootLogger.info({ contact: contact.email, project: project.name }, "Click received");
+function serializeData(
+  deliveryEvent: DeliveryEvent
+): Record<string, string | number | boolean | string[] | null> {
+  switch (deliveryEvent.eventType) {
+    case "Bounce":
+      return {
+        ...deliveryEvent.bounce,
+        recipients: JSON.stringify(deliveryEvent.bounce.recipients),
+      };
+    case "Complaint":
+      return {
+        ...deliveryEvent.complaint,
+        complainedRecipients: JSON.stringify(
+          deliveryEvent.complaint.complainedRecipients
+        ),
+      };
+    case "Delivery":
+      return {
+        ...deliveryEvent.delivery,
+        recipients: JSON.stringify(deliveryEvent.delivery.recipients),
+      };
+    case "Open":
+      return {
+        ...deliveryEvent.open,
+      };
+    case "Reject":
+      return {
+        ...deliveryEvent.reject,
+      };
+    case "Click":
+      return {
+        ...deliveryEvent.click,
+        tags: JSON.stringify(deliveryEvent.click.tags),
+      };
+  }
+  return {};
+}
 
-  let event = await eventPersistence.getByName(`email_${body.eventType}`);
-  if (!event) {
-    event = await eventPersistence.create({
-      name: `email_${body.eventType}`,
-      project: project.id,
+async function handleEmailEvent(
+  deliveryEvent: DeliveryEvent,
+  email: Email,
+  logger: Logger
+) {
+  const project = await new ProjectPersistence().get(email.project);
+  if (!project) {
+    rootLogger.warn(
+      { messageId: deliveryEvent.mail.messageId },
+      "No project found"
+    );
+    return;
+  }
+
+  const contactPersistence = new ContactPersistence(email.project);
+
+  //  handle complaint and bounce
+  if (["Complaint", "Bounce"].includes(deliveryEvent.eventType)) {
+    logger.warn(
+      {
+        messageId: deliveryEvent.mail.messageId,
+        eventType: deliveryEvent.eventType,
+      },
+      `${deliveryEvent.eventType} received`
+    );
+
+    // unsubscribe contact if not transactional
+    if (email.sendType !== "TRANSACTIONAL") {
+      logger.info(
+        { contact: email.contact, project: email.project, email: email.id },
+        "Unsubscribing contact"
+      );
+      const contact = await contactPersistence.get(email.contact);
+      if (contact) {
+        await contactPersistence.put({
+          ...contact,
+          subscribed: false,
+        });
+      }
+    }
+  } else {
+    logger.info(
+      {
+        messageId: deliveryEvent.mail.messageId,
+        eventType: deliveryEvent.eventType,
+      },
+      `${deliveryEvent.eventType} received`
+    );
+  }
+
+  // update status
+  const newStatus = eventMap[deliveryEvent.eventType];
+  if (newStatus !== email.status && newStatus) {
+    await new EmailPersistence(project.id).put({
+      ...email,
+      status: newStatus,
     });
   }
 
-  await triggerPersistence.create({
-    contact: contact.id,
-    event: event.id,
-    action: email.source && email.sourceType === "ACTION" ? email.source : undefined,
-    email: email.id,
+  // add the event
+  const eventTypePersistence = new EventTypePersistence(project.id);
+  let eventType = await eventTypePersistence.getByName(deliveryEvent.eventType);
+  if (!eventType) {
+    logger.info(
+      { project: project.id, eventType: deliveryEvent.eventType },
+      "Creating event type"
+    );
+    eventType = await eventTypePersistence.create({
+      name: deliveryEvent.eventType,
+      project: project.id,
+    });
+  }
+  const eventPersistence = new EventPersistence(project.id);
+  await eventPersistence.create({
+    eventType: eventType.id,
+    contact: email.contact,
     project: project.id,
-    data: {
-      email: email.id,
-      link: body.click.link,
-    },
+    relationType: email.sourceType,
+    relation: email.source,
+    email: email.id,
+    data: serializeData(deliveryEvent),
   });
+
+  if (email.source && email.sourceType === "ACTION") {
+    const contact = await contactPersistence.get(email.contact);
+    if (!contact) {
+      logger.warn(
+        { contact: email.contact, project: project.id, email: email.id },
+        "No contact found"
+      );
+      return;
+    }
+    await ActionsService.trigger({ eventType, contact, project });
+  }
+
+  return;
 }
 
 const handleRecord = async (record: SNSEventRecord) => {
@@ -44,153 +163,24 @@ const handleRecord = async (record: SNSEventRecord) => {
   logger.info("Received SNS message");
 
   try {
-    const message = JSON.parse(record.Sns.Message) as Message;
+    const deliveryEvent = DeliveryEventSchema.parse(
+      JSON.parse(record.Sns.Message)
+    );
 
     // Find email by messageId in DynamoDB
-    const email = await EmailPersistence.getByMessageId(message.mail.messageId);
+    const email = await EmailPersistence.getByMessageId(
+      deliveryEvent.mail.messageId
+    );
 
     if (!email) {
-      logger.info({ messageId: message.mail.messageId }, "No email found");
-      return;
-    }
-    const emailPersistence = new EmailPersistence(email.project);
-
-    const projectId = email.project;
-    const actionPersistence = new ActionPersistence(projectId);
-    const contactPersistence = new ContactPersistence(projectId);
-    // Get related entities
-    const [contact, action, campaign, project] = await Promise.all([
-      contactPersistence.get(email.contact),
-      email.source && email.sourceType === "ACTION" ? actionPersistence.get(email.source) : null,
-      email.source && email.sourceType === "CAMPAIGN" ? new CampaignPersistence(projectId).get(email.source) : null,
-      email.project ? new ProjectPersistence().get(email.project) : null,
-    ]);
-
-    if (!contact) {
-      logger.warn({ messageId: message.mail.messageId }, "No contact found");
+      logger.info(
+        { messageId: deliveryEvent.mail.messageId },
+        "No email found"
+      );
       return;
     }
 
-    if (!project) {
-      logger.warn({ messageId: message.mail.messageId }, "No project found");
-      return;
-    }
-
-    const eventPersistence = new EventPersistence(projectId);
-    const triggerPersistence = new TriggerPersistence(projectId);
-
-    // The email was a transactional email
-    if (email.sendType === "TRANSACTIONAL") {
-      if (message.eventType === "Click") {
-        await handleClick(project, contact, email, message, eventPersistence, triggerPersistence);
-        return;
-      }
-
-      if (message.eventType === "Complaint") {
-        logger.warn({ contact: contact.email, project: project.name }, "Complaint received");
-      }
-
-      if (message.eventType === "Bounce") {
-        logger.warn({ contact: contact.email, project: project.name }, "Bounce received");
-      }
-
-      // Update email status in DynamoDB
-      const updatedEmail = {
-        ...email,
-        status: eventMap[message.eventType as "Bounce" | "Delivery" | "Open" | "Complaint"],
-      };
-      await emailPersistence.put(updatedEmail);
-
-      return;
-    }
-
-    if (message.eventType === "Complaint" || message.eventType === "Bounce") {
-      logger.warn({ contact: contact.email, project: project.name }, `${message.eventType} received`);
-
-      // Update email status in DynamoDB
-      const updatedEmail = {
-        ...email,
-        status: eventMap[message.eventType as "Bounce" | "Complaint"],
-      };
-      await emailPersistence.put(updatedEmail);
-
-      // Update contact subscription status in DynamoDB
-      const updatedContact = {
-        ...contact,
-        subscribed: false,
-      };
-      await contactPersistence.put(updatedContact);
-
-      return;
-    }
-
-    if (message.eventType === "Click") {
-      await handleClick(project, contact, email, message, eventPersistence, triggerPersistence);
-      return;
-    }
-
-    let event: Event | undefined;
-    if (action) {
-      // Get template events for action
-      const templateEvents = await eventPersistence.findAllBy({
-        key: "template",
-        value: action.template,
-      });
-      event = templateEvents.find((e) => e.name.includes((message.eventType as "Bounce" | "Delivery" | "Open" | "Complaint" | "Click") === "Delivery" ? "delivered" : "opened"));
-    }
-
-    if (campaign) {
-      // Get campaign events
-      const campaignEvents = await eventPersistence.findAllBy({
-        key: "campaign",
-        value: campaign.id,
-      });
-      event = campaignEvents.find((e: Event) => e.name.includes((message.eventType as "Bounce" | "Delivery" | "Open" | "Complaint" | "Click") === "Delivery" ? "delivered" : "opened"));
-    }
-
-    if (!event) {
-      logger.warn({ messageId: message.mail.messageId }, "No event found");
-      return;
-    }
-
-    switch (message.eventType as "Delivery" | "Open") {
-      case "Delivery": {
-        logger.info({ contact: contact.email, project: project.name }, "Delivery received");
-        // Update email status in DynamoDB
-        const deliveredEmail = {
-          ...email,
-          status: "DELIVERED",
-        } as const;
-        await emailPersistence.put(deliveredEmail);
-        await triggerPersistence.create({
-          contact: contact.id,
-          event: event.id,
-          project: project.id,
-        });
-
-        break;
-      }
-      case "Open":
-        logger.info({ contact: contact.email, project: project.name }, "Open received");
-        // Update email status
-        await emailPersistence.put({
-          ...email,
-          status: "OPENED",
-        } as const);
-
-        // Create trigger
-        await triggerPersistence.create({
-          contact: contact.id,
-          event: event.id,
-          project: project.id,
-        });
-
-        break;
-    }
-
-    if (email.source && email.sourceType === "ACTION") {
-      await ActionsService.trigger({ event, contact, project });
-    }
+    await handleEmailEvent(deliveryEvent, email, logger);
   } catch (e) {
     logger.error({ error: e, record }, "Failed to handle record");
   }

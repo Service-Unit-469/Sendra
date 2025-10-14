@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import { Card, Dropdown, FullscreenLoader, Input, MultiselectDropdown, Toggle } from "../../components";
 import { Dashboard } from "../../layouts";
 import { useActions } from "../../lib/hooks/actions";
-import { useEvents } from "../../lib/hooks/events";
+import { useEventTypes } from "../../lib/hooks/events";
 import { useActiveProject } from "../../lib/hooks/projects";
 import { useTemplates } from "../../lib/hooks/templates";
 import { network } from "../../lib/network";
@@ -20,7 +20,7 @@ export default function Index() {
   const project = useActiveProject();
   const { mutate } = useActions();
   const { data: templates } = useTemplates();
-  const { data: events } = useEvents();
+  const { data: eventTypes } = useEventTypes();
   const router = useRouter();
 
   const [delay, setDelay] = useState<{
@@ -61,7 +61,7 @@ export default function Index() {
     }
   }, [delay, setValue]);
 
-  if (!project || !templates || !events) {
+  if (!project || !templates || !eventTypes) {
     return <FullscreenLoader />;
   }
 
@@ -90,36 +90,13 @@ export default function Index() {
             </label>
             <MultiselectDropdown
               onChange={(e) => setValue("events", e)}
-              values={events
-                .filter((e) => !e.campaign && !watch("notevents")?.includes(e.id))
-                .sort((a, b) => {
-                  if (a.template && !b.template) {
-                    return 1;
-                  }
-
-                  if (!a.template && b.template) {
-                    return -1;
-                  }
-
-                  if (a.name === "unsubscribe" || a.name === "subscribe") {
-                    return 1;
-                  }
-
-                  if (b.name === "unsubscribe" || b.name === "subscribe") {
-                    return -1;
-                  }
-
-                  if (a.name.includes("delivered") && !b.name.includes("delivered")) {
-                    return -1;
-                  }
-
-                  return 0;
-                })
+              values={eventTypes
+                .filter((e) => !watch("notevents")?.includes(e.id))
+                .sort((a, b) => a.name.localeCompare(b.name))
                 .map((e) => {
                   return {
                     name: e.name,
                     value: e.id,
-                    tag: e.template ? (e.name.includes("opened") ? "On Open" : "On Delivery") : e.name === "unsubscribe" || e.name === "subscribe" ? "Automated" : undefined,
                   };
                 })}
               selectedValues={watch("events")}
@@ -139,36 +116,13 @@ export default function Index() {
             </label>
             <MultiselectDropdown
               onChange={(e) => setValue("notevents", e)}
-              values={events
-                .filter((e) => !e.campaign && !watch("events").includes(e.id))
-                .sort((a, b) => {
-                  if (a.template && !b.template) {
-                    return 1;
-                  }
-
-                  if (!a.template && b.template) {
-                    return -1;
-                  }
-
-                  if (a.name === "unsubscribe" || a.name === "subscribe") {
-                    return 1;
-                  }
-
-                  if (b.name === "unsubscribe" || b.name === "subscribe") {
-                    return -1;
-                  }
-
-                  if (a.name.includes("delivered") && !b.name.includes("delivered")) {
-                    return -1;
-                  }
-
-                  return 0;
-                })
+              values={eventTypes
+                .filter((e) => !watch("events").includes(e.id))
+                .sort((a, b) => a.name.localeCompare(b.name))
                 .map((e) => {
                   return {
                     name: e.name,
                     value: e.id,
-                    tag: e.template ? (e.name.includes("opened") ? "On Open" : "On Delivery") : e.name === "unsubscribe" || e.name === "subscribe" ? "Automated" : undefined,
                   };
                 })}
               selectedValues={watch("notevents")}

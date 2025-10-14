@@ -6,7 +6,7 @@ export const CampaignSchema = ProjectEntitySchema.extend({
   body: z.string().min(1, "Body needs to be at least 1 character long"),
   email: email.optional().or(z.literal("")),
   from: z.string().optional(),
-  recipients: z.array(z.string()),
+  recipients: z.array(id),
   status: z.enum(["DRAFT", "DELIVERED"]).default("DRAFT"),
 });
 

@@ -1,18 +1,24 @@
-import type { Event, Trigger } from "@sendra/shared";
+import type { Event, EventType } from "@sendra/shared";
 import useSWR from "swr";
 import { useActiveProject } from "./projects";
 
 /**
  *
  */
-export function useEvents() {
+export function useEventTypes() {
   const activeProject = useActiveProject();
 
-  return useSWR<Event[]>(activeProject ? `/projects/${activeProject.id}/events/all` : null);
+  return useSWR<EventType[]>(
+    activeProject ? `/projects/${activeProject.id}/event-types/all` : null
+  );
 }
 
-export function useEventsWithTriggers() {
+export function useEventTypesWithEvents() {
   const activeProject = useActiveProject();
 
-  return useSWR<(Event & { triggers: Trigger[] })[]>(activeProject ? `/projects/${activeProject.id}/events/all?embed=triggers` : null);
+  return useSWR<(EventType & { _embed: { events: Event[] } })[]>(
+    activeProject
+      ? `/projects/${activeProject.id}/event-types/all?embed=events`
+      : null
+  );
 }

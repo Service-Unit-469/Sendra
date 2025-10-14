@@ -1,4 +1,4 @@
-import type { Contact, Trigger } from "@sendra/shared";
+import type { Contact, Event } from "@sendra/shared";
 import dayjs from "dayjs";
 import { motion } from "framer-motion";
 import { Edit2, Plus } from "lucide-react";
@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { Card, ContactForm, Dropdown, Empty, FullscreenLoader, Modal, Skeleton, Table } from "../../components";
 import { Dashboard } from "../../layouts";
-import { searchContacts, useContactsWithTriggers } from "../../lib/hooks/contacts";
+import { searchContacts, useContactsWithEvents } from "../../lib/hooks/contacts";
 import { useActiveProject } from "../../lib/hooks/projects";
 import { useUser } from "../../lib/hooks/users";
 
@@ -17,10 +17,10 @@ export default function Index() {
 
   const project = useActiveProject();
   const { data: user } = useUser();
-  const { data: contacts, mutate: mutateContacts } = useContactsWithTriggers(cursor);
+  const { data: contacts, mutate: mutateContacts } = useContactsWithEvents(cursor);
   const { data: search } = searchContacts(query);
 
-  const [allContacts, setAllContacts] = useState<(Contact & { triggers: Trigger[] })[]>([]);
+  const [allContacts, setAllContacts] = useState<(Contact & { _embed: { events: Event[] } })[]>([]);
 
   useEffect(() => {
     if (contacts) {
@@ -62,9 +62,9 @@ export default function Index() {
           <Table
             values={filtered
               .sort((a, b) => {
-                const aTrigger = a.triggers.length > 0 ? a.triggers.sort()[0].createdAt : a.createdAt;
+                const aTrigger = a._embed.events.length > 0 ? a._embed.events.sort()[0].createdAt : a.createdAt;
 
-                const bTrigger = b.triggers.length > 0 ? b.triggers.sort()[0].createdAt : b.createdAt;
+                const bTrigger = b._embed.events.length > 0 ? b._embed.events.sort()[0].createdAt : b.createdAt;
 
                 return bTrigger > aTrigger ? 1 : -1;
               })
@@ -73,8 +73,8 @@ export default function Index() {
                   Email: u.email,
                   "Last Activity": dayjs()
                     .to(
-                      [...u.triggers, ...u.emails].length > 0
-                        ? [...u.triggers, ...u.emails].sort((a, b) => {
+                      [...u._embed.events, ...u._embed.emails].length > 0
+                        ? [...u._embed.events, ...u._embed.emails].sort((a, b) => {
                             return a.createdAt > b.createdAt ? -1 : 1;
                           })[0].createdAt
                         : u.createdAt,
@@ -119,9 +119,9 @@ export default function Index() {
             <Table
               values={filtered
                 .sort((a, b) => {
-                  const aTrigger = a.triggers.length > 0 ? a.triggers.sort()[0].createdAt : a.createdAt;
+                  const aTrigger = a._embed.events.length > 0 ? a._embed.events.sort()[0].createdAt : a.createdAt;
 
-                  const bTrigger = b.triggers.length > 0 ? b.triggers.sort()[0].createdAt : b.createdAt;
+                  const bTrigger = b._embed.events.length > 0 ? b._embed.events.sort()[0].createdAt : b.createdAt;
 
                   return bTrigger > aTrigger ? 1 : -1;
                 })
@@ -130,8 +130,8 @@ export default function Index() {
                     Email: u.email,
                     "Last Activity": dayjs()
                       .to(
-                        u.triggers.length > 0
-                          ? u.triggers.sort((a, b) => {
+                        u._embed.events.length > 0
+                          ? u._embed.events.sort((a, b) => {
                               return a.createdAt > b.createdAt ? -1 : 1;
                             })[0].createdAt
                           : u.createdAt,

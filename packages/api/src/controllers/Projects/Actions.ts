@@ -1,6 +1,11 @@
 import { createRoute, z } from "@hono/zod-openapi";
 import { ActionPersistence, TemplatePersistence } from "@sendra/lib";
-import { ActionSchema, ActionSchemas, EmailSchema, TriggerSchema } from "@sendra/shared";
+import {
+  ActionSchema,
+  ActionSchemas,
+  EmailSchema,
+  EventSchema,
+} from "@sendra/shared";
 import type { AppType } from "../../app";
 import { NotFound } from "../../exceptions";
 import { getProblemResponseSchema } from "../../exceptions/responses";
@@ -12,13 +17,17 @@ export const registerActionsRoutes = (app: AppType) => {
     entityPath: "actions",
     entityName: "Action",
     getSchema: ActionSchema.extend({
-      emails: EmailSchema.optional(),
-      triggers: TriggerSchema.optional(),
+      _embed: z
+        .object({
+          emails: EmailSchema.optional(),
+          events: EventSchema.optional(),
+        })
+        .optional(),
     }),
     createSchema: ActionSchemas.create,
     updateSchema: ActionSchemas.update,
     listQuerySchema: z.enum(["event", "template"]),
-    embeddable: ["emails", "triggers"],
+    embeddable: ["emails", "events"],
     getPersistence: (projectId: string) => new ActionPersistence(projectId),
     preCreateEntity: async (projectId, action) => {
       if (!action.template) {
@@ -80,6 +89,6 @@ export const registerActionsRoutes = (app: AppType) => {
       const actionPersistence = new ActionPersistence(projectId);
       const related = await actionPersistence.getRelated(actionId);
       return c.json(related, 200);
-    },
+    }
   );
 };

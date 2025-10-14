@@ -39,6 +39,7 @@ export const registerAuthRoutes = (app: AppType) => {
         401: getProblemResponseSchema(401),
       },
       middleware: [],
+      hide: true,
     }),
     async (c) => {
       const { email, id, token } = await AuthService.login(c);
@@ -77,6 +78,7 @@ export const registerAuthRoutes = (app: AppType) => {
         },
         400: getProblemResponseSchema(400),
       },
+      hide: true,
     }),
     async (c) => {
       const user = await AuthService.signup(c);
@@ -111,6 +113,7 @@ export const registerAuthRoutes = (app: AppType) => {
         403: getProblemResponseSchema(403),
         404: getProblemResponseSchema(404),
       },
+      hide: true,
     }),
     async (c) => {
       const body = await c.req.json();

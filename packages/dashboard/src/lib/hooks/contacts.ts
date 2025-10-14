@@ -1,8 +1,8 @@
-import type { Contact, Email, Trigger } from "@sendra/shared";
+import type { Contact, Email, Event } from "@sendra/shared";
 import useSWR from "swr";
 import { useActiveProject } from "./projects";
 
-type ContactWithTrigger = Contact & { triggers: Trigger[] };
+type ContactWithEvents = Contact & { _embed: { events: Event[] } };
 
 /**
  *
@@ -12,26 +12,42 @@ type ContactWithTrigger = Contact & { triggers: Trigger[] };
  */
 export function useContact(id: string) {
   const activeProject = useActiveProject();
-  return useSWR<Contact & { triggers: Trigger[]; emails: Email[] }>(id && activeProject?.id ? `/projects/${activeProject.id}/contacts/${id}?embed=triggers&embed=emails` : null);
+  return useSWR<Contact & { _embed: { events: Event[]; emails: Email[] } }>(
+    id && activeProject?.id
+      ? `/projects/${activeProject.id}/contacts/${id}?embed=events&embed=emails`
+      : null
+  );
 }
 
 export function useAllContacts() {
   const activeProject = useActiveProject();
-  return useSWR<Contact[]>(activeProject?.id ? `/projects/${activeProject.id}/contacts/all` : null);
+  return useSWR<Contact[]>(
+    activeProject?.id ? `/projects/${activeProject.id}/contacts/all` : null
+  );
 }
 
-export function useAllContactsWithTriggers() {
+export function useAllContactsWithEvents() {
   const activeProject = useActiveProject();
-  return useSWR<(Contact & { triggers: Trigger[] })[]>(activeProject?.id ? `/projects/${activeProject.id}/contacts/all?embed=triggers` : null);
+  return useSWR<ContactWithEvents[]>(
+    activeProject?.id
+      ? `/projects/${activeProject.id}/contacts/all?embed=events`
+      : null
+  );
 }
 
-export function useContactsWithTriggers(cursor?: string) {
+export function useContactsWithEvents(cursor?: string) {
   const activeProject = useActiveProject();
   return useSWR<{
-    items: ContactWithTrigger[];
+    items: ContactWithEvents[];
     cursor?: string;
     count: number;
-  }>(activeProject ? `/projects/${activeProject?.id}/contacts?embed=triggers${cursor ? `&cursor=${cursor}` : ""}` : null);
+  }>(
+    activeProject
+      ? `/projects/${activeProject?.id}/contacts?embed=events${
+          cursor ? `&cursor=${cursor}` : ""
+        }`
+      : null
+  );
 }
 
 /**
@@ -45,7 +61,11 @@ export function useContacts(cursor?: string) {
     contacts: Contact[];
     cursor: string;
     count: number;
-  }>(activeProject ? `/projects/${activeProject.id}/contacts?cursor=${cursor}` : null);
+  }>(
+    activeProject
+      ? `/projects/${activeProject.id}/contacts?cursor=${cursor}`
+      : null
+  );
 }
 
 /**
@@ -60,14 +80,11 @@ export function searchContacts(query: string | undefined) {
     if (query) {
       url = `/projects/${activeProject.id}/contacts/search?query=${query}`;
     } else {
-      url = `/projects/${activeProject.id}/contacts?embed=triggers`;
+      url = `/projects/${activeProject.id}/contacts?embed=events`;
     }
   }
   return useSWR<{
-    contacts: (Contact & {
-      triggers: Trigger[];
-      emails: Email[];
-    })[];
+    contacts: (Contact & { _embed: { events: Event[]; emails: Email[] } })[];
     count: number;
   }>(url, {
     revalidateOnFocus: false,

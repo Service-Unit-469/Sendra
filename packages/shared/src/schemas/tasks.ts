@@ -14,7 +14,7 @@ export const BatchDeleteRelatedPayloadSchema = z.union([
   }),
   z.object({
     project: id,
-    type: z.enum(["EVENT"]),
+    type: z.enum(["EVENT_TYPE"]),
     id,
   }),
 ]);

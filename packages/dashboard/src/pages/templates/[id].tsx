@@ -117,7 +117,7 @@ export default function Index() {
   const remove = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
 
-    if (template.actions.length > 0) {
+    if (template._embed.actions.length > 0) {
       return toast.error("You cannot delete a template that is linked to an action!");
     }
 

@@ -11,7 +11,7 @@ import { toast } from "sonner";
 import { Badge, Card, Dropdown, Empty, FullscreenLoader, Input, MultiselectDropdown, Toggle } from "../../components";
 import { Dashboard } from "../../layouts";
 import { useAction, useActions, useRelatedActions } from "../../lib/hooks/actions";
-import { useEvents } from "../../lib/hooks/events";
+import { useEventTypes } from "../../lib/hooks/events";
 import { useActiveProject } from "../../lib/hooks/projects";
 import { useTemplates } from "../../lib/hooks/templates";
 import { network } from "../../lib/network";
@@ -24,7 +24,7 @@ export default function Index() {
   const project = useActiveProject();
   const { mutate } = useActions();
   const { data: templates } = useTemplates();
-  const { data: events } = useEvents();
+  const { data: eventTypes } = useEventTypes();
   const { data: action } = useAction(router.query.id as string);
   const { data: related } = useRelatedActions(router.query.id as string);
 
@@ -90,7 +90,7 @@ export default function Index() {
     return <FullscreenLoader />;
   }
 
-  if (!project || !action || !templates || !events || !related) {
+  if (!project || !action || !templates || !eventTypes || !related) {
     return <FullscreenLoader />;
   }
 
@@ -148,36 +148,14 @@ export default function Index() {
             </label>
             <MultiselectDropdown
               onChange={(e) => setValue("events", e)}
-              values={events
-                .filter((e) => !e.campaign && !watch("notevents")?.includes(e.id))
-                .sort((a, b) => {
-                  if (a.template && !b.template) {
-                    return 1;
-                  }
-
-                  if (!a.template && b.template) {
-                    return -1;
-                  }
-
-                  if (a.name === "unsubscribe" || a.name === "subscribe") {
-                    return 1;
-                  }
-
-                  if (b.name === "unsubscribe" || b.name === "subscribe") {
-                    return -1;
-                  }
-
-                  if (a.name.includes("delivered") && !b.name.includes("delivered")) {
-                    return -1;
-                  }
-
-                  return 0;
-                })
+              values={eventTypes
+                .filter((e) => !watch("notevents")?.includes(e.id))
+                .sort((a, b) => a.name.localeCompare(b.name))
                 .map((e) => {
                   return {
                     name: e.name,
                     value: e.id,
-                    tag: e.template ? (e.name.includes("opened") ? "On Open" : "On Delivery") : e.name === "unsubscribe" || e.name === "subscribe" ? "Automated" : undefined,
+                    
                   };
                 })}
               selectedValues={watch("events")}
@@ -193,40 +171,17 @@ export default function Index() {
 
           <div>
             <label htmlFor={"events"} className="block text-sm font-medium text-neutral-800">
-              Exclude contacts with triggers
+              Exclude contacts with events
             </label>
             <MultiselectDropdown
               onChange={(e) => setValue("notevents", e)}
-              values={events
-                .filter((e) => !e.campaign && !watch("events").includes(e.id))
-                .sort((a, b) => {
-                  if (a.template && !b.template) {
-                    return 1;
-                  }
-
-                  if (!a.template && b.template) {
-                    return -1;
-                  }
-
-                  if (a.name === "unsubscribe" || a.name === "subscribe") {
-                    return 1;
-                  }
-
-                  if (b.name === "unsubscribe" || b.name === "subscribe") {
-                    return -1;
-                  }
-
-                  if (a.name.includes("delivered") && !b.name.includes("delivered")) {
-                    return -1;
-                  }
-
-                  return 0;
-                })
+              values={eventTypes
+                .filter((e) => !watch("events").includes(e.id))
+                .sort((a, b) => a.name.localeCompare(b.name))
                 .map((e) => {
                   return {
                     name: e.name,
                     value: e.id,
-                    tag: e.template ? (e.name.includes("opened") ? "On Open" : "On Delivery") : e.name === "unsubscribe" || e.name === "subscribe" ? "Automated" : undefined,
                   };
                 })}
               selectedValues={watch("notevents")}
@@ -385,7 +340,7 @@ export default function Index() {
                       <div className={"text-sm"}>
                         <p className={"text-base font-semibold leading-tight text-neutral-800"}>{r.name}</p>
                         <p className={"text-neutral-500"}>
-                          Runs after {r.events.filter((e) => action.events.filter((a) => a === e).length > 0).map((e) => events.find((event) => event.id === e)?.name)} and{" "}
+                          Runs after {r.events.filter((e) => action.events.filter((a) => a === e).length > 0).map((e) => eventTypes.find((event) => event.id === e)?.name)} and{" "}
                           {
                             r.events.filter((e) => {
                               return action.events.filter((a) => a === e).length === 0;

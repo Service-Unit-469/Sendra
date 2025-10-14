@@ -10,7 +10,7 @@ import { toast } from "sonner";
 import { Badge, Card, Empty, FullscreenLoader, Input, Modal, Skeleton, Table } from "../../components";
 import { Dashboard } from "../../layouts";
 import { useAllContacts } from "../../lib/hooks/contacts";
-import { useEventsWithTriggers } from "../../lib/hooks/events";
+import { useEventTypesWithEvents } from "../../lib/hooks/events";
 import { useActiveProject } from "../../lib/hooks/projects";
 import { useUser } from "../../lib/hooks/users";
 import { network } from "../../lib/network";
@@ -26,7 +26,7 @@ export default function Index() {
   const project = useActiveProject();
   const { data: user } = useUser();
   const { data: contacts } = useAllContacts();
-  const { data: events, mutate } = useEventsWithTriggers();
+  const { data: eventTypes, mutate } = useEventTypesWithEvents();
 
   const [eventModal, setEventModal] = useState(false);
 
@@ -119,15 +119,14 @@ export default function Index() {
             </motion.button>
           }
         >
-          {events && contacts ? (
-            events.filter((event) => !event.template && !event.campaign).length > 0 ? (
+          {eventTypes && contacts ? (
+            eventTypes.length > 0 ? (
               <Table
-                values={events
-                  .filter((event) => !event.template && !event.campaign)
+                values={eventTypes
                   .sort((a, b) => {
-                    const aTrigger = a.triggers.length > 0 ? a.triggers.sort()[0].createdAt : a.createdAt;
+                    const aTrigger = a._embed.events.length > 0 ? a._embed.events.sort()[0].createdAt : a.createdAt;
 
-                    const bTrigger = b.triggers.length > 0 ? b.triggers.sort()[0].createdAt : b.createdAt;
+                    const bTrigger = b._embed.events.length > 0 ? b._embed.events.sort()[0].createdAt : b.createdAt;
 
                     return bTrigger > aTrigger ? 1 : -1;
                   })
@@ -135,9 +134,9 @@ export default function Index() {
                     return {
                       Event: e.name,
                       "Triggered by users": (
-                        <Badge type={"info"}>{`${e.triggers.length > 0 ? Math.round(([...new Map(e.triggers.map((t) => [t.contact, t])).values()].length / contacts.length) * 100) : 0}%`}</Badge>
+                        <Badge type={"info"}>{`${e._embed.events.length > 0 ? Math.round(([...new Map(e._embed.events.map((t) => [t.contact, t])).values()].length / contacts.length) * 100) : 0}%`}</Badge>
                       ),
-                      "Total triggers": e.triggers.length,
+                      "Total triggers": e._embed.events.length,
                       Timeline: (
                         <>
                           <ResponsiveContainer width={100} height={40}>
@@ -145,7 +144,7 @@ export default function Index() {
                               width={100}
                               height={40}
                               data={Object.entries(
-                                e.triggers.reduce(
+                                e._embed.events.reduce(
                                   (acc, cur) => {
                                     const date = dayjs(cur.createdAt).format("MM/YYYY");
 
@@ -195,8 +194,8 @@ export default function Index() {
                       ),
                       "Last Activity": dayjs()
                         .to(
-                          e.triggers.length > 0
-                            ? e.triggers.sort((a, b) => {
+                          e._embed.events.length > 0
+                            ? e._embed.events.sort((a, b) => {
                                 return b.createdAt > a.createdAt ? 1 : -1;
                               })[0].createdAt
                             : e.createdAt,
@@ -230,13 +229,9 @@ export default function Index() {
                         </button>
                       ),
 
-                      Remove: !e.template ? (
-                        <button onClick={() => remove(e.id)} className={"flex items-center text-center text-sm font-medium transition hover:text-neutral-800"}>
+                      Remove: <button onClick={() => remove(e.id)} className={"flex items-center text-center text-sm font-medium transition hover:text-neutral-800"}>
                           <Trash size={18} />
-                        </button>
-                      ) : (
-                        <span className={"text-xs"}>Cannot be deleted</span>
-                      ),
+                        </button>,
                     };
                   })}
               />
@@ -248,15 +243,14 @@ export default function Index() {
           )}
         </Card>
         <Card title={"Template events"} description={"Events linked to your templates"}>
-          {events && contacts ? (
-            events.filter((event) => event.template).length > 0 ? (
+          {eventTypes && contacts ? (
+            eventTypes.length > 0 ? (
               <Table
-                values={events
-                  .filter((event) => event.template)
+                values={eventTypes
                   .sort((a, b) => {
-                    const aTrigger = a.triggers.length > 0 ? a.triggers.sort()[0].createdAt : a.createdAt;
+                    const aTrigger = a._embed.events.length > 0 ? a._embed.events.sort()[0].createdAt : a.createdAt;
 
-                    const bTrigger = b.triggers.length > 0 ? b.triggers.sort()[0].createdAt : b.createdAt;
+                    const bTrigger = b._embed.events.length > 0 ? b._embed.events.sort()[0].createdAt : b.createdAt;
 
                     return bTrigger > aTrigger ? 1 : -1;
                   })
@@ -264,13 +258,13 @@ export default function Index() {
                     return {
                       Event: e.name,
                       "Triggered by users": (
-                        <Badge type={"info"}>{`${e.triggers.length > 0 ? Math.round(([...new Map(e.triggers.map((t) => [t.contact, t])).values()].length / contacts.length) * 100) : 0}%`}</Badge>
+                        <Badge type={"info"}>{`${e._embed.events.length > 0 ? Math.round(([...new Map(e._embed.events.map((t) => [t.contact, t])).values()].length / contacts.length) * 100) : 0}%`}</Badge>
                       ),
-                      "Total times triggered": e.triggers.length,
+                      "Total times triggered": e._embed.events.length,
                       "Last Activity": dayjs()
                         .to(
-                          e.triggers.length > 0
-                            ? e.triggers.sort((a, b) => {
+                          e._embed.events.length > 0
+                            ? e._embed.events.sort((a, b) => {
                                 return b.createdAt > a.createdAt ? 1 : -1;
                               })[0].createdAt
                             : e.createdAt,

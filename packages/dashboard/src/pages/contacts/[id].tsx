@@ -137,10 +137,10 @@ export default function Index() {
           </div>
         </Card>
         <Card title={"Journey"}>
-          {contact.triggers.length > 0 || contact.emails.length > 0 ? (
+          {contact._embed.events.length > 0 || contact._embed.emails.length > 0 ? (
             <div className="scrollbar-thin scrollbar-thumb-neutral-300 scrollbar-track-neutral-100 scrollbar-thumb-rounded-full scrollbar-track-rounded-full flow-root h-96 max-h-96 overflow-y-auto pr-6">
               <ul className="-mb-8">
-                {[...contact.triggers, ...contact.emails]
+                {[...contact._embed.events, ...contact._embed.emails]
                   .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
                   .map((t, index) => {
                     if (t.messageId) {
@@ -149,7 +149,7 @@ export default function Index() {
 
                       return (
                         <li key={email.id} className="mb-8">
-                          {contact.triggers.length + contact.emails.length - 1 !== index && <span className="absolute left-4 top-4 -ml-px h-full w-0.5 bg-neutral-200" aria-hidden="true" />}
+                          {contact._embed.events.length + contact._embed.emails.length - 1 !== index && <span className="absolute left-4 top-4 -ml-px h-full w-0.5 bg-neutral-200" aria-hidden="true" />}
                           <div className="relative flex space-x-3">
                             <div>
                               <span className="flex h-8 w-8 items-center justify-center rounded-full bg-neutral-100 text-neutral-800 ring-8 ring-white">
@@ -209,11 +209,11 @@ export default function Index() {
                       );
                     }
 
-                    if (t.action) {
+                    if (t) {
                       return (
                         <li className="mb-8" key={t.id}>
                           <div className="relative pb-8">
-                            {contact.triggers.length + contact.emails.length - 1 !== index && <span className="absolute left-4 top-4 -ml-px h-full w-0.5 bg-neutral-200" aria-hidden="true" />}
+                            {contact._embed.events.length + contact._embed.emails.length - 1 !== index && <span className="absolute left-4 top-4 -ml-px h-full w-0.5 bg-neutral-200" aria-hidden="true" />}
 
                             <div className="relative flex space-x-3">
                               <div>
@@ -254,7 +254,7 @@ export default function Index() {
                       return (
                         <li className="mb-8" key={t.id}>
                           <div className="relative pb-8">
-                            {contact.triggers.length + contact.emails.length - 1 !== index && <span className="absolute left-4 top-4 -ml-px h-full w-0.5 bg-neutral-200" aria-hidden="true" />}
+                            {contact._embed.events.length + contact._embed.emails.length - 1 !== index && <span className="absolute left-4 top-4 -ml-px h-full w-0.5 bg-neutral-200" aria-hidden="true" />}
                             <div className="relative flex space-x-3">
                               <div>
                                 <span className="flex h-8 w-8 items-center justify-center rounded-full bg-neutral-100 text-neutral-800 ring-8 ring-white">

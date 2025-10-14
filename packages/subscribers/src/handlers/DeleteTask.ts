@@ -4,10 +4,10 @@ import {
   ContactPersistence,
   EmailPersistence,
   EventPersistence,
+  EventTypePersistence,
   MembershipPersistence,
   rootLogger,
-  TemplatePersistence,
-  TriggerPersistence,
+  TemplatePersistence
 } from "@sendra/lib";
 import type { BatchDeleteRelatedSchema } from "@sendra/shared";
 import type { z } from "zod";
@@ -24,23 +24,36 @@ export const handleDelete = async (task: DeleteTask, messageId: string) => {
   });
   logger.info("Deleting task");
 
-  if (type === "EVENT") {
-    const triggerPersistence = new TriggerPersistence(task.payload.project);
-    const triggers = await triggerPersistence.findAllBy({
-      key: "event",
+  if (type === "EVENT_TYPE") {
+    const eventPersistence = new EventPersistence(task.payload.project);
+    const events = await eventPersistence.findAllBy({
+      key: "eventType",
       value: id,
     });
-    logger.info({ triggers: triggers.length }, "Deleting triggers for event");
-    await Promise.all(triggers.map((trigger) => triggerPersistence.delete(trigger.id)));
+    logger.info({ events: events.length }, "Deleting events for type");
+    await Promise.all(events.map((event) => eventPersistence.delete(event.id)));
   } else if (type === "PROJECT") {
     logger.info("Deleting content associated with project");
 
     await Promise.all(
-      [ActionPersistence, CampaignPersistence, ContactPersistence, EmailPersistence, EventPersistence, TemplatePersistence, TriggerPersistence].map(async (Persistence) => {
+      [
+        ActionPersistence,
+        CampaignPersistence,
+        ContactPersistence,
+        EmailPersistence,
+        EventTypePersistence,
+        EventPersistence,
+        TemplatePersistence,
+      ].map(async (Persistence) => {
         const items = await new Persistence(id).listAll();
-        logger.info({ items: items.length, type: Persistence.name }, "Deleting items for project");
-        await Promise.all(items.map((item) => new Persistence(id).delete(item.id)));
-      }),
+        logger.info(
+          { items: items.length, type: Persistence.name },
+          "Deleting items for project"
+        );
+        await Promise.all(
+          items.map((item) => new Persistence(id).delete(item.id))
+        );
+      })
     );
 
     const membershipPersistence = new MembershipPersistence();
@@ -48,15 +61,29 @@ export const handleDelete = async (task: DeleteTask, messageId: string) => {
       key: "project",
       value: id,
     });
-    logger.info({ memberships: memberships.length }, "Deleting memberships for project");
-    await Promise.all(memberships.map((membership) => membershipPersistence.delete(membership.id)));
+    logger.info(
+      { memberships: memberships.length },
+      "Deleting memberships for project"
+    );
+    await Promise.all(
+      memberships.map((membership) =>
+        membershipPersistence.delete(membership.id)
+      )
+    );
   } else if (type === "USER") {
     const membershipPersistence = new MembershipPersistence();
     const memberships = await membershipPersistence.findAllBy({
       key: "user",
       value: id,
     });
-    logger.info({ memberships: memberships.length }, "Deleting memberships for user");
-    await Promise.all(memberships.map((membership) => membershipPersistence.delete(membership.id)));
+    logger.info(
+      { memberships: memberships.length },
+      "Deleting memberships for user"
+    );
+    await Promise.all(
+      memberships.map((membership) =>
+        membershipPersistence.delete(membership.id)
+      )
+    );
   }
 };

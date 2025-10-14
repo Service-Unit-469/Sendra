@@ -49,20 +49,20 @@ export default function Index() {
                                     Open rate
                                   </label>
                                   <p className="mt-1 truncate text-sm text-neutral-500" id="open-rate">
-                                    {c.emails?.length && c.emails?.length > 0
-                                      ? Math.round((c.emails.filter((e) => e.status === "OPENED").length / c.emails.filter((e) => e.status !== "QUEUED").length) * 100)
+                                    {c._embed.emails?.length && c._embed.emails?.length > 0
+                                      ? Math.round((c._embed.emails.filter((e) => e.status === "OPENED").length / c._embed.emails.filter((e) => e.status !== "QUEUED").length) * 100)
                                       : 0}
                                     %
                                   </p>
                                 </div>
 
-                                {c.emails?.length && c.emails?.length > 0 && (
+                                {c._embed.emails?.length && c._embed.emails?.length > 0 && (
                                   <div>
                                     <label htmlFor="emails-in-queue" className={"text-xs font-medium text-neutral-500"}>
                                       Emails in queue
                                     </label>
                                     <p className="mt-1 truncate text-sm text-neutral-500" id="emails-in-queue">
-                                      {c.emails.filter((e) => e.status === "QUEUED").length}
+                                      {c._embed.emails.filter((e) => e.status === "QUEUED").length}
                                     </p>
                                   </div>
                                 )}

@@ -4,7 +4,7 @@ import type { EmbeddedObject } from "lib/dist/persistence/BasePersistence";
 import type { AppType } from "../../app";
 import { BadRequest, NotFound } from "../../exceptions";
 import { getProblemResponseSchema } from "../../exceptions/responses";
-import { isAuthenticatedProjectMemberOrSecretKey } from "../../middleware/auth";
+import { BearerAuth, isAuthenticatedProjectMemberOrSecretKey } from "../../middleware/auth";
 
 export type ProjectEntityCreate<T extends BaseItem> = Omit<T, "id" | "type" | "createdAt" | "updatedAt" | "project">;
 export type ProjectEntityUpdate<T extends BaseItem> = Omit<T, "type" | "createdAt" | "updatedAt" | "project">;
@@ -63,6 +63,7 @@ export const registerProjectEntityReadRoutes = <T extends BaseItem>(
         404: getProblemResponseSchema(404),
         403: getProblemResponseSchema(403),
       },
+      ...BearerAuth,
       middleware: [isAuthenticatedProjectMemberOrSecretKey],
     }),
     async (c) => {
@@ -143,6 +144,7 @@ export const registerProjectEntityReadRoutes = <T extends BaseItem>(
         403: getProblemResponseSchema(403),
         404: getProblemResponseSchema(404),
       },
+      ...BearerAuth,
       middleware: [isAuthenticatedProjectMemberOrSecretKey],
     }),
     async (c) => {
@@ -197,6 +199,7 @@ export const registerProjectEntityReadRoutes = <T extends BaseItem>(
         404: getProblemResponseSchema(404),
         403: getProblemResponseSchema(403),
       },
+      ...BearerAuth,
       middleware: [isAuthenticatedProjectMemberOrSecretKey],
     }),
     async (c) => {
@@ -214,8 +217,7 @@ export const registerProjectEntityReadRoutes = <T extends BaseItem>(
       if (!entity) {
         throw new NotFound(config.entityName);
       }
-
-      // @ts-expect-error
+      // @ts-ignore
       return c.json(entity, 200);
     },
   );
@@ -252,6 +254,7 @@ export const registerProjectEntityCrudRoutes = <T extends BaseItem>(app: AppType
         404: getProblemResponseSchema(404),
         403: getProblemResponseSchema(403),
       },
+      ...BearerAuth,
       middleware: [isAuthenticatedProjectMemberOrSecretKey],
     }),
     async (c) => {
@@ -269,6 +272,7 @@ export const registerProjectEntityCrudRoutes = <T extends BaseItem>(app: AppType
         ...toCreate,
         project: projectId,
       } as Omit<T, "id" | "createdAt" | "updatedAt">);
+      // @ts-ignore
       return c.json(entity, 201);
     },
   );
@@ -305,6 +309,7 @@ export const registerProjectEntityCrudRoutes = <T extends BaseItem>(app: AppType
         404: getProblemResponseSchema(404),
         403: getProblemResponseSchema(403),
       },
+      ...BearerAuth,
       middleware: [isAuthenticatedProjectMemberOrSecretKey],
     }),
     async (c) => {
@@ -358,6 +363,7 @@ export const registerProjectEntityCrudRoutes = <T extends BaseItem>(app: AppType
         404: getProblemResponseSchema(404),
         403: getProblemResponseSchema(403),
       },
+      ...BearerAuth,
       middleware: [isAuthenticatedProjectMemberOrSecretKey],
     }),
     async (c) => {

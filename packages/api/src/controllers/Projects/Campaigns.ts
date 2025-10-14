@@ -3,20 +3,25 @@ import {
   CampaignPersistence,
   type CompileProps,
   ContactPersistence,
+  emailConfig,
   EmailPersistence,
   EmailService,
-  EventPersistence,
-  emailConfig,
   MembershipPersistence,
   ProjectPersistence,
   rootLogger,
   TaskQueue,
-  UserPersistence,
+  UserPersistence
 } from "@sendra/lib";
-import { CampaignSchema, CampaignSchemas, EmailSchema, type Project } from "@sendra/shared";
+import {
+  CampaignSchema,
+  CampaignSchemas,
+  EmailSchema,
+  type Project,
+} from "@sendra/shared";
 import type { AppType } from "../../app";
 import { HttpException, NotFound } from "../../exceptions";
 import { getProblemResponseSchema } from "../../exceptions/responses";
+import { BearerAuth, isAuthenticatedProjectMemberOrSecretKey } from "../../middleware/auth";
 import { registerProjectEntityCrudRoutes } from "./ProjectEntity";
 import { validateEmail } from "./utils";
 
@@ -32,7 +37,9 @@ const resolveRecipients = async (rawRecipients: string[], project: Project) => {
     return subscribedContacts.map((c) => c.id);
   }
   const ids = rawRecipients.filter((r) => !r.includes("@"));
-  const contactsWithIds = (await contactPersistence.batchGet(ids)).filter((c) => c.subscribed);
+  const contactsWithIds = (await contactPersistence.batchGet(ids)).filter(
+    (c) => c.subscribed
+  );
 
   const contactsWithEmails = await Promise.all(
     rawRecipients
@@ -48,10 +55,13 @@ const resolveRecipients = async (rawRecipients: string[], project: Project) => {
           });
         }
         return contactWithEmail;
-      }),
+      })
   ).then((contacts) => contacts.filter((c) => c.subscribed));
 
-  return [...contactsWithIds.map((c) => c.id), ...contactsWithEmails.map((c) => c.id)];
+  return [
+    ...contactsWithIds.map((c) => c.id),
+    ...contactsWithEmails.map((c) => c.id),
+  ];
 };
 
 export const registerCampaignsRoutes = (app: AppType) => {
@@ -59,12 +69,16 @@ export const registerCampaignsRoutes = (app: AppType) => {
     entityPath: "campaigns",
     entityName: "Campaign",
     getSchema: CampaignSchema.extend({
-      emails: EmailSchema.optional(),
+      _embed: z
+        .object({
+          emails: EmailSchema.optional(),
+        })
+        .optional(),
     }),
     createSchema: CampaignSchemas.create,
     updateSchema: CampaignSchemas.update,
     embeddable: ["emails"],
-    listQuerySchema: z.never(),
+    listQuerySchema: z.string(),
     getPersistence: (projectId: string) => new CampaignPersistence(projectId),
     preCreateEntity: async (projectId, campaign) => {
       await validateEmail(projectId, campaign.email);
@@ -74,7 +88,10 @@ export const registerCampaignsRoutes = (app: AppType) => {
         throw new NotFound("project");
       }
       campaign.status = "DRAFT";
-      campaign.recipients = await resolveRecipients(campaign.recipients, project);
+      campaign.recipients = await resolveRecipients(
+        campaign.recipients,
+        project
+      );
       return campaign;
     },
     preUpdateEntity: async (projectId, campaign) => {
@@ -83,7 +100,10 @@ export const registerCampaignsRoutes = (app: AppType) => {
       if (!project) {
         throw new NotFound("project");
       }
-      campaign.recipients = await resolveRecipients(campaign.recipients, project);
+      campaign.recipients = await resolveRecipients(
+        campaign.recipients,
+        project
+      );
       await validateEmail(projectId, campaign.email);
       return campaign;
     },
@@ -116,6 +136,8 @@ export const registerCampaignsRoutes = (app: AppType) => {
         404: getProblemResponseSchema(404),
         500: getProblemResponseSchema(500),
       },
+      ...BearerAuth,
+      middleware: [isAuthenticatedProjectMemberOrSecretKey],
     }),
     async (c) => {
       const { projectId, campaignId } = c.req.param();
@@ -134,7 +156,10 @@ export const registerCampaignsRoutes = (app: AppType) => {
           throw new HttpException(400, "No recipients provided");
         }
 
-        logger.info({ campaign: campaign.id, recipients: campaign.recipients.length }, "Sending campaign");
+        logger.info(
+          { campaign: campaign.id, recipients: campaign.recipients.length },
+          "Sending campaign"
+        );
 
         // Update campaign status
         await campaignPersistence.put({
@@ -142,41 +167,21 @@ export const registerCampaignsRoutes = (app: AppType) => {
           status: "DELIVERED",
         });
 
-        // Create events in DynamoDB
-        const eventNames = [
-          `${campaign.subject
-            .toLowerCase()
-            .replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, "")
-            .replace(/ /g, "-")}-campaign-delivered`,
-          `${campaign.subject
-            .toLowerCase()
-            .replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, "")
-            .replace(/ /g, "-")}-campaign-opened`,
-        ];
-
-        const eventPersistence = new EventPersistence(projectId);
-        for (const eventName of eventNames) {
-          const event = {
-            project: projectId,
-            name: eventName,
-            campaign: campaign.id,
-          };
-          await eventPersistence.create(event);
-        }
-
         let delay = userDelay ?? 0;
 
-        const tasks = campaign.recipients.map((contactId: string, index: number) => {
-          if (index % 80 === 0) {
-            delay += 1;
-          }
+        const tasks = campaign.recipients.map(
+          (contactId: string, index: number) => {
+            if (index % 80 === 0) {
+              delay += 1;
+            }
 
-          return {
-            campaign: campaign.id,
-            contactId,
-            delaySeconds: delay * 60,
-          };
-        });
+            return {
+              campaign: campaign.id,
+              contactId,
+              delaySeconds: delay * 60,
+            };
+          }
+        );
 
         const emailPersistence = new EmailPersistence(projectId);
         const contactPersistence = new ContactPersistence(projectId);
@@ -188,7 +193,9 @@ export const registerCampaignsRoutes = (app: AppType) => {
               body: campaign.body,
               source: campaign.id,
               sourceType: "CAMPAIGN",
-              email: await contactPersistence.get(taskData.contactId).then((c) => c?.email ?? ""),
+              email: await contactPersistence
+                .get(taskData.contactId)
+                .then((c) => c?.email ?? ""),
               contact: taskData.contactId,
               sendType: "MARKETING",
               status: "QUEUED",
@@ -204,7 +211,7 @@ export const registerCampaignsRoutes = (app: AppType) => {
               },
               delaySeconds: taskData.delaySeconds,
             });
-          }),
+          })
         );
       } else {
         const projectPersistence = new ProjectPersistence();
@@ -214,12 +221,19 @@ export const registerCampaignsRoutes = (app: AppType) => {
         }
 
         const membershipPersistence = new MembershipPersistence();
-        const members = await membershipPersistence.getProjectMemberships(projectId);
+        const members = await membershipPersistence.getProjectMemberships(
+          projectId
+        );
 
         const userPersistence = new UserPersistence();
-        const users = await userPersistence.batchGet(members.map((m) => m.user));
+        const users = await userPersistence.batchGet(
+          members.map((m) => m.user)
+        );
 
-        logger.info({ campaign: campaign.id, recipients: users.length }, "Sending test email");
+        logger.info(
+          { campaign: campaign.id, recipients: users.length },
+          "Sending test email"
+        );
 
         const params = {
           contact: {
@@ -236,21 +250,30 @@ export const registerCampaignsRoutes = (app: AppType) => {
             id: project.id,
           },
         };
-        const subject = EmailService.compileSubject(`[Campaign Test] ${campaign.subject}`, params);
+        const subject = EmailService.compileSubject(
+          `[Campaign Test] ${campaign.subject}`,
+          params
+        );
         params.email.subject = subject;
         await EmailService.send({
           from: {
             name: project.from ?? project.name,
-            email: project.verified && project.email ? project.email : emailConfig.defaultEmail, // TODO: Add env variable to configure default email
+            email:
+              project.verified && project.email
+                ? project.email
+                : emailConfig.defaultEmail, // TODO: Add env variable to configure default email
           },
           to: users.map((m) => m.email),
           content: {
             subject,
-            html: EmailService.compileBody(campaign.body, params as CompileProps),
+            html: EmailService.compileBody(
+              campaign.body,
+              params as CompileProps
+            ),
           },
         });
       }
       return c.json({}, 202);
-    },
+    }
   );
 };

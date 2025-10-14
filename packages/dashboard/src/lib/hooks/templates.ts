@@ -3,7 +3,7 @@ import useSWR from "swr";
 import { useActiveProject } from "./projects";
 
 export type TemplateWithActions = Template & {
-  actions: Action[];
+  _embed: { actions: Action[] };
 };
 
 /**
@@ -12,7 +12,11 @@ export type TemplateWithActions = Template & {
  */
 export function useTemplate(id: string) {
   const activeProject = useActiveProject();
-  return useSWR<TemplateWithActions>(activeProject ? `/projects/${activeProject.id}/templates/${id}?embed=actions` : null);
+  return useSWR<TemplateWithActions>(
+    activeProject
+      ? `/projects/${activeProject.id}/templates/${id}?embed=actions`
+      : null
+  );
 }
 
 /**
@@ -21,5 +25,9 @@ export function useTemplate(id: string) {
 export function useTemplates() {
   const activeProject = useActiveProject();
 
-  return useSWR<TemplateWithActions[]>(activeProject ? `/projects/${activeProject.id}/templates/all?embed=actions` : null);
+  return useSWR<TemplateWithActions[]>(
+    activeProject
+      ? `/projects/${activeProject.id}/templates/all?embed=actions`
+      : null
+  );
 }

@@ -19,7 +19,7 @@ export class ContactPersistence extends BasePersistence<Contact> {
   }
 
   async embed(items: Contact[], embed?: Embeddable[]) {
-    return await embedHelper(items, "contact", ["emails", "triggers"], embed);
+    return await embedHelper(items, "contact", ["emails", "events"], embed);
   }
 
   private static async getByEmailFromAllProjectsPage(email: string, cursor?: string) {

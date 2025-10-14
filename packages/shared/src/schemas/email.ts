@@ -1,6 +1,8 @@
 import z from "zod";
 import { email, id, ProjectEntitySchema, SEND_TYPES } from "./common";
 
+export const EmailStatusSchema = z.enum(["QUEUED", "SENT", "REJECTED", "DELIVERED", "OPENED", "COMPLAINT", "BOUNCED"]);
+
 export const EmailSchema = ProjectEntitySchema.extend({
   messageId: z.string(),
   source: id.optional(),
@@ -10,5 +12,5 @@ export const EmailSchema = ProjectEntitySchema.extend({
   subject: z.string(),
   body: z.string(),
   sendType: z.enum(SEND_TYPES).default(SEND_TYPES[0]),
-  status: z.enum(["QUEUED", "SENT", "FAILED", "DELIVERED", "OPENED", "COMPLAINT", "BOUNCED"]),
+  status: EmailStatusSchema,
 });

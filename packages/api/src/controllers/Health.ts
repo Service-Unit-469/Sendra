@@ -16,6 +16,7 @@ export const registerHealthRoutes = (app: AppType) => {
           description: "Health check",
         },
       },
+      hide: true,
     }),
     async (c) => {
       return c.json({ success: true }, 200);

@@ -5,12 +5,13 @@ import type {
   BaseSchema,
   CampaignSchema,
   CampaignSchemas,
-  ClickSchema,
   ContactSchema,
   ContactSchemas,
+  DeliveryEventSchema,
   EmailSchema,
   EventSchema,
   EventSchemas,
+  EventTypeSchema,
   MembershipRoleSchema,
   MembershipSchema,
   MembershipSchemas,
@@ -24,7 +25,6 @@ import type {
   TaskSchema,
   TemplateSchema,
   TemplateSchemas,
-  TriggerSchema,
   UserSchema,
   UserSchemas,
 } from "./schemas";
@@ -35,7 +35,6 @@ export type ActionUpdate = z.infer<typeof ActionSchemas.update>;
 
 export type BaseType = z.infer<typeof BaseSchema>;
 
-export type Click = z.infer<typeof ClickSchema>;
 export type Contact = z.infer<typeof ContactSchema>;
 export type ContactCreate = z.infer<typeof ContactSchemas.create>;
 export type ContactUpdate = z.infer<typeof ContactSchemas.update>;
@@ -43,8 +42,11 @@ export type Campaign = z.infer<typeof CampaignSchema>;
 export type CampaignCreate = z.infer<typeof CampaignSchemas.create>;
 export type CampaignUpdate = z.infer<typeof CampaignSchemas.update>;
 export type Credentials = z.infer<typeof UserSchemas.credentials>;
+
+export type DeliveryEvent = z.infer<typeof DeliveryEventSchema>;
 export type Email = z.infer<typeof EmailSchema>;
 export type Event = z.infer<typeof EventSchema>;
+export type EventType = z.infer<typeof EventTypeSchema>;
 export type EventTrack = z.infer<typeof EventSchemas.track>;
 
 export type Membership = z.infer<typeof MembershipSchema>;
@@ -58,7 +60,6 @@ export type ProjectUpdate = z.infer<typeof ProjectSchemas.update>;
 export type ProjectKeys = z.infer<typeof ProjectKeysSchema>;
 export type PublicProject = z.infer<typeof PublicProjectSchema>;
 export type Task = z.infer<typeof TaskSchema>;
-export type Trigger = z.infer<typeof TriggerSchema>;
 
 export type Template = z.infer<typeof TemplateSchema>;
 export type TemplateCreate = z.infer<typeof TemplateSchemas.create>;

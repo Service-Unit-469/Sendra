@@ -15,9 +15,9 @@ import { Alert, Badge, Card, Dropdown, FullscreenLoader, Input, MetadataFilterEd
 import Send from "../../icons/Send";
 import { Dashboard } from "../../layouts";
 import { useCampaign, useCampaignsWithEmails } from "../../lib/hooks/campaigns";
-import { useAllContactsWithTriggers } from "../../lib/hooks/contacts";
+import { useAllContactsWithEvents } from "../../lib/hooks/contacts";
 import { useEmailsByCampaign } from "../../lib/hooks/emails";
-import { useEvents } from "../../lib/hooks/events";
+import { useEventTypes } from "../../lib/hooks/events";
 import { useActiveProject } from "../../lib/hooks/projects";
 import { network } from "../../lib/network";
 import useFilterContacts from "./filter";
@@ -30,8 +30,8 @@ export default function Index() {
   const project = useActiveProject();
   const { mutate: campaignsMutate } = useCampaignsWithEmails();
   const { data: campaign, mutate: campaignMutate } = useCampaign(router.query.id as string);
-  const { data: contacts } = useAllContactsWithTriggers();
-  const { data: events } = useEvents();
+  const { data: contacts } = useAllContactsWithEvents();
+  const { data: eventTypes } = useEventTypes();
   const { data: emails } = useEmailsByCampaign(campaign?.id);
 
   const [query, setQuery] = useState<{
@@ -91,7 +91,7 @@ export default function Index() {
     return <FullscreenLoader />;
   }
 
-  if (!project || !campaign || !events || (watch("body") as string | undefined) === undefined) {
+  if (!project || !campaign || !eventTypes || (watch("body") as string | undefined) === undefined) {
     return <FullscreenLoader />;
   }
 
@@ -406,27 +406,13 @@ export default function Index() {
                             )
                           }
                           values={[
-                            ...events
+                            ...eventTypes
                               .filter((e) => !query.notevents?.includes(e.id))
-                              .sort((a, b) => {
-                                if (!a.template && !a.campaign) {
-                                  return -1;
-                                }
-                                if (!b.template && !b.campaign) {
-                                  return 1;
-                                }
-
-                                if (a.name.includes("delivered") && !b.name.includes("delivered")) {
-                                  return -1;
-                                }
-
-                                return 0;
-                              })
+                              .sort((a, b) => a.name.localeCompare(b.name))
                               .map((e) => {
                                 return {
                                   name: e.name,
                                   value: e.id,
-                                  tag: (e.template ?? e.campaign) ? (e.name.includes("opened") ? "On Open" : "On Delivery") : undefined,
                                 };
                               }),
                           ]}
@@ -476,27 +462,13 @@ export default function Index() {
                             );
                           }}
                           values={[
-                            ...events
+                            ...eventTypes
                               .filter((e) => !query.events?.includes(e.id))
-                              .sort((a, b) => {
-                                if (!a.template && !a.campaign) {
-                                  return -1;
-                                }
-                                if (!b.template && !b.campaign) {
-                                  return 1;
-                                }
-
-                                if (a.name.includes("delivered") && !b.name.includes("delivered")) {
-                                  return -1;
-                                }
-
-                                return 0;
-                              })
+                              .sort((a, b) => a.name.localeCompare(b.name))
                               .map((e) => {
                                 return {
                                   name: e.name,
                                   value: e.id,
-                                  tag: (e.template ?? e.campaign) ? (e.name.includes("opened") ? "On Open" : "On Delivery") : undefined,
                                 };
                               }),
                           ]}

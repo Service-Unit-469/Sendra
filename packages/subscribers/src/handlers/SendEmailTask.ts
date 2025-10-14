@@ -8,7 +8,7 @@ import {
   ProjectPersistence,
   rootLogger,
   TemplatePersistence,
-  TriggerPersistence,
+  EventPersistence,
 } from "@sendra/lib";
 import type { Action, Campaign, SendEmailTaskSchema } from "@sendra/shared";
 import type { z } from "zod";
@@ -68,13 +68,13 @@ export const sendEmail = async (task: SendEmailTask, recordId: string) => {
     const { template: templateId, notevents } = action;
 
     if (notevents.length > 0) {
-      const triggerPersistence = new TriggerPersistence(projectId);
-      const triggers = await triggerPersistence.findAllBy({
+      const eventPersistence = new EventPersistence(projectId);
+      const events = await eventPersistence.findAllBy({
         key: "contact",
         value: contactId,
       });
 
-      if (notevents.some((e) => triggers.some((t) => t.contact === contactId && t.event === e))) {
+      if (notevents.some((e) => events.some((t) => t.contact === contactId && t.eventType === e))) {
         logger.info({ actionId, contactId, projectId }, "Action not triggered");
         return;
       }

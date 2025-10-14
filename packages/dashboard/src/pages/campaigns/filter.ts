@@ -1,4 +1,4 @@
-import type { Contact, Trigger } from "@sendra/shared";
+import type { Contact, Event } from "@sendra/shared";
 import dayjs from "dayjs";
 import { useMemo } from "react";
 import type { MetadataFilterGroupType, MetadataFilterType } from "../../components";
@@ -68,7 +68,7 @@ function matchesMetadataFilter(contact: Contact, filter: MetadataFilterType) {
  */
 function filterContactsByMetadata(
   contacts: (Contact & {
-    triggers: Trigger[];
+    _embed: { events: Event[] };
   })[],
   filter: MetadataFilterGroupType,
 ) {
@@ -95,7 +95,7 @@ function filterContactsByMetadata(
  */
 export default function useFilterContacts(
   contacts: (Contact & {
-    triggers: Trigger[];
+    _embed: { events: Event[] };
   })[],
   query: {
     events?: string[];
@@ -114,17 +114,17 @@ export default function useFilterContacts(
 
     if (query.events && query.events.length > 0) {
       query.events.forEach((e) => {
-        filteredContacts = filteredContacts.filter((c) => c.triggers.some((t) => t.event === e));
+        filteredContacts = filteredContacts.filter((c) => c._embed.events.some((t) => t.eventType === e));
       });
     }
 
     if (query.last) {
       filteredContacts = filteredContacts.filter((c) => {
-        if (c.triggers.length === 0) {
+        if (c._embed.events.length === 0) {
           return false;
         }
 
-        const lastTrigger = c.triggers.sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1));
+        const lastTrigger = c._embed.events.sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1));
 
         if (lastTrigger.length === 0) {
           return false;
@@ -137,11 +137,11 @@ export default function useFilterContacts(
     if (query.notevents && query.notevents.length > 0 && query.notlast) {
       query.notevents.forEach((e) => {
         filteredContacts = filteredContacts.filter((c) => {
-          if (c.triggers.length === 0) {
+          if (c._embed.events.length === 0) {
             return true;
           }
 
-          const lastTrigger = c.triggers.filter((t) => t.event === e).sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1));
+          const lastTrigger = c._embed.events.filter((t) => t.eventType === e).sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1));
 
           if (lastTrigger.length === 0) {
             return true;
@@ -152,15 +152,15 @@ export default function useFilterContacts(
       });
     } else if (query.notevents && query.notevents.length > 0) {
       query.notevents.forEach((e) => {
-        filteredContacts = filteredContacts.filter((c) => c.triggers.every((t) => t.event !== e));
+        filteredContacts = filteredContacts.filter((c) => c._embed.events.every((t) => t.eventType !== e));
       });
     } else if (query.notlast) {
       filteredContacts = filteredContacts.filter((c) => {
-        if (c.triggers.length === 0) {
+        if (c._embed.events.length === 0) {
           return true;
         }
 
-        const lastTrigger = c.triggers.sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1));
+        const lastTrigger = c._embed.events.sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1));
 
         if (lastTrigger.length === 0) {
           return true;

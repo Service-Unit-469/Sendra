@@ -4,7 +4,7 @@ import { IdentitySchemas } from "@sendra/shared";
 import type { AppType } from "../../app";
 import { Conflict, NotFound } from "../../exceptions";
 import { getProblemResponseSchema } from "../../exceptions/responses";
-import { isAuthenticatedProjectAdmin, isAuthenticatedProjectMember } from "../../middleware/auth";
+import { BearerAuth, isAuthenticatedProjectAdmin, isAuthenticatedProjectMember } from "../../middleware/auth";
 import { getIdentityVerificationAttributes, verifyIdentity } from "../../util/ses";
 
 const logger = rootLogger.child({
@@ -34,7 +34,9 @@ export const registerProjectIdentityRoutes = (app: AppType) => {
         401: getProblemResponseSchema(401),
         404: getProblemResponseSchema(404),
       },
+      ...BearerAuth,
       middleware: [isAuthenticatedProjectMember],
+      hide: true,
     }),
     async (c) => {
       const projectId = c.req.param("projectId");
@@ -105,7 +107,9 @@ export const registerProjectIdentityRoutes = (app: AppType) => {
         404: getProblemResponseSchema(404),
         409: getProblemResponseSchema(409),
       },
+      ...BearerAuth,
       middleware: [isAuthenticatedProjectAdmin],
+      hide: true,
     }),
     async (c) => {
       const { email } = IdentitySchemas.create.parse(await c.req.json());
@@ -162,7 +166,9 @@ export const registerProjectIdentityRoutes = (app: AppType) => {
         403: getProblemResponseSchema(403),
         404: getProblemResponseSchema(404),
       },
+      ...BearerAuth,
       middleware: [isAuthenticatedProjectAdmin],
+      hide: true,
     }),
     async (c) => {
       const projectId = c.req.param("projectId");
@@ -217,7 +223,9 @@ export const registerProjectIdentityRoutes = (app: AppType) => {
         403: getProblemResponseSchema(403),
         404: getProblemResponseSchema(404),
       },
+      ...BearerAuth,
       middleware: [isAuthenticatedProjectAdmin],
+      hide: true,
     }),
     async (c) => {
       const body = await c.req.json();

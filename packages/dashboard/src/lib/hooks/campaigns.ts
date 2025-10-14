@@ -8,7 +8,9 @@ import { useActiveProject } from "./projects";
  */
 export function useCampaign(id: string) {
   const activeProject = useActiveProject();
-  return useSWR<Campaign>(activeProject ? `/projects/${activeProject.id}/campaigns/${id}` : null);
+  return useSWR<Campaign>(
+    activeProject ? `/projects/${activeProject.id}/campaigns/${id}` : null
+  );
 }
 
 /**
@@ -16,5 +18,9 @@ export function useCampaign(id: string) {
  */
 export function useCampaignsWithEmails() {
   const activeProject = useActiveProject();
-  return useSWR<(Campaign & { emails: Email[] })[]>(activeProject ? `/projects/${activeProject.id}/campaigns/all?embed=emails` : null);
+  return useSWR<(Campaign & { _embed: { emails: Email[] } })[]>(
+    activeProject
+      ? `/projects/${activeProject.id}/campaigns/all?embed=emails`
+      : null
+  );
 }

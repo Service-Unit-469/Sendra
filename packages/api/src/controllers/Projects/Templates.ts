@@ -11,11 +11,15 @@ export const registerTemplatesRoutes = (app: AppType) => {
     entityPath: "templates",
     entityName: "Template",
     getSchema: TemplateSchema.extend({
-      actions: ActionSchema.optional(),
+      _embed: z
+        .object({
+          actions: ActionSchema.optional(),
+        })
+        .optional(),
     }),
     createSchema: TemplateSchemas.create,
     updateSchema: TemplateSchemas.update,
-    listQuerySchema: z.never(),
+    listQuerySchema: z.string(),
     embeddable: ["actions"],
     getPersistence: (projectId: string) => new TemplatePersistence(projectId),
     preCreateEntity: async (projectId, template) => {
@@ -33,7 +37,9 @@ export const registerTemplatesRoutes = (app: AppType) => {
         value: template,
       });
       if (actions.count && actions.count > 0) {
-        throw new NotAllowed("This template is being used by an action. Unlink the action before deleting the template.");
+        throw new NotAllowed(
+          "This template is being used by an action. Unlink the action before deleting the template."
+        );
       }
     },
   });

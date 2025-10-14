@@ -48,9 +48,6 @@ export const getProblemResponseSchema = (status: ContentfulStatusCode) => ({
 export const RedirectResponseSchema = {
   description: "Redirect to the given location",
   headers: z.object({
-    Location: {
-      schema: { type: "string" },
-      example: "https://example.com/redirect",
-    },
+    location: z.string(),
   }),
 };

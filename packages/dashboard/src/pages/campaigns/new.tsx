@@ -12,8 +12,8 @@ import { toast } from "sonner";
 import { Alert, Card, Dropdown, FullscreenLoader, Input, MetadataFilterEditor, type MetadataFilterGroupType, MultiselectDropdown } from "../../components";
 import { Dashboard } from "../../layouts";
 import { useCampaignsWithEmails } from "../../lib/hooks/campaigns";
-import { useAllContactsWithTriggers } from "../../lib/hooks/contacts";
-import { useEvents } from "../../lib/hooks/events";
+import { useAllContactsWithEvents } from "../../lib/hooks/contacts";
+import { useEventTypes } from "../../lib/hooks/events";
 import { useActiveProject } from "../../lib/hooks/projects";
 import { network } from "../../lib/network";
 import useFilterContacts from "./filter";
@@ -26,8 +26,8 @@ export default function Index() {
 
   const project = useActiveProject();
   const { mutate } = useCampaignsWithEmails();
-  const { data: contacts } = useAllContactsWithTriggers();
-  const { data: events } = useEvents();
+  const { data: contacts } = useAllContactsWithEvents();
+  const { data: eventTypes } = useEventTypes();
 
   const [query, setQuery] = useState<{
     events?: string[];
@@ -72,7 +72,7 @@ export default function Index() {
     });
   }, [watch, project, setError, clearErrors]);
 
-  if (!project || !events) {
+  if (!project || !eventTypes) {
     return <FullscreenLoader />;
   }
 
@@ -188,34 +188,21 @@ export default function Index() {
                             e.length > 0
                               ? { ...query, events: e }
                               : {
-                                  ...query,
-                                  events: undefined,
-                                  last: undefined,
-                                },
+                                ...query,
+                                events: undefined,
+                                last: undefined,
+                              },
                           )
                         }
                         values={[
-                          ...events
+                          ...eventTypes
                             .filter((e) => !query.notevents?.includes(e.id))
-                            .sort((a, b) => {
-                              if (!a.template && !a.campaign) {
-                                return -1;
-                              }
-                              if (!b.template && !b.campaign) {
-                                return 1;
-                              }
-
-                              if (a.name.includes("delivered") && !b.name.includes("delivered")) {
-                                return -1;
-                              }
-
-                              return 0;
-                            })
+                            .sort((a, b) => a.name.localeCompare(b.name))
                             .map((e) => {
                               return {
                                 name: e.name,
                                 value: e.id,
-                                tag: (e.template ?? e.campaign) ? (e.name.includes("opened") ? "On Open" : "On Delivery") : undefined,
+
                               };
                             }),
                         ]}
@@ -258,34 +245,20 @@ export default function Index() {
                             e.length > 0
                               ? { ...query, notevents: e }
                               : {
-                                  ...query,
-                                  notevents: undefined,
-                                  notlast: undefined,
-                                },
+                                ...query,
+                                notevents: undefined,
+                                notlast: undefined,
+                              },
                           );
                         }}
                         values={[
-                          ...events
+                          ...eventTypes
                             .filter((e) => !query.events?.includes(e.id))
-                            .sort((a, b) => {
-                              if (!a.template && !a.campaign) {
-                                return -1;
-                              }
-                              if (!b.template && !b.campaign) {
-                                return 1;
-                              }
-
-                              if (a.name.includes("delivered") && !b.name.includes("delivered")) {
-                                return -1;
-                              }
-
-                              return 0;
-                            })
+                            .sort((a, b) => a.name.localeCompare(b.name))
                             .map((e) => {
                               return {
                                 name: e.name,
                                 value: e.id,
-                                tag: (e.template ?? e.campaign) ? (e.name.includes("opened") ? "On Open" : "On Delivery") : undefined,
                               };
                             }),
                         ]}

@@ -1,10 +1,27 @@
 import { createRoute, z } from "@hono/zod-openapi";
-import { MembershipPersistence, ProjectPersistence, UserPersistence } from "@sendra/lib";
-import { MembershipSchema, MembershipSchemas, ProjectSchema } from "@sendra/shared";
+import {
+  MembershipPersistence,
+  ProjectPersistence,
+  rootLogger,
+  UserPersistence,
+} from "@sendra/lib";
+import {
+  MembershipSchema,
+  MembershipSchemas,
+  ProjectSchema,
+} from "@sendra/shared";
 import type { AppType } from "../app";
-import { Conflict, HttpException, NotAllowed, NotFound } from "../exceptions";
+import { NotAllowed } from "../exceptions";
 import { getProblemResponseSchema } from "../exceptions/responses";
-import { isAuthenticatedProjectAdmin, isAuthenticatedProjectMember } from "../middleware/auth";
+import {
+  BearerAuth,
+  isAuthenticatedProjectAdmin,
+  isAuthenticatedProjectMember,
+} from "../middleware/auth";
+
+const logger = rootLogger.child({
+  module: "Memberships",
+});
 
 export const registerMembershipsRoutes = (app: AppType) => {
   app.openapi(
@@ -36,31 +53,49 @@ export const registerMembershipsRoutes = (app: AppType) => {
         404: getProblemResponseSchema(404),
         409: getProblemResponseSchema(409),
       },
+      ...BearerAuth,
       middleware: [isAuthenticatedProjectAdmin],
+      hide: true,
     }),
     async (c) => {
       const body = await c.req.json();
       const { projectId, email, role } = MembershipSchemas.invite.parse(body);
 
+      logger.info({ projectId, email, role }, "Inviting user to project");
+
       const userPersistence = new UserPersistence();
       const invitedUser = await userPersistence.getByEmail(email);
 
       if (!invitedUser) {
-        throw new HttpException(404, "We could not find that user, please ask them to sign up first.");
+        logger.info({ email }, "User not found");
       }
 
       const membershipPersistence = new MembershipPersistence();
-      const alreadyMember = await membershipPersistence.isMember(projectId, invitedUser.id);
-
-      const memberships = await membershipPersistence.getProjectMemberships(projectId);
+      const alreadyMember = invitedUser
+        ? await membershipPersistence.isMember(projectId, invitedUser.id)
+        : false;
+      const memberships = await membershipPersistence.getProjectMemberships(
+        projectId
+      );
       if (alreadyMember) {
+        logger.warn(
+          { projectId, email, role },
+          "User already a member of project"
+        );
         return c.json({ success: true, memberships }, 200);
       }
 
-      await membershipPersistence.invite(projectId, email, role);
+      await membershipPersistence.create({
+        email,
+        user: invitedUser?.id ?? "",
+        project: projectId,
+        role,
+      });
+
+      logger.info({ projectId, email, role }, "User invited to project");
 
       return c.json({ success: true, memberships }, 200);
-    },
+    }
   );
 
   app.openapi(
@@ -93,37 +128,47 @@ export const registerMembershipsRoutes = (app: AppType) => {
         404: getProblemResponseSchema(404),
         409: getProblemResponseSchema(409),
       },
+      ...BearerAuth,
       middleware: [isAuthenticatedProjectAdmin],
+      hide: true,
     }),
     async (c) => {
       const body = await c.req.json();
       const { projectId, email } = MembershipSchemas.kick.parse(body);
 
       const userId = c.get("auth").sub;
-      const userPersistence = new UserPersistence();
+      logger.info({ projectId, email }, "Kicking user from project");
+
       const membershipPersistence = new MembershipPersistence();
-      const kickedUser = await userPersistence.getByEmail(email);
 
-      if (!kickedUser) {
-        throw new NotFound("user");
+      const memberships = await membershipPersistence.getProjectMemberships(
+        projectId
+      );
+
+      const kickedUser = await new UserPersistence().getByEmail(email);
+
+      if (userId === kickedUser?.id) {
+        logger.warn({ projectId, email }, "User cannot kick themselves");
+        throw new NotAllowed("You cannot kick yourself");
       }
 
-      const isMember = await membershipPersistence.isMember(projectId, kickedUser.id);
+      await Promise.all(
+        memberships
+          .filter((membership) => membership.email === email)
+          .map((membership) => membershipPersistence.delete(membership.id))
+      );
+      logger.info({ projectId, email }, "Kicked user from project");
 
-      if (!isMember) {
-        throw new Conflict();
-      }
-
-      if (userId === kickedUser.id) {
-        throw new NotAllowed();
-      }
-
-      await membershipPersistence.kick(projectId, kickedUser.id);
-
-      const memberships = await membershipPersistence.getProjectMemberships(projectId);
-
-      return c.json({ success: true, memberships }, 200);
-    },
+      return c.json(
+        {
+          success: true,
+          memberships: memberships.filter(
+            (membership) => membership.email !== email
+          ),
+        },
+        200
+      );
+    }
   );
 
   app.openapi(
@@ -154,24 +199,41 @@ export const registerMembershipsRoutes = (app: AppType) => {
           description: "Leave a project",
         },
       },
+      ...BearerAuth,
       middleware: [isAuthenticatedProjectMember],
+      hide: true,
     }),
     async (c) => {
       const body = await c.req.json();
       const { projectId } = z.object({ projectId: z.string() }).parse(body);
 
       const userId = c.get("auth").sub;
+      logger.info({ projectId, userId }, "Leaving project");
 
       const membershipPersistence = new MembershipPersistence();
+      const memberships = await membershipPersistence.getUserMemberships(
+        userId
+      );
 
-      await membershipPersistence.kick(projectId, userId);
-
-      const memberships = await membershipPersistence.getUserMemberships(userId);
+      await Promise.all(
+        memberships
+          .filter((membership) => membership.project === projectId)
+          .map((membership) => membershipPersistence.delete(membership.id))
+      );
 
       const projectPersistence = new ProjectPersistence();
-      const projects = await projectPersistence.batchGet(memberships.map((membership) => membership.project));
+      const projects = await projectPersistence.batchGet(
+        memberships
+          .filter((membership) => membership.project === projectId)
+          .map((membership) => membership.project)
+      );
+
+      logger.info(
+        { projectId, userId, projects: projects.length },
+        "Left project"
+      );
 
       return c.json({ success: true, memberships: projects }, 200);
-    },
+    }
   );
 };

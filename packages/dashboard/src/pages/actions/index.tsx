@@ -55,10 +55,10 @@ export default function Index() {
                               <div className={"grid grid-cols-2 gap-3"}>
                                 <div>
                                   <label className={"text-xs font-medium text-neutral-500"} htmlFor="total-triggers">
-                                    Total triggers
+                                    Total events
                                   </label>
                                   <p className="mt-1 truncate text-sm text-neutral-500" id="total-triggers">
-                                    {a.triggers.length}
+                                    {a.events.length}
                                   </p>
                                 </div>
 
@@ -67,12 +67,12 @@ export default function Index() {
                                     Last activity
                                   </label>
                                   <p className="mt-1 truncate text-sm text-neutral-500" id="last-activity">
-                                    {a.triggers.length > 0 ? "Last triggered" : "Created"}{" "}
+                                    {a._embed.events.length > 0 ? "Last triggered" : "Created"}{" "}
                                     {dayjs()
                                       .to(
-                                        a.triggers.length > 0
-                                          ? a.triggers.sort((a, b) => {
-                                              return a.createdAt > b.createdAt ? -1 : 1;
+                                        a._embed.events.length > 0
+                                          ? a._embed.events.sort((e1, e2) => {
+                                              return e1.createdAt > e2.createdAt ? -1 : 1;
                                             })[0].createdAt
                                           : a.createdAt,
                                       )
@@ -84,7 +84,7 @@ export default function Index() {
                                     Open rate
                                   </label>
                                   <p className="mt-1 truncate text-sm text-neutral-500" id="open-rate">
-                                    {a.emails.length > 0 ? Math.round((a.emails.filter((e) => e.status === "OPENED").length / a.emails.length) * 100) : 0}%
+                                    {a._embed.emails.length > 0 ? Math.round((a._embed.emails.filter((e) => e.status === "OPENED").length / a._embed.emails.length) * 100) : 0}%
                                   </p>
                                 </div>
                                 {a.delay > 0 && (
@@ -93,7 +93,7 @@ export default function Index() {
                                       Emails in queue
                                     </label>
                                     <p className="mt-1 truncate text-sm text-neutral-500" id="emails-in-queue">
-                                      {a.emails.filter((e) => e.status === "QUEUED").length}
+                                      {a._embed.emails.filter((e) => e.status === "QUEUED").length}
                                     </p>
                                   </div>
                                 )}

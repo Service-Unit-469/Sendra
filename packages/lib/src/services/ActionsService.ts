@@ -1,6 +1,6 @@
-import type { Contact, Event, Project } from "@sendra/shared";
+import type { Contact, EventType, Project } from "@sendra/shared";
 import { rootLogger } from "../logging";
-import { ActionPersistence, TemplatePersistence, TriggerPersistence } from "../persistence";
+import { ActionPersistence, EventPersistence, TemplatePersistence } from "../persistence";
 import { TaskQueue } from "./TaskQueue";
 
 export class ActionsService {
@@ -10,36 +10,36 @@ export class ActionsService {
    * @param event
    * @param project
    */
-  public static async trigger({ event, contact, project }: { event: Event; contact: Contact; project: Project }) {
+  public static async trigger({ eventType, contact, project }: { eventType: EventType; contact: Contact; project: Project }) {
     const actionPersistence = new ActionPersistence(project.id);
-    const actions = await actionPersistence.listAll().then((actions) => actions.filter((action) => action.events.includes(event.id)));
+    const actions = await actionPersistence.listAll().then((actions) => actions.filter((action) => action.events.includes(eventType.id)));
 
-    const triggerPersistence = new TriggerPersistence(project.id);
-    const contactTriggers = await triggerPersistence.findAllBy({
+    const eventPersistence = new EventPersistence(project.id);
+    const contactEvents = await eventPersistence.findAllBy({
       key: "contact",
       value: contact.id,
     });
 
     for (const action of actions) {
-      const hasTriggeredAction = !!contactTriggers.find((t) => t.action === action.id);
+      const hasTriggeredAction = !!contactEvents.find((t) => t.relation === action.id);
 
       if (action.runOnce && hasTriggeredAction) {
         // User has already triggered this run once action
         continue;
       }
 
-      if (action.notevents.length > 0 && action.notevents.some((e) => contactTriggers.some((t) => t.event === e))) {
+      if (action.notevents.length > 0 && action.notevents.some((e) => contactEvents.some((t) => t.eventType === e))) {
         continue;
       }
 
-      let triggeredEvents = contactTriggers.filter((t) => t.event === event.id);
+      let triggeredEvents = contactEvents.filter((t) => t.eventType === eventType.id);
 
       if (hasTriggeredAction) {
-        const lastActionTrigger = contactTriggers.filter((t) => t.contact === contact.id && t.action === action.id)[0];
+        const lastActionTrigger = contactEvents.filter((t) => t.contact === contact.id && t.relation === action.id)[0];
         triggeredEvents = triggeredEvents.filter((e) => e.createdAt > lastActionTrigger.createdAt);
       }
 
-      const updatedTriggers = [...new Set(triggeredEvents.map((t) => t.event))];
+      const updatedTriggers = [...new Set(triggeredEvents.map((t) => t.eventType))];
       const requiredTriggers = action.events;
 
       if (updatedTriggers.sort().join(",") !== requiredTriggers.sort().join(",")) {
@@ -48,13 +48,13 @@ export class ActionsService {
       }
 
       // Create trigger in DynamoDB
-      const trigger = {
+      const event = {
         action: action.id,
         contact: contact.id,
-        event: event.id,
+        eventType: eventType.id,
         project: project.id,
       };
-      await triggerPersistence.create(trigger);
+      await eventPersistence.create(event);
 
       const templatePersistence = new TemplatePersistence(project.id);
       const template = await templatePersistence.get(action.template);

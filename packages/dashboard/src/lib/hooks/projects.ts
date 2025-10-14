@@ -54,7 +54,9 @@ export function useActiveProjectFeed(page: number) {
       | {
           createdAt: Date;
           contact?: Contact;
-          event?: Event;
+          event?: {
+            name: string;
+          };
           action?: Action;
         }
       | ({

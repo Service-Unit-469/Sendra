@@ -5,7 +5,7 @@ import { MembershipSchema, ProjectSchemas } from "@sendra/shared";
 import type { AppType } from "../../app";
 import { NotFound } from "../../exceptions";
 import { getProblemResponseSchema } from "../../exceptions/responses";
-import { isAuthenticatedProjectAdmin, isAuthenticatedProjectMember, isAuthenticatedProjectMemberOrSecretKey, isAuthenticatedUser } from "../../middleware/auth";
+import { BearerAuth, isAuthenticatedProjectAdmin, isAuthenticatedProjectMember, isAuthenticatedProjectMemberOrSecretKey, isAuthenticatedUser } from "../../middleware/auth";
 
 export const registerProjectCrudRoutes = (app: AppType) => {
   app.openapi(
@@ -23,7 +23,9 @@ export const registerProjectCrudRoutes = (app: AppType) => {
           description: "Retrieve the user",
         },
       },
+      ...BearerAuth,
       middleware: [isAuthenticatedUser],
+      hide: true,
     }),
     async (c) => {
       const auth = c.get("auth");
@@ -63,6 +65,7 @@ export const registerProjectCrudRoutes = (app: AppType) => {
         404: getProblemResponseSchema(404),
         403: getProblemResponseSchema(403),
       },
+      ...BearerAuth,
       middleware: [isAuthenticatedProjectMemberOrSecretKey],
     }),
     async (c) => {
@@ -142,7 +145,9 @@ export const registerProjectCrudRoutes = (app: AppType) => {
         404: getProblemResponseSchema(404),
         403: getProblemResponseSchema(403),
       },
+      ...BearerAuth,
       middleware: [isAuthenticatedUser],
+      hide: true,
     }),
     async (c) => {
       const { name, url } = ProjectSchemas.create.parse(await c.req.json());
@@ -202,7 +207,9 @@ export const registerProjectCrudRoutes = (app: AppType) => {
         404: getProblemResponseSchema(404),
         403: getProblemResponseSchema(403),
       },
+      ...BearerAuth,
       middleware: [isAuthenticatedProjectAdmin],
+      hide: true,
     }),
     async (c) => {
       const projectId = c.req.param("projectId");
@@ -230,7 +237,9 @@ export const registerProjectCrudRoutes = (app: AppType) => {
         404: getProblemResponseSchema(404),
         403: getProblemResponseSchema(403),
       },
+      ...BearerAuth,
       middleware: [isAuthenticatedProjectAdmin],
+      hide: true,
     }),
     async (c) => {
       const projectId = c.req.param("projectId");
