@@ -1,13 +1,7 @@
 import type { EventType } from "@sendra/shared";
-import { EventSchema, EventTypeSchema } from "@sendra/shared";
+import { EventTypeSchema } from "@sendra/shared";
 import { TaskQueue } from "../services/TaskQueue";
-import {
-  BasePersistence,
-  type Embeddable,
-  type EmbeddedObject,
-  type IndexInfo,
-  LOCAL_INDEXES,
-} from "./BasePersistence";
+import { BasePersistence, type Embeddable, type EmbeddedObject, type IndexInfo, LOCAL_INDEXES } from "./BasePersistence";
 import { embedHelper } from "./utils/EmbedHelper";
 import { HttpException } from "./utils/HttpException";
 
@@ -16,10 +10,7 @@ export class EventTypePersistence extends BasePersistence<EventType> {
     super(`EVENT_TYPE#${projectId}`, EventTypeSchema);
   }
 
-  async embed(
-    items: EventType[],
-    embed?: Embeddable[]
-  ): Promise<EmbeddedObject<EventType>[]> {
+  async embed(items: EventType[], embed?: Embeddable[]): Promise<EmbeddedObject<EventType>[]> {
     return await embedHelper(items, "eventType", ["events"], embed);
   }
 
@@ -51,9 +42,7 @@ export class EventTypePersistence extends BasePersistence<EventType> {
     });
   }
 
-  projectItem(
-    item: EventType
-  ): EventType & { i_attr1?: string; i_attr2?: string; i_attr3?: string } {
+  projectItem(item: EventType): EventType & { i_attr1?: string; i_attr2?: string; i_attr3?: string } {
     return {
       ...item,
       i_attr1: item.name,

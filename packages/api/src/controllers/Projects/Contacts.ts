@@ -1,11 +1,6 @@
 import { createRoute, z } from "@hono/zod-openapi";
 import { ContactPersistence } from "@sendra/lib";
-import {
-  ContactSchema,
-  ContactSchemas,
-  EmailSchema,
-  EventSchema,
-} from "@sendra/shared";
+import { ContactSchema, ContactSchemas, EmailSchema, EventSchema } from "@sendra/shared";
 import type { AppType } from "../../app";
 import { HttpException, NotFound } from "../../exceptions";
 import { getProblemResponseSchema } from "../../exceptions/responses";
@@ -31,9 +26,7 @@ export const registerContactsRoutes = (app: AppType) => {
     getPersistence: (projectId: string) => new ContactPersistence(projectId),
     preCreateEntity: async (projectId, contact) => {
       const contactPersistence = new ContactPersistence(projectId);
-      const existingContact = await contactPersistence.getByEmail(
-        contact.email
-      );
+      const existingContact = await contactPersistence.getByEmail(contact.email);
 
       if (existingContact) {
         throw new HttpException(409, "Contact already exists");
@@ -82,7 +75,7 @@ export const registerContactsRoutes = (app: AppType) => {
       await contactPersistence.put(updatedContact);
 
       return c.json(updatedContact, 200);
-    }
+    },
   );
 
   app.openapi(
@@ -125,6 +118,6 @@ export const registerContactsRoutes = (app: AppType) => {
       await contactPersistence.put(updatedContact);
 
       return c.json(updatedContact, 200);
-    }
+    },
   );
 };

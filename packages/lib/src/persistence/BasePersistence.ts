@@ -1,14 +1,7 @@
 import { DynamoDBClient, QueryCommand } from "@aws-sdk/client-dynamodb";
-import {
-  BatchGetCommand,
-  BatchWriteCommand,
-  DeleteCommand,
-  DynamoDBDocumentClient,
-  GetCommand,
-  PutCommand,
-} from "@aws-sdk/lib-dynamodb";
+import { BatchGetCommand, BatchWriteCommand, DeleteCommand, DynamoDBDocumentClient, GetCommand, PutCommand } from "@aws-sdk/lib-dynamodb";
 import { unmarshall } from "@aws-sdk/util-dynamodb";
-import type { Action, Email, Template, Event } from "@sendra/shared";
+import type { Action, Email, Event, Template } from "@sendra/shared";
 import { Resource } from "sst";
 import { uuidv7 } from "uuidv7";
 import type { ZodType } from "zod";
@@ -103,14 +96,10 @@ export type EmbeddedObject<T> = T & {
 export abstract class BasePersistence<T extends BaseItem> {
   constructor(
     private readonly type: string,
-    private readonly schema: ZodType<T>
+    private readonly schema: ZodType<T>,
   ) {}
 
-  abstract embed(
-    items: T[],
-    embed?: Embeddable[],
-    limit?: number
-  ): Promise<EmbeddedObject<T>[]>;
+  abstract embed(items: T[], embed?: Embeddable[], limit?: number): Promise<EmbeddedObject<T>[]>;
 
   abstract getIndexInfo(key: string): IndexInfo;
 
@@ -147,9 +136,7 @@ export abstract class BasePersistence<T extends BaseItem> {
     });
     const result = await docClient.send(command);
 
-    const items: T[] = result.Responses?.[TABLE_NAME].filter(
-      (item) => item !== undefined
-    ) as T[];
+    const items: T[] = result.Responses?.[TABLE_NAME].filter((item) => item !== undefined) as T[];
     if (!items) {
       return [];
     }
@@ -195,9 +182,7 @@ export abstract class BasePersistence<T extends BaseItem> {
     const config = {
       TableName: TABLE_NAME,
       IndexName: indexName,
-      KeyConditionExpression: `#hashKey = :pk${
-        rangeKey && value ? ` AND #rangeKey ${comparator ?? "="} :rk` : ""
-      }`,
+      KeyConditionExpression: `#hashKey = :pk${rangeKey && value ? ` AND #rangeKey ${comparator ?? "="} :rk` : ""}`,
       ExpressionAttributeNames: (rangeKey && value
         ? {
             "#hashKey": hashKey,
@@ -207,18 +192,11 @@ export abstract class BasePersistence<T extends BaseItem> {
       ExpressionAttributeValues: {
         ":pk": { S: this.type },
         ...(value && {
-          ":rk":
-            typeof value === "string"
-              ? { S: value }
-              : typeof value === "number"
-              ? { N: value.toString() }
-              : value,
+          ":rk": typeof value === "string" ? { S: value } : typeof value === "number" ? { N: value.toString() } : value,
         }),
       },
       Limit: limit,
-      ExclusiveStartKey: cursor
-        ? JSON.parse(Buffer.from(cursor, "base64").toString("ascii"))
-        : undefined,
+      ExclusiveStartKey: cursor ? JSON.parse(Buffer.from(cursor, "base64").toString("ascii")) : undefined,
     };
     const logger = rootLogger.child({
       method: {
@@ -230,27 +208,18 @@ export abstract class BasePersistence<T extends BaseItem> {
     const command = new QueryCommand(config);
     const result = await docClient.send(command);
 
-    const items =
-      result.Items?.map((item) => unmarshall(item) as T).map((i) =>
-        this.schema.parse(i)
-      ) ?? [];
+    const items = result.Items?.map((item) => unmarshall(item) as T).map((i) => this.schema.parse(i)) ?? [];
 
     return {
       items: await this.embed(items, embed, limit),
-      cursor: result.LastEvaluatedKey
-        ? Buffer.from(JSON.stringify(result.LastEvaluatedKey)).toString(
-            "base64"
-          )
-        : undefined,
+      cursor: result.LastEvaluatedKey ? Buffer.from(JSON.stringify(result.LastEvaluatedKey)).toString("base64") : undefined,
       hasMore: !!result.LastEvaluatedKey,
       count: result.Count ?? 0,
     };
   }
 
   @logMethodReturningPromise("BasePersistence")
-  async findAllBy(
-    params: Omit<QueryParams, "limit" | "cursor">
-  ): Promise<EmbeddedObject<T>[]> {
+  async findAllBy(params: Omit<QueryParams, "limit" | "cursor">): Promise<EmbeddedObject<T>[]> {
     const { embed } = params;
     const result = await this.findBy({
       ...params,
@@ -270,10 +239,7 @@ export abstract class BasePersistence<T extends BaseItem> {
   }
 
   @logMethodReturningPromise("BasePersistence")
-  async get(
-    key: string,
-    options?: Pick<QueryParams, "embed">
-  ): Promise<EmbeddedObject<T> | undefined> {
+  async get(key: string, options?: Pick<QueryParams, "embed">): Promise<EmbeddedObject<T> | undefined> {
     const { embed } = options ?? {};
     const command = new GetCommand({
       TableName: TABLE_NAME,
@@ -290,9 +256,7 @@ export abstract class BasePersistence<T extends BaseItem> {
   }
 
   @logMethodReturningPromise("BasePersistence")
-  async list(
-    params?: Pick<QueryParams, "limit" | "cursor" | "embed">
-  ): Promise<QueryResult<EmbeddedObject<T>>> {
+  async list(params?: Pick<QueryParams, "limit" | "cursor" | "embed">): Promise<QueryResult<EmbeddedObject<T>>> {
     const { limit, cursor, embed } = params ?? {};
 
     const command = new QueryCommand({
@@ -305,32 +269,21 @@ export abstract class BasePersistence<T extends BaseItem> {
         ":pk": { S: this.type },
       },
       Limit: limit,
-      ExclusiveStartKey: cursor
-        ? JSON.parse(Buffer.from(cursor, "base64").toString("ascii"))
-        : undefined,
+      ExclusiveStartKey: cursor ? JSON.parse(Buffer.from(cursor, "base64").toString("ascii")) : undefined,
     });
     const result = await docClient.send(command);
 
-    const items =
-      result.Items?.map((item) => unmarshall(item) as T).map((i) =>
-        this.schema.parse(i)
-      ) ?? [];
+    const items = result.Items?.map((item) => unmarshall(item) as T).map((i) => this.schema.parse(i)) ?? [];
 
     return {
       items: await this.embed(items, embed, limit),
-      cursor: result.LastEvaluatedKey
-        ? Buffer.from(JSON.stringify(result.LastEvaluatedKey)).toString(
-            "base64"
-          )
-        : undefined,
+      cursor: result.LastEvaluatedKey ? Buffer.from(JSON.stringify(result.LastEvaluatedKey)).toString("base64") : undefined,
       hasMore: !!result.LastEvaluatedKey,
       count: result.Count ?? 0,
     };
   }
 
-  async listAll(
-    options?: Pick<QueryParams, "embed">
-  ): Promise<EmbeddedObject<T>[]> {
+  async listAll(options?: Pick<QueryParams, "embed">): Promise<EmbeddedObject<T>[]> {
     const { embed } = options ?? {};
     const all: T[] = [];
     let cursor: string | undefined;
@@ -361,9 +314,7 @@ export abstract class BasePersistence<T extends BaseItem> {
   }
 }
 
-export abstract class UnembeddingBasePersistence<
-  T extends BaseItem
-> extends BasePersistence<T> {
+export abstract class UnembeddingBasePersistence<T extends BaseItem> extends BasePersistence<T> {
   embed(items: T[], embed?: Embeddable[]): Promise<EmbeddedObject<T>[]> {
     if (embed && embed.length > 0) {
       throw new HttpException(400, "This persistence does not support embed");

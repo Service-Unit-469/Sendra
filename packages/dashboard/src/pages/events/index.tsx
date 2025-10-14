@@ -134,7 +134,9 @@ export default function Index() {
                     return {
                       Event: e.name,
                       "Triggered by users": (
-                        <Badge type={"info"}>{`${e._embed.events.length > 0 ? Math.round(([...new Map(e._embed.events.map((t) => [t.contact, t])).values()].length / contacts.length) * 100) : 0}%`}</Badge>
+                        <Badge
+                          type={"info"}
+                        >{`${e._embed.events.length > 0 ? Math.round(([...new Map(e._embed.events.map((t) => [t.contact, t])).values()].length / contacts.length) * 100) : 0}%`}</Badge>
                       ),
                       "Total triggers": e._embed.events.length,
                       Timeline: (
@@ -229,9 +231,11 @@ export default function Index() {
                         </button>
                       ),
 
-                      Remove: <button onClick={() => remove(e.id)} className={"flex items-center text-center text-sm font-medium transition hover:text-neutral-800"}>
+                      Remove: (
+                        <button onClick={() => remove(e.id)} className={"flex items-center text-center text-sm font-medium transition hover:text-neutral-800"}>
                           <Trash size={18} />
-                        </button>,
+                        </button>
+                      ),
                     };
                   })}
               />
@@ -258,7 +262,9 @@ export default function Index() {
                     return {
                       Event: e.name,
                       "Triggered by users": (
-                        <Badge type={"info"}>{`${e._embed.events.length > 0 ? Math.round(([...new Map(e._embed.events.map((t) => [t.contact, t])).values()].length / contacts.length) * 100) : 0}%`}</Badge>
+                        <Badge
+                          type={"info"}
+                        >{`${e._embed.events.length > 0 ? Math.round(([...new Map(e._embed.events.map((t) => [t.contact, t])).values()].length / contacts.length) * 100) : 0}%`}</Badge>
                       ),
                       "Total times triggered": e._embed.events.length,
                       "Last Activity": dayjs()

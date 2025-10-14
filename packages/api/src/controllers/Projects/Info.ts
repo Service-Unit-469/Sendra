@@ -1,12 +1,5 @@
 import { createRoute, z } from "@hono/zod-openapi";
-import {
-  ActionPersistence,
-  ContactPersistence,
-  EmailPersistence,
-  EventPersistence,
-  EventTypePersistence,
-  ProjectPersistence,
-} from "@sendra/lib";
+import { ActionPersistence, ContactPersistence, EmailPersistence, EventPersistence, EventTypePersistence, ProjectPersistence } from "@sendra/lib";
 import type { Action, Contact, Email, Event, EventType } from "@sendra/shared";
 import dayjs from "dayjs";
 import type { AppType } from "../../app";
@@ -37,7 +30,7 @@ export const registerProjectInfoRoutes = (app: AppType) => {
                     z.object({
                       day: z.string(),
                       count: z.number(),
-                    })
+                    }),
                   ),
                   subscribed: z.number(),
                   unsubscribed: z.number(),
@@ -83,10 +76,7 @@ export const registerProjectInfoRoutes = (app: AppType) => {
         .toDate();
 
       // Get all contacts and emails for the project
-      const [allContacts, allEmails] = await Promise.all([
-        new ContactPersistence(projectId).listAll(),
-        new EmailPersistence(projectId).listAll(),
-      ]);
+      const [allContacts, allEmails] = await Promise.all([new ContactPersistence(projectId).listAll(), new EmailPersistence(projectId).listAll()]);
 
       // Basic contact analytics
       const subscribed = allContacts.filter((c) => c.subscribed).length;
@@ -96,9 +86,7 @@ export const registerProjectInfoRoutes = (app: AppType) => {
       const total = allEmails.length;
       const opened = allEmails.filter((e) => e.status === "OPENED").length;
       const bounced = allEmails.filter((e) => e.status === "BOUNCED").length;
-      const complaint = allEmails.filter(
-        (e) => e.status === "COMPLAINT"
-      ).length;
+      const complaint = allEmails.filter((e) => e.status === "COMPLAINT").length;
 
       // Filter emails by date range for previous period comparison
       const emailsInRange = allEmails.filter((e) => {
@@ -107,23 +95,15 @@ export const registerProjectInfoRoutes = (app: AppType) => {
       });
 
       const totalPrev = emailsInRange.length;
-      const openedPrev = emailsInRange.filter(
-        (e) => e.status === "OPENED"
-      ).length;
-      const bouncedPrev = emailsInRange.filter(
-        (e) => e.status === "BOUNCED"
-      ).length;
-      const complaintPrev = emailsInRange.filter(
-        (e) => e.status === "COMPLAINT"
-      ).length;
+      const openedPrev = emailsInRange.filter((e) => e.status === "OPENED").length;
+      const bouncedPrev = emailsInRange.filter((e) => e.status === "BOUNCED").length;
+      const complaintPrev = emailsInRange.filter((e) => e.status === "COMPLAINT").length;
 
       // Simple timeseries data (simplified version)
       const timeseries = [];
       for (let i = 0; i < 30; i++) {
         const date = dayjs().subtract(i, "days").format("YYYY-MM-DD");
-        const dayContacts = allContacts.filter(
-          (c) => dayjs(c.createdAt).format("YYYY-MM-DD") === date
-        ).length;
+        const dayContacts = allContacts.filter((c) => dayjs(c.createdAt).format("YYYY-MM-DD") === date).length;
         timeseries.push({ day: date, count: dayContacts });
       }
 
@@ -144,9 +124,9 @@ export const registerProjectInfoRoutes = (app: AppType) => {
             actions: [],
           },
         },
-        200
+        200,
       );
-    }
+    },
   );
 
   app.openapi(
@@ -197,7 +177,7 @@ export const registerProjectInfoRoutes = (app: AppType) => {
                       })
                       .optional(),
                   }),
-                ])
+                ]),
               ),
             },
           },
@@ -225,10 +205,7 @@ export const registerProjectInfoRoutes = (app: AppType) => {
       const skip = 0;
 
       // Get all triggers and emails for the project
-      const [events, emails] = await Promise.all([
-        new EventPersistence(projectId).list(),
-        new EmailPersistence(projectId).list(),
-      ]);
+      const [events, emails] = await Promise.all([new EventPersistence(projectId).list(), new EmailPersistence(projectId).list()]);
 
       const contactsPersistence = new ContactPersistence(projectId);
       const eventTypesPersistence = new EventTypePersistence(projectId);
@@ -269,13 +246,7 @@ export const registerProjectInfoRoutes = (app: AppType) => {
       // Get contact and event details for triggers
       const eventsWithDetails = await Promise.all(
         events.items.map(async (event: Event) => {
-          const [contact, eventType, action] = await Promise.all([
-            getContact(event.contact),
-            getEventType(event.eventType),
-            getAction(
-              event.relationType === "ACTION" ? event.relation : undefined
-            ),
-          ]);
+          const [contact, eventType, action] = await Promise.all([getContact(event.contact), getEventType(event.eventType), getAction(event.relationType === "ACTION" ? event.relation : undefined)]);
           return {
             type: "trigger",
             id: event.id,
@@ -297,7 +268,7 @@ export const registerProjectInfoRoutes = (app: AppType) => {
                 }
               : undefined,
           } as const;
-        })
+        }),
       );
 
       // Get contact details for emails
@@ -317,7 +288,7 @@ export const registerProjectInfoRoutes = (app: AppType) => {
                 }
               : undefined,
           } as const;
-        })
+        }),
       );
 
       // Combine and sort by createdAt
@@ -325,7 +296,7 @@ export const registerProjectInfoRoutes = (app: AppType) => {
       combined.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
 
       return c.json(combined.slice(skip, skip + itemsPerPage), 200);
-    }
+    },
   );
 
   app.openapi(
@@ -384,15 +355,9 @@ export const registerProjectInfoRoutes = (app: AppType) => {
       });
 
       // Count different types of emails
-      const transactional = monthlyEmails.filter(
-        (email: Email) => !email.source
-      ).length;
-      const automation = monthlyEmails.filter(
-        (email: Email) => email.source && email.sourceType === "ACTION"
-      ).length;
-      const campaign = monthlyEmails.filter(
-        (email: Email) => email.source && email.sourceType === "CAMPAIGN"
-      ).length;
+      const transactional = monthlyEmails.filter((email: Email) => !email.source).length;
+      const automation = monthlyEmails.filter((email: Email) => email.source && email.sourceType === "ACTION").length;
+      const campaign = monthlyEmails.filter((email: Email) => email.source && email.sourceType === "CAMPAIGN").length;
 
       return c.json(
         {
@@ -400,8 +365,8 @@ export const registerProjectInfoRoutes = (app: AppType) => {
           automation,
           campaign,
         },
-        200
+        200,
       );
-    }
+    },
   );
 };

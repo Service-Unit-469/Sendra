@@ -1,11 +1,6 @@
 import { createRoute, z } from "@hono/zod-openapi";
 import { ActionPersistence, TemplatePersistence } from "@sendra/lib";
-import {
-  ActionSchema,
-  ActionSchemas,
-  EmailSchema,
-  EventSchema,
-} from "@sendra/shared";
+import { ActionSchema, ActionSchemas, EmailSchema, EventSchema } from "@sendra/shared";
 import type { AppType } from "../../app";
 import { NotFound } from "../../exceptions";
 import { getProblemResponseSchema } from "../../exceptions/responses";
@@ -90,6 +85,6 @@ export const registerActionsRoutes = (app: AppType) => {
       const actionPersistence = new ActionPersistence(projectId);
       const related = await actionPersistence.getRelated(actionId);
       return c.json(related, 200);
-    }
+    },
   );
 };

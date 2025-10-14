@@ -32,85 +32,70 @@ export const isAuthenticatedUser = createMiddleware(async (c, next) => {
   await next();
 });
 
-export const isAuthenticatedProjectMemberKey = createMiddleware(
-  async (c, next) => {
-    const auth = AuthService.parseToken(c);
-    const projectId = await getProjectId(c.req);
-    if (auth.type === "secret" || auth.type === "public") {
-      const projectPersistence = new ProjectPersistence();
-      const project = await projectPersistence.get(projectId);
-      if (!project) {
-        throw new HttpException(404, "Project not found");
-      }
-      if (
-        project.id !== auth.sub ||
-        (project.secret !== auth.kid && project.public !== auth.kid)
-      ) {
-        throw new HttpException(403, "Project not found");
-      }
-      c.set("auth", auth);
-    } else {
-      const membershipPersistence = new MembershipPersistence();
-      const isMember = await membershipPersistence.isMember(
-        projectId,
-        auth.sub
-      );
-      if (!isMember) {
-        throw new HttpException(404, "Project not found");
-      }
+export const isAuthenticatedProjectMemberKey = createMiddleware(async (c, next) => {
+  const auth = AuthService.parseToken(c);
+  const projectId = await getProjectId(c.req);
+  if (auth.type === "secret" || auth.type === "public") {
+    const projectPersistence = new ProjectPersistence();
+    const project = await projectPersistence.get(projectId);
+    if (!project) {
+      throw new HttpException(404, "Project not found");
     }
-    await next();
-  }
-);
-
-export const isAuthenticatedProjectMemberOrSecretKey = createMiddleware(
-  async (c, next) => {
-    const auth = AuthService.parseToken(c);
-    if (auth.type !== "user" && auth.type !== "secret") {
-      throw new HttpException(400, "Invalid authorization token for request");
+    if (project.id !== auth.sub || (project.secret !== auth.kid && project.public !== auth.kid)) {
+      throw new HttpException(403, "Project not found");
     }
-    const projectId = await getProjectId(c.req);
-    if (auth.type === "secret") {
-      const projectPersistence = new ProjectPersistence();
-      const project = await projectPersistence.get(projectId);
-      if (!project) {
-        throw new HttpException(404, "Project not found");
-      }
-      if (project.id !== auth.sub || project.secret !== auth.kid) {
-        throw new HttpException(403, "Project not found");
-      }
-      c.set("auth", auth);
-    } else {
-      const membershipPersistence = new MembershipPersistence();
-      const isMember = await membershipPersistence.isMember(
-        projectId,
-        auth.sub
-      );
-      if (!isMember) {
-        throw new HttpException(404, "Project not found");
-      }
-    }
-    await next();
-  }
-);
-
-export const isAuthenticatedProjectMember = createMiddleware(
-  async (c, next) => {
-    const auth = AuthService.parseToken(c, "user");
-    if (auth.type !== "user") {
-      throw new HttpException(400, "Invalid authorization token for request");
-    }
-
-    const projectId = await getProjectId(c.req);
+    c.set("auth", auth);
+  } else {
     const membershipPersistence = new MembershipPersistence();
     const isMember = await membershipPersistence.isMember(projectId, auth.sub);
     if (!isMember) {
       throw new HttpException(404, "Project not found");
     }
-    c.set("auth", auth);
-    await next();
   }
-);
+  await next();
+});
+
+export const isAuthenticatedProjectMemberOrSecretKey = createMiddleware(async (c, next) => {
+  const auth = AuthService.parseToken(c);
+  if (auth.type !== "user" && auth.type !== "secret") {
+    throw new HttpException(400, "Invalid authorization token for request");
+  }
+  const projectId = await getProjectId(c.req);
+  if (auth.type === "secret") {
+    const projectPersistence = new ProjectPersistence();
+    const project = await projectPersistence.get(projectId);
+    if (!project) {
+      throw new HttpException(404, "Project not found");
+    }
+    if (project.id !== auth.sub || project.secret !== auth.kid) {
+      throw new HttpException(403, "Project not found");
+    }
+    c.set("auth", auth);
+  } else {
+    const membershipPersistence = new MembershipPersistence();
+    const isMember = await membershipPersistence.isMember(projectId, auth.sub);
+    if (!isMember) {
+      throw new HttpException(404, "Project not found");
+    }
+  }
+  await next();
+});
+
+export const isAuthenticatedProjectMember = createMiddleware(async (c, next) => {
+  const auth = AuthService.parseToken(c, "user");
+  if (auth.type !== "user") {
+    throw new HttpException(400, "Invalid authorization token for request");
+  }
+
+  const projectId = await getProjectId(c.req);
+  const membershipPersistence = new MembershipPersistence();
+  const isMember = await membershipPersistence.isMember(projectId, auth.sub);
+  if (!isMember) {
+    throw new HttpException(404, "Project not found");
+  }
+  c.set("auth", auth);
+  await next();
+});
 
 export const isAuthenticatedProjectAdmin = createMiddleware(async (c, next) => {
   const auth = AuthService.parseToken(c, "user");
@@ -126,10 +111,7 @@ export const isAuthenticatedProjectAdmin = createMiddleware(async (c, next) => {
     throw new HttpException(404, "Project not found");
   }
   if (!isAdmin) {
-    throw new HttpException(
-      403,
-      "You do not have permission to perform this action"
-    );
+    throw new HttpException(403, "You do not have permission to perform this action");
   }
   c.set("auth", auth);
   await next();

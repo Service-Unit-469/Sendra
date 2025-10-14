@@ -1,4 +1,4 @@
-import type { Action, Contact, Email, Event, Membership, ProjectKeys, PublicProject } from "@sendra/shared";
+import type { Action, Contact, Email, Membership, ProjectKeys, PublicProject } from "@sendra/shared";
 import { useAtom } from "jotai";
 import useSWR from "swr";
 import { atomActiveProject } from "../atoms/project";

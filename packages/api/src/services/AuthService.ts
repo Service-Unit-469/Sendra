@@ -1,10 +1,5 @@
 import { z } from "@hono/zod-openapi";
-import {
-  authConfig,
-  MembershipPersistence,
-  rootLogger,
-  UserPersistence,
-} from "@sendra/lib";
+import { authConfig, MembershipPersistence, rootLogger, UserPersistence } from "@sendra/lib";
 import { type User, UserSchemas } from "@sendra/shared";
 import type { Context, HonoRequest } from "hono";
 import { type JwtPayload, sign, verify } from "jsonwebtoken";
@@ -131,8 +126,8 @@ export class AuthService {
           membershipPersistence.put({
             ...membership,
             user: created_user.id,
-          })
-        )
+          }),
+        ),
       );
     }
 
@@ -154,15 +149,11 @@ export class AuthService {
         expiresIn: authConfig.ttl.user as number | StringValue,
         issuer: authConfig.issuer,
         subject: userId,
-      }
+      },
     );
   }
 
-  public static createProjectToken(
-    key: string,
-    type: "secret" | "public",
-    projectId: string
-  ) {
+  public static createProjectToken(key: string, type: "secret" | "public", projectId: string) {
     return sign(
       {
         type,
@@ -173,7 +164,7 @@ export class AuthService {
         issuer: authConfig.issuer,
         subject: projectId,
         keyid: key,
-      }
+      },
     );
   }
 

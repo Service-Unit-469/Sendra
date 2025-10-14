@@ -1,12 +1,6 @@
 import type { Action } from "@sendra/shared";
 import { ActionSchema } from "@sendra/shared";
-import {
-  BasePersistence,
-  type Embeddable,
-  type EmbeddedObject,
-  type IndexInfo,
-  LOCAL_INDEXES,
-} from "./BasePersistence";
+import { BasePersistence, type Embeddable, type EmbeddedObject, type IndexInfo, LOCAL_INDEXES } from "./BasePersistence";
 import { embedHelper } from "./utils/EmbedHelper";
 import { HttpException } from "./utils/HttpException";
 
@@ -15,10 +9,7 @@ export class ActionPersistence extends BasePersistence<Action> {
     super(`ACTION#${projectId}`, ActionSchema);
   }
 
-  async embed(
-    items: Action[],
-    embed?: Embeddable[]
-  ): Promise<EmbeddedObject<Action>[]> {
+  async embed(items: Action[], embed?: Embeddable[]): Promise<EmbeddedObject<Action>[]> {
     return embedHelper(items, "action", ["emails", "events"], embed);
   }
 
@@ -48,11 +39,7 @@ export class ActionPersistence extends BasePersistence<Action> {
     return actions
       .filter((item) => item.id !== id)
       .filter((item) => {
-        return (
-          action.events.some((event) => item.events.includes(event)) ||
-          action.notevents.some((event) => item.notevents.includes(event)) ||
-          action.template === item.template
-        );
+        return action.events.some((event) => item.events.includes(event)) || action.notevents.some((event) => item.notevents.includes(event)) || action.template === item.template;
       });
   }
 }

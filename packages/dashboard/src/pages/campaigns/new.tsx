@@ -188,10 +188,10 @@ export default function Index() {
                             e.length > 0
                               ? { ...query, events: e }
                               : {
-                                ...query,
-                                events: undefined,
-                                last: undefined,
-                              },
+                                  ...query,
+                                  events: undefined,
+                                  last: undefined,
+                                },
                           )
                         }
                         values={[
@@ -202,7 +202,6 @@ export default function Index() {
                               return {
                                 name: e.name,
                                 value: e.id,
-
                               };
                             }),
                         ]}
@@ -245,10 +244,10 @@ export default function Index() {
                             e.length > 0
                               ? { ...query, notevents: e }
                               : {
-                                ...query,
-                                notevents: undefined,
-                                notlast: undefined,
-                              },
+                                  ...query,
+                                  notevents: undefined,
+                                  notlast: undefined,
+                                },
                           );
                         }}
                         values={[

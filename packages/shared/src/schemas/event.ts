@@ -1,11 +1,5 @@
 import z from "zod";
-import {
-  DataSchema,
-  email,
-  id,
-  ProjectEntitySchema,
-  subscribed,
-} from "./common";
+import { DataSchema, email, id, ProjectEntitySchema, subscribed } from "./common";
 
 export const EventSchema = ProjectEntitySchema.extend({
   eventType: id,
@@ -56,7 +50,7 @@ export const EventSchemas = {
           filename: z.string(),
           content: z.string(), // Base64 encoded content
           contentType: z.string(),
-        })
+        }),
       )
       .max(5, "You can only include up to 5 attachments")
       .optional(),

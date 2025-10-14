@@ -1,29 +1,8 @@
 import { createRoute, z } from "@hono/zod-openapi";
-import {
-  ActionsService,
-  ContactPersistence,
-  EmailPersistence,
-  EmailService,
-  EventPersistence,
-  EventTypePersistence,
-  ProjectPersistence,
-  rootLogger,
-} from "@sendra/lib";
-import {
-  type Contact,
-  type ContactSchemas,
-  EventSchema,
-  EventSchemas,
-  EventTypeSchema,
-  id,
-} from "@sendra/shared";
+import { ActionsService, ContactPersistence, EmailPersistence, EmailService, EventPersistence, EventTypePersistence, ProjectPersistence, rootLogger } from "@sendra/lib";
+import { type Contact, type ContactSchemas, EventSchema, EventSchemas, EventTypeSchema, id } from "@sendra/shared";
 import type { AppType } from "../../app";
-import {
-  BadRequest,
-  HttpException,
-  NotAllowed,
-  NotFound,
-} from "../../exceptions";
+import { BadRequest, HttpException, NotAllowed, NotFound } from "../../exceptions";
 import { getProblemResponseSchema } from "../../exceptions/responses";
 
 import { BearerAuth, isAuthenticatedProjectMemberKey } from "../../middleware/auth";
@@ -72,7 +51,7 @@ export const registerEventsRoutes = (app: AppType) => {
       const { projectId, eventTypeId } = c.req.param();
       await new EventTypePersistence(projectId).delete(eventTypeId);
       return c.body(null, 200);
-    }
+    },
   );
 
   app.openapi(
@@ -114,30 +93,14 @@ export const registerEventsRoutes = (app: AppType) => {
         throw new HttpException(400, result.error.issues[0].message);
       }
 
-      const {
-        from,
-        name,
-        reply,
-        to,
-        subject,
-        body,
-        subscribed,
-        headers,
-        attachments,
-      } = result.data;
+      const { from, name, reply, to, subject, body, subscribed, headers, attachments } = result.data;
 
       if (!project.email || !project.verified) {
-        throw new HttpException(
-          400,
-          "Verify your domain before you start sending"
-        );
+        throw new HttpException(400, "Verify your domain before you start sending");
       }
 
       if (from && from.split("@")[1] !== project.email?.split("@")[1]) {
-        throw new HttpException(
-          400,
-          "Custom from address must be from a verified domain"
-        );
+        throw new HttpException(400, "Custom from address must be from a verified domain");
       }
 
       const emails: {
@@ -218,16 +181,10 @@ export const registerEventsRoutes = (app: AppType) => {
         });
       }
 
-      rootLogger.info(
-        { to, project: project.name, count: to.length },
-        "Sent transactional emails"
-      );
+      rootLogger.info({ to, project: project.name, count: to.length }, "Sent transactional emails");
 
-      return c.json(
-        { success: true, emails, timestamp: new Date().toISOString() },
-        200
-      );
-    }
+      return c.json({ success: true, emails, timestamp: new Date().toISOString() }, 200);
+    },
   );
 
   app.openapi(
@@ -282,25 +239,14 @@ export const registerEventsRoutes = (app: AppType) => {
       }
 
       if (!result.success) {
-        rootLogger.warn(
-          { projectId, body },
-          "Tried tracking an event with invalid data"
-        );
+        rootLogger.warn({ projectId, body }, "Tried tracking an event with invalid data");
         throw new BadRequest(result.error.issues[0].message);
       }
 
-      const {
-        event: name,
-        email,
-        data,
-        subscribed,
-        transientData,
-      } = result.data;
+      const { event: name, email, data, subscribed, transientData } = result.data;
 
       if (name === "subscribe" || name === "unsubscribe") {
-        throw new NotAllowed(
-          "subscribe & unsubscribe are reserved event names."
-        );
+        throw new NotAllowed("subscribe & unsubscribe are reserved event names.");
       }
 
       const eventTypePersistence = new EventTypePersistence(projectId);
@@ -315,9 +261,7 @@ export const registerEventsRoutes = (app: AppType) => {
       }
 
       const contactPersistence = new ContactPersistence(projectId);
-      let contact:
-        | (z.infer<typeof ContactSchemas.create> & { id?: string })
-        | undefined = await contactPersistence.getByEmail(email);
+      let contact: (z.infer<typeof ContactSchemas.create> & { id?: string }) | undefined = await contactPersistence.getByEmail(email);
 
       if (!contact) {
         contact = {
@@ -376,7 +320,7 @@ export const registerEventsRoutes = (app: AppType) => {
           event: eventType.name,
           contact: contact.email,
         },
-        "Triggered event"
+        "Triggered event",
       );
 
       return c.json(
@@ -387,8 +331,8 @@ export const registerEventsRoutes = (app: AppType) => {
           event: eventType.name as string,
           timestamp: new Date().toISOString(),
         },
-        200
+        200,
       );
-    }
+    },
   );
 };

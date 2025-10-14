@@ -1,13 +1,5 @@
-import {
-  ActionsService,
-  ContactPersistence,
-  EmailPersistence,
-  EventPersistence,
-  EventTypePersistence,
-  ProjectPersistence,
-  rootLogger,
-} from "@sendra/lib";
-import { DeliveryEvent, DeliveryEventSchema, type Email } from "@sendra/shared";
+import { ActionsService, ContactPersistence, EmailPersistence, EventPersistence, EventTypePersistence, ProjectPersistence, rootLogger } from "@sendra/lib";
+import { type DeliveryEvent, DeliveryEventSchema, type Email } from "@sendra/shared";
 import type { SNSEvent, SNSEventRecord } from "aws-lambda";
 import type { Logger } from "pino";
 
@@ -19,9 +11,7 @@ const eventMap = {
   Reject: "REJECTED",
 } as Record<DeliveryEvent["eventType"], Email["status"]>;
 
-function serializeData(
-  deliveryEvent: DeliveryEvent
-): Record<string, string | number | boolean | string[] | null> {
+function serializeData(deliveryEvent: DeliveryEvent): Record<string, string | number | boolean | string[] | null> {
   switch (deliveryEvent.eventType) {
     case "Bounce":
       return {
@@ -31,9 +21,7 @@ function serializeData(
     case "Complaint":
       return {
         ...deliveryEvent.complaint,
-        complainedRecipients: JSON.stringify(
-          deliveryEvent.complaint.complainedRecipients
-        ),
+        complainedRecipients: JSON.stringify(deliveryEvent.complaint.complainedRecipients),
       };
     case "Delivery":
       return {
@@ -57,17 +45,10 @@ function serializeData(
   return {};
 }
 
-async function handleEmailEvent(
-  deliveryEvent: DeliveryEvent,
-  email: Email,
-  logger: Logger
-) {
+async function handleEmailEvent(deliveryEvent: DeliveryEvent, email: Email, logger: Logger) {
   const project = await new ProjectPersistence().get(email.project);
   if (!project) {
-    rootLogger.warn(
-      { messageId: deliveryEvent.mail.messageId },
-      "No project found"
-    );
+    rootLogger.warn({ messageId: deliveryEvent.mail.messageId }, "No project found");
     return;
   }
 
@@ -80,15 +61,12 @@ async function handleEmailEvent(
         messageId: deliveryEvent.mail.messageId,
         eventType: deliveryEvent.eventType,
       },
-      `${deliveryEvent.eventType} received`
+      `${deliveryEvent.eventType} received`,
     );
 
     // unsubscribe contact if not transactional
     if (email.sendType !== "TRANSACTIONAL") {
-      logger.info(
-        { contact: email.contact, project: email.project, email: email.id },
-        "Unsubscribing contact"
-      );
+      logger.info({ contact: email.contact, project: email.project, email: email.id }, "Unsubscribing contact");
       const contact = await contactPersistence.get(email.contact);
       if (contact) {
         await contactPersistence.put({
@@ -103,7 +81,7 @@ async function handleEmailEvent(
         messageId: deliveryEvent.mail.messageId,
         eventType: deliveryEvent.eventType,
       },
-      `${deliveryEvent.eventType} received`
+      `${deliveryEvent.eventType} received`,
     );
   }
 
@@ -120,10 +98,7 @@ async function handleEmailEvent(
   const eventTypePersistence = new EventTypePersistence(project.id);
   let eventType = await eventTypePersistence.getByName(deliveryEvent.eventType);
   if (!eventType) {
-    logger.info(
-      { project: project.id, eventType: deliveryEvent.eventType },
-      "Creating event type"
-    );
+    logger.info({ project: project.id, eventType: deliveryEvent.eventType }, "Creating event type");
     eventType = await eventTypePersistence.create({
       name: deliveryEvent.eventType,
       project: project.id,
@@ -143,10 +118,7 @@ async function handleEmailEvent(
   if (email.source && email.sourceType === "ACTION") {
     const contact = await contactPersistence.get(email.contact);
     if (!contact) {
-      logger.warn(
-        { contact: email.contact, project: project.id, email: email.id },
-        "No contact found"
-      );
+      logger.warn({ contact: email.contact, project: project.id, email: email.id }, "No contact found");
       return;
     }
     await ActionsService.trigger({ eventType, contact, project });
@@ -163,20 +135,13 @@ const handleRecord = async (record: SNSEventRecord) => {
   logger.info("Received SNS message");
 
   try {
-    const deliveryEvent = DeliveryEventSchema.parse(
-      JSON.parse(record.Sns.Message)
-    );
+    const deliveryEvent = DeliveryEventSchema.parse(JSON.parse(record.Sns.Message));
 
     // Find email by messageId in DynamoDB
-    const email = await EmailPersistence.getByMessageId(
-      deliveryEvent.mail.messageId
-    );
+    const email = await EmailPersistence.getByMessageId(deliveryEvent.mail.messageId);
 
     if (!email) {
-      logger.info(
-        { messageId: deliveryEvent.mail.messageId },
-        "No email found"
-      );
+      logger.info({ messageId: deliveryEvent.mail.messageId }, "No email found");
       return;
     }
 

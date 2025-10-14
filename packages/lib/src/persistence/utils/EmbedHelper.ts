@@ -10,20 +10,12 @@ export type ProjectEntity = BaseType & {
   project: string;
 };
 
-export const embedHelper = async <T extends ProjectEntity>(
-  items: T[],
-  key: string,
-  supportedEmbed: Embeddable[],
-  embed?: Embeddable[]
-): Promise<EmbeddedObject<T>[]> => {
+export const embedHelper = async <T extends ProjectEntity>(items: T[], key: string, supportedEmbed: Embeddable[], embed?: Embeddable[]): Promise<EmbeddedObject<T>[]> => {
   if (!embed || embed.length === 0) {
     return items as EmbeddedObject<T>[];
   }
   if (embed.some((e) => !supportedEmbed.includes(e))) {
-    throw new HttpException(
-      400,
-      `Only ${supportedEmbed.join(", ")} are supported`
-    );
+    throw new HttpException(400, `Only ${supportedEmbed.join(", ")} are supported`);
   }
 
   return await Promise.all(
@@ -75,6 +67,6 @@ export const embedHelper = async <T extends ProjectEntity>(
         };
       }
       return item;
-    })
+    }),
   );
 };

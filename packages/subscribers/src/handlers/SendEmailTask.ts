@@ -4,11 +4,11 @@ import {
   ContactPersistence,
   EmailPersistence,
   EmailService,
+  EventPersistence,
   emailConfig,
   ProjectPersistence,
   rootLogger,
   TemplatePersistence,
-  EventPersistence,
 } from "@sendra/lib";
 import type { Action, Campaign, SendEmailTaskSchema } from "@sendra/shared";
 import type { z } from "zod";

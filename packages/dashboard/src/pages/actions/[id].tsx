@@ -155,7 +155,6 @@ export default function Index() {
                   return {
                     name: e.name,
                     value: e.id,
-                    
                   };
                 })}
               selectedValues={watch("events")}

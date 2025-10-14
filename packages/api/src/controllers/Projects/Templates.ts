@@ -37,9 +37,7 @@ export const registerTemplatesRoutes = (app: AppType) => {
         value: template,
       });
       if (actions.count && actions.count > 0) {
-        throw new NotAllowed(
-          "This template is being used by an action. Unlink the action before deleting the template."
-        );
+        throw new NotAllowed("This template is being used by an action. Unlink the action before deleting the template.");
       }
     },
   });

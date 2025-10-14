@@ -149,7 +149,9 @@ export default function Index() {
 
                       return (
                         <li key={email.id} className="mb-8">
-                          {contact._embed.events.length + contact._embed.emails.length - 1 !== index && <span className="absolute left-4 top-4 -ml-px h-full w-0.5 bg-neutral-200" aria-hidden="true" />}
+                          {contact._embed.events.length + contact._embed.emails.length - 1 !== index && (
+                            <span className="absolute left-4 top-4 -ml-px h-full w-0.5 bg-neutral-200" aria-hidden="true" />
+                          )}
                           <div className="relative flex space-x-3">
                             <div>
                               <span className="flex h-8 w-8 items-center justify-center rounded-full bg-neutral-100 text-neutral-800 ring-8 ring-white">
@@ -213,7 +215,9 @@ export default function Index() {
                       return (
                         <li className="mb-8" key={t.id}>
                           <div className="relative pb-8">
-                            {contact._embed.events.length + contact._embed.emails.length - 1 !== index && <span className="absolute left-4 top-4 -ml-px h-full w-0.5 bg-neutral-200" aria-hidden="true" />}
+                            {contact._embed.events.length + contact._embed.emails.length - 1 !== index && (
+                              <span className="absolute left-4 top-4 -ml-px h-full w-0.5 bg-neutral-200" aria-hidden="true" />
+                            )}
 
                             <div className="relative flex space-x-3">
                               <div>
@@ -254,7 +258,9 @@ export default function Index() {
                       return (
                         <li className="mb-8" key={t.id}>
                           <div className="relative pb-8">
-                            {contact._embed.events.length + contact._embed.emails.length - 1 !== index && <span className="absolute left-4 top-4 -ml-px h-full w-0.5 bg-neutral-200" aria-hidden="true" />}
+                            {contact._embed.events.length + contact._embed.emails.length - 1 !== index && (
+                              <span className="absolute left-4 top-4 -ml-px h-full w-0.5 bg-neutral-200" aria-hidden="true" />
+                            )}
                             <div className="relative flex space-x-3">
                               <div>
                                 <span className="flex h-8 w-8 items-center justify-center rounded-full bg-neutral-100 text-neutral-800 ring-8 ring-white">

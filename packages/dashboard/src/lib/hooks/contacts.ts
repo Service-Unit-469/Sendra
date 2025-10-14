@@ -12,27 +12,17 @@ type ContactWithEvents = Contact & { _embed: { events: Event[] } };
  */
 export function useContact(id: string) {
   const activeProject = useActiveProject();
-  return useSWR<Contact & { _embed: { events: Event[]; emails: Email[] } }>(
-    id && activeProject?.id
-      ? `/projects/${activeProject.id}/contacts/${id}?embed=events&embed=emails`
-      : null
-  );
+  return useSWR<Contact & { _embed: { events: Event[]; emails: Email[] } }>(id && activeProject?.id ? `/projects/${activeProject.id}/contacts/${id}?embed=events&embed=emails` : null);
 }
 
 export function useAllContacts() {
   const activeProject = useActiveProject();
-  return useSWR<Contact[]>(
-    activeProject?.id ? `/projects/${activeProject.id}/contacts/all` : null
-  );
+  return useSWR<Contact[]>(activeProject?.id ? `/projects/${activeProject.id}/contacts/all` : null);
 }
 
 export function useAllContactsWithEvents() {
   const activeProject = useActiveProject();
-  return useSWR<ContactWithEvents[]>(
-    activeProject?.id
-      ? `/projects/${activeProject.id}/contacts/all?embed=events`
-      : null
-  );
+  return useSWR<ContactWithEvents[]>(activeProject?.id ? `/projects/${activeProject.id}/contacts/all?embed=events` : null);
 }
 
 export function useContactsWithEvents(cursor?: string) {
@@ -41,13 +31,7 @@ export function useContactsWithEvents(cursor?: string) {
     items: ContactWithEvents[];
     cursor?: string;
     count: number;
-  }>(
-    activeProject
-      ? `/projects/${activeProject?.id}/contacts?embed=events${
-          cursor ? `&cursor=${cursor}` : ""
-        }`
-      : null
-  );
+  }>(activeProject ? `/projects/${activeProject?.id}/contacts?embed=events${cursor ? `&cursor=${cursor}` : ""}` : null);
 }
 
 /**
@@ -61,11 +45,7 @@ export function useContacts(cursor?: string) {
     contacts: Contact[];
     cursor: string;
     count: number;
-  }>(
-    activeProject
-      ? `/projects/${activeProject.id}/contacts?cursor=${cursor}`
-      : null
-  );
+  }>(activeProject ? `/projects/${activeProject.id}/contacts?cursor=${cursor}` : null);
 }
 
 /**

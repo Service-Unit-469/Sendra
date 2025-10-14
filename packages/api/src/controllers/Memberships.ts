@@ -1,23 +1,10 @@
 import { createRoute, z } from "@hono/zod-openapi";
-import {
-  MembershipPersistence,
-  ProjectPersistence,
-  rootLogger,
-  UserPersistence,
-} from "@sendra/lib";
-import {
-  MembershipSchema,
-  MembershipSchemas,
-  ProjectSchema,
-} from "@sendra/shared";
+import { MembershipPersistence, ProjectPersistence, rootLogger, UserPersistence } from "@sendra/lib";
+import { MembershipSchema, MembershipSchemas, ProjectSchema } from "@sendra/shared";
 import type { AppType } from "../app";
 import { NotAllowed } from "../exceptions";
 import { getProblemResponseSchema } from "../exceptions/responses";
-import {
-  BearerAuth,
-  isAuthenticatedProjectAdmin,
-  isAuthenticatedProjectMember,
-} from "../middleware/auth";
+import { BearerAuth, isAuthenticatedProjectAdmin, isAuthenticatedProjectMember } from "../middleware/auth";
 
 const logger = rootLogger.child({
   module: "Memberships",
@@ -71,17 +58,10 @@ export const registerMembershipsRoutes = (app: AppType) => {
       }
 
       const membershipPersistence = new MembershipPersistence();
-      const alreadyMember = invitedUser
-        ? await membershipPersistence.isMember(projectId, invitedUser.id)
-        : false;
-      const memberships = await membershipPersistence.getProjectMemberships(
-        projectId
-      );
+      const alreadyMember = invitedUser ? await membershipPersistence.isMember(projectId, invitedUser.id) : false;
+      const memberships = await membershipPersistence.getProjectMemberships(projectId);
       if (alreadyMember) {
-        logger.warn(
-          { projectId, email, role },
-          "User already a member of project"
-        );
+        logger.warn({ projectId, email, role }, "User already a member of project");
         return c.json({ success: true, memberships }, 200);
       }
 
@@ -95,7 +75,7 @@ export const registerMembershipsRoutes = (app: AppType) => {
       logger.info({ projectId, email, role }, "User invited to project");
 
       return c.json({ success: true, memberships }, 200);
-    }
+    },
   );
 
   app.openapi(
@@ -141,9 +121,7 @@ export const registerMembershipsRoutes = (app: AppType) => {
 
       const membershipPersistence = new MembershipPersistence();
 
-      const memberships = await membershipPersistence.getProjectMemberships(
-        projectId
-      );
+      const memberships = await membershipPersistence.getProjectMemberships(projectId);
 
       const kickedUser = await new UserPersistence().getByEmail(email);
 
@@ -152,23 +130,17 @@ export const registerMembershipsRoutes = (app: AppType) => {
         throw new NotAllowed("You cannot kick yourself");
       }
 
-      await Promise.all(
-        memberships
-          .filter((membership) => membership.email === email)
-          .map((membership) => membershipPersistence.delete(membership.id))
-      );
+      await Promise.all(memberships.filter((membership) => membership.email === email).map((membership) => membershipPersistence.delete(membership.id)));
       logger.info({ projectId, email }, "Kicked user from project");
 
       return c.json(
         {
           success: true,
-          memberships: memberships.filter(
-            (membership) => membership.email !== email
-          ),
+          memberships: memberships.filter((membership) => membership.email !== email),
         },
-        200
+        200,
       );
-    }
+    },
   );
 
   app.openapi(
@@ -211,29 +183,16 @@ export const registerMembershipsRoutes = (app: AppType) => {
       logger.info({ projectId, userId }, "Leaving project");
 
       const membershipPersistence = new MembershipPersistence();
-      const memberships = await membershipPersistence.getUserMemberships(
-        userId
-      );
+      const memberships = await membershipPersistence.getUserMemberships(userId);
 
-      await Promise.all(
-        memberships
-          .filter((membership) => membership.project === projectId)
-          .map((membership) => membershipPersistence.delete(membership.id))
-      );
+      await Promise.all(memberships.filter((membership) => membership.project === projectId).map((membership) => membershipPersistence.delete(membership.id)));
 
       const projectPersistence = new ProjectPersistence();
-      const projects = await projectPersistence.batchGet(
-        memberships
-          .filter((membership) => membership.project === projectId)
-          .map((membership) => membership.project)
-      );
+      const projects = await projectPersistence.batchGet(memberships.filter((membership) => membership.project === projectId).map((membership) => membership.project));
 
-      logger.info(
-        { projectId, userId, projects: projects.length },
-        "Left project"
-      );
+      logger.info({ projectId, userId, projects: projects.length }, "Left project");
 
       return c.json({ success: true, memberships: projects }, 200);
-    }
+    },
   );
 };

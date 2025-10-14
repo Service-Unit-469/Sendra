@@ -7,7 +7,7 @@ import {
   EventTypePersistence,
   MembershipPersistence,
   rootLogger,
-  TemplatePersistence
+  TemplatePersistence,
 } from "@sendra/lib";
 import type { BatchDeleteRelatedSchema } from "@sendra/shared";
 import type { z } from "zod";
@@ -36,24 +36,11 @@ export const handleDelete = async (task: DeleteTask, messageId: string) => {
     logger.info("Deleting content associated with project");
 
     await Promise.all(
-      [
-        ActionPersistence,
-        CampaignPersistence,
-        ContactPersistence,
-        EmailPersistence,
-        EventTypePersistence,
-        EventPersistence,
-        TemplatePersistence,
-      ].map(async (Persistence) => {
+      [ActionPersistence, CampaignPersistence, ContactPersistence, EmailPersistence, EventTypePersistence, EventPersistence, TemplatePersistence].map(async (Persistence) => {
         const items = await new Persistence(id).listAll();
-        logger.info(
-          { items: items.length, type: Persistence.name },
-          "Deleting items for project"
-        );
-        await Promise.all(
-          items.map((item) => new Persistence(id).delete(item.id))
-        );
-      })
+        logger.info({ items: items.length, type: Persistence.name }, "Deleting items for project");
+        await Promise.all(items.map((item) => new Persistence(id).delete(item.id)));
+      }),
     );
 
     const membershipPersistence = new MembershipPersistence();
@@ -61,29 +48,15 @@ export const handleDelete = async (task: DeleteTask, messageId: string) => {
       key: "project",
       value: id,
     });
-    logger.info(
-      { memberships: memberships.length },
-      "Deleting memberships for project"
-    );
-    await Promise.all(
-      memberships.map((membership) =>
-        membershipPersistence.delete(membership.id)
-      )
-    );
+    logger.info({ memberships: memberships.length }, "Deleting memberships for project");
+    await Promise.all(memberships.map((membership) => membershipPersistence.delete(membership.id)));
   } else if (type === "USER") {
     const membershipPersistence = new MembershipPersistence();
     const memberships = await membershipPersistence.findAllBy({
       key: "user",
       value: id,
     });
-    logger.info(
-      { memberships: memberships.length },
-      "Deleting memberships for user"
-    );
-    await Promise.all(
-      memberships.map((membership) =>
-        membershipPersistence.delete(membership.id)
-      )
-    );
+    logger.info({ memberships: memberships.length }, "Deleting memberships for user");
+    await Promise.all(memberships.map((membership) => membershipPersistence.delete(membership.id)));
   }
 };
