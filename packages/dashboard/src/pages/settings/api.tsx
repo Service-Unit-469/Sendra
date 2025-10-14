@@ -112,7 +112,6 @@ export default function Index() {
             </button>
           </div>
 
-
           <div className="mt-4">
             <button
               onClick={() => {
@@ -128,7 +127,9 @@ export default function Index() {
                 {activeProjectKeys?.public}
               </p>
 
-              <p className="text-sm text-neutral-500">Use this key for any front-end services. This key can only be used to publish events. This key expires at {expiresAt(activeProjectKeys?.public)}.</p>
+              <p className="text-sm text-neutral-500">
+                Use this key for any front-end services. This key can only be used to publish events. This key expires at {expiresAt(activeProjectKeys?.public)}.
+              </p>
             </button>
           </div>
 
@@ -147,7 +148,9 @@ export default function Index() {
                 {activeProjectKeys?.secret}
               </p>
 
-              <p className="text-sm text-neutral-500">Use this key for any secure back-end services. This key gives complete access to your Sendra setup. This key expires at {expiresAt(activeProjectKeys?.secret)}.</p>
+              <p className="text-sm text-neutral-500">
+                Use this key for any secure back-end services. This key gives complete access to your Sendra setup. This key expires at {expiresAt(activeProjectKeys?.secret)}.
+              </p>
             </button>
           </div>
         </Card>
