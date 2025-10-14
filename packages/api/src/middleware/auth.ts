@@ -22,7 +22,7 @@ async function getProjectId(request: HonoRequest): Promise<string> {
 export const BearerAuth = {
   security: [
     {
-      Bearer: [],
+      bearerAuth: [],
     },
   ],
 };
