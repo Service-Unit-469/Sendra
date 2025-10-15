@@ -1,12 +1,12 @@
 import type { Subscriber, SubscriberUpdate } from "@sendra/shared";
 import { motion } from "framer-motion";
 import { useRouter } from "next/router";
-import { NextSeo } from "next-seo";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { FullscreenLoader, Toggle } from "../../components";
 import { useSubscriber } from "../../lib/hooks/subscriber";
 import { network } from "../../lib/network";
+import Head from "next/head";
 
 /**
  *
@@ -62,18 +62,9 @@ export default function Index() {
 
   return (
     <>
-      <NextSeo
-        title={`Manage your subscription preferences`}
-        openGraph={{
-          title: `Manage your subscription preferences`,
-        }}
-        additionalMetaTags={[
-          {
-            property: "title",
-            content: `Manage your subscription preferences`,
-          },
-        ]}
-      />
+      <Head>
+        <title>Manage your subscription preferences</title>
+      </Head>
       <div className={"flex h-screen w-full flex-col items-center justify-center bg-neutral-50"}>
         <div className={"w-3/4 rounded border border-neutral-200 bg-white p-12 shadow-sm md:w-2/4 xl:w-2/6"}>
           {error && (

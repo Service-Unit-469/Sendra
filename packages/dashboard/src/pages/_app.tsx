@@ -14,7 +14,6 @@ import "nprogress/nprogress.css";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 import duration from "dayjs/plugin/duration";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { DefaultSeo } from "next-seo";
 import { FullscreenLoader, Redirect } from "../components";
 import { NO_AUTH_ROUTES } from "../lib/constants";
 import { useUser } from "../lib/hooks/users";
@@ -72,11 +71,6 @@ export default function WithProviders(props: AppProps) {
       }}
     >
       <JotaiProvider>
-        <DefaultSeo
-          defaultTitle={"Sendra Dashboard | The Open-Source Email Platform"}
-          title={"Sendra Dashboard | The Open-Source Email Platform"}
-          description={"Sendra is the open-source, affordable email platform that brings together marketing, transactional and broadcast emails into one single, complete solution"}
-        />
         <App {...props} />
       </JotaiProvider>
     </SWRConfig>
