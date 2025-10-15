@@ -43,7 +43,7 @@
 		"jotai": "2.9.0",
 		"lucide-react": "^0.408.0",
 		"mjml-browser": "^4.16.1",
-		"next": "14.2.5",
+		"next": "14.2.33",
 		"next-seo": "^6.5.0",
 		"nprogress": "^0.2.0",
 		"prosemirror-commands": "^1.5.2",

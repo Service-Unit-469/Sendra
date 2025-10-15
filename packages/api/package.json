@@ -22,7 +22,7 @@
 	},
 	"dependencies": {
 		"@aws-sdk/client-ses": "^3.616.0",
-		"hono": "^4.7.4",
+		"hono": "^4.9.12",
 		"hono-pino": "^0.10.2",
 		"jsonwebtoken": "^9.0.2",
 		"mjml": "^4.16.1"		
