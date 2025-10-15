@@ -172,7 +172,7 @@ export default function Sidebar({ mobileOpen, onSidebarVisibilityChange }: Sideb
               <div className="h-0 flex-1 overflow-y-auto pb-4 pt-5">
                 <div className="flex flex-shrink-0 items-center px-4">
                   <Link href={"/"} passHref>
-                    <SendraLogo width="100%" />
+                    <SendraLogo width="100%" height="90px" />
                   </Link>
                 </div>
 

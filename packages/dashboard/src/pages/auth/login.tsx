@@ -72,7 +72,7 @@ export default function Index() {
   return (
     <div className="bg-off-white flex min-h-screen flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="flex flex-col items-center sm:mx-auto sm:w-full sm:max-w-md">
-        <SendraLogo />
+        <SendraLogo height="90px" width="50%" />
         <h2 className="mt-4 text-center text-3xl font-bold text-neutral-800">Sign in to your account</h2>
       </div>
 
