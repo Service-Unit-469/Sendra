@@ -4,6 +4,7 @@ export * from "./Card";
 export * from "./ContactForm";
 export * from "./ContactMetadataForm";
 export * from "./EmailEditor";
+export * from "./GroupForm";
 export * from "./Input";
 export * from "./Navigation";
 export * from "./Overlay";

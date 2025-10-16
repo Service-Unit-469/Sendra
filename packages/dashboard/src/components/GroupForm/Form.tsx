@@ -9,7 +9,7 @@ import { Save } from "lucide-react";
 import { useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { Input } from "../../components";
+import { Input } from "..";
 
 export type GroupFormProps = {
   groupId?: string;

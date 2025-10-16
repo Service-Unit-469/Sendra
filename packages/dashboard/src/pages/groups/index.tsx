@@ -4,11 +4,10 @@ import { motion } from "framer-motion";
 import { Edit2, Plus } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
-import { Card, Empty, FullscreenLoader, Modal, Skeleton, Table } from "../../components";
+import { Card, Empty, FullscreenLoader, GroupForm, Modal, Skeleton, Table } from "../../components";
 import { Dashboard } from "../../layouts";
 import { useActiveProject } from "../../lib/hooks/projects";
 import { useUser } from "../../lib/hooks/users";
-import { GroupForm } from "./Form";
 
 export default function Index() {
   const project = useActiveProject();

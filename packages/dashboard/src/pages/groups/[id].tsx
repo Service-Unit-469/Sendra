@@ -1,12 +1,11 @@
 import { Trash } from "lucide-react";
 import { useRouter } from "next/router";
 import { toast } from "sonner";
-import { Card, FullscreenLoader, Table } from "../../components";
+import { Card, FullscreenLoader, GroupForm, Table } from "../../components";
 import { Dashboard } from "../../layouts";
 import { useGroup, useGroupContacts } from "../../lib/hooks/groups";
 import { useActiveProject } from "../../lib/hooks/projects";
 import { network } from "../../lib/network";
-import { GroupForm } from "./Form";
 
 export default function Index() {
   const router = useRouter();
