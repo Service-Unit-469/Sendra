@@ -21,6 +21,7 @@
     "lint:fix": "npm run lint  --workspaces -- --write",
     "remove": "sst remove",
     "sst": "sst",
+    "test": "npm run test --workspaces --if-present",
     "typecheck": "npm run typecheck --workspaces"
   },
   "workspaces": [

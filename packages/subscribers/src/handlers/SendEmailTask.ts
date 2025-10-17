@@ -5,7 +5,7 @@ import {
   EmailPersistence,
   EmailService,
   EventPersistence,
-  emailConfig,
+  getEmailConfig,
   ProjectPersistence,
   rootLogger,
   TemplatePersistence,
@@ -16,6 +16,7 @@ import type { z } from "zod";
 type SendEmailTask = z.infer<typeof SendEmailTaskSchema>;
 
 export const sendEmail = async (task: SendEmailTask, recordId: string) => {
+  const emailConfig = getEmailConfig();
   const logger = rootLogger.child({
     recordId,
   });

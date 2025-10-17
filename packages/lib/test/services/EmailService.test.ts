@@ -12,12 +12,12 @@ vi.mock("@aws-sdk/client-ses", () => {
 	};
 });
 
-// Mock the emailConfig and logConfig
+// Mock the getEmailConfig and getLogConfig
 vi.mock("../../src/services/AppConfig", () => ({
-	emailConfig: {
+	getEmailConfig: vi.fn(() => ({
 		appUrl: "example.com",
 		emailConfigurationSetName: "test-config-set",
-	},
+	})),
 	getLogConfig: vi.fn(() => ({
 		level: "info",
 		pretty: false,
@@ -27,6 +27,7 @@ vi.mock("../../src/services/AppConfig", () => ({
 import { EmailService } from "../../src/services/EmailService";
 
 // Get mock function after import
+// @ts-expect-error mocking
 const mockSendRawEmail = vi.mocked((await import("@aws-sdk/client-ses")).__mockSendRawEmail as any);
 
 describe("EmailService", () => {
@@ -207,6 +208,15 @@ describe("EmailService", () => {
 	});
 
 	describe("compileBody", () => {
+
+		const mockProject: PublicProject = {
+			id: "project-123",
+			name: "Test Project",
+			createdAt: "",
+			updatedAt: "",
+			url: "https://example.com"
+		};
+
 		const mockContact: Contact = {
 			id: "contact-123",
 			email: "test@example.com",
@@ -215,22 +225,21 @@ describe("EmailService", () => {
 				firstName: "John",
 				lastName: "Doe",
 			},
-			createdAt: 1000,
-			updatedAt: 1000,
+			createdAt: "1000",
+			updatedAt: "1000",
+			project: mockProject.id
 		};
-
-		const mockProject: PublicProject = {
-			id: "project-123",
-			name: "Test Project",
-		};
-
 		const mockEmail: Email = {
 			id: "email-123",
 			sendType: "TRANSACTIONAL",
 			subject: "Test Subject",
 			body: "<p>Test body</p>",
-			createdAt: 1000,
-			updatedAt: 1000,
+			createdAt: "1000",
+			updatedAt: "1000",
+			project: mockProject.id,
+			contact: mockContact.id,
+			email: "",
+			status: "DELIVERED"
 		};
 
 		const mockAction: Pick<Action, "name"> = {
@@ -393,6 +402,14 @@ describe("EmailService", () => {
 	});
 
 	describe("compileSubject", () => {
+		const mockProject: PublicProject = {
+			id: "project-123",
+			name: "Test Project",
+			createdAt: "",
+			updatedAt: "",
+			url: ""
+		};
+		
 		const mockContact: Contact = {
 			id: "contact-123",
 			email: "test@example.com",
@@ -401,13 +418,9 @@ describe("EmailService", () => {
 				firstName: "John",
 				lastName: "Doe",
 			},
-			createdAt: 1000,
-			updatedAt: 1000,
-		};
-
-		const mockProject: PublicProject = {
-			id: "project-123",
-			name: "Test Project",
+			createdAt: "1000",
+			updatedAt: "1000",
+			project: mockProject.id
 		};
 
 		const mockAction: Pick<Action, "name"> = {

@@ -1,6 +1,6 @@
 import { VerificationStatus } from "@aws-sdk/client-ses";
 import { createRoute, z } from "@hono/zod-openapi";
-import { emailConfig, ProjectPersistence, rootLogger } from "@sendra/lib";
+import { getEmailConfig, ProjectPersistence, rootLogger } from "@sendra/lib";
 import { IdentitySchema, IdentitySchemas, ProjectSchemas } from "@sendra/shared";
 import type { AppType } from "../../app";
 import { Conflict, NotFound } from "../../exceptions";
@@ -13,6 +13,7 @@ const logger = rootLogger.child({
 });
 
 export const registerProjectIdentityRoutes = (app: AppType) => {
+  const emailConfig = getEmailConfig();
   app.openapi(
     createRoute({
       method: "get",

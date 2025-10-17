@@ -5,7 +5,7 @@ import {
   ContactPersistence,
   EmailPersistence,
   EmailService,
-  emailConfig,
+  getEmailConfig,
   MembershipPersistence,
   ProjectPersistence,
   rootLogger,
@@ -124,6 +124,7 @@ export const registerCampaignsRoutes = (app: AppType) => {
       middleware: [isAuthenticatedProjectMemberOrSecretKey],
     }),
     async (c) => {
+      const emailConfig = getEmailConfig();
       const { projectId, campaignId } = c.req.param();
       const body = await c.req.json();
       const { live, delay: userDelay } = CampaignSchemas.send.parse(body);

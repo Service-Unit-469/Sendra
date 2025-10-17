@@ -1,5 +1,5 @@
 import { z } from "@hono/zod-openapi";
-import { authConfig, MembershipPersistence, rootLogger, UserPersistence } from "@sendra/lib";
+import { getAuthConfig, MembershipPersistence, rootLogger, UserPersistence } from "@sendra/lib";
 import { type User, UserSchemas } from "@sendra/shared";
 import type { Context, HonoRequest } from "hono";
 import { type JwtPayload, sign, verify } from "jsonwebtoken";
@@ -8,7 +8,7 @@ import { Resource } from "sst";
 import { Conflict, HttpException } from "../exceptions";
 import { createHash, verifyHash } from "../util/hash";
 
-const JWT_SECRET = Resource.JwtSecret.value;
+export const JWT_SECRET = Resource.JwtSecret.value;
 
 const logger = rootLogger.child({
   module: "AuthService",
@@ -95,6 +95,7 @@ export class AuthService {
   }
 
   public static async signup(c: Context): Promise<User> {
+    const authConfig = getAuthConfig();
     const body = await c.req.json();
     const { email, password } = UserSchemas.credentials.parse(body);
     logger.info({ email }, "Signing up user");
@@ -139,6 +140,7 @@ export class AuthService {
   }
 
   private static createUserToken(userId: string, email: string) {
+    const authConfig = getAuthConfig();
     return sign(
       {
         type: "user",
@@ -154,6 +156,7 @@ export class AuthService {
   }
 
   public static createProjectToken(key: string, type: "secret" | "public", projectId: string) {
+    const authConfig = getAuthConfig();
     return sign(
       {
         type,
