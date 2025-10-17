@@ -8,7 +8,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Eye, Save } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { type FieldError, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { Alert, Badge, Card, Dropdown, FullscreenLoader, Input, Modal, Table } from "../../components";
@@ -76,6 +76,23 @@ export default function Index() {
     });
   }, [watch, project, setError, clearErrors]);
 
+  const saveCampaign = useCallback(
+    async (data: Omit<CampaignUpdate, "id">) => {
+      if (!project || !campaign) {
+        return;
+      }
+
+      await network.fetch(`/projects/${project.id}/campaigns/${campaign.id}`, {
+        method: "PUT",
+        body: {
+          id: campaign.id,
+          ...data,
+        },
+      });
+    },
+    [project, campaign],
+  );
+
   if (!router.isReady) {
     return <FullscreenLoader />;
   }
@@ -89,16 +106,7 @@ export default function Index() {
 
     toast.success("Saved your campaign. Starting delivery now, please hold on!");
 
-    await network.fetch(`/projects/${project.id}/campaigns`, {
-      method: "PUT",
-      body:
-        data.recipients.length === contacts?.filter((c) => c.subscribed).length
-          ? { id: campaign.id, ...data, recipients: ["all"] }
-          : {
-              id: campaign.id,
-              ...data,
-            },
-    });
+    await saveCampaign(data);
 
     toast.promise(
       network.fetch(`/projects/${project.id}/campaigns/${campaign.id}/send`, {
@@ -126,13 +134,7 @@ export default function Index() {
   };
 
   const sendTest = async (data: Omit<CampaignUpdate, "id">) => {
-    await network.fetch(`/projects/${project.id}/campaigns`, {
-      method: "PUT",
-      body: {
-        id: campaign.id,
-        ...data,
-      },
-    });
+    await saveCampaign(data);
 
     toast.promise(
       network.fetch(`/projects/${project.id}/campaigns/${campaign.id}/send`, {
@@ -151,24 +153,15 @@ export default function Index() {
   };
 
   const update = (data: Omit<CampaignUpdate, "id">) => {
-    toast.promise(
-      network.fetch(`/projects/${project.id}/campaigns`, {
-        method: "PUT",
-        body: {
-          id: campaign.id,
-          ...data,
-        },
-      }),
-      {
-        loading: "Saving your campaign",
-        success: () => {
-          void campaignMutate();
-          void campaignsMutate();
-          return "Saved your campaign";
-        },
-        error: "Could not save your campaign!",
+    toast.promise(saveCampaign(data), {
+      loading: "Saving your campaign",
+      success: () => {
+        void campaignMutate();
+        void campaignsMutate();
+        return "Saved your campaign";
       },
-    );
+      error: "Could not save your campaign!",
+    });
   };
 
   const duplicate = async (e: { preventDefault: () => void }) => {
@@ -197,7 +190,7 @@ export default function Index() {
   const remove = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
     toast.promise(
-      network.fetch(`/projects/${project.id}/campaigns`, {
+      network.fetch(`/projects/${project.id}/campaigns/${campaign.id}`, {
         method: "DELETE",
       }),
       {

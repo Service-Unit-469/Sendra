@@ -10,7 +10,7 @@ import {
   rootLogger,
   TemplatePersistence,
 } from "@sendra/lib";
-import type { Action, Campaign, SendEmailTaskSchema } from "@sendra/shared";
+import type { Action, Campaign, Email, SendEmailTaskSchema } from "@sendra/shared";
 import type { z } from "zod";
 
 type SendEmailTask = z.infer<typeof SendEmailTaskSchema>;
@@ -20,7 +20,7 @@ export const sendEmail = async (task: SendEmailTask, recordId: string) => {
     recordId,
   });
   logger.info({ ...task.payload }, "Sending email");
-  const { action: actionId, campaign: campaignId, contact: contactId, project: projectId } = task.payload;
+  const { action: actionId, campaign: campaignId, contact: contactId, project: projectId, email: emailId } = task.payload;
 
   const projectPersistence = new ProjectPersistence();
   const project = await projectPersistence.get(projectId);
@@ -133,17 +133,33 @@ export const sendEmail = async (task: SendEmailTask, recordId: string) => {
 
   // Create email record
   const emailPersistence = new EmailPersistence(project.id);
-  await emailPersistence.create({
-    ...emailBase,
-    messageId,
-    status: "SENT",
-    subject,
-    body,
-    email,
-    source: action?.id ?? campaign?.id,
-    sourceType: action ? "ACTION" : "CAMPAIGN",
-    contact: contact.id,
-  });
+  let emailItem: Email | undefined;
+
+  if (emailId) {
+    emailItem = await emailPersistence.get(emailId);
+  }
+  if (emailItem) {
+    await emailPersistence.put({
+      ...emailItem,
+      messageId,
+      status: "SENT",
+      subject,
+      body,
+    });
+  } else {
+    await emailPersistence.create({
+      ...emailBase,
+      messageId,
+      status: "SENT",
+      subject,
+      body,
+      email,
+      source: action?.id ?? campaign?.id,
+      sourceType: action ? "ACTION" : "CAMPAIGN",
+      contact: contact.id,
+      project: project.id,
+    });
+  }
 
   logger.info({ contact: contact.email, project: project.name, messageId }, "Email sent");
 };

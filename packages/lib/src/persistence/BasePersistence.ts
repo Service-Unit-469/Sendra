@@ -1,25 +1,24 @@
-import { DynamoDBClient, QueryCommand } from "@aws-sdk/client-dynamodb";
+import { QueryCommand } from "@aws-sdk/client-dynamodb";
 import { BatchGetCommand, BatchWriteCommand, DeleteCommand, DynamoDBDocumentClient, GetCommand, PutCommand } from "@aws-sdk/lib-dynamodb";
 import { unmarshall } from "@aws-sdk/util-dynamodb";
 import type { Action, Email, Event, Template } from "@sendra/shared";
-import { Resource } from "sst";
 import { uuidv7 } from "uuidv7";
 import type { ZodType } from "zod";
 import { logMethodReturningPromise, rootLogger } from "../logging";
+import { getPersistenceConfig } from "../services/AppConfig";
 import { HttpException } from "./utils/HttpException";
-
-export const TABLE_NAME = Resource.SendraDatabase.name;
-
-// Initialize DynamoDB client
-const client = new DynamoDBClient();
-
-export const docClient = DynamoDBDocumentClient.from(client);
 
 export const GLOBAL_INDEXES = {
   BY_EMAIL: {
     type: "global",
     indexName: "BY_EMAIL",
     hashKey: "email",
+    rangeKey: "type",
+  } as IndexInfo,
+  BY_MESSAGE_ID: {
+    type: "global",
+    indexName: "BY_MESSAGE_ID",
+    hashKey: "messageId",
     rangeKey: "type",
   } as IndexInfo,
 } as const;
@@ -98,11 +97,17 @@ export abstract class BasePersistence<T extends BaseItem> {
     module: "BasePersistence",
     type: this.type,
   });
+  public readonly docClient: DynamoDBDocumentClient;
+  public readonly tableName: string;
 
   constructor(
     private readonly type: string,
     private readonly schema: ZodType<T>,
-  ) {}
+  ) {
+    const config = getPersistenceConfig();
+    this.docClient = DynamoDBDocumentClient.from(config.client);
+    this.tableName = config.tableName;
+  }
 
   abstract embed(items: T[], embed?: Embeddable[], limit?: number): Promise<EmbeddedObject<T>[]>;
 
@@ -119,12 +124,12 @@ export abstract class BasePersistence<T extends BaseItem> {
   async batchDelete(ids: string[]): Promise<void> {
     const command = new BatchWriteCommand({
       RequestItems: {
-        [TABLE_NAME]: ids.map((id) => ({
+        [this.tableName]: ids.map((id) => ({
           DeleteRequest: { Key: { id: id, type: this.type } },
         })),
       },
     });
-    await docClient.send(command);
+    await this.docClient.send(command);
   }
 
   @logMethodReturningPromise("BasePersistence")
@@ -143,16 +148,16 @@ export abstract class BasePersistence<T extends BaseItem> {
       this.logger.debug({ batchIds, type: this.type }, "Getting batch of items");
       const command = new BatchGetCommand({
         RequestItems: {
-          [TABLE_NAME]: {
+          [this.tableName]: {
             Keys: batchIds.map((id) => ({ id: id, type: this.type })),
           },
         },
       });
-      const result = await docClient.send(command);
+      const result = await this.docClient.send(command);
 
-      const items = result.Responses?.[TABLE_NAME].filter((item) => item !== undefined) as T[];
+      const items = result.Responses?.[this.tableName].filter((item) => item !== undefined) as T[];
 
-      const unprocessedKeys = result.UnprocessedKeys?.[TABLE_NAME]?.Keys?.map((key) => key.id) ?? [];
+      const unprocessedKeys = result.UnprocessedKeys?.[this.tableName]?.Keys?.map((key) => key.id) ?? [];
       this.logger.debug(
         {
           unprocessedKeys: unprocessedKeys.length,
@@ -178,24 +183,26 @@ export abstract class BasePersistence<T extends BaseItem> {
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     } as T & { type: string });
+    this.logger.debug({ newItem }, "Creating item");
     const command = new PutCommand({
-      TableName: TABLE_NAME,
+      TableName: this.tableName,
       Item: newItem,
     });
-    await docClient.send(command);
+    await this.docClient.send(command);
     return this.schema.parse(newItem);
   }
 
   @logMethodReturningPromise("BasePersistence")
   async delete(id: string): Promise<void> {
+    this.logger.debug({ id }, "Deleting item");
     const command = new DeleteCommand({
-      TableName: TABLE_NAME,
+      TableName: this.tableName,
       Key: {
         id: id,
         type: this.type,
       },
     });
-    await docClient.send(command);
+    await this.docClient.send(command);
   }
 
   @logMethodReturningPromise("BasePersistence")
@@ -205,10 +212,12 @@ export abstract class BasePersistence<T extends BaseItem> {
     const indexInfo = this.getIndexInfo(key);
     const hashKey = indexInfo.type === "local" ? "type" : indexInfo.hashKey;
     const { indexName, rangeKey } = indexInfo;
+    const rangeCondition = rangeKey && value ? (comparator === "begins_with" ? ` AND begins_with(#rangeKey, :rk)` : ` AND #rangeKey ${comparator ?? "="} :rk`) : "";
+
     const config = {
-      TableName: TABLE_NAME,
+      TableName: this.tableName,
       IndexName: indexName,
-      KeyConditionExpression: `#hashKey = :pk${rangeKey && value ? ` AND #rangeKey ${comparator ?? "="} :rk` : ""}`,
+      KeyConditionExpression: `#hashKey = :pk${rangeCondition}`,
       ExpressionAttributeNames: (rangeKey && value
         ? {
             "#hashKey": hashKey,
@@ -226,10 +235,11 @@ export abstract class BasePersistence<T extends BaseItem> {
     };
     this.logger.debug(config, "Executing query");
     const command = new QueryCommand(config);
-    const result = await docClient.send(command);
+    const result = await this.docClient.send(command);
 
     const items = result.Items?.map((item) => unmarshall(item) as T).map((i) => this.schema.parse(i)) ?? [];
 
+    this.logger.debug({ items: items.length, hasMore: !!result.LastEvaluatedKey }, "Found items");
     return {
       items: await this.embed(items, embed, limit),
       cursor: result.LastEvaluatedKey ? Buffer.from(JSON.stringify(result.LastEvaluatedKey)).toString("base64") : undefined,
@@ -260,27 +270,36 @@ export abstract class BasePersistence<T extends BaseItem> {
 
   @logMethodReturningPromise("BasePersistence")
   async get(key: string, options?: Pick<QueryParams, "embed">): Promise<EmbeddedObject<T> | undefined> {
+    this.logger.debug({ key, options }, "Getting item");
     const { embed } = options ?? {};
     const command = new GetCommand({
-      TableName: TABLE_NAME,
+      TableName: this.tableName,
       Key: {
         id: key,
         type: this.type,
       },
     });
-    const result = await docClient.send(command);
+    const result = await this.docClient.send(command);
     if (!result.Item) {
       return undefined;
     }
-    return (await this.embed([this.schema.parse(result.Item as T)], embed))[0];
+
+    const items = await this.embed([this.schema.parse(result.Item as T)], embed);
+    if (!items || items.length === 0) {
+      this.logger.debug("No item retrieved");
+      return undefined;
+    }
+    this.logger.debug({ item: items[0] }, "Retrieved item");
+    return items[0];
   }
 
   @logMethodReturningPromise("BasePersistence")
   async list(params?: Pick<QueryParams, "limit" | "cursor" | "embed">): Promise<QueryResult<EmbeddedObject<T>>> {
     const { limit, cursor, embed } = params ?? {};
 
+    this.logger.debug({ limit, cursor, embed }, "Listing items");
     const command = new QueryCommand({
-      TableName: TABLE_NAME,
+      TableName: this.tableName,
       KeyConditionExpression: "#pk = :pk",
       ExpressionAttributeNames: {
         "#pk": "type",
@@ -291,10 +310,11 @@ export abstract class BasePersistence<T extends BaseItem> {
       Limit: limit,
       ExclusiveStartKey: cursor ? JSON.parse(Buffer.from(cursor, "base64").toString("ascii")) : undefined,
     });
-    const result = await docClient.send(command);
+    const result = await this.docClient.send(command);
 
     const items = result.Items?.map((item) => unmarshall(item) as T).map((i) => this.schema.parse(i)) ?? [];
 
+    this.logger.debug({ count: items.length, hasMore: !!result.LastEvaluatedKey }, "Listed items");
     return {
       items: await this.embed(items, embed, limit),
       cursor: result.LastEvaluatedKey ? Buffer.from(JSON.stringify(result.LastEvaluatedKey)).toString("base64") : undefined,
@@ -320,8 +340,9 @@ export abstract class BasePersistence<T extends BaseItem> {
 
   @logMethodReturningPromise("BasePersistence")
   async put(item: T): Promise<T> {
+    this.logger.debug({ item }, "Putting item");
     const command = new PutCommand({
-      TableName: TABLE_NAME,
+      TableName: this.tableName,
       Item: this.projectItem({
         ...item,
         type: this.type,
@@ -329,23 +350,23 @@ export abstract class BasePersistence<T extends BaseItem> {
       }),
       ConditionExpression: "attribute_exists(id)",
     });
-    await docClient.send(command);
+    await this.docClient.send(command);
     return this.schema.parse(item);
   }
 }
 
 export abstract class UnembeddingBasePersistence<T extends BaseItem> extends BasePersistence<T> {
-  embed(items: T[], embed?: Embeddable[]): Promise<EmbeddedObject<T>[]> {
+  async embed(items: T[], embed?: Embeddable[]): Promise<EmbeddedObject<T>[]> {
     if (embed && embed.length > 0) {
       throw new HttpException(400, "This persistence does not support embed");
     }
-    return Promise.resolve(items as EmbeddedObject<T>[]);
+    return items as EmbeddedObject<T>[];
   }
 
-  embedAll(items: T[], embed?: Embeddable[]): Promise<EmbeddedObject<T>[]> {
+  async embedAll(items: T[], embed?: Embeddable[]): Promise<EmbeddedObject<T>[]> {
     if (embed && embed.length > 0) {
       throw new HttpException(400, "This persistence does not support embed");
     }
-    return Promise.resolve(items as EmbeddedObject<T>[]);
+    return items as EmbeddedObject<T>[];
   }
 }

@@ -42,7 +42,7 @@ export class EventTypePersistence extends BasePersistence<EventType> {
     });
   }
 
-  projectItem(item: EventType): EventType & { i_attr1?: string; i_attr2?: string; i_attr3?: string } {
+  projectItem(item: EventType): EventType & { i_attr1?: string } {
     return {
       ...item,
       i_attr1: item.name,

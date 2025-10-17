@@ -21,24 +21,22 @@ export default function Index() {
 
   const { data: projectIdentity, mutate: identityMutate } = useActiveProjectIdentity();
 
-  const identity = useMemo(() => {
-    return projectIdentity?.identity ?? { identity: "", identityType: "email", mailFromDomain: undefined, verified: false };
-  }, [projectIdentity?.identity]);
-
   const {
     register: registerVerify,
     handleSubmit: handleSubmitVerify,
     watch: watchVerify,
     formState: { errors: errorsVerify },
     setValue: setValueVerify,
+    reset: resetVerify,
   } = useForm({
     resolver: zodResolver(IdentitySchemas.verify),
-    defaultValues: {
-      identityType: "email",
-      identity: identity.identity ?? "",
-      mailFromDomain: identity.mailFromDomain ?? undefined,
-    },
   });
+
+  const identity = useMemo(() => {
+    const resolvedIdentity = projectIdentity?.identity ?? ({ identity: "", identityType: "email", mailFromDomain: undefined, verified: false } as ProjectIdentity);
+    resetVerify(resolvedIdentity);
+    return resolvedIdentity;
+  }, [projectIdentity?.identity, resetVerify]);
 
   const {
     register: registerUpdate,
@@ -54,7 +52,10 @@ export default function Index() {
       return;
     }
 
-    reset({ from: activeProject.from ?? undefined });
+    reset({
+      from: activeProject.from ?? "",
+      email: activeProject.email ?? "",
+    });
   }, [reset, activeProject]);
 
   if (!activeProject || !projectIdentity) {

@@ -1,17 +1,16 @@
 import { QueryCommand } from "@aws-sdk/client-dynamodb";
+import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
 import { unmarshall } from "@aws-sdk/util-dynamodb";
 import type { Contact } from "@sendra/shared";
 import { ContactSchema } from "@sendra/shared";
-import { Resource } from "sst";
 import { rootLogger } from "../logging";
-import { BasePersistence, docClient, type Embeddable, type IndexInfo, LOCAL_INDEXES } from "./BasePersistence";
+import { getPersistenceConfig } from "../services/AppConfig";
+import { BasePersistence, type Embeddable, type IndexInfo, LOCAL_INDEXES } from "./BasePersistence";
 import { embedHelper } from "./utils/EmbedHelper";
 
 const logger = rootLogger.child({
   module: "ContactPersistence",
 });
-
-const TABLE_NAME = Resource.SendraDatabase.name;
 
 export class ContactPersistence extends BasePersistence<Contact> {
   constructor(projectId: string) {
@@ -23,6 +22,8 @@ export class ContactPersistence extends BasePersistence<Contact> {
   }
 
   private static async getByEmailFromAllProjectsPage(email: string, cursor?: string) {
+    const config = getPersistenceConfig();
+    const docClient = DynamoDBDocumentClient.from(config.client);
     const command = new QueryCommand({
       ExpressionAttributeNames: { "#kn0": "email", "#kn1": "type" },
       ExpressionAttributeValues: {
@@ -34,7 +35,7 @@ export class ContactPersistence extends BasePersistence<Contact> {
       Limit: 50,
       ReturnConsumedCapacity: "TOTAL",
       Select: "ALL_PROJECTED_ATTRIBUTES",
-      TableName: TABLE_NAME,
+      TableName: config.tableName,
       ExclusiveStartKey: cursor ? JSON.parse(Buffer.from(cursor, "base64").toString("ascii")) : undefined,
     });
 

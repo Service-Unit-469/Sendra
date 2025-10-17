@@ -117,23 +117,18 @@ export const registerEventsRoutes = (app: AppType) => {
         let contact = await contactPersistence.getByEmail(email);
 
         if (!contact) {
-          // Create contact
-          const newContact = {
+          contact = await contactPersistence.create({
             email,
             subscribed: subscribed ?? false,
             project: project.id,
             data: {},
-          };
-          contact = await contactPersistence.create(newContact);
+          });
         } else {
           if (subscribed && contact.subscribed !== subscribed) {
-            // Update contact subscription status in DynamoDB
-            const updatedContact = {
+            contact = await contactPersistence.put({
               ...contact,
               subscribed,
-            };
-            contact = await contactPersistence.put(updatedContact);
-            contact = updatedContact;
+            });
           }
         }
         const compiledSubject = EmailService.compileSubject(subject, {
@@ -166,6 +161,7 @@ export const registerEventsRoutes = (app: AppType) => {
 
         // Create email record
         const createdEmail = await emailPersistence.create({
+          project: project.id,
           messageId,
           subject: compiledSubject,
           email: contact.email,

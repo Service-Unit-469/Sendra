@@ -18,5 +18,6 @@ export const dynamo = new sst.aws.Dynamo("SendraDatabase", {
   },
   globalIndexes: {
     BY_EMAIL: { hashKey: "email", rangeKey: "type" },
+    BY_MESSAGE_ID: { hashKey: "messageId", rangeKey: "type" },
   },
 });

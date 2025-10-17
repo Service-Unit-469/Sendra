@@ -58,6 +58,13 @@ export default function Index() {
     });
   }, [watch, project, setError, clearErrors]);
 
+  useEffect(() => {
+    if (projectIdentity?.identity?.verified) {
+      setValue("email", project?.email ?? "");
+      setValue("from", project?.from ?? project?.name ?? "");
+    }
+  }, [projectIdentity?.identity?.verified, project, setValue]);
+
   if (!project || !contacts) {
     return <FullscreenLoader />;
   }

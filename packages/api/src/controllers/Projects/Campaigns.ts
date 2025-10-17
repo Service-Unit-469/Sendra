@@ -167,7 +167,6 @@ export const registerCampaignsRoutes = (app: AppType) => {
         await Promise.all(
           tasks.map(async (taskData) => {
             const createdEmail = await emailPersistence.create({
-              messageId: "",
               subject: campaign.subject,
               body: campaign.body,
               source: campaign.id,
@@ -176,6 +175,7 @@ export const registerCampaignsRoutes = (app: AppType) => {
               contact: taskData.contactId,
               sendType: "MARKETING",
               status: "QUEUED",
+              project: projectId,
             });
 
             await TaskQueue.addTask({

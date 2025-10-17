@@ -32,17 +32,23 @@ export class ActionsService {
         continue;
       }
 
-      let triggeredEvents = contactEvents.filter((t) => t.eventType === eventType.id);
+      // Get all contact events for the required event types
+      let relevantEvents = contactEvents.filter((t) => action.events.includes(t.eventType));
 
+      // If action was already triggered, only consider events after last trigger
       if (hasTriggeredAction) {
-        const lastActionTrigger = contactEvents.filter((t) => t.contact === contact.id && t.relation === action.id)[0];
-        triggeredEvents = triggeredEvents.filter((e) => e.createdAt > lastActionTrigger.createdAt);
+        const lastActionTrigger = contactEvents.find((t) => t.contact === contact.id && t.relation === action.id);
+        if (lastActionTrigger) {
+          relevantEvents = relevantEvents.filter((e) => e.createdAt > lastActionTrigger.createdAt);
+        }
       }
 
-      const updatedTriggers = [...new Set(triggeredEvents.map((t) => t.eventType))];
+      // Get unique event types that have been triggered
+      const triggeredEventTypes = [...new Set(relevantEvents.map((t) => t.eventType))];
       const requiredTriggers = action.events;
 
-      if (updatedTriggers.sort().join(",") !== requiredTriggers.sort().join(",")) {
+      // Check if ALL required events have been triggered
+      if (triggeredEventTypes.sort().join(",") !== requiredTriggers.sort().join(",")) {
         // Not all required events have been triggered
         continue;
       }

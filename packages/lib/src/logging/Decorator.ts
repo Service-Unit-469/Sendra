@@ -67,37 +67,6 @@ function getLogger(module: string, methodName: string, args: any[], options?: Lo
   return logger;
 }
 
-export function withLogger<TArgs extends any[], TReturn>(fn: (...args: TArgs) => TReturn, module: string, options?: LogMethodOptions) {
-  const methodName = options?.methodName ?? String(fn.name);
-  return (...args: TArgs) => {
-    const logger = getLogger(module, methodName, args, options);
-    try {
-      const result = fn(...args);
-      logger.info({ result }, `${methodName}.succeeded`);
-      return result;
-    } catch (error) {
-      logger.warn({ error }, `${methodName}.failed`);
-      throw error;
-    }
-  };
-}
-
-export function withPromiseLogger<TArgs extends any[], TReturn extends Promise<any>>(fn: (...args: TArgs) => TReturn, module: string, options?: LogMethodOptions) {
-  const methodName = options?.methodName ?? String(fn.name);
-
-  return async (...args: TArgs) => {
-    const logger = getLogger(module, methodName, args, options);
-    try {
-      const result = await fn(...args);
-      logger.info({ result }, `${methodName}.succeeded`);
-      return result;
-    } catch (error) {
-      logger.warn({ error }, `${methodName}.failed`);
-      throw error;
-    }
-  };
-}
-
 export function logMethodReturningPromise<TReturn, TFunctionParameters>(className: string, options: LogMethodOptions = {}) {
   return (target: any, context: ClassMethodDecoratorContext | ClassGetterDecoratorContext | string): TypedPropertyDescriptor<(params: TFunctionParameters) => Promise<TReturn>> => {
     const methodName = String(typeof context === "string" ? context : context.name);
@@ -121,30 +90,5 @@ export function logMethodReturningPromise<TReturn, TFunctionParameters>(classNam
       });
     }
     return replacementMethod as TypedPropertyDescriptor<(params: TFunctionParameters) => Promise<TReturn>>;
-  };
-}
-
-/**
- * Decorator to time a method and log the result.
- * @param className - The name of the class the method belongs to.
- * @param options - Options for the timer.
- * @returns A decorator that times the method and logs the result.
- */
-export function logMethod(module: string, options?: LogMethodOptions) {
-  return (target: any, context: ClassMethodDecoratorContext | ClassGetterDecoratorContext) => {
-    const methodName = options?.methodName ?? String(context.name);
-
-    function replacementMethod(this: any, ...args: any[]) {
-      const logger = getLogger(module, methodName, args, options);
-      try {
-        const result = target.call(this, ...args);
-        logger.info({ result }, "Method executed successfully");
-        return result;
-      } catch (error) {
-        logger.error({ error }, "Method executed with error");
-        throw error;
-      }
-    }
-    return replacementMethod;
   };
 }

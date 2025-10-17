@@ -1,3 +1,5 @@
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import { Resource } from "sst";
 import { z } from "zod";
 
 const TTLSchema = z.union([z.number(), z.string().regex(/^\d+ (Y|W|D|H|M|s|Ms)$/)]);
@@ -19,7 +21,7 @@ const AuthConfigSchema = z
     },
     disableSignups: env.DISABLE_SIGNUPS === "true",
   }));
-export const authConfig = AuthConfigSchema.parse(process.env);
+export const getAuthConfig = () => AuthConfigSchema.parse(process.env);
 
 const LogConfigSchema = z
   .object({
@@ -30,7 +32,7 @@ const LogConfigSchema = z
     level: env.LOG_LEVEL,
     pretty: env.LOG_PRETTY === "true",
   }));
-export const logConfig = LogConfigSchema.parse(process.env);
+export const getLogConfig = () => LogConfigSchema.parse(process.env);
 
 const EmailConfigSchema = z
   .object({
@@ -46,4 +48,38 @@ const EmailConfigSchema = z
     emailConfigurationSetName: env.EMAIL_CONFIGURATION_SET_NAME,
   }));
 
-export const emailConfig = EmailConfigSchema.parse(process.env);
+export const getEmailConfig = () => EmailConfigSchema.parse(process.env);
+
+const PersistenceConfigSchema = z.object({
+  TABLE_NAME: z.string().optional(),
+  AWS_REGION: z.string().optional(),
+  AWS_ACCESS_KEY_ID: z.string().optional(),
+  AWS_SECRET_ACCESS_KEY: z.string().optional(),
+  AWS_ENDPOINT: z.string().optional(),
+  PERSISTENCE_PROVIDER: z.enum(["local", "sst"]).default("sst"),
+});
+
+export const getPersistenceConfig = () => {
+  console.log("process.env", process.env);
+  const config = PersistenceConfigSchema.parse(process.env);
+  if (config.PERSISTENCE_PROVIDER === "local") {
+    if (!config.AWS_ACCESS_KEY_ID || !config.AWS_SECRET_ACCESS_KEY || !config.TABLE_NAME) {
+      throw new Error("TABLE_NAME,AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY are required when PERSISTENCE_PROVIDER is local");
+    }
+    return {
+      tableName: config.TABLE_NAME,
+      client: new DynamoDBClient({
+        region: config.AWS_REGION,
+        endpoint: config.AWS_ENDPOINT,
+        credentials: {
+          accessKeyId: config.AWS_ACCESS_KEY_ID,
+          secretAccessKey: config.AWS_SECRET_ACCESS_KEY,
+        },
+      }),
+    };
+  }
+  return {
+    client: new DynamoDBClient(),
+    tableName: Resource.SendraDatabase.name,
+  };
+};
