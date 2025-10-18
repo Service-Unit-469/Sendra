@@ -1,6 +1,6 @@
 import { z } from "@hono/zod-openapi";
 import { getAuthConfig, MembershipPersistence, rootLogger, UserPersistence } from "@sendra/lib";
-import { type User, UserSchemas } from "@sendra/shared";
+import { type Project, type User, UserSchemas } from "@sendra/shared";
 import type { Context, HonoRequest } from "hono";
 import { type JwtPayload, sign, verify } from "jsonwebtoken";
 import type { StringValue } from "ms";
@@ -141,7 +141,7 @@ export class AuthService {
 
   private static createUserToken(userId: string, email: string) {
     const authConfig = getAuthConfig();
-    return sign(
+    const token = sign(
       {
         type: "user",
         email,
@@ -153,40 +153,63 @@ export class AuthService {
         subject: userId,
       },
     );
+    return `u:${token}`;
   }
 
   public static createProjectToken(key: string, type: "secret" | "public", projectId: string) {
     const authConfig = getAuthConfig();
-    return sign(
+    const token = sign(
       {
         type,
       },
-      JWT_SECRET,
+      `${JWT_SECRET}:${key}`,
       {
         expiresIn: authConfig.ttl[type] as number | StringValue,
         issuer: authConfig.issuer,
         subject: projectId,
-        keyid: key,
       },
     );
+    return `${type === "secret" ? "s" : "p"}:${token}`;
   }
 
-  public static parseToken(c: Context, type?: AuthType): Auth {
-    const token = AuthService.parseBearer(c.req);
-    if (!token) {
+  private static getSalt(type: "s" | "p" | "u", project: Project): string {
+    if (type === "s") {
+      return `${JWT_SECRET}:${project.secret}`;
+    }
+    if (type === "p") {
+      return `${JWT_SECRET}:${project.public}`;
+    }
+    return JWT_SECRET;
+  }
+
+  public static parseToken(c: Context, options?: { type?: AuthType; project?: Project }): Auth {
+    const tokenString = AuthService.parseBearer(c.req);
+    if (!tokenString) {
       throw new HttpException(401, "No authorization passed");
     }
 
+    const [prefix, token] = tokenString.split(":");
+    if (!prefix || !["u", "s", "p"].includes(prefix)) {
+      logger.warn({ prefix }, "Invalid authorization token, invalid prefix");
+      throw new HttpException(401, "Invalid authorization token");
+    }
+
+    if (!options?.project && prefix !== "u") {
+      logger.warn({ prefix }, "Invalid authorization token, project is required for non-user tokens");
+      throw new HttpException(401, "Invalid authorization token");
+    }
+
     try {
-      const verified = verify(token, JWT_SECRET);
+      const salt = AuthService.getSalt(prefix as "s" | "p" | "u", options?.project as Project);
+      const verified = verify(token, salt);
       const auth = authSchema.parse(verified);
-      if (type && auth.type !== type) {
-        logger.warn({ auth, type }, "Invalid authorization token for request");
+      if (options?.type && auth.type !== options.type) {
+        logger.warn({ auth, type: options.type }, "Invalid authorization token for request");
         throw new HttpException(400, "Invalid authorization token for request");
       }
       return auth;
-    } catch (e) {
-      logger.warn({ error: e }, "Invalid authorization token");
+    } catch (err) {
+      logger.warn({ err }, "Invalid authorization token");
       throw new HttpException(401, "Invalid authorization token");
     }
   }

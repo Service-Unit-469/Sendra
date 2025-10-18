@@ -1,5 +1,5 @@
 import { createRoute, z } from "@hono/zod-openapi";
-import { type BaseItem, type BasePersistence, type Embeddable, ProjectPersistence, type QueryResult } from "@sendra/lib";
+import type { BaseItem, BasePersistence, Embeddable, QueryResult } from "@sendra/lib";
 import type { EmbeddedObject } from "lib/dist/persistence/BasePersistence";
 import type { AppType } from "../../app";
 import { BadRequest, NotFound } from "../../exceptions";
@@ -67,11 +67,7 @@ export const registerProjectEntityReadRoutes = <T extends BaseItem>(
       middleware: [isAuthenticatedProjectMemberOrSecretKey],
     }),
     async (c) => {
-      const { projectId } = c.req.param();
-      const project = await new ProjectPersistence().get(projectId);
-      if (!project) {
-        throw new NotFound("project");
-      }
+      const projectId = c.req.param("projectId");
 
       let actualLimit = 100;
       const { embed } = c.req.queries();
@@ -151,10 +147,6 @@ export const registerProjectEntityReadRoutes = <T extends BaseItem>(
       const { projectId } = c.req.param();
       const { embed } = c.req.queries();
       const { filter, value } = c.req.query();
-      const project = await new ProjectPersistence().get(projectId);
-      if (!project) {
-        throw new NotFound("project");
-      }
       const persistence = config.getPersistence(projectId);
       let entities: T[];
       if (filter && value) {
@@ -164,7 +156,9 @@ export const registerProjectEntityReadRoutes = <T extends BaseItem>(
           embed: embed as Embeddable[] | undefined,
         });
       } else {
-        entities = await persistence.listAll({ embed: embed as Embeddable[] | undefined });
+        entities = await persistence.listAll({
+          embed: embed as Embeddable[] | undefined,
+        });
       }
 
       return c.json(entities, 200);
@@ -205,10 +199,6 @@ export const registerProjectEntityReadRoutes = <T extends BaseItem>(
     async (c) => {
       const { projectId, entityId } = c.req.param();
       const { embed } = c.req.queries();
-      const project = await new ProjectPersistence().get(projectId);
-      if (!project) {
-        throw new NotFound("project");
-      }
 
       const persistence = config.getPersistence(projectId);
       const entity = await persistence.get(entityId, {
@@ -260,10 +250,6 @@ export const registerProjectEntityCrudRoutes = <T extends BaseItem>(app: AppType
     }),
     async (c) => {
       const { projectId } = c.req.param();
-      const project = await new ProjectPersistence().get(projectId);
-      if (!project) {
-        throw new NotFound("project");
-      }
       let toCreate = config.createSchema.parse(await c.req.json());
       if (config.preCreateEntity) {
         toCreate = await config.preCreateEntity(projectId, toCreate);
@@ -318,12 +304,6 @@ export const registerProjectEntityCrudRoutes = <T extends BaseItem>(app: AppType
     async (c) => {
       const { projectId, entityId } = c.req.param();
 
-      const projectPersistence = new ProjectPersistence();
-      const project = await projectPersistence.get(projectId);
-      if (!project) {
-        throw new NotFound("project");
-      }
-
       let toUpdate = config.updateSchema.parse(await c.req.json());
       if (toUpdate.id !== entityId) {
         throw new BadRequest("ID mismatch");
@@ -337,11 +317,13 @@ export const registerProjectEntityCrudRoutes = <T extends BaseItem>(app: AppType
         throw new NotFound(config.entityName);
       }
       const entity = await persistence.put({
-        project: project.id,
+        project: projectId,
         ...originalEntity,
         ...toUpdate,
       });
       const parsedEntity = config.getSchema.parse(entity);
+      // biome-ignore lint/suspicious/noTsIgnore: ts-expect-error doesn't work
+      // @ts-ignore
       return c.json(parsedEntity, 200);
     },
   );

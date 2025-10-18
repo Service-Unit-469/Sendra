@@ -1,9 +1,8 @@
 import { createRoute, z } from "@hono/zod-openapi";
-import { ActionPersistence, ContactPersistence, EmailPersistence, EventPersistence, ProjectPersistence } from "@sendra/lib";
+import { ActionPersistence, ContactPersistence, EmailPersistence, EventPersistence } from "@sendra/lib";
 import type { Action, Contact, Email, Event } from "@sendra/shared";
 import dayjs from "dayjs";
 import type { AppType } from "../../app";
-import { NotFound } from "../../exceptions";
 import { getProblemResponseSchema } from "../../exceptions/responses";
 import { BearerAuth, isAuthenticatedProjectMemberOrSecretKey } from "../../middleware/auth";
 
@@ -57,13 +56,6 @@ export const registerProjectInfoRoutes = (app: AppType) => {
     async (c) => {
       const projectId = c.req.param("projectId");
       const { period } = c.req.query() as { period: "week" | "month" | "year" };
-
-      const projectPersistence = new ProjectPersistence();
-      const project = await projectPersistence.get(projectId);
-
-      if (!project) {
-        throw new NotFound("project");
-      }
 
       const periods = {
         week: 7,
@@ -192,14 +184,7 @@ export const registerProjectInfoRoutes = (app: AppType) => {
       middleware: [isAuthenticatedProjectMemberOrSecretKey],
     }),
     async (c) => {
-      const { projectId } = c.req.param();
-
-      const projectPersistence = new ProjectPersistence();
-      const project = await projectPersistence.get(projectId);
-
-      if (!project) {
-        throw new NotFound("project");
-      }
+      const projectId = c.req.param("projectId");
 
       const itemsPerPage = 10;
       const skip = 0;
@@ -319,14 +304,7 @@ export const registerProjectInfoRoutes = (app: AppType) => {
       middleware: [isAuthenticatedProjectMemberOrSecretKey],
     }),
     async (c) => {
-      const { projectId } = c.req.param();
-
-      const projectPersistence = new ProjectPersistence();
-      const project = await projectPersistence.get(projectId);
-
-      if (!project) {
-        throw new NotFound("project");
-      }
+      const projectId = c.req.param("projectId");
 
       const startOfMonth = new Date(dayjs().startOf("month").toISOString());
       const endOfMonth = new Date(dayjs().endOf("month").toISOString());

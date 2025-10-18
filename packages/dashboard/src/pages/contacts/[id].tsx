@@ -140,7 +140,6 @@ export default function Index() {
           {contact._embed.events.length > 0 || contact._embed.emails.length > 0 ? (
             <div className="scrollbar-thin scrollbar-thumb-neutral-300 scrollbar-track-neutral-100 scrollbar-thumb-rounded-full scrollbar-track-rounded-full flow-root h-96 max-h-96 overflow-y-auto pr-6">
               <ul className="-mb-8">
-                <pre>{JSON.stringify([...contact._embed.events, ...contact._embed.emails], null, 2)}</pre>
                 {[...contact._embed.events, ...contact._embed.emails]
                   .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
                   .map((t, index) => {
