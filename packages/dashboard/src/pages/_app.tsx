@@ -9,7 +9,7 @@ import Router, { useRouter } from "next/router";
 import NProgress from "nprogress";
 import { Toaster } from "sonner";
 import { SWRConfig } from "swr";
-import { network } from "../lib/network";
+import { apiFetcher } from "../lib/api-client";
 import "nprogress/nprogress.css";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 import duration from "dayjs/plugin/duration";
@@ -66,7 +66,7 @@ export default function WithProviders(props: AppProps) {
   return (
     <SWRConfig
       value={{
-        fetcher: (url: string) => network.fetch(url, { method: "GET" }),
+        fetcher: apiFetcher,
         revalidateOnFocus: true,
       }}
     >
