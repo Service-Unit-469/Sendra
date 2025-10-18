@@ -2,6 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import type { CampaignUpdate, Email } from "@sendra/shared";
 import { CampaignSchemas } from "@sendra/shared";
 import { Ring } from "@uiball/loaders";
+import GroupOrContacts from "dashboard/src/components/ContactSelector/GroupOrContacts";
 import { EmailEditor } from "dashboard/src/components/EmailEditor";
 import dayjs from "dayjs";
 import { AnimatePresence, motion } from "framer-motion";
@@ -12,11 +13,9 @@ import { useCallback, useEffect, useState } from "react";
 import { type FieldError, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { Alert, Badge, Card, Dropdown, FullscreenLoader, Input, Modal, Table } from "../../components";
-import { ContactSelector } from "../../components/ContactSelector";
 import Send from "../../icons/Send";
 import { Dashboard } from "../../layouts";
 import { useCampaign, useCampaignsWithEmails } from "../../lib/hooks/campaigns";
-import { useAllContactsWithEvents } from "../../lib/hooks/contacts";
 import { useEmailsByCampaign } from "../../lib/hooks/emails";
 import { useActiveProject, useActiveProjectIdentity } from "../../lib/hooks/projects";
 import { network } from "../../lib/network";
@@ -29,7 +28,7 @@ export default function Index() {
   const project = useActiveProject();
   const { mutate: campaignsMutate } = useCampaignsWithEmails();
   const { data: campaign, mutate: campaignMutate } = useCampaign(router.query.id as string);
-  const { data: contacts } = useAllContactsWithEvents();
+
   const { data: emails } = useEmailsByCampaign(campaign?.id);
   const { data: projectIdentity } = useActiveProjectIdentity();
 
@@ -100,7 +99,7 @@ export default function Index() {
     return <FullscreenLoader />;
   }
 
-  if (!project || !campaign || !contacts || (watch("body") as string | undefined) === undefined) {
+  if (!project || !campaign || (watch("body") as string | undefined) === undefined) {
     return <FullscreenLoader />;
   }
 
@@ -303,18 +302,15 @@ export default function Index() {
               )}
             </div>
 
-            <ContactSelector
-              contacts={contacts}
-              initialSelectedContacts={campaign.recipients.map((r) => contacts.find((c) => c.id === r)).filter((c) => c !== undefined)}
+            <GroupOrContacts
+              onRecipientsChange={(r: string[]) => setValue("recipients", r)}
+              onGroupsChange={(g: string[]) => setValue("groups", g)}
               disabled={campaign.status !== "DRAFT"}
               label="Recipients"
-              onChange={(recipients) =>
-                setValue(
-                  "recipients",
-                  recipients.map((r) => r.id),
-                )
-              }
+              selectedContacts={campaign.recipients}
+              selectedGroups={campaign.groups}
             />
+
             <AnimatePresence>
               {(errors.recipients as FieldError | undefined)?.message && (
                 <motion.p initial={{ height: 0 }} animate={{ height: "auto" }} exit={{ height: 0 }} className="mt-1 text-xs text-red-500">

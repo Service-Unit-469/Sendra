@@ -14,13 +14,13 @@ export default function ContactSelector({
   onChange,
 }: {
   contacts: ContactWithEvents[];
-  initialSelectedContacts?: ContactWithEvents[];
+  initialSelectedContacts?: string[];
   disabled: boolean;
   label: string;
-  onChange: (selectedContacts: ContactWithEvents[]) => void;
+  onChange: (value: string[]) => void;
 }) {
   const [advancedSelector, setAdvancedSelector] = useState(false);
-  const [selectedContacts, setSelectedContacts] = useState<ContactWithEvents[]>(initialSelectedContacts ?? []);
+  const [selectedContacts, setSelectedContacts] = useState<ContactWithEvents[]>(contacts.filter((c) => initialSelectedContacts?.includes(c.id)) ?? []);
 
   return (
     <>
@@ -35,7 +35,7 @@ export default function ContactSelector({
               onChange={(c) => {
                 const sc = contacts.filter((ac) => c.includes(ac.id));
                 setSelectedContacts(sc);
-                onChange(sc);
+                onChange(sc.map((c) => c.id));
               }}
               values={contacts
                 .filter((c) => c.subscribed)

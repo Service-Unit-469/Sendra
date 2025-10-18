@@ -7,6 +7,8 @@ export const CampaignSchema = ProjectEntitySchema.extend({
   email: email.optional().or(z.literal("")),
   from: z.string().optional(),
   recipients: z.array(id),
+  groups: z.array(id).optional(),
+
   status: z.enum(["DRAFT", "DELIVERED"]).default("DRAFT"),
 });
 

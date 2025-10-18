@@ -78,20 +78,7 @@ export function GroupForm({ groupId, onSuccess, initialData, submitButtonText = 
     <form onSubmit={handleSubmit(onSubmit)} className={`flex gap-2 flex-col ${className}`}>
       <Input register={register("name")} label="Name" placeholder="My Group" error={errors.name} />
 
-      {contacts && (
-        <ContactSelector
-          disabled={false}
-          label="Contacts"
-          contacts={contacts}
-          initialSelectedContacts={initialData?.contacts.map((cid) => contacts.find((c) => c.id === cid)).filter((c) => c !== undefined)}
-          onChange={(c) =>
-            setValue(
-              "contacts",
-              c.map((c) => c.id),
-            )
-          }
-        />
-      )}
+      {contacts && <ContactSelector disabled={false} label="Contacts" contacts={contacts} initialSelectedContacts={initialData?.contacts} onChange={(c) => setValue("contacts", c)} />}
 
       <div className={"ml-auto flex justify-end gap-x-5"}>
         <motion.button

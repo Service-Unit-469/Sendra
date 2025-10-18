@@ -53,6 +53,7 @@ export default function Index() {
           ...data,
           body: templates.find((t) => t.id === data.template)?.body ?? defaultTemplate,
           recipients: [],
+          groups: [],
         },
       }),
       {
