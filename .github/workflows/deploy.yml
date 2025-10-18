@@ -55,14 +55,12 @@ jobs:
       - name: Build Dependencies
         run: npm run build:deps
 
-      - name: Configure .env.json
-        run: |
-          echo "${{ secrets.DOT_ENV}}" > .env.txt
-           base64 -d -i .env.txt > .env.json
-
       - name: Set Secrets
         run: |
           npm run sst -- secret set JwtSecret ${{ secrets.JWT_SECRET }}
 
       - name: Deploy app
         run: npm run deploy
+        env:
+          APP_URL: ${{ secrets.APP_URL }}
+          DEFAULT_EMAIL: ${{ secrets.DEFAULT_EMAIL }}
