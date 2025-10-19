@@ -242,7 +242,7 @@ export default function Index() {
                               </div>
                               <div className="flex min-w-0 flex-1 justify-between space-x-4 pt-1.5">
                                 <div>
-                                  <p className="text-sm text-neutral-500">{t.id} triggered</p>
+                                  <p className="text-sm text-neutral-500">{t.eventType} triggered</p>
                                 </div>
                                 <div className="whitespace-nowrap text-right text-sm text-neutral-500">
                                   <time dateTime={dayjs(t.createdAt).format("YYYY-MM-DD")}>{dayjs().to(t.createdAt)}</time>
