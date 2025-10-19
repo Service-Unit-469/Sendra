@@ -40,6 +40,7 @@ export default function Index() {
 
   const login = async (data: Credentials) => {
     setSubmitted(true);
+    debugger;
     try {
       const response = await fetch(`${API_URI}/auth/login`, {
         method: "POST",
@@ -48,12 +49,13 @@ export default function Index() {
         redirect: "manual",
       });
 
-      if (response.status === 302) {
-        return router.push(response.headers.get("Location") ?? "/");
+      if (response.status === 403) {
+        const body = await response.json();
+        return router.push(body.resetUrl ?? "/");
       }
       if (!response.ok) {
         const body = await response.json();
-        setError("email", { message: body.data });
+        setError("email", { message: "login failed" });
         setSubmitted(false);
         return;
       }

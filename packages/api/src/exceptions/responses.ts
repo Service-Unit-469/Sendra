@@ -2,7 +2,7 @@ import { z } from "@hono/zod-openapi";
 import type { Context } from "hono";
 import type { ContentfulStatusCode } from "hono/utils/http-status";
 
-export const ProblemBodySchema = z.object({
+export const ProblemBodySchema = z.looseObject({
   type: z.string(),
   title: z.string(),
   status: z.number(),
@@ -18,7 +18,7 @@ const problemTypes = {
   500: "Internal Server Error",
 } as Record<ContentfulStatusCode, string>;
 
-export const sendProblem = <AllowedCodes>(c: Context, httpException: Error & { code?: AllowedCodes; headers?: Record<string, string> }, overrideCode?: AllowedCodes) => {
+export const sendProblem = <AllowedCodes>(c: Context, httpException: Error & { code?: AllowedCodes; addl?: Record<string, any> }, overrideCode?: AllowedCodes) => {
   const code = overrideCode ?? httpException.code ?? 500;
   return c.json(
     {
@@ -27,10 +27,10 @@ export const sendProblem = <AllowedCodes>(c: Context, httpException: Error & { c
       status: code as number,
       detail: httpException.message,
       instance: c.req.path,
+      ...(httpException.addl ?? {}),
     },
     code as ContentfulStatusCode,
     {
-      ...(httpException.headers ?? {}),
       "Content-Type": "application/problem+json",
     },
   );
@@ -44,10 +44,3 @@ export const getProblemResponseSchema = (status: ContentfulStatusCode) => ({
   },
   description: problemTypes[status as ContentfulStatusCode] ?? "Unknown Problem",
 });
-
-export const RedirectResponseSchema = {
-  description: "Redirect to the given location",
-  headers: z.object({
-    location: z.string(),
-  }),
-};

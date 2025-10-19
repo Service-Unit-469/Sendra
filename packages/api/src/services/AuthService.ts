@@ -78,8 +78,8 @@ export class AuthService {
 
     if (!user.password) {
       logger.info({ email }, "User has no password");
-      throw new HttpException(302, "Please reset your password", {
-        Location: `/auth/reset?id=${user.id}`,
+      throw new HttpException(403, "Please reset your password", {
+        resetUrl: `/auth/reset?id=${user.id}`,
       });
     }
 

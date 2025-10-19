@@ -3,7 +3,7 @@ import { UserPersistence } from "@sendra/lib";
 import { email, id, UserSchemas, UtilitySchemas } from "@sendra/shared";
 import type { AppType } from "../app";
 import { NotAllowed, NotFound } from "../exceptions";
-import { getProblemResponseSchema, RedirectResponseSchema } from "../exceptions/responses";
+import { getProblemResponseSchema } from "../exceptions/responses";
 import { AuthService } from "../services/AuthService";
 import { createHash } from "../util/hash";
 
@@ -35,8 +35,8 @@ export const registerAuthRoutes = (app: AppType) => {
           },
           description: "Retrieve the user",
         },
-        302: RedirectResponseSchema,
         401: getProblemResponseSchema(401),
+        403: getProblemResponseSchema(403),
       },
       middleware: [],
       hide: true,

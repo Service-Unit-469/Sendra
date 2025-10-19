@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Redirect } from "../../components";
+import { FullscreenLoader, Redirect } from "../../components";
 import { network } from "../../lib/network";
 
 /**
@@ -22,6 +22,10 @@ export default function Index() {
   } = useForm({
     resolver: zodResolver(UserSchemas.credentials.pick({ password: true })),
   });
+  
+  if (!router.isReady) {
+    return <FullscreenLoader />;
+  }
 
   if (!router.query.id) {
     return <Redirect to={"/"} />;

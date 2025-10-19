@@ -5,10 +5,11 @@ export const password = z.string().min(6, "Password needs to be at least 6 chara
 
 export const UserSchema = BaseSchema.extend({
   email,
-  password,
+  password: z.string().optional(),
 });
 
 export const UserSchemas = {
-  credentials: UserSchema.pick({ email: true, password: true }),
+  credentials: UserSchema.pick({ email: true }).extend({ password }),
   get: UserSchema.omit({ password: true }),
+  
 };
