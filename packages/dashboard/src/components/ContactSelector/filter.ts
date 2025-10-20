@@ -1,8 +1,6 @@
 import type { Contact } from "@sendra/shared";
-import dayjs from "dayjs";
 import { useMemo } from "react";
 import type { MetadataFilterGroupType, MetadataFilterType } from "../Input/MetadataFilter/types";
-import type { ContactWithEvents, FilterQuery } from "./types";
 
 /**
  * Mapping of the filter conditions to the functions to use
@@ -67,7 +65,7 @@ function matchesMetadataFilter(contact: Contact, filter: MetadataFilterType) {
  * @param filter Metadata filter to filter contacts
  * @returns Filtered contacts
  */
-function filterContactsByMetadata(contacts: ContactWithEvents[], filter: MetadataFilterGroupType) {
+function filterContactsByMetadata(contacts: Contact[], filter: MetadataFilterGroupType) {
   return contacts.filter((contact) => {
     if (!filter.filters || !filter.filters.length) {
       return true;
@@ -89,7 +87,7 @@ function filterContactsByMetadata(contacts: ContactWithEvents[], filter: Metadat
  * @param query Query to filter contacts
  * @returns Filtered contacts
  */
-export default function useFilterContacts(contacts: ContactWithEvents[], query: FilterQuery) {
+export default function useFilterContacts(contacts: Contact[], filter?: MetadataFilterGroupType) {
   return useMemo(() => {
     if (!contacts) {
       return [];
@@ -97,68 +95,10 @@ export default function useFilterContacts(contacts: ContactWithEvents[], query: 
 
     let filteredContacts = contacts;
 
-    if (query.events && query.events.length > 0) {
-      query.events.forEach((e) => {
-        filteredContacts = filteredContacts.filter((c) => c._embed.events.some((t) => t.eventType === e));
-      });
-    }
-
-    if (query.last) {
-      filteredContacts = filteredContacts.filter((c) => {
-        if (c._embed.events.length === 0) {
-          return false;
-        }
-
-        const lastTrigger = c._embed.events.sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1));
-
-        if (lastTrigger.length === 0) {
-          return false;
-        }
-
-        return dayjs(lastTrigger[0].createdAt).isAfter(dayjs().subtract(1, query.last));
-      });
-    }
-
-    if (query.notevents && query.notevents.length > 0 && query.notlast) {
-      query.notevents.forEach((e) => {
-        filteredContacts = filteredContacts.filter((c) => {
-          if (c._embed.events.length === 0) {
-            return true;
-          }
-
-          const lastTrigger = c._embed.events.filter((t) => t.eventType === e).sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1));
-
-          if (lastTrigger.length === 0) {
-            return true;
-          }
-
-          return dayjs(lastTrigger[0].createdAt).isAfter(dayjs().subtract(1, query.last));
-        });
-      });
-    } else if (query.notevents && query.notevents.length > 0) {
-      query.notevents.forEach((e) => {
-        filteredContacts = filteredContacts.filter((c) => c._embed.events.every((t) => t.eventType !== e));
-      });
-    } else if (query.notlast) {
-      filteredContacts = filteredContacts.filter((c) => {
-        if (c._embed.events.length === 0) {
-          return true;
-        }
-
-        const lastTrigger = c._embed.events.sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1));
-
-        if (lastTrigger.length === 0) {
-          return true;
-        }
-
-        return !dayjs(lastTrigger[0].createdAt).isAfter(dayjs().subtract(1, query.notlast));
-      });
-    }
-
-    if (query.metadataFilter) {
-      filteredContacts = filterContactsByMetadata(filteredContacts, query.metadataFilter);
+    if (filter) {
+      filteredContacts = filterContactsByMetadata(filteredContacts, filter);
     }
 
     return filteredContacts;
-  }, [contacts, query]);
+  }, [contacts, filter]);
 }

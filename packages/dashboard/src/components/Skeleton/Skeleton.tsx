@@ -1,5 +1,5 @@
 export interface SkeletonProps {
-  type: "table" | "card" | "form";
+  type: "table" | "card" | "form" | "input";
 }
 
 /**
@@ -95,6 +95,19 @@ export default function Skeleton({ type }: SkeletonProps) {
           <div className="h-2.5 w-12 rounded-full bg-neutral-300" />
         </div>
         <div className="flex items-center justify-between pt-4">
+          <div>
+            <div className="mb-2.5 h-2.5 w-24 rounded-full bg-neutral-300" />
+            <div className="h-2 w-32 rounded-full bg-neutral-200" />
+          </div>
+          <div className="h-2.5 w-12 rounded-full bg-neutral-300" />
+        </div>
+        <span className="sr-only">Loading...</span>
+      </div>
+    );
+  } else if (type === "input") {
+    return (
+      <div role="status" className="w-full animate-pulse space-y-4 rounded p-4 shadow md:p-6">
+        <div className="flex items-center justify-between">
           <div>
             <div className="mb-2.5 h-2.5 w-24 rounded-full bg-neutral-300" />
             <div className="h-2 w-32 rounded-full bg-neutral-200" />

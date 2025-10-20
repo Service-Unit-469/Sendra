@@ -1,10 +1,10 @@
+import type { Contact } from "@sendra/shared";
 import { Ring } from "@uiball/loaders";
 import { AnimatePresence, motion } from "framer-motion";
 import { Search, Users2, XIcon } from "lucide-react";
 import { useState } from "react";
 import { MultiselectDropdown } from "../Input";
 import ContactFilterForm from "./ContactFilterForm";
-import type { ContactWithEvents } from "./types";
 
 export default function ContactSelector({
   contacts,
@@ -13,14 +13,14 @@ export default function ContactSelector({
   label,
   onChange,
 }: {
-  contacts: ContactWithEvents[];
+  contacts: Contact[];
   initialSelectedContacts?: string[];
   disabled: boolean;
   label: string;
   onChange: (value: string[]) => void;
 }) {
   const [advancedSelector, setAdvancedSelector] = useState(false);
-  const [selectedContacts, setSelectedContacts] = useState<ContactWithEvents[]>(contacts.filter((c) => initialSelectedContacts?.includes(c.id)) ?? []);
+  const [selectedContacts, setSelectedContacts] = useState<Contact[]>(contacts.filter((c) => initialSelectedContacts?.includes(c.id)) ?? []);
 
   return (
     <>
