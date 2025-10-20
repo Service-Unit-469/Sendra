@@ -194,7 +194,7 @@ export const registerProjectInfoRoutes = (app: AppType) => {
       const projectId = c.req.param("projectId");
 
       // Get all triggers and emails for the project
-      const [events, emails] = await Promise.all([new EventPersistence(projectId).list({limit: 10}), new EmailPersistence(projectId).list({limit: 10})]);
+      const [events, emails] = await Promise.all([new EventPersistence(projectId).list({ limit: 10 }), new EmailPersistence(projectId).list({ limit: 10 })]);
 
       const contactsPersistence = new ContactPersistence(projectId);
 
