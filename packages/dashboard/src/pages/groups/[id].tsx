@@ -1,9 +1,9 @@
 import { Trash } from "lucide-react";
 import { useRouter } from "next/router";
 import { toast } from "sonner";
-import { Card, FullscreenLoader, GroupForm, Table } from "../../components";
+import { Card, FullscreenLoader, GroupForm } from "../../components";
 import { Dashboard } from "../../layouts";
-import { useGroup, useGroupContacts } from "../../lib/hooks/groups";
+import { useGroup } from "../../lib/hooks/groups";
 import { useActiveProject } from "../../lib/hooks/projects";
 import { network } from "../../lib/network";
 
@@ -11,9 +11,8 @@ export default function Index() {
   const router = useRouter();
   const project = useActiveProject();
   const { data: group, mutate } = useGroup(router.query.id as string);
-  const { data: groupContacts } = useGroupContacts(router.query.id as string);
 
-  if (!group || !groupContacts || !router.isReady || !project) {
+  if (!group || !router.isReady || !project) {
     return <FullscreenLoader />;
   }
   const remove = async (e: { preventDefault: () => void }) => {
@@ -46,16 +45,6 @@ export default function Index() {
         <div className="space-y-6">
           <GroupForm onSuccess={() => void mutate()} initialData={group} groupId={group.id} submitButtonText="Save" />
         </div>
-      </Card>
-      <Card title="Contacts">
-        <Table
-          values={groupContacts.contacts?.map((c) => {
-            return {
-              Email: c.email,
-              Subscribed: c.subscribed,
-            };
-          })}
-        />
       </Card>
     </Dashboard>
   );
