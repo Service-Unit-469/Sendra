@@ -11,6 +11,7 @@ export default function SettingTabs() {
     { to: "/settings/project", text: "Project Settings", active: router.route === "/settings/project" },
     { to: "/settings/api", text: "API Access", active: router.route === "/settings/api" },
     { to: "/settings/identity", text: "Verified Identity", active: router.route === "/settings/identity" },
+    { to: "/settings/sms", text: "SMS Settings", active: router.route === "/settings/sms" },
     { to: "/settings/members", text: "Members", active: router.route === "/settings/members" },
   ];
 

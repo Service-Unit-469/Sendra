@@ -8,5 +8,6 @@ export { EventPersistence } from "./EventPersistence";
 export { GroupPersistence } from "./GroupPersistence";
 export { MembershipPersistence } from "./MembershipPersistence";
 export { ProjectPersistence } from "./ProjectPersistence";
+export { SmsPersistence } from "./SmsPersistence";
 export { TemplatePersistence } from "./TemplatePersistence";
 export { UserPersistence } from "./UserPersistence";

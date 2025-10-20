@@ -8,7 +8,7 @@ export const CampaignSchema = ProjectEntitySchema.extend({
   from: z.string().optional(),
   recipients: z.array(id),
   groups: z.array(id).optional(),
-
+  channel: z.enum(["EMAIL", "SMS"]).default("EMAIL"),
   status: z.enum(["DRAFT", "DELIVERED"]).default("DRAFT"),
 });
 

@@ -17,6 +17,17 @@ export const BatchDeleteRelatedSchema = baseTaskSchema.extend({
   payload: BatchDeleteRelatedPayloadSchema,
 });
 
+export const SendSmsTaskSchema = baseTaskSchema.extend({
+  type: z.literal("sendSms"),
+  payload: z.object({
+    sms: id.optional(),
+    action: id.optional(),
+    campaign: id.optional(),
+    contact: id,
+    project: id,
+  }),
+});
+
 export const SendEmailTaskSchema = baseTaskSchema.extend({
   type: z.literal("sendEmail"),
   payload: z.object({
@@ -28,4 +39,4 @@ export const SendEmailTaskSchema = baseTaskSchema.extend({
   }),
 });
 
-export const TaskSchema = z.discriminatedUnion("type", [BatchDeleteRelatedSchema, SendEmailTaskSchema]);
+export const TaskSchema = z.discriminatedUnion("type", [BatchDeleteRelatedSchema, SendEmailTaskSchema, SendSmsTaskSchema]);

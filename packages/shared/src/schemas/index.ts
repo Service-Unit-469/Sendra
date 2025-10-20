@@ -8,6 +8,7 @@ export * from "./event";
 export * from "./group";
 export * from "./membership";
 export * from "./project";
+export * from "./sms";
 export * from "./subscriber";
 export * from "./tasks";
 export * from "./template";

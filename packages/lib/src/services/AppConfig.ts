@@ -82,3 +82,11 @@ export const getPersistenceConfig = () => {
     tableName: Resource.SendraDatabase.name,
   };
 };
+
+const SmsConfigSchema = z.object({
+  SMS_ENABLED: z.enum(["true", "false"]).default("false"),
+}).transform((env) => ({
+  enabled: env.SMS_ENABLED === "true",
+}));
+
+export const getSmsConfig = () => SmsConfigSchema.parse(process.env);

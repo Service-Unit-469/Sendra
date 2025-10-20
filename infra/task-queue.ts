@@ -30,6 +30,10 @@ taskQueue.subscribe(
         actions: ["ses:SendEmail", "ses:SendRawEmail"],
         resources: ["*"],
       },
+      {
+        actions: ["sms-voice:SendTextMessage"],
+        resources: ["*"],
+      },
     ],
   },
   {

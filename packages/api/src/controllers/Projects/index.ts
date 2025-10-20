@@ -10,6 +10,7 @@ import { registerProjectInfoRoutes } from "./Info";
 import { registerProjectKeysRoutes } from "./Keys";
 import { registerProjectCrudRoutes } from "./Projects";
 import { registerTemplatesRoutes } from "./Templates";
+import { registerSmsRoutes } from "./Sms";
 
 export const registerProjectRoutes = (app: AppType) => {
   registerProjectKeysRoutes(app);
@@ -24,5 +25,6 @@ export const registerProjectRoutes = (app: AppType) => {
   registerGroupsRoutes(app);
   registerEmailsRoutes(app);
   registerEventsRoutes(app);
+  registerSmsRoutes(app);
   registerTemplatesRoutes(app);
 };

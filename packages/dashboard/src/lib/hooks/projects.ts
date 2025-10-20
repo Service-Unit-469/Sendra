@@ -1,7 +1,8 @@
-import type { Action, Contact, Email, Membership, ProjectIdentity, ProjectKeys, PublicProject } from "@sendra/shared";
+import type { Action, Contact, Email, Membership, ProjectIdentity, ProjectKeys, PublicProject, SmsSchemas } from "@sendra/shared";
 import { useAtom } from "jotai";
 import useSWR from "swr";
 import { atomActiveProject } from "../atoms/project";
+import type z from "zod";
 
 /**
  *
@@ -85,4 +86,9 @@ export function useActiveProjectKeys() {
   const activeProject = useActiveProject();
 
   return useSWR<ProjectKeys>(activeProject ? `/projects/${activeProject.id}/keys` : null);
+}
+
+export function useActiveProjectSmsConfig() {
+  const activeProject = useActiveProject();
+  return useSWR<z.infer<typeof SmsSchemas.updateConfig>>(activeProject ? `/projects/${activeProject.id}/sms-config` : null);
 }

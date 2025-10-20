@@ -1,5 +1,6 @@
 import z from "zod";
 import { BaseSchema, email, id } from "./common";
+import { ConfigurationSetArnSchema, PoolArnSchema } from "./sms";
 
 export const IdentitySchema = z.object({
   identityType: z.enum(["email", "domain"]).default("email"),
@@ -7,6 +8,19 @@ export const IdentitySchema = z.object({
   mailFromDomain: z.string().optional(),
   verified: z.boolean().default(false),
 });
+
+export const DisabledSmsConfigSchema = z.object({
+  enabled: z.literal(false),
+});
+
+export const EnabledSmsConfigSchema = z.object({
+  enabled: z.literal(true),
+  configurationSetArn: ConfigurationSetArnSchema,
+  poolArn: PoolArnSchema,
+  phoneKey: z.string().min(1, "Phone key can't be empty"),
+});
+
+export const SmsConfigSchema = z.discriminatedUnion("enabled", [DisabledSmsConfigSchema, EnabledSmsConfigSchema]);
 
 export const ProjectSchema = BaseSchema.extend({
   id,
@@ -17,6 +31,7 @@ export const ProjectSchema = BaseSchema.extend({
   name: z.string().min(1, "Name can't be empty"),
   public: z.string(),
   secret: z.string(),
+  sms: SmsConfigSchema.optional().default({ enabled: false }),
   url: z.url(),
 });
 

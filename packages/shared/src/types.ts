@@ -22,6 +22,7 @@ import type {
   ProjectSchemas,
   PublicProjectSchema,
   SEND_TYPES,
+  SmsConfigSchema,
   SubscriberSchema,
   SubscriberUpdateSchema,
   TaskSchema,
@@ -30,6 +31,7 @@ import type {
   UserSchema,
   UserSchemas,
 } from "./schemas";
+import { SmsSchema, SmsSchemas } from "./schemas/sms";
 
 export type Action = z.infer<typeof ActionSchema>;
 export type ActionCreate = z.infer<typeof ActionSchemas.create>;
@@ -74,6 +76,12 @@ export type TemplateUpdate = z.infer<typeof TemplateSchemas.update>;
 export type SendTypes = (typeof SEND_TYPES)[number];
 export type Subscriber = z.infer<typeof SubscriberSchema>;
 export type SubscriberUpdate = z.infer<typeof SubscriberUpdateSchema>;
+
+export type Sms = z.infer<typeof SmsSchema>;
+export type SmsConfig = z.infer<typeof SmsConfigSchema>;
+export type SmsCreate = z.infer<typeof SmsSchemas.create>;
+export type SmsUpdate = z.infer<typeof SmsSchemas.update>;
+export type SmsSend = z.infer<typeof SmsSchemas.send>;
 
 export type User = z.infer<typeof UserSchema>;
 export type UserGet = z.infer<typeof UserSchemas.get>;
