@@ -1,11 +1,15 @@
-import { useAllContactsWithEvents } from "dashboard/src/lib/hooks/contacts";
+import { useAllContacts } from "dashboard/src/lib/hooks/contacts";
 import { useAllGroups } from "dashboard/src/lib/hooks/groups";
 import { useCallback, useState } from "react";
 import { Dropdown, MultiselectDropdown } from "../Input";
+import { Skeleton } from "../Skeleton";
 import { ContactSelector } from ".";
 
 const ContactSelectorWrapper = ({ onRecipientsChange, onGroupsChange, disabled, label, selectedContacts }: GroupOrContactsProps) => {
-  const { data: contacts } = useAllContactsWithEvents();
+  const { data: contacts } = useAllContacts();
+  if (!contacts) {
+    return <Skeleton type="input" />;
+  }
 
   onGroupsChange([]);
   return <ContactSelector contacts={contacts ?? []} disabled={disabled} label={label} onChange={onRecipientsChange} initialSelectedContacts={selectedContacts} />;
@@ -14,7 +18,7 @@ const ContactSelectorWrapper = ({ onRecipientsChange, onGroupsChange, disabled, 
 const GroupSelector = ({ onRecipientsChange, onGroupsChange, disabled, selectedGroups = [] }: GroupOrContactsProps) => {
   const { data: groups } = useAllGroups();
   if (!groups) {
-    return null;
+    return <Skeleton type="input" />;
   }
   return (
     <>

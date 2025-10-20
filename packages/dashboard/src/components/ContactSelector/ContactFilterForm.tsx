@@ -1,21 +1,21 @@
+import type { Contact } from "@sendra/shared";
 import { motion } from "framer-motion";
 import { useMemo, useState } from "react";
-import { Dropdown, MetadataFilterEditor, MultiselectDropdown, Skeleton } from "../../components";
+import { MetadataFilterEditor, type MetadataFilterGroupType, Skeleton } from "../../components";
 import { useEventTypes } from "../../lib/hooks/events";
 import { useActiveProject } from "../../lib/hooks/projects";
 import useFilterContacts from "./filter";
-import type { ContactWithEvents, FilterQuery } from "./types";
 
 /**
  *
  */
-export default function ContactFilterForm({ contacts, onSelect }: { contacts: ContactWithEvents[]; onSelect: (contacts: ContactWithEvents[]) => void }) {
+export default function ContactFilterForm({ contacts, onSelect }: { contacts: Contact[]; onSelect: (contacts: Contact[]) => void }) {
   const project = useActiveProject();
   const { data: eventTypeData } = useEventTypes();
   const eventTypes = useMemo(() => eventTypeData?.eventTypes ?? [], [eventTypeData]);
 
-  const [query, setQuery] = useState<FilterQuery>({});
-  const filteredContacts = useFilterContacts(contacts, query);
+  const [filter, setFilter] = useState<MetadataFilterGroupType>();
+  const filteredContacts = useFilterContacts(contacts, filter);
 
   if (!project || !eventTypes) {
     return <Skeleton type="form" />;
@@ -23,119 +23,7 @@ export default function ContactFilterForm({ contacts, onSelect }: { contacts: Co
 
   return (
     <>
-      <div className={"sm:col-span-2"}>
-        <label htmlFor={"event"} className="block text-sm font-medium text-neutral-700">
-          Has triggers for events
-        </label>
-        <MultiselectDropdown
-          onChange={(e) =>
-            setQuery(
-              e.length > 0
-                ? { ...query, events: e }
-                : {
-                    ...query,
-                    events: undefined,
-                    last: undefined,
-                  },
-            )
-          }
-          values={[
-            ...eventTypes
-              .filter((e) => !query.notevents?.includes(e.name))
-              .sort((a, b) => a.name.localeCompare(b.name))
-              .map((e) => {
-                return {
-                  name: e.name,
-                  value: e.name,
-                };
-              }),
-          ]}
-          selectedValues={query.events ?? []}
-        />
-      </div>
-
-      <div className={"sm:col-span-2"}>
-        {query.events && query.events.length > 0 && (
-          <>
-            <label htmlFor={"event"} className="block text-sm font-medium text-neutral-700">
-              Has triggered {query.events.length} selected events
-            </label>
-            <Dropdown
-              onChange={(e) =>
-                setQuery({
-                  ...query,
-                  last: (e as "" | "day" | "week" | "month") === "" ? undefined : (e as "day" | "week" | "month"),
-                })
-              }
-              values={[
-                { name: "Anytime", value: "" },
-                { name: "In the last day", value: "day" },
-                { name: "In the last week", value: "week" },
-                { name: "In the last month", value: "month" },
-              ]}
-              selectedValue={query.last ?? ""}
-            />
-          </>
-        )}
-      </div>
-
-      <div className={"sm:col-span-2"}>
-        <label htmlFor={"event"} className="block text-sm font-medium text-neutral-700">
-          No triggers for events
-        </label>
-        <MultiselectDropdown
-          onChange={(e) => {
-            setQuery(
-              e.length > 0
-                ? { ...query, notevents: e }
-                : {
-                    ...query,
-                    notevents: undefined,
-                    notlast: undefined,
-                  },
-            );
-          }}
-          values={[
-            ...eventTypes
-              .filter((e) => !query.events?.includes(e.name))
-              .sort((a, b) => a.name.localeCompare(b.name))
-              .map((e) => {
-                return {
-                  name: e.name,
-                  value: e.name,
-                };
-              }),
-          ]}
-          selectedValues={query.notevents ?? []}
-        />
-      </div>
-
-      <div className={"sm:col-span-2"}>
-        {query.notevents && query.notevents.length > 0 && (
-          <>
-            <label htmlFor={"event"} className="block text-sm font-medium text-neutral-700">
-              Not triggered {query.notevents.length} selected events
-            </label>
-            <Dropdown
-              onChange={(e) =>
-                setQuery({
-                  ...query,
-                  notlast: (e as "" | "day" | "week" | "month") === "" ? undefined : (e as "day" | "week" | "month"),
-                })
-              }
-              values={[
-                { name: "Anytime", value: "" },
-                { name: "In the last day", value: "day" },
-                { name: "In the last week", value: "week" },
-                { name: "In the last month", value: "month" },
-              ]}
-              selectedValue={query.notlast ?? ""}
-            />
-          </>
-        )}
-      </div>
-
-      <MetadataFilterEditor onChange={(filter) => setQuery({ ...query, metadataFilter: filter })} contacts={contacts} />
+      <MetadataFilterEditor onChange={(filter) => setFilter(filter)} contacts={contacts} />
 
       <div className={"sm:col-span-4"}>
         <motion.button

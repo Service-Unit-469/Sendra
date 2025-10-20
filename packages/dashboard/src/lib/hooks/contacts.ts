@@ -3,8 +3,6 @@ import useSWR from "swr";
 import useSWRInfinite from "swr/infinite";
 import { useActiveProject } from "./projects";
 
-type ContactWithEvents = Contact & { _embed: { events: Event[] } };
-
 /**
  *
  * @param id.id
@@ -19,11 +17,6 @@ export function useContact(id: string) {
 export function useAllContacts() {
   const activeProject = useActiveProject();
   return useSWR<Contact[]>(activeProject?.id ? `/projects/${activeProject.id}/contacts/all` : null);
-}
-
-export function useAllContactsWithEvents() {
-  const activeProject = useActiveProject();
-  return useSWR<ContactWithEvents[]>(activeProject?.id ? `/projects/${activeProject.id}/contacts/all?embed=events` : null);
 }
 
 /**

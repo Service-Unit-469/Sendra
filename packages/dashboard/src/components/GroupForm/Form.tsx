@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { type GroupCreate, GroupSchemas } from "@sendra/shared";
 import { ContactSelector } from "dashboard/src/components/ContactSelector";
-import { useAllContactsWithEvents } from "dashboard/src/lib/hooks/contacts";
+import { useAllContacts } from "dashboard/src/lib/hooks/contacts";
 import { useActiveProject } from "dashboard/src/lib/hooks/projects";
 import { network } from "dashboard/src/lib/network";
 import { motion } from "framer-motion";
@@ -9,7 +9,7 @@ import { Save } from "lucide-react";
 import { useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { Input } from "..";
+import { Input, Skeleton } from "..";
 
 export type GroupFormProps = {
   groupId?: string;
@@ -22,7 +22,7 @@ export type GroupFormProps = {
 export function GroupForm({ groupId, onSuccess, initialData, submitButtonText = "Save", className = "" }: GroupFormProps) {
   const project = useActiveProject();
 
-  const { data: contacts } = useAllContactsWithEvents();
+  const { data: contacts } = useAllContacts();
 
   const {
     register,
@@ -73,6 +73,9 @@ export function GroupForm({ groupId, onSuccess, initialData, submitButtonText = 
     },
     [groupId, project, onSuccess],
   );
+  if (!contacts || !project) {
+    return <Skeleton type="form" />;
+  }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={`flex gap-2 flex-col ${className}`}>
