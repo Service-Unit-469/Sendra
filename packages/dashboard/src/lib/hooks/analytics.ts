@@ -27,8 +27,6 @@ export function useAnalytics(period?: "week" | "month" | "year") {
       openedPrev: number;
       complaintPrev: number;
     };
-    clicks: {
-      actions: { link: string; name: string; count: number }[];
-    };
+    clicks: { link: string; name: string; count: number }[];
   }>(activeProject ? `/projects/${activeProject.id}/analytics?period=${period ?? "week"}` : null);
 }

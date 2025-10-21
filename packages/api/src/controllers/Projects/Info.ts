@@ -45,6 +45,15 @@ export const registerProjectInfoRoutes = (app: AppType) => {
                   openedPrev: z.number(),
                 }),
               }),
+              clicks: z.object({
+                actions: z.array(
+                  z.object({
+                    link: z.string(),
+                    name: z.string(),
+                    count: z.number(),
+                  }),
+                ),
+              }),
             },
           },
           description: "Get project analytics",
@@ -68,11 +77,14 @@ export const registerProjectInfoRoutes = (app: AppType) => {
         .toDate();
 
       // Get all contacts and emails for the project
-      const [allContacts, allEmails] = await Promise.all([
+      const [allContacts, allEmails, allEvents] = await Promise.all([
         new ContactPersistence(projectId).listAll({
           stop: (c) => dayjs(c.createdAt).isBefore(start),
         }),
         new EmailPersistence(projectId).listAll({
+          stop: (e) => dayjs(e.createdAt).isBefore(start),
+        }),
+        new EventPersistence(projectId).listAll({
           stop: (e) => dayjs(e.createdAt).isBefore(start),
         }),
       ]);
@@ -106,6 +118,28 @@ export const registerProjectInfoRoutes = (app: AppType) => {
         timeseries.push({ day: date, count: dayContacts });
       }
 
+      const clicks: { link: string; name: string; count: number }[] = [];
+      const clickMap: Record<string, Record<string, number>> = {};
+      allEvents
+        .filter((e) => e.eventType === "email.click")
+        .map((e) => ({
+          link: e.data?.details?.link || "",
+          name: e.data?.mail?.commonHeaders?.subject || "",
+        }))
+        .filter((c) => c.link)
+        .forEach((c) => {
+          const name = c.name ?? "unknown";
+          if (!clickMap[c.link]) {
+            clickMap[c.link] = {};
+          }
+          clickMap[c.link][name] = (clickMap[c.link][name] || 0) + 1;
+        });
+      Object.entries(clickMap).forEach(([link, names]) => {
+        Object.entries(names).forEach(([name, count]) => {
+          clicks.push({ link, name, count });
+        });
+      });
+
       return c.json(
         {
           contacts: { timeseries, subscribed, unsubscribed },
@@ -119,9 +153,7 @@ export const registerProjectInfoRoutes = (app: AppType) => {
             complaintPrev,
             openedPrev,
           },
-          clicks: {
-            actions: [],
-          },
+          clicks,
         },
         200,
       );

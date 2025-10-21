@@ -27,7 +27,7 @@ export default function Index() {
             <ResponsiveContainer width="100%" height={300}>
               <BarChart
                 height={300}
-                data={analytics.clicks.actions}
+                data={analytics.clicks}
                 margin={{
                   top: 20,
                   right: 0,
