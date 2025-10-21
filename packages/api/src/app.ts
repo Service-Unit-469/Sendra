@@ -57,7 +57,7 @@ app.use(
 app.use(
   pinoLogger({
     pino: rootLogger.child({
-      service: "api",
+      module: "api",
     }),
   }),
 );

@@ -25,6 +25,7 @@ const createLogger = () =>
       formatters: {
         level: (label) => ({ level: label.toUpperCase() }),
       },
+      redact: ["req.headers.authorization", "*.public", "*.secret"],
     },
     stream,
   );
