@@ -17,6 +17,7 @@ import { useActiveProject } from "../../lib/hooks/projects";
 const createCampaignFormSchema = z.object({
   subject: z.string().min(1, "Subject is required"),
   template: z.string().optional(),
+  channel: z.enum(["EMAIL", "SMS"]).default("EMAIL"),
 });
 /**
  *
@@ -38,6 +39,7 @@ export default function Index() {
     defaultValues: {
       subject: "",
       template: undefined,
+      channel: "EMAIL",
     },
   });
 
@@ -71,7 +73,7 @@ export default function Index() {
 
   return (
     <Dashboard>
-      <Modal isOpen={newCampaignModal} onToggle={() => setNewCampaignModal((s) => !s)} onAction={() => {}} type={"info"} title={"Create new campaign"} hideActionButtons={true}>
+      <Modal isOpen={newCampaignModal} onToggle={() => setNewCampaignModal((s) => !s)} onAction={() => { }} type={"info"} title={"Create new campaign"} hideActionButtons={true}>
         <form onSubmit={handleCreateSubmit(createCampaign)} className="flex flex-col gap-6">
           <div>
             <Input className={"sm:col-span-6"} label={"Subject"} placeholder={`Welcome to ${project.name}!`} register={register("subject")} error={errors.subject} />
@@ -85,7 +87,10 @@ export default function Index() {
               className={"w-full"}
               values={[{ name: "Default Template", value: "" }, ...templates.map((t) => ({ name: t.subject, value: t.id }))]}
               selectedValue={watch("template") ?? ""}
-              onChange={(v) => setValue("template", v)}
+              onChange={(v) => {
+                setValue("template", v);
+                templates.find((t) => t.id === v)?.channel === "SMS" ? setValue("channel", "SMS") : setValue("channel", "EMAIL");
+              }}
             />
           </div>
 

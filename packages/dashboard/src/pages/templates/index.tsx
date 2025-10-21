@@ -5,12 +5,14 @@ import Link from "next/link";
 import { Badge, Card, Empty, Skeleton } from "../../components";
 import { Dashboard } from "../../layouts";
 import { useTemplates } from "../../lib/hooks/templates";
+import { useActiveProject } from "../../lib/hooks/projects";
 
 /**
  *
  */
 export default function Index() {
   const { data: templates } = useTemplates();
+  const activeProject = useActiveProject();
 
   return (
     <Dashboard>
@@ -18,12 +20,22 @@ export default function Index() {
         title={"Templates"}
         description={"Reusable blueprints of your emails"}
         actions={
-          <Link href={"templates/new"} passHref>
-            <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.9 }} className={"flex items-center gap-x-1 rounded bg-neutral-800 px-8 py-2 text-center text-sm font-medium text-white"}>
-              <Plus strokeWidth={1.5} size={18} />
-              New
-            </motion.button>
-          </Link>
+          <>
+            <Link href={"templates/new-email"} passHref>
+              <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.9 }} className={"flex items-center gap-x-1 rounded bg-neutral-800 px-8 py-2 text-center text-sm font-medium text-white"}>
+                <Plus strokeWidth={1.5} size={18} />
+                New Email
+              </motion.button>
+            </Link>
+            {activeProject?.sms?.enabled && (
+              <Link href={"templates/new-sms"} passHref>
+                <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.9 }} className={"flex items-center gap-x-1 rounded bg-neutral-800 px-8 py-2 text-center text-sm font-medium text-white"}>
+                  <Plus strokeWidth={1.5} size={18} />
+                  New Sms
+                </motion.button>
+              </Link>
+            )}
+          </>
         }
       >
         {templates ? (

@@ -1,4 +1,4 @@
-import type { Contact, Email, Event } from "@sendra/shared";
+import type { Contact, Email, Event, Sms } from "@sendra/shared";
 import useSWR from "swr";
 import useSWRInfinite from "swr/infinite";
 import { useActiveProject } from "./projects";
@@ -13,7 +13,7 @@ type ContactWithEvents = Contact & { _embed: { events: Event[] } };
  */
 export function useContact(id: string) {
   const activeProject = useActiveProject();
-  return useSWR<Contact & { _embed: { events: Event[]; emails: Email[] } }>(id && activeProject?.id ? `/projects/${activeProject.id}/contacts/${id}?embed=events&embed=emails` : null);
+  return useSWR<Contact & { _embed: { events: Event[]; emails: Email[], smses: Sms[] } }>(id && activeProject?.id ? `/projects/${activeProject.id}/contacts/${id}?embed=events&embed=emails&embed=smses` : null);
 }
 
 export function useAllContacts() {

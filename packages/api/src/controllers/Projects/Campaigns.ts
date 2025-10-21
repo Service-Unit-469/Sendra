@@ -18,6 +18,7 @@ import {
   CampaignSchema,
   CampaignSchemas,
   EmailSchema,
+  SmsSchema,
   type Project,
 } from "@sendra/shared";
 import type { AppType } from "../../app";
@@ -287,13 +288,14 @@ export const registerCampaignsRoutes = (app: AppType) => {
     getSchema: CampaignSchema.extend({
       _embed: z
         .object({
-          emails: EmailSchema.optional(),
+          emails: z.array(EmailSchema).optional(),
+          smses: z.array(SmsSchema).optional(),
         })
         .optional(),
     }),
     createSchema: CampaignSchemas.create,
     updateSchema: CampaignSchemas.update,
-    embeddable: ["emails"],
+    embeddable: ["emails", "smses"],
     listQuerySchema: z.string(),
     getPersistence: (projectId: string) => new CampaignPersistence(projectId),
     preCreateEntity: async (projectId, campaign) => {
@@ -375,6 +377,7 @@ export const registerCampaignsRoutes = (app: AppType) => {
             userDelay,
             projectId
           );
+          return c.json({}, 202);
         } else {
           throw new BadRequest("SMS campaign testing is not supported");
         }

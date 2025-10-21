@@ -8,9 +8,10 @@ import type {
 import { TaskSchema } from "shared/dist/schemas/tasks";
 import { handleDelete } from "./handlers/DeleteTask";
 import { sendEmail } from "./handlers/SendEmailTask";
+import { sendSms } from "./handlers/SendSmsTask";
 
 const logger = rootLogger.child({
-  module: "SendEmailSubscriber",
+  module: "TaskQueueSubscriber",
 });
 
 export const handler = async (event: SQSEvent, _context: Context) => {
@@ -25,7 +26,7 @@ export const handler = async (event: SQSEvent, _context: Context) => {
       } else if (task.type === "batchDeleteRelated") {
         await handleDelete(task, record.messageId);
       } else if (task.type === "sendSms") {
-        // do something here
+        await sendSms(task, record.messageId);
       }
     } catch (err) {
       logger.error(

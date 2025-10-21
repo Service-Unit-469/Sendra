@@ -65,7 +65,7 @@ export type BaseItem = {
   updatedAt: string;
 };
 
-export type Embeddable = "actions" | "emails" | "events" | "templates";
+export type Embeddable = "actions" | "emails" | "events" | "templates" | "smses";
 
 export type StopFn<T> = (item: T) => boolean;
 
@@ -135,17 +135,18 @@ export abstract class BasePersistence<T extends BaseItem> {
   }
 
   @logMethodReturningPromise("BasePersistence")
-  async batchGet(ids: string[]): Promise<T[]> {
+  async batchGet(ids: readonly string[]): Promise<T[]> {
     if (ids.length === 0) {
       return [];
     }
+    const idsCopy = [...ids];
     this.logger.debug({ ids: ids.length, type: this.type }, "Performing batch get");
 
     const allItems: T[] = [];
-    while (ids.length > 0) {
+    while (idsCopy.length > 0) {
       const batchIds = [];
-      while (ids.length > 0 && batchIds.length < 100) {
-        batchIds.push(ids.pop());
+      while (idsCopy.length > 0 && batchIds.length < 100) {
+        batchIds.push(idsCopy.pop());
       }
       this.logger.debug({ batchIds, type: this.type }, "Getting batch of items");
       const command = new BatchGetCommand({
@@ -170,7 +171,7 @@ export abstract class BasePersistence<T extends BaseItem> {
       );
 
       allItems.push(...items);
-      ids.push(...unprocessedKeys);
+      idsCopy.push(...unprocessedKeys);
     }
 
     return allItems.map((i) => this.schema.parse(i));

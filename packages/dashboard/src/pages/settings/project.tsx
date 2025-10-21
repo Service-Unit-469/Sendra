@@ -100,7 +100,7 @@ export default function Index() {
           <form onSubmit={handleSubmit(update)} className="space-y-6">
             <div className={"grid gap-5 sm:grid-cols-2"}>
               <Input register={register("name")} label={"Name"} placeholder={"ACME Inc."} error={errors.name} />
-              <Input register={register("url")} label={"URL"} placeholder={"https://useplunk.com"} error={errors.url} />
+              <Input register={register("url")} label={"URL"} placeholder={"https://example.com"} error={errors.url} />
             </div>
             <motion.button
               whileHover={{ scale: 1.05 }}

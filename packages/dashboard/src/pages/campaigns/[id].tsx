@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { CampaignUpdate, Email } from "@sendra/shared";
+import type { CampaignUpdate, Email, Sms } from "@sendra/shared";
 import { CampaignSchemas } from "@sendra/shared";
 import { Ring } from "@uiball/loaders";
 import GroupOrContacts from "dashboard/src/components/ContactSelector/GroupOrContacts";
@@ -19,6 +19,7 @@ import { useCampaign, useCampaignsWithEmails } from "../../lib/hooks/campaigns";
 import { useEmailsByCampaign } from "../../lib/hooks/emails";
 import { useActiveProject, useActiveProjectIdentity } from "../../lib/hooks/projects";
 import { network } from "../../lib/network";
+import { useSmsesByCampaign } from "dashboard/src/lib/hooks/sms";
 
 /**
  *
@@ -29,7 +30,8 @@ export default function Index() {
   const { mutate: campaignsMutate } = useCampaignsWithEmails();
   const { data: campaign, mutate: campaignMutate } = useCampaign(router.query.id as string);
 
-  const { data: emails } = useEmailsByCampaign(campaign?.id);
+  const { data: smses } = useSmsesByCampaign(router.query.id as string);
+  const { data: emails } = useEmailsByCampaign(router.query.id as string);
   const { data: projectIdentity } = useActiveProjectIdentity();
 
   const [confirmModal, setConfirmModal] = useState(false);
@@ -295,9 +297,9 @@ export default function Index() {
             <div className={"sm:col-span-6 grid sm:grid-cols-6 gap-6"}>
               <Input className={"sm:col-span-6"} label={"Subject"} placeholder={`Welcome to ${project.name}!`} register={register("subject")} error={errors.subject} />
 
-              {projectIdentity?.identity?.verified && <Input className={"sm:col-span-3"} label={"Sender Email"} placeholder={`${project.email}`} register={register("email")} error={errors.email} />}
+              {projectIdentity?.identity?.verified && campaign.channel === "EMAIL" && <Input className={"sm:col-span-3"} label={"Sender Email"} placeholder={`${project.email}`} register={register("email")} error={errors.email} />}
 
-              {projectIdentity?.identity?.verified && (
+              {projectIdentity?.identity?.verified && campaign.channel === "EMAIL" && (
                 <Input className={"sm:col-span-3"} label={"Sender Name"} placeholder={`${project.from ?? project.name}`} register={register("from")} error={errors.from} />
               )}
             </div>
@@ -319,32 +321,22 @@ export default function Index() {
               )}
             </AnimatePresence>
 
-            <AnimatePresence>
-              {watch("recipients").length >= 10 && campaign.status !== "DELIVERED" && (
-                <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className={"relative z-10 sm:col-span-6"}>
-                  <Alert type={"info"} title={"Automatic batching"}>
-                    Your campaign will be sent out in batches of 80 recipients each. It will be delivered to all contacts{" "}
-                    {dayjs().to(dayjs().add(Math.ceil(watch("recipients").length / 80), "minutes"))}
-                  </Alert>
-                </motion.div>
-              )}
-            </AnimatePresence>
-
             {campaign.status !== "DRAFT" &&
-              (emails?.length === 0 ? (
+              ([...(emails ?? []), ...(smses ?? [])]?.length === 0 ? (
                 <div className={"flex items-center gap-6 rounded border border-neutral-300 px-6 py-3 sm:col-span-6"}>
                   <Ring size={20} />
                   <div>
                     <h1 className={"text-lg font-semibold text-neutral-800"}>Hang on!</h1>
-                    <p className={"text-sm text-neutral-600"}>We are still sending your campaign. Emails will start appearing here once they are sent.</p>
+                    <p className={"text-sm text-neutral-600"}>We are still sending your campaign. Emails and SMSes will start appearing here once they are sent.</p>
                   </div>
                 </div>
               ) : (
                 <div className={"max-h-[400px] overflow-x-hidden overflow-y-scroll rounded border border-neutral-200 sm:col-span-6"}>
                   <Table
-                    values={(emails ?? []).map((e: Email) => {
+                    values={[...(emails ?? []), ...(smses ?? [])].map((e: Email | Sms) => {
                       return {
-                        Email: e.email,
+                        Email: "email" in e ? e.email : '',
+                        SMS: "phone" in e ? e.phone : '',
                         Status: (
                           <Badge type={e.status === "DELIVERED" ? "info" : e.status === "OPENED" ? "success" : "danger"}>{e.status.at(0)?.toUpperCase() + e.status.slice(1).toLowerCase()}</Badge>
                         ),
@@ -360,7 +352,8 @@ export default function Index() {
               ))}
 
             <div className={"sm:col-span-6"}>
-              <EmailEditor initialValue={campaign.body} onChange={(value) => setValue("body", value)} />
+              {campaign.channel === "EMAIL" && (<EmailEditor initialValue={campaign.body} onChange={(value) => setValue("body", value)} />)}
+              {campaign.channel === "SMS" && (<textarea className="w-full rounded-md border border-neutral-300 p-2 text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-800 focus:ring-offset-2" rows={10} placeholder="Your SMS here" {...register("body")} />)}
               <AnimatePresence>
                 {errors.body?.message && (
                   <motion.p initial={{ height: 0 }} animate={{ height: "auto" }} exit={{ height: 0 }} className="mt-1 text-xs text-red-500">
@@ -373,15 +366,17 @@ export default function Index() {
             <div className={"ml-auto mt-6 sm:flex justify-end sm:gap-x-5 sm:col-span-6"}>
               {campaign.status === "DRAFT" ? (
                 <>
-                  <motion.button
-                    onClick={handleSubmit(sendTest)}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.9 }}
-                    className={"ml-auto mt-6 flex items-center gap-x-0.5 rounded bg-neutral-800 px-6 py-2 text-center text-sm font-medium text-white"}
-                  >
-                    <Send />
-                    Send test to {project.name}'s members
-                  </motion.button>
+                  {campaign.channel === "EMAIL" && (
+                    <motion.button
+                      onClick={handleSubmit(sendTest)}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.9 }}
+                      className={"ml-auto mt-6 flex items-center gap-x-0.5 rounded bg-neutral-800 px-6 py-2 text-center text-sm font-medium text-white"}
+                    >
+                      <Send />
+                      Send test to {project.name}'s members
+                    </motion.button>
+                  )}
                   <motion.button
                     onClick={(e) => {
                       e.preventDefault();

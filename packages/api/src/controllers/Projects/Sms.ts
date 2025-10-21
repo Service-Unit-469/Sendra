@@ -13,7 +13,7 @@ export const registerSmsRoutes = (app: AppType) => {
     entityName: "Sms",
     embeddable: [],
     getSchema: SmsSchema,
-    listQuerySchema: z.enum(["messageId"]),
+    listQuerySchema: z.enum(["messageId", "source"]),
     getPersistence: (projectId: string) => new SmsPersistence(projectId),
   });
 

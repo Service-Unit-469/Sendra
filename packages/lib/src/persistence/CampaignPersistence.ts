@@ -10,7 +10,7 @@ export class CampaignPersistence extends BasePersistence<Campaign> {
   }
 
   async embed(items: Campaign[], embed?: Embeddable[]) {
-    return await embedHelper(items, "campaign", ["emails"], embed);
+    return await embedHelper(items, "campaign", ["emails", "smses"], embed);
   }
 
   getIndexInfo(): IndexInfo {

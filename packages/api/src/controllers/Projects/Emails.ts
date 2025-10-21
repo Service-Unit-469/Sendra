@@ -25,7 +25,7 @@ export const registerEmailsRoutes = (app: AppType) => {
     entityName: "Email",
     embeddable: [],
     getSchema: EmailSchema,
-    listQuerySchema: z.enum(["messageId"]),
+    listQuerySchema: z.enum(["messageId", "source"]),
     getPersistence: (projectId: string) => new EmailPersistence(projectId),
   });
 
@@ -65,7 +65,7 @@ export const registerEmailsRoutes = (app: AppType) => {
       }
 
       const json = await c.req.json();
-      const result = EventSchemas.send.safeParse(json);
+      const result = EmailSchemas.send.safeParse(json);
 
       if (!result.success) {
         throw new HttpException(400, result.error.issues[0].message);

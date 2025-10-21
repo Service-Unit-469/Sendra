@@ -1,14 +1,14 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { TemplateCreate } from "@sendra/shared";
-import { defaultTemplate, TemplateSchemas } from "@sendra/shared";
+import { TemplateSchemas } from "@sendra/shared";
 import { AnimatePresence, motion } from "framer-motion";
+import { CircleHelp, Plus } from "lucide-react";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { Card, Dropdown, EmailEditor, FullscreenLoader, Input, Tooltip } from "../../components";
+import { Card, Dropdown, FullscreenLoader, Input, Tooltip } from "../../components";
 import { Dashboard } from "../../layouts";
-import { useActiveProject, useActiveProjectIdentity } from "../../lib/hooks/projects";
+import { useActiveProject } from "../../lib/hooks/projects";
 import { useTemplates } from "../../lib/hooks/templates";
 import { network } from "../../lib/network";
 
@@ -27,32 +27,16 @@ export default function Index() {
     formState: { errors },
     watch,
     setValue,
-    setError,
-    clearErrors,
   } = useForm({
     resolver: zodResolver(TemplateSchemas.create),
     defaultValues: {
       templateType: "MARKETING",
       subject: "",
-      body: defaultTemplate,
+      body: "",
+      channel: "SMS",
     },
   });
-  const { data: projectIdentity } = useActiveProjectIdentity();
 
-  useEffect(() => {
-    watch((value, { name }) => {
-      if (name === "email") {
-        if (value.email && project?.email && !value.email.endsWith(project.email.split("@")[1])) {
-          setError("email", {
-            type: "manual",
-            message: `The sender address must end with @${project.email?.split("@")[1]}`,
-          });
-        } else {
-          clearErrors("email");
-        }
-      }
-    });
-  }, [watch, project, setError, clearErrors]);
 
   if (!project) {
     return <FullscreenLoader />;
@@ -74,41 +58,35 @@ export default function Index() {
 
   return (
     <Dashboard>
-      <Card title={"Create a new template"} description={"Reusable blueprints of your emails"}>
+      <Card title="Create a new SMS template" description="Reusable blueprints of your SMS messages">
         <form onSubmit={handleSubmit(create)} className="space-y-6 sm:space-y-0 sm:grid sm:gap-6 sm:grid-cols-6">
-          <Input className={"sm:col-span-4"} label={"Subject"} placeholder={`Welcome to ${project.name}!`} register={register("subject")} error={errors.subject} />
+          <Input className="sm:col-span-4" label="Subject" placeholder={`Welcome to ${project.name}!`} register={register("subject")} error={errors.subject} />
 
-          <div className={"sm:col-span-2"}>
-            <label htmlFor={"type"} className="flex items-center text-sm font-medium text-neutral-700">
+          <div className="sm:col-span-2">
+            <label htmlFor="type" className="flex items-center text-sm font-medium text-neutral-700">
               Type
               <Tooltip
                 content={
                   <>
-                    <p className={"mb-2 text-base font-semibold"}>What type of email is this?</p>
-                    <ul className={"list-inside"}>
+                    <p className="mb-2 text-base font-semibold">What type of SMS is this?</p>
+                    <ul className="list-inside">
                       <li className={"mb-6"}>
-                        <span className={"font-semibold"}>Marketing</span>
+                        <span className="font-semibold">Marketing</span>
                         <br />
-                        Promotional emails with a Plunk-hosted unsubscribe link
+                        Promotional texts with a Sendra-hosted unsubscribe link
                         <br />
-                        <span className={"text-neutral-400"}>(e.g. welcome emails, promotions)</span>
+                        <span className="text-neutral-400">(e.g. welcome texts, promotions)</span>
                       </li>
                       <li>
-                        <span className={"font-semibold"}>Transactional</span>
+                        <span className="font-semibold">Transactional</span>
                         <br />
-                        Mission critical emails <br />
-                        <span className={"text-neutral-400"}> (e.g. email verification, password reset)</span>
+                        Mission critical texts <br />
+                        <span className="text-neutral-400"> (e.g. email verification, password reset)</span>
                       </li>
                     </ul>
                   </>
                 }
-                icon={
-                  <>
-                    <path d="M12 16v.01" />
-                    <path d="M12 13a2.003 2.003 0 0 0 .914 -3.782a1.98 1.98 0 0 0 -2.414 .483" />
-                    <circle cx="12" cy="12" r="9" />
-                  </>
-                }
+                icon={<CircleHelp />}
               />
             </label>
             <Dropdown
@@ -128,19 +106,8 @@ export default function Index() {
             </AnimatePresence>
           </div>
 
-          {projectIdentity?.identity?.verified && <Input className={"sm:col-span-3"} label={"Sender Email"} placeholder={`${project.email}`} register={register("email")} error={errors.email} />}
-
-          {projectIdentity?.identity?.verified && (
-            <Input className={"sm:col-span-3"} label={"Sender Name"} placeholder={`${project.from ?? project.name}`} register={register("from")} error={errors.from} />
-          )}
-
           <div className={"sm:col-span-6"}>
-            <EmailEditor
-              initialValue={defaultTemplate}
-              onChange={(value) => {
-                setValue("body", value);
-              }}
-            />
+            <textarea className="w-full rounded-md border border-neutral-300 p-2 text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-800 focus:ring-offset-2" rows={10} placeholder="Your SMS template here" {...register("body")} />
             <AnimatePresence>
               {errors.body?.message && (
                 <motion.p initial={{ height: 0 }} animate={{ height: "auto" }} exit={{ height: 0 }} className="mt-1 text-xs text-red-500">
@@ -166,10 +133,7 @@ export default function Index() {
             </motion.button>
 
             <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.9 }} className={"flex items-center gap-x-0.5 rounded bg-neutral-800 px-8 py-2 text-center text-sm font-medium text-white"}>
-              <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
-                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 5.75V18.25" />
-                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M18.25 12L5.75 12" />
-              </svg>
+              <Plus />
               Create
             </motion.button>
           </div>

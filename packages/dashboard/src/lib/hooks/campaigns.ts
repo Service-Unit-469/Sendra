@@ -8,7 +8,7 @@ import { useActiveProject } from "./projects";
  */
 export function useCampaign(id: string) {
   const activeProject = useActiveProject();
-  return useSWR<Campaign>(activeProject ? `/projects/${activeProject.id}/campaigns/${id}` : null);
+  return useSWR<Campaign>(activeProject && id ? `/projects/${activeProject.id}/campaigns/${id}` : null);
 }
 
 /**

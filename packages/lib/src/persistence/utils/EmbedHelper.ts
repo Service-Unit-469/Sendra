@@ -1,10 +1,11 @@
-import type { Action, BaseType, Email, Event, Template } from "@sendra/shared";
+import type { Action, BaseType, Email, Event, Sms, Template } from "@sendra/shared";
 import { ActionPersistence } from "../ActionPersistence";
 import type { Embeddable, EmbeddedObject } from "../BasePersistence";
 import { EmailPersistence } from "../EmailPersistence";
 import { EventPersistence } from "../EventPersistence";
 import { TemplatePersistence } from "../TemplatePersistence";
 import { HttpException } from "./HttpException";
+import { SmsPersistence } from "../SmsPersistence";
 
 export type ProjectEntity = BaseType & {
   project: string;
@@ -34,6 +35,15 @@ export const embedHelper = async <T extends ProjectEntity>(items: T[], key: stri
         const emailPersistence = new EmailPersistence(item.project);
         emails = await emailPersistence.findAllBy({
           key: ["action", "campaign"].includes(key) ? "source" : key,
+          value: item.id,
+        });
+      }
+
+      let smses: Sms[] | undefined;
+      if (embed.includes("smses")) {
+        const smsPersistence = new SmsPersistence(item.project);
+        smses = await smsPersistence.findAllBy({
+          key,
           value: item.id,
         });
       }
