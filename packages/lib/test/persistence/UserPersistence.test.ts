@@ -98,6 +98,7 @@ describe("UserPersistence", () => {
         id: "test-id",
         email: "project@example.com",
         password: "hashedpassword",
+        enabled: true,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
