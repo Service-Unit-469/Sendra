@@ -40,7 +40,7 @@ export function useActiveProject(): PublicProject | null {
 export function useActiveProjectMemberships() {
   const activeProject = useActiveProject();
 
-  return useSWR<{ members: Membership[] }>(activeProject ? `/projects/${activeProject.id}/members` : null);
+  return useSWR<{ members: Membership[] }>(activeProject?.id ? `/projects/${activeProject.id}/members` : null);
 }
 
 /**
@@ -48,7 +48,6 @@ export function useActiveProjectMemberships() {
  */
 export function useActiveProjectFeed() {
   const activeProject = useActiveProject();
-
 
   return useSWR<
     (
@@ -65,7 +64,7 @@ export function useActiveProjectFeed() {
           contact?: Contact;
         } & Pick<Email, "messageId" | "status">)
     )[]
-  >(activeProject && activeProject.id ? `/projects/${activeProject.id}/feed` : null);
+  >(activeProject?.id ? `/projects/${activeProject.id}/feed` : null);
 }
 
 /**
@@ -85,5 +84,5 @@ export function useActiveProjectIdentity() {
 export function useActiveProjectKeys() {
   const activeProject = useActiveProject();
 
-  return useSWR<ProjectKeys>(activeProject ? `/projects/${activeProject.id}/keys` : null);
+  return useSWR<ProjectKeys>(activeProject?.id ? `/projects/${activeProject.id}/keys` : null);
 }
