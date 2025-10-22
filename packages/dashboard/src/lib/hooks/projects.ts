@@ -49,6 +49,7 @@ export function useActiveProjectMemberships() {
 export function useActiveProjectFeed() {
   const activeProject = useActiveProject();
 
+
   return useSWR<
     (
       | {
@@ -64,7 +65,7 @@ export function useActiveProjectFeed() {
           contact?: Contact;
         } & Pick<Email, "messageId" | "status">)
     )[]
-  >(activeProject ? `/projects/${activeProject.id}/feed` : null);
+  >(activeProject && activeProject.id ? `/projects/${activeProject.id}/feed` : null);
 }
 
 /**

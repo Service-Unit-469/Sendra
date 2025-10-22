@@ -43,7 +43,6 @@ export type ContactUpdate = z.infer<typeof ContactSchemas.update>;
 export type Campaign = z.infer<typeof CampaignSchema>;
 export type CampaignCreate = z.infer<typeof CampaignSchemas.create>;
 export type CampaignUpdate = z.infer<typeof CampaignSchemas.update>;
-export type Credentials = z.infer<typeof UserSchemas.credentials>;
 
 export type DeliveryEvent = z.infer<typeof DeliveryEventSchema>;
 export type Email = z.infer<typeof EmailSchema>;
@@ -76,4 +75,9 @@ export type Subscriber = z.infer<typeof SubscriberSchema>;
 export type SubscriberUpdate = z.infer<typeof SubscriberUpdateSchema>;
 
 export type User = z.infer<typeof UserSchema>;
+
+export type UserCredentials = z.infer<typeof UserSchemas.credentials>;
+export type UserVerify = z.infer<typeof UserSchemas.verify>;
+export type UserReset = z.infer<typeof UserSchemas.reset>;
+export type UserRequestReset = z.infer<typeof UserSchemas.requestReset>;
 export type UserGet = z.infer<typeof UserSchemas.get>;

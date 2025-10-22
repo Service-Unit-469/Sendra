@@ -1,12 +1,13 @@
 import { z } from "@hono/zod-openapi";
 import { getAuthConfig, MembershipPersistence, rootLogger, UserPersistence } from "@sendra/lib";
-import { type Project, type User, UserSchemas } from "@sendra/shared";
+import type { Project, User, UserCredentials, UserRequestReset, UserVerify } from "@sendra/shared";
 import type { Context, HonoRequest } from "hono";
 import { type JwtPayload, sign, verify } from "jsonwebtoken";
 import type { StringValue } from "ms";
 import { Resource } from "sst";
-import { Conflict, HttpException } from "../exceptions";
+import { Conflict, HttpException, NotFound } from "../exceptions";
 import { createHash, verifyHash } from "../util/hash";
+import { SystemEmailService } from "./SystemEmailService";
 
 export const JWT_SECRET = Resource.JwtSecret.value;
 
@@ -60,83 +61,23 @@ export class AuthService {
     return memberships;
   }
 
-  public static async login(c: Context): Promise<{
-    email: string;
-    id: string;
-    token: string;
-  }> {
-    const body = await c.req.json();
-    const { email, password } = UserSchemas.credentials.parse(body);
-
-    const userPersistence = new UserPersistence();
-    const user = await userPersistence.getByEmail(email);
-
-    if (!user) {
-      logger.info({ email }, "User not found");
-      throw new HttpException(401, "Invalid username or password");
-    }
-
-    if (!user.password) {
-      logger.info({ email }, "User has no password");
-      throw new HttpException(403, "Please reset your password", {
-        resetUrl: `/auth/reset?id=${user.id}`,
-      });
-    }
-
-    const verified = await verifyHash(password, user.password);
-    if (!verified) {
-      logger.info({ email }, "Invalid password");
-      throw new HttpException(401, "Invalid username or password");
-    }
-
-    const token = AuthService.createUserToken(user.id, email);
-
-    return { email: user.email, id: user.id, token };
+  private static createCode(email: string) {
+    return sign({ email }, JWT_SECRET, { expiresIn: "1h" });
   }
-
-  public static async signup(c: Context): Promise<User> {
+  public static createProjectToken(key: string, type: "secret" | "public", projectId: string) {
     const authConfig = getAuthConfig();
-    const body = await c.req.json();
-    const { email, password } = UserSchemas.credentials.parse(body);
-    logger.info({ email }, "Signing up user");
-
-    const memberships = await AuthService.checkForMemberships(email);
-    if (authConfig.disableSignups && memberships.length === 0) {
-      logger.info({ email }, "Signups are currently disabled");
-      throw new HttpException(400, "Signups are currently disabled");
-    }
-
-    const userPersistence = new UserPersistence();
-    const user = await userPersistence.getByEmail(email);
-
-    if (user) {
-      logger.info({ email }, "User already exists");
-      throw new Conflict("That email is already associated with another user");
-    }
-
-    const created_user = await userPersistence.create({
-      email,
-      password: await createHash(password),
-    });
-
-    if (memberships.length > 0) {
-      logger.info({ email, memberships }, "Assigning memberships to user");
-      const membershipPersistence = new MembershipPersistence();
-      await Promise.all(
-        memberships.map((membership) =>
-          membershipPersistence.put({
-            ...membership,
-            user: created_user.id,
-          }),
-        ),
-      );
-    }
-
-    logger.info({ email, created_user }, "Created user");
-
-    AuthService.createUserToken(created_user.id, email);
-
-    return created_user;
+    const token = sign(
+      {
+        type,
+      },
+      `${JWT_SECRET}:${key}`,
+      {
+        expiresIn: authConfig.ttl[type] as number | StringValue,
+        issuer: authConfig.issuer,
+        subject: projectId,
+      },
+    );
+    return `${type === "secret" ? "s" : "p"}:${token}`;
   }
 
   private static createUserToken(userId: string, email: string) {
@@ -156,22 +97,6 @@ export class AuthService {
     return `u:${token}`;
   }
 
-  public static createProjectToken(key: string, type: "secret" | "public", projectId: string) {
-    const authConfig = getAuthConfig();
-    const token = sign(
-      {
-        type,
-      },
-      `${JWT_SECRET}:${key}`,
-      {
-        expiresIn: authConfig.ttl[type] as number | StringValue,
-        issuer: authConfig.issuer,
-        subject: projectId,
-      },
-    );
-    return `${type === "secret" ? "s" : "p"}:${token}`;
-  }
-
   private static getSalt(type: "s" | "p" | "u", project: Project): string {
     if (type === "s") {
       return `${JWT_SECRET}:${project.secret}`;
@@ -180,6 +105,64 @@ export class AuthService {
       return `${JWT_SECRET}:${project.public}`;
     }
     return JWT_SECRET;
+  }
+
+  public static async login({ email, password }: UserCredentials): Promise<{
+    email: string;
+    id: string;
+    token: string;
+  }> {
+    const userPersistence = new UserPersistence();
+    const user = await userPersistence.getByEmail(email);
+
+    if (!user) {
+      logger.info({ email }, "User not found");
+      throw new HttpException(401, "Invalid username or password");
+    }
+
+    if (!user.password) {
+      logger.info({ email }, "User has no password");
+      throw new HttpException(403, "Please reset your password", {
+        resetUrl: `/auth/reset?id=${user.id}`,
+      });
+    }
+
+    if (!user.enabled) {
+      logger.info({ email }, "User is not enabled");
+      throw new HttpException(403, "Please verify your email");
+    }
+
+    const verified = await verifyHash(password, user.password);
+    if (!verified) {
+      logger.info({ email }, "Invalid password");
+      throw new HttpException(401, "Invalid username or password");
+    }
+
+    const token = AuthService.createUserToken(user.id, email);
+
+    return { email: user.email, id: user.id, token };
+  }
+
+  /**
+   * Parse a bearer token from the request headers
+   * @param request The express request object
+   * @param type
+   */
+  private static parseBearer(request: HonoRequest): string | undefined {
+    const bearer: string | undefined = request.header("Authorization");
+
+    if (!bearer || !bearer.includes("Bearer")) {
+      logger.warn({ bearer }, "Invalid authorization token");
+      return undefined;
+    }
+
+    const split = bearer.split(" ");
+    if (!(split[0] === "Bearer") || split.length > 2 || !split[1]) {
+      logger.warn({ bearer }, "Invalid authorization token");
+      return undefined;
+    }
+
+    return split[1];
   }
 
   public static parseToken(c: Context, options?: { type?: AuthType; project?: Project }): Auth {
@@ -214,25 +197,115 @@ export class AuthService {
     }
   }
 
-  /**
-   * Parse a bearer token from the request headers
-   * @param request The express request object
-   * @param type
-   */
-  private static parseBearer(request: HonoRequest): string | undefined {
-    const bearer: string | undefined = request.header("Authorization");
-
-    if (!bearer || !bearer.includes("Bearer")) {
-      logger.warn({ bearer }, "Invalid authorization token");
-      return undefined;
+  public static async requestReset({ email }: UserRequestReset): Promise<void> {
+    const userPersistence = new UserPersistence();
+    const user = await userPersistence.getByEmail(email);
+    if (!user) {
+      logger.warn({ email }, "User not found");
+      return;
     }
 
-    const split = bearer.split(" ");
-    if (!(split[0] === "Bearer") || split.length > 2 || !split[1]) {
-      logger.warn({ bearer }, "Invalid authorization token");
-      return undefined;
+    logger.info({ email }, "User found, requesting reset");
+    const code = AuthService.createCode(email);
+    await userPersistence.put({
+      ...user,
+      code,
+    });
+    await SystemEmailService.sendResetPasswordEmail(email, code);
+  }
+
+  public static async resetPassword({ email, code, password }: { email: string; code: string; password: string }) {
+    const user = await AuthService.verifyCode({ code, email });
+    const userPersistence = new UserPersistence();
+    await userPersistence.put({
+      ...user,
+      password: await createHash(password),
+      enabled: true,
+      code: undefined,
+    });
+    return user;
+  }
+
+  public static async signup({ email, password }: UserCredentials): Promise<User> {
+    const authConfig = getAuthConfig();
+    logger.info({ email }, "Signing up user");
+
+    const memberships = await AuthService.checkForMemberships(email);
+    if (authConfig.disableSignups && memberships.length === 0) {
+      logger.info({ email }, "Signups are currently disabled");
+      throw new HttpException(400, "Signups are currently disabled");
     }
 
-    return split[1];
+    const userPersistence = new UserPersistence();
+    const user = await userPersistence.getByEmail(email);
+
+    if (user) {
+      logger.info({ email }, "User already exists");
+      throw new Conflict("That email is already associated with another user");
+    }
+
+    const code = AuthService.createCode(email);
+    const created_user = await userPersistence.create({
+      email,
+      password: await createHash(password),
+      enabled: false,
+      code,
+    });
+
+    if (memberships.length > 0) {
+      logger.info({ email, memberships }, "Assigning memberships to user");
+      const membershipPersistence = new MembershipPersistence();
+      await Promise.all(
+        memberships.map((membership) =>
+          membershipPersistence.put({
+            ...membership,
+            user: created_user.id,
+          }),
+        ),
+      );
+    }
+
+    logger.info({ email, created_user }, "Created user");
+
+    await SystemEmailService.sendVerificationEmail(email, code);
+
+    return created_user;
+  }
+
+  private static async verifyCode({ code, email }: UserVerify): Promise<User> {
+    try {
+      const verified = verify(code, JWT_SECRET) as { email: string };
+      if (verified.email !== email) {
+        throw new HttpException(401, "Invalid code");
+      }
+    } catch (err) {
+      logger.error({ err }, "Error verifying code");
+      throw new HttpException(401, "Invalid code");
+    }
+
+    const userPersistence = new UserPersistence();
+    const user = await userPersistence.getByEmail(email);
+    if (!user) {
+      logger.info({ email }, "User not found");
+      throw new NotFound("user");
+    }
+
+    if (user.code !== code) {
+      logger.info({ email, code }, "Invalid code");
+      throw new HttpException(401, "Invalid code");
+    }
+    return user;
+  }
+
+  public static async verifyUser({ email, code }: UserVerify): Promise<User> {
+    const user = await AuthService.verifyCode({ code, email });
+
+    const userPersistence = new UserPersistence();
+    await userPersistence.put({
+      ...user,
+      enabled: true,
+      code: undefined,
+    });
+    return user;
   }
 }

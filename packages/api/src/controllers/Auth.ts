@@ -1,11 +1,8 @@
 import { createRoute, z } from "@hono/zod-openapi";
-import { UserPersistence } from "@sendra/lib";
-import { email, id, UserSchemas, UtilitySchemas } from "@sendra/shared";
+import { email, id, UserSchemas } from "@sendra/shared";
 import type { AppType } from "../app";
-import { NotAllowed, NotFound } from "../exceptions";
 import { getProblemResponseSchema } from "../exceptions/responses";
 import { AuthService } from "../services/AuthService";
-import { createHash } from "../util/hash";
 
 export const registerAuthRoutes = (app: AppType) => {
   // login
@@ -42,7 +39,9 @@ export const registerAuthRoutes = (app: AppType) => {
       hide: true,
     }),
     async (c) => {
-      const { email, id, token } = await AuthService.login(c);
+      const body = await c.req.json();
+      const { email, password } = UserSchemas.credentials.parse(body);
+      const { id, token } = await AuthService.login({ email, password });
       return c.json(
         {
           id,
@@ -81,22 +80,23 @@ export const registerAuthRoutes = (app: AppType) => {
       hide: true,
     }),
     async (c) => {
-      const user = await AuthService.signup(c);
+      const body = await c.req.json();
+      const { email, password } = UserSchemas.credentials.parse(body);
+      const user = await AuthService.signup({ email, password });
 
       return c.json(UserSchemas.get.parse(user), 200);
     },
   );
 
-  const resetSchema = UtilitySchemas.id.merge(UserSchemas.credentials.pick({ password: true }));
   app.openapi(
     createRoute({
       method: "post",
-      path: "/auth/reset",
+      path: "/auth/request-reset",
       request: {
         body: {
           content: {
             "application/json": {
-              schema: resetSchema,
+              schema: UserSchemas.requestReset,
             },
           },
         },
@@ -117,25 +117,84 @@ export const registerAuthRoutes = (app: AppType) => {
     }),
     async (c) => {
       const body = await c.req.json();
-      const { id, password } = resetSchema.parse(body);
-      const userPersistence = new UserPersistence();
-      const user = await userPersistence.get(id);
+      const { email } = UserSchemas.requestReset.parse(body);
 
-      if (!user) {
-        throw new NotFound("user");
-      }
-
-      if (user.password) {
-        throw new NotAllowed();
-      }
-
-      const updatedUser = {
-        ...user,
-        password: await createHash(password),
-      };
-      await userPersistence.put(updatedUser);
+      await AuthService.requestReset({ email });
 
       return c.json({ success: true }, 200);
+    },
+  );
+
+  app.openapi(
+    createRoute({
+      method: "post",
+      path: "/auth/reset",
+      request: {
+        body: {
+          content: {
+            "application/json": {
+              schema: UserSchemas.requestReset,
+            },
+          },
+        },
+      },
+      responses: {
+        200: {
+          content: {
+            "application/json": {
+              schema: z.object({ success: z.boolean(), user: UserSchemas.get }),
+            },
+          },
+          description: "Reset the user's password",
+        },
+        403: getProblemResponseSchema(403),
+        404: getProblemResponseSchema(404),
+      },
+      hide: true,
+    }),
+    async (c) => {
+      const body = await c.req.json();
+      const { email, code, password } = UserSchemas.reset.parse(body);
+      const user = await AuthService.resetPassword({ email, code, password });
+
+      return c.json({ success: true, user: UserSchemas.get.parse(user) }, 200);
+    },
+  );
+
+  app.openapi(
+    createRoute({
+      method: "post",
+      path: "/auth/verify",
+      request: {
+        body: {
+          content: {
+            "application/json": {
+              schema: UserSchemas.verify,
+            },
+          },
+        },
+      },
+      responses: {
+        200: {
+          content: {
+            "application/json": {
+              schema: z.object({ success: z.boolean(), user: UserSchemas.get }),
+            },
+          },
+          description: "Verify the user's email",
+        },
+        403: getProblemResponseSchema(403),
+        404: getProblemResponseSchema(404),
+      },
+      hide: true,
+    }),
+    async (c) => {
+      const body = await c.req.json();
+      const { email, code } = UserSchemas.verify.parse(body);
+
+      const user = await AuthService.verifyUser({ email, code });
+
+      return c.json({ success: true, user: UserSchemas.get.parse(user) }, 200);
     },
   );
 };

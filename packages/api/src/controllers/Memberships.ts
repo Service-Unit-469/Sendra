@@ -2,9 +2,10 @@ import { createRoute, z } from "@hono/zod-openapi";
 import { MembershipPersistence, ProjectPersistence, rootLogger, UserPersistence } from "@sendra/lib";
 import { MembershipSchema, MembershipSchemas, ProjectSchema } from "@sendra/shared";
 import type { AppType } from "../app";
-import { NotAllowed } from "../exceptions";
+import { NotAllowed, NotFound } from "../exceptions";
 import { getProblemResponseSchema } from "../exceptions/responses";
 import { BearerAuth, isAuthenticatedProjectAdmin, isAuthenticatedProjectMember } from "../middleware/auth";
+import { SystemEmailService } from "../services/SystemEmailService";
 
 const logger = rootLogger.child({
   module: "Memberships",
@@ -53,8 +54,11 @@ export const registerMembershipsRoutes = (app: AppType) => {
       const userPersistence = new UserPersistence();
       const invitedUser = await userPersistence.getByEmail(email);
 
-      if (!invitedUser) {
-        logger.info({ email }, "User not found");
+      const projectPersistence = new ProjectPersistence();
+      const project = await projectPersistence.get(projectId);
+      if (!project) {
+        logger.warn({ projectId }, "Project not found");
+        throw new NotFound("project");
       }
 
       const membershipPersistence = new MembershipPersistence();
@@ -71,6 +75,11 @@ export const registerMembershipsRoutes = (app: AppType) => {
         project: projectId,
         role,
       });
+
+      if (!invitedUser) {
+        logger.info({ email, projectId }, "Sending invitation email to new user");
+        await SystemEmailService.sendInvitationEmail(email, project.name);
+      }
 
       logger.info({ projectId, email, role }, "User invited to project");
 

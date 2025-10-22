@@ -46,6 +46,7 @@ describe("UserPersistence", () => {
       const userData = {
         email: "test@example.com",
         password: "hashedpassword123",
+        enabled: true,
       };
 
       await persistence.create(userData);
@@ -65,6 +66,7 @@ describe("UserPersistence", () => {
       await persistence.create({
         email,
         password: "password123",
+        enabled: true,
       });
 
       const retrieved = await persistence.getByEmail(email);
@@ -111,6 +113,7 @@ describe("UserPersistence", () => {
       const user = await persistence.create({
         email: "delete@example.com",
         password: "password123",
+        enabled: true,
       });
 
       vi.mocked(TaskQueue.addTask).mockClear();
@@ -132,6 +135,7 @@ describe("UserPersistence", () => {
       const userData = {
         email: "newuser@example.com",
         password: "securepassword",
+        enabled: true,
       };
 
       const created = await persistence.create(userData);
@@ -146,6 +150,7 @@ describe("UserPersistence", () => {
       const userData = {
         email: "retrieve@example.com",
         password: "password123",
+        enabled: true,
       };
 
       const created = await persistence.create(userData);
@@ -162,6 +167,7 @@ describe("UserPersistence", () => {
       await persistence.create({
         email,
         password: "password123",
+        enabled: true,
       });
 
       const result = await persistence.findBy({
@@ -177,11 +183,13 @@ describe("UserPersistence", () => {
       await persistence.create({
         email: "admin@company.com",
         password: "password1",
+        enabled: true,
       });
 
       await persistence.create({
         email: "admin@another.com",
         password: "password2",
+        enabled: true,
       });
 
       const result = await persistence.findBy({
@@ -200,6 +208,7 @@ describe("UserPersistence", () => {
       const user = await persistence.create({
         email: "update@example.com",
         password: "oldpassword",
+        enabled: true,
       });
 
       const updated = await persistence.put({
@@ -218,6 +227,7 @@ describe("UserPersistence", () => {
       const user = await persistence.create({
         email: "original@example.com",
         password: "password",
+        enabled: true,
       });
 
       const updated = await persistence.put({
@@ -237,11 +247,13 @@ describe("UserPersistence", () => {
       await persistence.create({
         email: "listuser1@example.com",
         password: "password1",
+        enabled: true,
       });
 
       await persistence.create({
         email: "listuser2@example.com",
         password: "password2",
+        enabled: true,
       });
 
       const result = await persistence.list({ limit: 10 });
@@ -258,6 +270,7 @@ describe("UserPersistence", () => {
           id: "embed-test-1",
           email: "embed@example.com",
           password: "password",
+          enabled: true,
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
         },
@@ -274,6 +287,7 @@ describe("UserPersistence", () => {
           id: "embed-test-2",
           email: "embed2@example.com",
           password: "password",
+          enabled: true,
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
         },

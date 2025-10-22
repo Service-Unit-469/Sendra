@@ -1,13 +1,15 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { type UserGet, type UserReset, UserSchemas } from "@sendra/shared";
+import type { UserGet, UserVerify } from "@sendra/shared";
+import { UserSchemas } from "@sendra/shared";
 import SendraLogo from "dashboard/src/icons/SendraLogo";
 import { AnimatePresence, motion } from "framer-motion";
-import { CheckCircle, Eye, EyeOff } from "lucide-react";
+import { CheckCircle } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { FullscreenLoader } from "../../components";
+import { FullscreenLoader, Redirect } from "../../components";
+import { useUser } from "../../lib/hooks/users";
 import { network } from "../../lib/network";
 
 /**
@@ -15,17 +17,20 @@ import { network } from "../../lib/network";
  */
 export default function Index() {
   const router = useRouter();
+
+  const { data: user, error } = useUser();
+
   const [state, setState] = useState<"idle" | "loading" | "success" | "error">("idle");
-  const [hidePassword, setHidePassword] = useState(true);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-    setValue,
     setError,
+    setValue,
   } = useForm({
-    resolver: zodResolver(UserSchemas.reset),
+    defaultValues: { email: "", code: "" },
+    resolver: zodResolver(UserSchemas.verify),
   });
 
   useEffect(() => {
@@ -37,22 +42,27 @@ export default function Index() {
     }
   }, [router.query, setValue]);
 
-  if (!router.isReady) {
+  if (user && !error) {
+    return <Redirect to={"/"} />;
+  }
+
+  if (!router.isReady || (!user && !error)) {
     return <FullscreenLoader />;
   }
 
-  const resetPassword = async (data: UserReset) => {
+  const signup = async (data: UserVerify) => {
     setState("loading");
+
     try {
-      await network.fetch<UserGet, UserReset>("/auth/reset", {
+      await network.fetch<UserGet, UserVerify>("/auth/verify", {
         method: "POST",
         body: data,
       });
+
       setState("success");
     } catch (e) {
       setError("code", { message: (e as Error).message });
       setState("error");
-      return;
     }
   };
 
@@ -61,7 +71,7 @@ export default function Index() {
       {state === "success" && (
         <div className="flex flex-col items-center justify-center mt-12">
           <CheckCircle className="h-10 w-10 text-green-500" />
-          <h2 className="mt-4 text-2xl font-bold text-neutral-800">Password reset</h2>
+          <h2 className="mt-4 text-2xl font-bold text-neutral-800">Account verified!</h2>
           <p className="mt-2 text-sm text-neutral-600">You can now login to your account</p>
           <Link href={"/auth/login"} className={"text-sm text-neutral-500 underline transition ease-in-out hover:text-neutral-600"}>
             Back to login
@@ -72,11 +82,11 @@ export default function Index() {
         <>
           <div className="flex flex-col items-center sm:mx-auto sm:w-full sm:max-w-md">
             <SendraLogo height="100px" width="50%" />
-            <h2 className="mt-6 text-3xl font-extrabold text-neutral-800">Reset password</h2>
+            <h2 className="mt-6 text-3xl font-extrabold text-neutral-800">Verify Account</h2>
           </div>
-          <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+          <div className="items-center mx-auto w-full max-w-lg mt-12">
             <div className="rounded border border-neutral-200 bg-white px-4 py-8 sm:px-10">
-              <form onSubmit={handleSubmit(resetPassword)} className="space-y-6">
+              <form onSubmit={handleSubmit(signup)} className="space-y-6">
                 <div>
                   <label htmlFor={"email"} className="block text-sm font-medium text-neutral-700">
                     Your Email
@@ -98,6 +108,7 @@ export default function Index() {
                     )}
                   </AnimatePresence>
                 </div>
+
                 <div>
                   <label htmlFor={"code"} className="block text-sm font-medium text-neutral-700">
                     Verification Code
@@ -118,30 +129,6 @@ export default function Index() {
                     )}
                   </AnimatePresence>
                 </div>
-                <div>
-                  <label htmlFor={"password"} className="block text-sm font-semibold text-neutral-600">
-                    New password
-                  </label>
-                  <div className="relative mt-1">
-                    <input
-                      type={hidePassword ? "password" : "text"}
-                      placeholder={hidePassword ? "•••••••••••••" : "Password"}
-                      autoComplete={"new-password"}
-                      className={"block w-full rounded border-neutral-300 transition ease-in-out focus:border-neutral-800 focus:ring-neutral-800 sm:text-sm"}
-                      {...register("password")}
-                    />
-                    <div className="absolute inset-y-0 right-0 flex cursor-pointer items-center pr-3">
-                      {hidePassword ? <Eye onClick={() => setHidePassword(!hidePassword)} /> : <EyeOff onClick={() => setHidePassword(!hidePassword)} />}
-                    </div>
-                  </div>
-                  <AnimatePresence>
-                    {errors.password?.message && (
-                      <motion.p initial={{ height: 0 }} animate={{ height: "auto" }} exit={{ height: 0 }} className="mt-1 text-xs text-red-500">
-                        Password must be atleast 6 characters long
-                      </motion.p>
-                    )}
-                  </AnimatePresence>
-                </div>
 
                 <div>
                   <motion.button
@@ -156,9 +143,16 @@ export default function Index() {
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                       </svg>
                     ) : (
-                      "Change password"
+                      "Verify Account"
                     )}
                   </motion.button>
+                  <AnimatePresence>
+                    {errors.email?.message && (
+                      <motion.p initial={{ height: 0 }} animate={{ height: "auto" }} exit={{ height: 0 }} className="mt-1 text-xs text-red-500">
+                        {errors.email.message}
+                      </motion.p>
+                    )}
+                  </AnimatePresence>
                 </div>
               </form>
             </div>

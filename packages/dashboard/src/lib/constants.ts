@@ -8,4 +8,4 @@ export const AWS_REGION = process.env.NEXT_PUBLIC_AWS_REGION;
 
 export const TOKEN_KEY = "sendra.token";
 
-export const NO_AUTH_ROUTES = ["/auth/signup", "/auth/login", "/auth/reset", "/subscription"];
+export const NO_AUTH_ROUTES = ["/auth/signup", "/auth/login", "/auth/reset", "/subscription", "/auth/verify", "/auth/forgot-password"];
