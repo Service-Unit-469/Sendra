@@ -346,10 +346,7 @@ export const registerProjectInfoRoutes = (app: AppType) => {
       const endOfMonth = new Date(dayjs().endOf("month").toISOString());
 
       // Get all emails for the project
-      const allEmails = await new EmailPersistence(projectId).findAllBy({
-        key: "project",
-        value: projectId,
-      });
+      const allEmails = await new EmailPersistence(projectId).listAll();
 
       // Filter emails by date range
       const monthlyEmails = allEmails.filter((email) => {

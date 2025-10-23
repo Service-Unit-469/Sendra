@@ -1,10 +1,8 @@
 import type { Email } from "@sendra/shared";
-import { getPersistenceConfig } from "../../src/services/AppConfig";
-import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
-import { getDynamoDB, initializeDynamoDB, stopDynamoDB } from "./utils/db";
+import { startupDynamoDB, stopDynamoDB } from "@sendra/test";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { EmailPersistence } from "../../src/persistence/EmailPersistence";
 
-const TEST_TABLE_NAME = "test-sendra-table";
 const TEST_PROJECT_ID = "test-project-123";
 
 describe("EmailPersistence", () => {
@@ -12,26 +10,14 @@ describe("EmailPersistence", () => {
 
   beforeAll(async () => {
     // Start local DynamoDB
-    const db = await getDynamoDB();
-    const dbUrl = db.url;
+    await startupDynamoDB();
 
-    vi.stubEnv("PERSISTENCE_PROVIDER", "local");
-    vi.stubEnv("TABLE_NAME", TEST_TABLE_NAME);
-    vi.stubEnv("AWS_REGION", "us-east-1");
-    vi.stubEnv("AWS_ACCESS_KEY_ID", "dummy");
-    vi.stubEnv("AWS_SECRET_ACCESS_KEY", "dummy");
-    vi.stubEnv("AWS_ENDPOINT", dbUrl);
-
-    // Initialize table
-    const { client } = getPersistenceConfig();
-    await initializeDynamoDB(client, TEST_TABLE_NAME);
 
     persistence = new EmailPersistence(TEST_PROJECT_ID);
   });
 
   afterAll(async () => {
     await stopDynamoDB();
-    vi.unstubAllEnvs();
   });
 
   describe("getByMessageId", () => {
@@ -39,7 +25,7 @@ describe("EmailPersistence", () => {
       const emailData = {
         project: TEST_PROJECT_ID,
         contact: "contact-123",
-        email: "test@example.com",
+        email: "test@example.com",  
         subject: "Test Email",
         body: "Test body",
         sendType: "TRANSACTIONAL" as const,

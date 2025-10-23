@@ -80,7 +80,7 @@ export class AuthService {
     return `${type === "secret" ? "s" : "p"}:${token}`;
   }
 
-  private static createUserToken(userId: string, email: string) {
+  public static createUserToken(userId: string, email: string) {
     const authConfig = getAuthConfig();
     const token = sign(
       {
@@ -217,13 +217,13 @@ export class AuthService {
   public static async resetPassword({ email, code, password }: { email: string; code: string; password: string }) {
     const user = await AuthService.verifyCode({ code, email });
     const userPersistence = new UserPersistence();
-    await userPersistence.put({
+    const updatedUser = await userPersistence.put({
       ...user,
       password: await createHash(password),
       enabled: true,
       code: undefined,
     });
-    return user;
+    return updatedUser;
   }
 
   public static async signup({ email, password }: UserCredentials): Promise<User> {
@@ -301,11 +301,11 @@ export class AuthService {
     const user = await AuthService.verifyCode({ code, email });
 
     const userPersistence = new UserPersistence();
-    await userPersistence.put({
+    const updatedUser = await userPersistence.put({
       ...user,
       enabled: true,
       code: undefined,
     });
-    return user;
+    return updatedUser;
   }
 }

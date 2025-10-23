@@ -18,11 +18,14 @@
     "experimentalDecorators": true,
     "baseUrl": "packages",
     "paths": {
+      "@sendra/lib": [
+        "./packages/lib/"
+      ],
       "@sendra/shared": [
         "./packages/shared/"
       ],
-      "@sendra/lib": [
-        "./packages/lib/"
+      "@sendra/test": [
+        "./packages/test/"
       ]
     }
   },

@@ -6,6 +6,9 @@
   },
   "exclude": [
     "node_modules",
-    "dist"
+    "dist",
+    "test",
+    "vitest.config.ts",
+    "tsconfig.test.json"
   ]
 }

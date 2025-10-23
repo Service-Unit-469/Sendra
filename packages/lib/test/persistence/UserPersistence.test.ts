@@ -1,11 +1,8 @@
 import type { User } from "@sendra/shared";
-import { getPersistenceConfig } from "../../src/services/AppConfig";
+import { startupDynamoDB, stopDynamoDB } from "@sendra/test";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
-import { getDynamoDB, initializeDynamoDB, stopDynamoDB } from "./utils/db";
 import { UserPersistence } from "../../src/persistence/UserPersistence";
 import { TaskQueue } from "../../src/services/TaskQueue";
-
-const TEST_TABLE_NAME = "test-sendra-table";
 
 // Mock TaskQueue
 vi.mock("../../src/services/TaskQueue", () => ({
@@ -19,26 +16,14 @@ describe("UserPersistence", () => {
 
   beforeAll(async () => {
     // Start local DynamoDB
-    const db = await getDynamoDB();
-    const dbUrl = db.url;
+    await startupDynamoDB();
 
-    vi.stubEnv("PERSISTENCE_PROVIDER", "local");
-    vi.stubEnv("TABLE_NAME", TEST_TABLE_NAME);
-    vi.stubEnv("AWS_REGION", "us-east-1");
-    vi.stubEnv("AWS_ACCESS_KEY_ID", "dummy");
-    vi.stubEnv("AWS_SECRET_ACCESS_KEY", "dummy");
-    vi.stubEnv("AWS_ENDPOINT", dbUrl);
-
-    // Initialize table
-    const { client } = getPersistenceConfig();
-    await initializeDynamoDB(client, TEST_TABLE_NAME);
 
     persistence = new UserPersistence();
   });
 
   afterAll(async () => {
     await stopDynamoDB();
-    vi.unstubAllEnvs();
   });
 
   describe("getByEmail", () => {

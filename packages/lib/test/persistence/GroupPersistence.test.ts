@@ -1,11 +1,9 @@
 import type { Group } from "@sendra/shared";
-import { getPersistenceConfig } from "../../src/services/AppConfig";
-import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
-import { getDynamoDB, initializeDynamoDB, stopDynamoDB } from "./utils/db";
-import { GroupPersistence } from "../../src/persistence/GroupPersistence";
+import { startupDynamoDB, stopDynamoDB } from "@sendra/test";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { ContactPersistence } from "../../src/persistence/ContactPersistence";
+import { GroupPersistence } from "../../src/persistence/GroupPersistence";
 
-const TEST_TABLE_NAME = "test-sendra-table";
 const TEST_PROJECT_ID = "test-project-123";
 
 describe("GroupPersistence", () => {
@@ -14,19 +12,8 @@ describe("GroupPersistence", () => {
 
   beforeAll(async () => {
     // Start local DynamoDB
-    const db = await getDynamoDB();
-    const dbUrl = db.url;
+    await startupDynamoDB();
 
-    vi.stubEnv("PERSISTENCE_PROVIDER", "local");
-    vi.stubEnv("TABLE_NAME", TEST_TABLE_NAME);
-    vi.stubEnv("AWS_REGION", "us-east-1");
-    vi.stubEnv("AWS_ACCESS_KEY_ID", "dummy");
-    vi.stubEnv("AWS_SECRET_ACCESS_KEY", "dummy");
-    vi.stubEnv("AWS_ENDPOINT", dbUrl);
-
-    // Initialize table
-    const { client } = getPersistenceConfig();
-    await initializeDynamoDB(client, TEST_TABLE_NAME);
 
     persistence = new GroupPersistence(TEST_PROJECT_ID);
     contactPersistence = new ContactPersistence(TEST_PROJECT_ID);
@@ -34,7 +21,6 @@ describe("GroupPersistence", () => {
 
   afterAll(async () => {
     await stopDynamoDB();
-    vi.unstubAllEnvs();
   });
 
   describe("getIndexInfo", () => {
@@ -187,4 +173,3 @@ describe("GroupPersistence", () => {
     });
   });
 });
-

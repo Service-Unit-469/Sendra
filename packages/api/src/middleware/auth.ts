@@ -1,9 +1,10 @@
-import { MembershipPersistence, ProjectPersistence } from "@sendra/lib";
+import { MembershipPersistence, ProjectPersistence, rootLogger } from "@sendra/lib";
 import type { HonoRequest } from "hono";
 import { createMiddleware } from "hono/factory";
 import { HttpException } from "../exceptions";
-import { logger } from "../log";
 import { AuthService } from "../services/AuthService";
+
+const logger = rootLogger.child({ module: "auth" });
 
 async function getProjectId(request: HonoRequest): Promise<string> {
   let projectId = request.param("projectId") || request.query("projectId");

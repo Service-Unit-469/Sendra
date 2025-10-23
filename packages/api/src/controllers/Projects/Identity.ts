@@ -13,7 +13,6 @@ const logger = rootLogger.child({
 });
 
 export const registerProjectIdentityRoutes = (app: AppType) => {
-  const emailConfig = getEmailConfig();
   app.openapi(
     createRoute({
       method: "get",
@@ -120,6 +119,7 @@ export const registerProjectIdentityRoutes = (app: AppType) => {
       hide: true,
     }),
     async (c) => {
+      const emailConfig = getEmailConfig();
       const toVerify = IdentitySchemas.verify.parse(await c.req.json());
       const projectId = c.req.param("projectId");
 

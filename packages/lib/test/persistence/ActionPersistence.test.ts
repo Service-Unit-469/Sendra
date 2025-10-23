@@ -1,10 +1,8 @@
 import type { Action } from "@sendra/shared";
-import { getPersistenceConfig } from "../../src/services/AppConfig";
-import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
+import { startupDynamoDB, stopDynamoDB } from "@sendra/test";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { ActionPersistence } from "../../src/persistence/ActionPersistence";
-import { getDynamoDB, initializeDynamoDB, stopDynamoDB } from "./utils/db";
 
-const TEST_TABLE_NAME = "test-sendra-table";
 const TEST_PROJECT_ID = "test-project-123";
 
 describe("ActionPersistence", () => {
@@ -12,19 +10,7 @@ describe("ActionPersistence", () => {
 
   beforeAll(async () => {
     // Start local DynamoDB
-    const db = await getDynamoDB();
-    const dbUrl = db.url;
-
-    vi.stubEnv("PERSISTENCE_PROVIDER", "local");
-    vi.stubEnv("TABLE_NAME", TEST_TABLE_NAME);
-    vi.stubEnv("AWS_REGION", "us-east-1");
-    vi.stubEnv("AWS_ACCESS_KEY_ID", "dummy");
-    vi.stubEnv("AWS_SECRET_ACCESS_KEY", "dummy");
-    vi.stubEnv("AWS_ENDPOINT", dbUrl);
-
-    // Initialize table
-    const { client } = getPersistenceConfig();
-    await initializeDynamoDB(client, TEST_TABLE_NAME);
+    await startupDynamoDB();
 
     // Now import ActionPersistence after mocks are set up
     persistence = new ActionPersistence(TEST_PROJECT_ID);
@@ -32,7 +18,6 @@ describe("ActionPersistence", () => {
 
   afterAll(async () => {
     await stopDynamoDB();
-    vi.unstubAllEnvs();
   });
 
   describe("create", () => {

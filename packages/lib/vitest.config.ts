@@ -5,7 +5,6 @@ export default defineConfig({
 		globals: true,
 		environment: "node",
 		include: ["test/**/*.test.ts"],
-		setupFiles: ["./test/setup.ts"],
 		coverage: {
 			enabled: true,
 			provider: "v8",
@@ -17,6 +16,9 @@ export default defineConfig({
 				lines: 80,
 			},
 		},
+		minWorkers: 1,
+		maxWorkers: 2,
+		hookTimeout: 60000,
 	},
 });
 

@@ -1,10 +1,8 @@
 import type { Template } from "@sendra/shared";
-import { getPersistenceConfig } from "../../src/services/AppConfig";
-import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
-import { getDynamoDB, initializeDynamoDB, stopDynamoDB } from "./utils/db";
+import { startupDynamoDB, stopDynamoDB } from "@sendra/test";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { TemplatePersistence } from "../../src/persistence/TemplatePersistence";
 
-const TEST_TABLE_NAME = "test-sendra-table";
 const TEST_PROJECT_ID = "test-project-123";
 
 describe("TemplatePersistence", () => {
@@ -12,31 +10,20 @@ describe("TemplatePersistence", () => {
 
   beforeAll(async () => {
     // Start local DynamoDB
-    const db = await getDynamoDB();
-    const dbUrl = db.url;
+    await startupDynamoDB();
 
-    vi.stubEnv("PERSISTENCE_PROVIDER", "local");
-    vi.stubEnv("TABLE_NAME", TEST_TABLE_NAME);
-    vi.stubEnv("AWS_REGION", "us-east-1");
-    vi.stubEnv("AWS_ACCESS_KEY_ID", "dummy");
-    vi.stubEnv("AWS_SECRET_ACCESS_KEY", "dummy");
-    vi.stubEnv("AWS_ENDPOINT", dbUrl);
-
-    // Initialize table
-    const { client } = getPersistenceConfig();
-    await initializeDynamoDB(client, TEST_TABLE_NAME);
 
     persistence = new TemplatePersistence(TEST_PROJECT_ID);
   });
 
   afterAll(async () => {
     await stopDynamoDB();
-    vi.unstubAllEnvs();
   });
 
   describe("getIndexInfo", () => {
     it("should throw error for any key", () => {
-      expect(() => persistence.getIndexInfo("anyKey")).toThrow(
+      // @ts-expect-error - we expect this to throw
+      expect(() => persistence.getIndexInfo("anyKey" as any)).toThrow(
         "No indexes implemented for TemplatePersistence"
       );
     });
@@ -49,6 +36,7 @@ describe("TemplatePersistence", () => {
         project: TEST_PROJECT_ID,
         subject: "Test Subject",
         body: "Test Body",
+        templateType: "MARKETING" as Template["templateType"],
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
@@ -67,6 +55,7 @@ describe("TemplatePersistence", () => {
         project: TEST_PROJECT_ID,
         subject: "Welcome Email",
         body: "<h1>Welcome!</h1><p>Thanks for signing up.</p>",
+        templateType: "MARKETING" as Template["templateType"],
       };
 
       const created = await persistence.create(templateData);
@@ -82,6 +71,7 @@ describe("TemplatePersistence", () => {
         project: TEST_PROJECT_ID,
         subject: "Password Reset",
         body: "<p>Click here to reset your password</p>",
+        templateType: "TRANSACTIONAL" as Template["templateType"],
       };
 
       const created = await persistence.create(templateData);
@@ -113,6 +103,7 @@ describe("TemplatePersistence", () => {
             </body>
           </html>
         `,
+        templateType: "MARKETING" as Template["templateType"],
       };
 
       const created = await persistence.create(templateData);
@@ -130,12 +121,14 @@ describe("TemplatePersistence", () => {
         project: TEST_PROJECT_ID,
         subject: "Template 1",
         body: "Body 1",
+        templateType: "MARKETING",
       });
 
       await persistence.create({
         project: TEST_PROJECT_ID,
         subject: "Template 2",
         body: "Body 2",
+        templateType: "MARKETING",
       });
 
       const result = await persistence.list({ limit: 10 });
@@ -151,6 +144,7 @@ describe("TemplatePersistence", () => {
         project: "another-project",
         subject: "Other Project Template",
         body: "Other Body",
+        templateType: "MARKETING",
       });
 
       const result = await persistence.list();
@@ -165,6 +159,7 @@ describe("TemplatePersistence", () => {
         project: TEST_PROJECT_ID,
         subject: "Original Subject",
         body: "Original Body",
+        templateType: "MARKETING",
       });
 
       const updated = await persistence.put({
@@ -185,6 +180,7 @@ describe("TemplatePersistence", () => {
         project: TEST_PROJECT_ID,
         subject: "To Delete",
         body: "Delete Me",
+        templateType: "MARKETING",
       });
 
       await persistence.delete(template.id);
@@ -204,6 +200,7 @@ describe("TemplatePersistence", () => {
           body: "Body",
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
+          templateType: "MARKETING",
         },
       ];
 

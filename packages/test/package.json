@@ -1,0 +1,21 @@
+{
+	"name": "@sendra/test",
+	"version": "1.0.0",
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"private": true,
+	"dependencies": {
+		"pick-port": "^2.2.0",
+		"aws-dynamodb-local": "^0.0.11"
+	},
+	"scripts": {
+		"lint": "biome check src",
+		"lint:fix": "biome check --write src",
+		"lint:fix:unsafe": "biome check --write src --unsafe",
+		"typecheck": "tsc --noEmit",
+		"build": "tsc",
+		"dev": "tsc && tsc -w",
+		"clean": "rimraf dist",
+		"test": "echo 'No tests'"
+	}
+}

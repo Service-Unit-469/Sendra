@@ -1,10 +1,8 @@
 import type { Contact } from "@sendra/shared";
-import { getPersistenceConfig } from "../../src/services/AppConfig";
+import { startupDynamoDB, stopDynamoDB } from "@sendra/test";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
-import { getDynamoDB, initializeDynamoDB, stopDynamoDB } from "./utils/db";
 import { ContactPersistence } from "../../src/persistence/ContactPersistence";
 
-const TEST_TABLE_NAME = "test-sendra-table";
 const TEST_PROJECT_ID = "test-project-123";
 const TEST_PROJECT_ID_2 = "test-project-456";
 
@@ -14,21 +12,8 @@ describe("ContactPersistence", () => {
 
   beforeAll(async () => {
     // Start local DynamoDB
-    const db = await getDynamoDB();
-    const dbUrl = db.url;
+    await startupDynamoDB();
 
-    vi.stubEnv("PERSISTENCE_PROVIDER", "local");
-    vi.stubEnv("TABLE_NAME", TEST_TABLE_NAME);
-    vi.stubEnv("AWS_REGION", "us-east-1");
-    vi.stubEnv("AWS_ACCESS_KEY_ID", "dummy");
-    vi.stubEnv("AWS_SECRET_ACCESS_KEY", "dummy");
-    vi.stubEnv("AWS_ENDPOINT", dbUrl);
-
-    // Initialize table
-    const { client } = getPersistenceConfig();
-    await initializeDynamoDB(client, TEST_TABLE_NAME);
-
-    // Now import ActionPersistence after mocks are set up
     
     persistence = new ContactPersistence(TEST_PROJECT_ID);
     persistence2 = new ContactPersistence(TEST_PROJECT_ID_2);

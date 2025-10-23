@@ -3,6 +3,7 @@ import { UserPersistence } from "@sendra/lib";
 import { UserSchemas } from "@sendra/shared";
 import type { AppType } from "../app";
 import { NotAuthenticated } from "../exceptions";
+import { getProblemResponseSchema } from "../exceptions/responses";
 import { isAuthenticatedUser } from "../middleware/auth";
 
 export function registerUserRoutes(app: AppType) {
@@ -20,6 +21,7 @@ export function registerUserRoutes(app: AppType) {
           },
           description: "Retrieve the user",
         },
+        401: getProblemResponseSchema(401),
       },
       middleware: [isAuthenticatedUser],
     }),
@@ -34,7 +36,7 @@ export function registerUserRoutes(app: AppType) {
         throw new NotAuthenticated();
       }
 
-      return c.json(UserSchemas.get.parse(me));
+      return c.json(UserSchemas.get.parse(me), 200);
     },
   );
 }

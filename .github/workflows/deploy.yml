@@ -30,6 +30,9 @@ jobs:
       - name: Run linting
         run: npm run lint
 
+      - name: Run tests
+        run: npm run test
+
   deploy:
     runs-on: ubuntu-latest
     env:

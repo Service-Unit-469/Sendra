@@ -1,39 +1,24 @@
 import type { Event } from "@sendra/shared";
-import { getPersistenceConfig } from "../../src/services/AppConfig";
+import { startupDynamoDB, stopDynamoDB } from "@sendra/test";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { EventPersistence } from "../../src/persistence/EventPersistence";
-import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
-import { getDynamoDB, initializeDynamoDB, stopDynamoDB } from "./utils/db";
 
-const TEST_TABLE_NAME = "test-sendra-table";
 const TEST_PROJECT_ID = "test-project-123";
 
 describe("EventPersistence", () => {
-    let persistence: EventPersistence;
+  let persistence: EventPersistence;
 
-    beforeAll(async () => {
-      // Start local DynamoDB
-      const db = await getDynamoDB();
-      const dbUrl = db.url;
-  
-      vi.stubEnv("PERSISTENCE_PROVIDER", "local");
-      vi.stubEnv("TABLE_NAME", TEST_TABLE_NAME);
-      vi.stubEnv("AWS_REGION", "us-east-1");
-      vi.stubEnv("AWS_ACCESS_KEY_ID", "dummy");
-      vi.stubEnv("AWS_SECRET_ACCESS_KEY", "dummy");
-      vi.stubEnv("AWS_ENDPOINT", dbUrl);
-  
-      // Initialize table
-      const { client } = getPersistenceConfig();
-      await initializeDynamoDB(client, TEST_TABLE_NAME);
-  
-      // Now import ActionPersistence after mocks are set up
-      persistence = new EventPersistence(TEST_PROJECT_ID);
-    });
-  
-    afterAll(async () => {
-      await stopDynamoDB();
-      vi.unstubAllEnvs();
-    });
+  beforeAll(async () => {
+    // Start local DynamoDB
+    await startupDynamoDB();
+
+    // Now import ActionPersistence after mocks are set up
+    persistence = new EventPersistence(TEST_PROJECT_ID);
+  });
+
+  afterAll(async () => {
+    await stopDynamoDB();
+  });
 
   describe("getIndexInfo", () => {
     it("should return correct index info for relation key", () => {
@@ -196,7 +181,11 @@ describe("EventPersistence", () => {
       });
 
       expect(result.items.length).toBeGreaterThanOrEqual(2);
-      expect(result.items.every((item: Event) => item.relation === "search-relation-1")).toBe(true);
+      expect(
+        result.items.every(
+          (item: Event) => item.relation === "search-relation-1"
+        )
+      ).toBe(true);
     });
 
     it("should find events by contact", async () => {
@@ -206,7 +195,9 @@ describe("EventPersistence", () => {
       });
 
       expect(result.items.length).toBeGreaterThanOrEqual(2);
-      expect(result.items.every((item: Event) => item.contact === "search-contact-1")).toBe(true);
+      expect(
+        result.items.every((item: Event) => item.contact === "search-contact-1")
+      ).toBe(true);
     });
 
     it("should find events by eventType", async () => {
@@ -216,7 +207,11 @@ describe("EventPersistence", () => {
       });
 
       expect(result.items.length).toBeGreaterThanOrEqual(2);
-      expect(result.items.every((item: Event) => item.eventType === "search-event-type")).toBe(true);
+      expect(
+        result.items.every(
+          (item: Event) => item.eventType === "search-event-type"
+        )
+      ).toBe(true);
     });
 
     it("should throw error for unsupported index key", async () => {
@@ -273,10 +268,9 @@ describe("EventPersistence", () => {
         },
       ];
 
-      await expect(() => persistence.embed(events, ["actions"])).rejects.toThrow(
-        "This persistence does not support embed"
-      );
+      await expect(() =>
+        persistence.embed(events, ["actions"])
+      ).rejects.toThrow("This persistence does not support embed");
     });
   });
 });
-

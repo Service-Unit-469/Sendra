@@ -1,22 +1,11 @@
-import { CreateTableCommand, DescribeTableCommand, DynamoDBClient, waitUntilTableExists } from "@aws-sdk/client-dynamodb";
-import dynamodbLocal from "aws-dynamodb-local";
+import { CreateTableCommand, DynamoDBClient, waitUntilTableExists } from "@aws-sdk/client-dynamodb";
+import { install, start, stop } from "aws-dynamodb-local";
 import { pickPort } from "pick-port";
 
+const TEST_TABLE_NAME = "test-sendra-table";
 let port: number;
 
-export const getDynamoDB = async () => {
-  port = await pickPort({
-    type: "tcp",
-  });
-  await dynamodbLocal.install();
-  await dynamodbLocal.start({ port });
-  return {
-    port,
-    url: `http://localhost:${port}`,
-  };
-};
-
-export const initializeDynamoDB = async (client: DynamoDBClient, tableName: string) => {
+const initializeDynamoDB = async (client: DynamoDBClient, tableName: string) => {
   const createTableCommand = new CreateTableCommand({
     TableName: tableName,
     KeySchema: [
@@ -109,11 +98,45 @@ export const initializeDynamoDB = async (client: DynamoDBClient, tableName: stri
     },
     {
       TableName: tableName,
-    }
+    },
   );
 };
 
+export const startupDynamoDB = async () => {
+  port = await pickPort({
+    type: "tcp",
+  });
+  await install();
+  await start({ port, docker: true });
+
+  const { vi } = await import("vitest");
+
+  vi.stubEnv("PERSISTENCE_PROVIDER", "local");
+  vi.stubEnv("TABLE_NAME", TEST_TABLE_NAME);
+  vi.stubEnv("AWS_REGION", "us-east-1");
+  vi.stubEnv("AWS_ACCESS_KEY_ID", "dummy");
+  vi.stubEnv("AWS_SECRET_ACCESS_KEY", "dummy");
+  vi.stubEnv("AWS_ENDPOINT", `http://localhost:${port}`);
+
+  // Initialize table
+  const client = new DynamoDBClient({
+    endpoint: `http://localhost:${port}`,
+    region: "us-east-1",
+    credentials: {
+      accessKeyId: "dummy",
+      secretAccessKey: "dummy",
+    },
+  });
+  await initializeDynamoDB(client, TEST_TABLE_NAME);
+
+  return {
+    port,
+    client,
+  };
+};
 
 export const stopDynamoDB = async () => {
-  await dynamodbLocal.stop(port);
+  await stop(port);
+  const { vi } = await import("vitest");
+  vi.unstubAllEnvs();
 };

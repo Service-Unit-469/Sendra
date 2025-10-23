@@ -22,7 +22,7 @@ export const registerSubscriberRoutes = (app: AppType) => {
       path: "/subscriber",
       request: {
         query: z.object({
-          email: z.string().email(),
+          email: z.email(),
         }),
       },
       responses: {
@@ -85,20 +85,23 @@ export const registerSubscriberRoutes = (app: AppType) => {
 
       const contacts = await ContactPersistence.getByEmailFromAllProjects(email);
 
-      await Promise.all(
+      const updatedContacts = await Promise.all(
         contacts.map(async (contact) => {
-          if (subscriptions.find((subscription) => subscription.id === contact.project)?.subscribed !== contact.subscribed) {
+          const newSubscribed = subscriptions.find((subscription) => subscription.id === contact.project)?.subscribed ?? contact.subscribed;
+          if (newSubscribed !== contact.subscribed) {
             const contactPersistence = new ContactPersistence(contact.project);
             const updatedContact = {
               ...contact,
-              subscribed: subscriptions.find((subscription) => subscription.id === contact.project)?.subscribed ?? false,
+              subscribed: newSubscribed,
             };
             await contactPersistence.put(updatedContact);
+            return updatedContact;
           }
+          return contact;
         }),
       );
 
-      const newSubscriptions = await toSubscriptions(contacts);
+      const newSubscriptions = await toSubscriptions(updatedContacts);
       return c.json({ email, subscriptions: newSubscriptions }, 200);
     },
   );

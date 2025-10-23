@@ -1,10 +1,8 @@
 import type { Membership } from "@sendra/shared";
-import { getPersistenceConfig } from "../../src/services/AppConfig";
+import { startupDynamoDB, stopDynamoDB } from "@sendra/test";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
-import { getDynamoDB, initializeDynamoDB, stopDynamoDB } from "./utils/db";
 import { MembershipPersistence } from "../../src/persistence/MembershipPersistence";
 
-const TEST_TABLE_NAME = "test-sendra-table";
 const TEST_PROJECT_ID_1 = "test-project-123";
 const TEST_PROJECT_ID_2 = "test-project-456";
 const TEST_USER_ID_1 = "test-user-123";
@@ -15,26 +13,13 @@ describe("MembershipPersistence", () => {
 
   beforeAll(async () => {
     // Start local DynamoDB
-    const db = await getDynamoDB();
-    const dbUrl = db.url;
-
-    vi.stubEnv("PERSISTENCE_PROVIDER", "local");
-    vi.stubEnv("TABLE_NAME", TEST_TABLE_NAME);
-    vi.stubEnv("AWS_REGION", "us-east-1");
-    vi.stubEnv("AWS_ACCESS_KEY_ID", "dummy");
-    vi.stubEnv("AWS_SECRET_ACCESS_KEY", "dummy");
-    vi.stubEnv("AWS_ENDPOINT", dbUrl);
-
-    // Initialize table
-    const { client } = getPersistenceConfig();
-    await initializeDynamoDB(client, TEST_TABLE_NAME);
+    await startupDynamoDB();
 
     persistence = new MembershipPersistence();
   });
 
   afterAll(async () => {
     await stopDynamoDB();
-    vi.unstubAllEnvs();
   });
 
   describe("getIndexInfo", () => {
@@ -120,14 +105,20 @@ describe("MembershipPersistence", () => {
         role: "MEMBER",
       });
 
-      const memberships = await persistence.getProjectMemberships(TEST_PROJECT_ID_1);
+      const memberships = await persistence.getProjectMemberships(
+        TEST_PROJECT_ID_1
+      );
 
       expect(memberships.length).toBe(2);
-      expect(memberships.every((m) => m.project === TEST_PROJECT_ID_1)).toBe(true);
+      expect(memberships.every((m) => m.project === TEST_PROJECT_ID_1)).toBe(
+        true
+      );
     });
 
     it("should return empty array for project with no memberships", async () => {
-      const memberships = await persistence.getProjectMemberships("nonexistent-project");
+      const memberships = await persistence.getProjectMemberships(
+        "nonexistent-project"
+      );
 
       expect(memberships).toEqual([]);
     });
@@ -167,7 +158,9 @@ describe("MembershipPersistence", () => {
     });
 
     it("should return empty array for user with no memberships", async () => {
-      const memberships = await persistence.getUserMemberships("nonexistent-user");
+      const memberships = await persistence.getUserMemberships(
+        "nonexistent-user"
+      );
 
       expect(memberships).toEqual([]);
     });
@@ -191,7 +184,10 @@ describe("MembershipPersistence", () => {
     });
 
     it("should return false for user who is not a member of project", async () => {
-      const result = await persistence.isMember("project-123", "non-member-user");
+      const result = await persistence.isMember(
+        "project-123",
+        "non-member-user"
+      );
 
       expect(result).toBe(false);
     });
@@ -350,4 +346,3 @@ describe("MembershipPersistence", () => {
     });
   });
 });
-

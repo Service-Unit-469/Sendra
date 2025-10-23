@@ -133,7 +133,7 @@ export const registerAuthRoutes = (app: AppType) => {
         body: {
           content: {
             "application/json": {
-              schema: UserSchemas.requestReset,
+              schema: UserSchemas.reset,
             },
           },
         },
