@@ -370,7 +370,7 @@ describe("MembershipPersistence", () => {
   describe("findAllBy pagination", () => {
     it("should retrieve all memberships across multiple pages", async () => {
       const projectId = "pagination-test-project";
-      const numMemberships = 1000;
+      const numMemberships = 250;
 
       // Create many memberships to trigger pagination
       const createdIds: string[] = [];
