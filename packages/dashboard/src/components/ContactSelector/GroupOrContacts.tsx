@@ -26,7 +26,7 @@ const GroupSelector = ({ onRecipientsChange, onGroupsChange, disabled, selectedG
         Groups
       </label>
       <MultiselectDropdown
-        values={groups.map((g) => ({ name: g.name, value: g.id })) ?? []}
+        values={groups.sort((a, b) => a.name.localeCompare(b.name)).map((g) => ({ name: g.name, value: g.id })) ?? []}
         disabled={disabled}
         selectedValues={selectedGroups}
         onChange={(selectedGroups) => {

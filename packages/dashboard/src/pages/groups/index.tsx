@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 import { motion } from "framer-motion";
 import { Edit2, Plus } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Card, Empty, FullscreenLoader, GroupForm, Modal, Skeleton, Table } from "../../components";
 import { Dashboard } from "../../layouts";
 import { useActiveProject } from "../../lib/hooks/projects";
@@ -15,6 +15,13 @@ export default function Index() {
   const { data: groups, mutate: mutateGroups } = useAllGroups();
 
   const [groupModal, setGroupModal] = useState(false);
+  const [query, setQuery] = useState<string>("");
+
+  const filteredGroups = useMemo(() => {
+    if (!groups) return null;
+    if (!query) return groups;
+    return groups.filter((group) => group.name.toLowerCase().includes(query.toLowerCase()));
+  }, [groups, query]);
 
   if (!project || !user) {
     return <FullscreenLoader />;
@@ -45,33 +52,45 @@ export default function Index() {
           title="Groups"
           description="View and manage your contact groups"
           actions={
-            <motion.button
-              onClick={() => setGroupModal(true)}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.9 }}
-              className={"flex items-center justify-center gap-x-1 rounded bg-neutral-800 px-8 py-2 text-center text-sm font-medium text-white"}
-            >
-              <Plus strokeWidth={1.5} size={18} />
-              New
-            </motion.button>
+            <div className="grid w-full gap-3 md:w-fit md:grid-cols-2">
+              <input
+                onChange={(e) => setQuery(e.target.value)}
+                autoComplete="off"
+                type="search"
+                placeholder="Filter groups"
+                value={query}
+                className="rounded border-neutral-300 transition ease-in-out focus:border-neutral-800 focus:ring-neutral-800 sm:text-sm"
+              />
+              <motion.button
+                onClick={() => setGroupModal(true)}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.9 }}
+                className={"flex items-center justify-center gap-x-1 rounded bg-neutral-800 px-8 py-2 text-center text-sm font-medium text-white"}
+              >
+                <Plus strokeWidth={1.5} size={18} />
+                New
+              </motion.button>
+            </div>
           }
         >
-          {!groups && <Skeleton type={"table"} />}
-          {groups && groups.length === 0 && <Empty title="No groups" description="Create a new group to start grouping your contacts" />}
-          {groups && groups.length > 0 && (
+          {!filteredGroups && <Skeleton type={"table"} />}
+          {filteredGroups && filteredGroups.length === 0 && <Empty title="No groups" description={query ? "No groups match your filter" : "Create a new group to start grouping your contacts"} />}
+          {filteredGroups && filteredGroups.length > 0 && (
             <Table
-              values={groups.map((g) => {
-                return {
-                  Name: g.name,
-                  "Last Updated": dayjs().to(g.updatedAt).toString(),
-                  Members: g.contacts.length,
-                  Edit: (
-                    <Link href={`/groups/${g.id}`} className="transition hover:text-neutral-800">
-                      <Edit2 size={18} />
-                    </Link>
-                  ),
-                };
-              })}
+              values={filteredGroups
+                .sort((a, b) => a.name.localeCompare(b.name))
+                .map((g) => {
+                  return {
+                    Name: g.name,
+                    "Last Updated": dayjs().to(g.updatedAt).toString(),
+                    Members: g.contacts.length,
+                    Edit: (
+                      <Link href={`/groups/${g.id}`} className="transition hover:text-neutral-800">
+                        <Edit2 size={18} />
+                      </Link>
+                    ),
+                  };
+                })}
             />
           )}
         </Card>
