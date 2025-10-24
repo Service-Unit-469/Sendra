@@ -96,8 +96,24 @@ export const sendEmail = async (task: SendEmailTask, recordId: string) => {
     email = project.identity?.verified && project.email ? (campaign.email ?? project.email) : emailConfig.defaultEmail;
     name = campaign.from ?? project.from ?? project.name;
 
-    body = campaign.body;
-    subject = campaign.subject;
+    // Check if campaign uses a quick email template
+    if (campaign.template) {
+      const template = await templatePersistence.get(campaign.template);
+      if (template?.quickEmail) {
+        // Merge campaign body into template's {{quickBody}} or {{{quickBody}}} token
+        body = template.body.replace(/\{\{\{?quickBody\}?\}\}/g, campaign.body);
+        subject = campaign.subject;
+        logger.info({ templateId: template.id, templateSubject: template.subject }, "Using quick email template");
+      } else {
+        // Regular campaign with template reference but not a quick email
+        body = campaign.body;
+        subject = campaign.subject;
+      }
+    } else {
+      // Regular campaign without template
+      body = campaign.body;
+      subject = campaign.subject;
+    }
   }
 
   logger.info({ subject: body, body: body.length }, "Compiling subject and body");

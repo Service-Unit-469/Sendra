@@ -46,12 +46,16 @@ export default function Index() {
   }
 
   const createCampaign = async (data: z.infer<typeof createCampaignFormSchema>) => {
+    const selectedTemplate = templates.find((t) => t.id === data.template);
+    const isQuickEmail = selectedTemplate?.quickEmail ?? false;
+
     toast.promise(
       network.fetch(`/projects/${project.id}/campaigns`, {
         method: "POST",
         body: {
-          ...data,
-          body: templates.find((t) => t.id === data.template)?.body ?? defaultTemplate,
+          subject: data.subject,
+          template: data.template || undefined,
+          body: isQuickEmail ? "" : (selectedTemplate?.body ?? defaultTemplate),
           recipients: [],
           groups: [],
         },

@@ -1,9 +1,8 @@
-import type { Action, BaseType, Email, Event, Template } from "@sendra/shared";
+import type { Action, BaseType, Email, Event } from "@sendra/shared";
 import { ActionPersistence } from "../ActionPersistence";
 import type { Embeddable, EmbeddedObject } from "../BasePersistence";
 import { EmailPersistence } from "../EmailPersistence";
 import { EventPersistence } from "../EventPersistence";
-import { TemplatePersistence } from "../TemplatePersistence";
 import { HttpException } from "./HttpException";
 
 export type ProjectEntity = BaseType & {

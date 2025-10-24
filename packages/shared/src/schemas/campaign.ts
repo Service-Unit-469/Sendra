@@ -3,11 +3,12 @@ import { email, id, ProjectEntitySchema } from "./common";
 
 export const CampaignSchema = ProjectEntitySchema.extend({
   subject: z.string().min(1, "Subject needs to be at least 1 character long").max(70, "Subject needs to be less than 70 characters long"),
-  body: z.string().min(1, "Body needs to be at least 1 character long"),
+  body: z.string(),
   email: email.optional().or(z.literal("")),
   from: z.string().optional(),
   recipients: z.array(id),
   groups: z.array(id).optional(),
+  template: id.optional(),
 
   status: z.enum(["DRAFT", "DELIVERED"]).default("DRAFT"),
 });

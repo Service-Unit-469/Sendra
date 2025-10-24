@@ -10,6 +10,7 @@ import {
   ProjectPersistence,
   rootLogger,
   TaskQueue,
+  TemplatePersistence,
   UserPersistence,
 } from "@sendra/lib";
 import { CampaignSchema, CampaignSchemas, EmailSchema, type Project } from "@sendra/shared";
@@ -206,6 +207,18 @@ export const registerCampaignsRoutes = (app: AppType) => {
 
         logger.info({ campaign: campaign.id, recipients: users.length }, "Sending test email");
 
+        // Check if campaign uses a quick email template
+        let emailBody = campaign.body;
+        if (campaign.template) {
+          const templatePersistence = new TemplatePersistence(projectId);
+          const template = await templatePersistence.get(campaign.template);
+          if (template?.quickEmail) {
+            // Merge campaign body into template's {{quickBody}} token for test email
+            emailBody = template.body.replace(/\{\{\{?quickBody\}?\}\}/g, campaign.body);
+            logger.info({ templateId: template.id }, "Using quick email template for test");
+          }
+        }
+
         const params = {
           contact: {
             email: emailConfig.defaultEmail,
@@ -231,7 +244,7 @@ export const registerCampaignsRoutes = (app: AppType) => {
           to: users.map((m) => m.email),
           content: {
             subject,
-            html: EmailService.compileBody(campaign.body, params as CompileProps),
+            html: EmailService.compileBody(emailBody, params as CompileProps),
           },
         });
       }

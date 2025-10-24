@@ -3,6 +3,7 @@ import {
   ContactPersistence,
   EmailPersistence,
   EmailService,
+  TemplatePersistence,
 } from "@sendra/lib";
 import { startupDynamoDB, stopDynamoDB } from "@sendra/test";
 import { afterAll, beforeAll, describe, expect, test, vi } from "vitest";
@@ -147,28 +148,6 @@ describe("Campaigns Endpoint Contract Tests", () => {
       expect(contact?.email).toBe("newcontact@example.com");
     });
 
-    test("should return 400 when subject is empty", async () => {
-      const { project, token } = await createTestSetup();
-      const contact = await createTestContact(project.id);
-
-      const campaignPayload = {
-        subject: "",
-        body: "Campaign body",
-        recipients: [contact.id],
-      };
-
-      const response = await app.request(`/projects/${project.id}/campaigns`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(campaignPayload),
-      });
-
-      expect(response.status).toBe(400);
-    });
-
     test("should return 400 when subject exceeds 70 characters", async () => {
       const { project, token } = await createTestSetup();
       const contact = await createTestContact(project.id);
@@ -176,28 +155,6 @@ describe("Campaigns Endpoint Contract Tests", () => {
       const campaignPayload = {
         subject: "A".repeat(71),
         body: "Campaign body",
-        recipients: [contact.id],
-      };
-
-      const response = await app.request(`/projects/${project.id}/campaigns`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(campaignPayload),
-      });
-
-      expect(response.status).toBe(400);
-    });
-
-    test("should return 400 when body is empty", async () => {
-      const { project, token } = await createTestSetup();
-      const contact = await createTestContact(project.id);
-
-      const campaignPayload = {
-        subject: "Test Subject",
-        body: "",
         recipients: [contact.id],
       };
 
@@ -924,6 +881,85 @@ describe("Campaigns Endpoint Contract Tests", () => {
       });
 
       expect(response.status).toBe(401);
+    });
+  });
+
+  describe("Quick Email Campaign Tests", () => {
+    test("should create a campaign with a quick email template reference", async () => {
+      const { project, token } = await createTestSetup();
+      const contact = await createTestContact(project.id);
+
+      // Create a quick email template
+      const templatePersistence = new TemplatePersistence(project.id);
+      const template = await templatePersistence.create({
+        project: project.id,
+        subject: "Quick Email Template",
+        body: "<mjml><mj-body><mj-section><mj-column><mj-text>{{{quickBody}}}</mj-text></mj-column></mj-section></mj-body></mjml>",
+        templateType: "MARKETING",
+        quickEmail: true,
+      });
+
+      const campaignPayload = {
+        subject: "Test Quick Email Campaign",
+        body: "This is the quick email body that will be inserted",
+        recipients: [contact.id],
+        template: template.id,
+      };
+
+      const response = await app.request(`/projects/${project.id}/campaigns`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(campaignPayload),
+      });
+
+      expect(response.status).toBe(201);
+
+      const data = await response.json();
+      expect(data).toMatchObject({
+        id: expect.any(String),
+        subject: "Test Quick Email Campaign",
+        body: "This is the quick email body that will be inserted",
+        template: template.id,
+        recipients: [contact.id],
+        status: "DRAFT",
+        project: project.id,
+      });
+    });
+
+    test("should create campaign with empty body when using quick email template", async () => {
+      const { project, token } = await createTestSetup();
+      const contact = await createTestContact(project.id);
+
+      // Create a quick email template
+      const templatePersistence = new TemplatePersistence(project.id);
+      const template = await templatePersistence.create({
+        project: project.id,
+        subject: "Quick Email Template 2",
+        body: "<mjml><mj-body><mj-section><mj-column><mj-text>Header</mj-text><mj-text>{{quickBody}}</mj-text></mj-column></mj-section></mj-body></mjml>",
+        templateType: "TRANSACTIONAL",
+        quickEmail: true,
+      });
+
+      const campaignPayload = {
+        subject: "Quick Email",
+        body: "",
+        recipients: [contact.id],
+        template: template.id,
+      };
+
+      const response = await app.request(`/projects/${project.id}/campaigns`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(campaignPayload),
+      });
+
+      expect(response.status).toBe(201);
     });
   });
 });

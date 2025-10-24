@@ -8,7 +8,7 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { Card, Dropdown, FullscreenLoader, Input, Tooltip } from "../../components";
+import { Card, Dropdown, FullscreenLoader, Input, Toggle, Tooltip } from "../../components";
 import { EmailEditor } from "../../components/EmailEditor";
 import { Dashboard } from "../../layouts";
 import { useActiveProject, useActiveProjectIdentity } from "../../lib/hooks/projects";
@@ -75,6 +75,13 @@ export default function Index() {
     if (data.email?.trim() === "") {
       delete data.email;
     }
+
+    // Validate quickEmail templates have the quickBody token
+    if (data.quickEmail && !data.body.match(/\{\{\{?quickBody\}?\}\}/)) {
+      toast.error("Quick email templates must include {{quickBody}} or {{{quickBody}}} token in the body");
+      return;
+    }
+
     toast.promise(
       network.fetch(`/projects/${project.id}/templates/${template.id}`, {
         method: "PUT",
@@ -222,6 +229,41 @@ export default function Index() {
                 </motion.p>
               )}
             </AnimatePresence>
+          </div>
+
+          <div className={"sm:col-span-6"}>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Toggle
+                  title="Quick Email Template"
+                  description="Allow simple text input instead of MJML editor. Include {{quickBody}} or {{{quickBody}}} token in your template."
+                  toggled={watch("quickEmail") ?? false}
+                  onToggle={() => setValue("quickEmail", !watch("quickEmail"))}
+                  className="flex-grow"
+                />
+                <Tooltip
+                  content={
+                    <>
+                      <p className={"mb-2 text-base font-semibold"}>What is a Quick Email Template?</p>
+                      <p className={"text-sm"}>
+                        Quick email templates allow you to create campaigns with a simple text editor instead of the full MJML editor.
+                        <br />
+                        <br />
+                        Include <code className="bg-neutral-700 px-1 rounded">{"{{quickBody}}"}</code> or <code className="bg-neutral-700 px-1 rounded">{"{{{quickBody}}}"}</code> in your template
+                        where you want the campaign body to be inserted.
+                      </p>
+                    </>
+                  }
+                  icon={
+                    <>
+                      <path d="M12 16v.01" />
+                      <path d="M12 13a2.003 2.003 0 0 0 .914 -3.782a1.98 1.98 0 0 0 -2.414 .483" />
+                      <circle cx="12" cy="12" r="9" />
+                    </>
+                  }
+                />
+              </div>
+            </div>
           </div>
 
           {projectIdentity?.identity?.verified && <Input className={"sm:col-span-3"} label={"Sender Email"} placeholder={`${project.email}`} register={register("email")} error={errors.email} />}

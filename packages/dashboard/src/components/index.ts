@@ -8,6 +8,7 @@ export * from "./GroupForm";
 export * from "./Input";
 export * from "./Navigation";
 export * from "./Overlay";
+export * from "./SimpleRichTextEditor";
 export * from "./Skeleton";
 export * from "./Table";
 export * from "./Utility";

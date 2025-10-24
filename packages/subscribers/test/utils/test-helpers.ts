@@ -44,15 +44,17 @@ export const createTestSetup = async () => {
 /**
  * Creates a test template for a project
  * @param projectId - The ID of the project to create the template for
+ * @param quickEmail - Whether this is a quick email template (defaults to false)
  * @returns The created template
  */
-export const createTestTemplate = async (projectId: string) => {
+export const createTestTemplate = async (projectId: string, quickEmail = false) => {
 	const templatePersistence = new TemplatePersistence(projectId);
 	return await templatePersistence.create({
 		project: projectId,
 		subject: "Test Email Subject",
 		body: "<p>Test email body content</p>",
 		templateType: "MARKETING",
+		quickEmail,
 	});
 };
 
@@ -100,7 +102,6 @@ export const createTestCampaign = async (projectId: string) => {
 	const campaignPersistence = new CampaignPersistence(projectId);
 	return await campaignPersistence.create({
 		project: projectId,
-		name: `Test Campaign ${Date.now()}`,
 		subject: "Test Campaign Subject",
 		body: "<p>Test campaign body</p>",
 		recipients: [],

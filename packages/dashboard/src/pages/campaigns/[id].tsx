@@ -12,12 +12,13 @@ import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 import { type FieldError, useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { Alert, Badge, Card, Dropdown, FullscreenLoader, Input, Modal, Table } from "../../components";
+import { Alert, Badge, Card, Dropdown, FullscreenLoader, Input, Modal, SimpleRichTextEditor, Table } from "../../components";
 import Send from "../../icons/Send";
 import { Dashboard } from "../../layouts";
 import { useCampaign, useCampaignsWithEmails } from "../../lib/hooks/campaigns";
 import { useEmailsByCampaign } from "../../lib/hooks/emails";
 import { useActiveProject, useActiveProjectIdentity } from "../../lib/hooks/projects";
+import { useTemplate } from "../../lib/hooks/templates";
 import { network } from "../../lib/network";
 
 /**
@@ -31,9 +32,12 @@ export default function Index() {
 
   const { data: emails } = useEmailsByCampaign(campaign?.id);
   const { data: projectIdentity } = useActiveProjectIdentity();
+  const { data: template } = useTemplate(campaign?.template ?? "");
 
   const [confirmModal, setConfirmModal] = useState(false);
   const [delay, setDelay] = useState(0);
+
+  const isQuickEmail = template?.quickEmail ?? false;
 
   const {
     register,
@@ -360,7 +364,25 @@ export default function Index() {
               ))}
 
             <div className={"sm:col-span-6"}>
-              <EmailEditor initialValue={campaign.body} onChange={(value) => setValue("body", value)} />
+              {isQuickEmail ? (
+                <div>
+                  <label htmlFor="body" className="block text-sm font-medium text-neutral-700 mb-2">
+                    Email Body
+                  </label>
+                  {template && (
+                    <p className="text-xs text-neutral-500 mb-2">
+                      Using quick email template: <strong>{template.subject}</strong>
+                    </p>
+                  )}
+                  <SimpleRichTextEditor
+                    initialValue={campaign.body}
+                    onChange={(value) => setValue("body", value)}
+                    placeholder="Enter your email content here. It will be inserted into the template."
+                  />
+                </div>
+              ) : (
+                <EmailEditor initialValue={campaign.body} onChange={(value) => setValue("body", value)} />
+              )}
               <AnimatePresence>
                 {errors.body?.message && (
                   <motion.p initial={{ height: 0 }} animate={{ height: "auto" }} exit={{ height: 0 }} className="mt-1 text-xs text-red-500">
