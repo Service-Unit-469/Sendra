@@ -16,7 +16,6 @@ export default defineConfig({
 				lines: 80,
 			},
 		},
-		minWorkers: 1,
 		maxWorkers: 2,
 		hookTimeout: 60000,
 	},

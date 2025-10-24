@@ -212,6 +212,160 @@ describe("EmailTopicSubscriber", () => {
 			const emails = await emailPersistence.listAll();
 			const updatedEmail = emails.find((e) => e.messageId === messageId);
 			expect(updatedEmail?.status).toBe("COMPLAINT");
+
+			// Verify event was created
+			const eventPersistence = new EventPersistence(projectId);
+			const events = await eventPersistence.listAll();
+			const complaintEvent = events.find((e) => e.eventType === "email.complaint");
+			expect(complaintEvent).toBeDefined();
+			expect(complaintEvent?.contact).toBe(contactId);
+		});
+
+		test("should handle complaint event but not unsubscribe transactional contact", async () => {
+			const messageId = `test-message-${Date.now()}`;
+			const email = await createTestEmail(projectId, contactId, messageId);
+			// Set as transactional email
+			await new EmailPersistence(projectId).put({ ...email, sendType: "TRANSACTIONAL" });
+
+			const event = createSNSEvent(messageId, "Complaint", {
+				complaint: {
+					complainedRecipients: [{ emailAddress: `contact-${contactId}@example.com` }],
+					timestamp: new Date().toISOString(),
+					complaintFeedbackType: "abuse",
+				},
+			});
+
+			const result = await handler(event);
+
+			expect(result.statusCode).toBe(200);
+
+			// Verify contact was NOT unsubscribed (transactional emails don't unsubscribe)
+			const contactPersistence = new ContactPersistence(projectId);
+			const contact = await contactPersistence.get(contactId);
+			expect(contact?.subscribed).toBe(true);
+
+			// Verify email status was still updated
+			const emailPersistence = new EmailPersistence(projectId);
+			const emails = await emailPersistence.listAll();
+			const updatedEmail = emails.find((e) => e.messageId === messageId);
+			expect(updatedEmail?.status).toBe("COMPLAINT");
+		});
+	});
+
+	describe("Reject Events", () => {
+		test("should handle reject event successfully", async () => {
+			const messageId = `test-message-${Date.now()}`;
+			await createTestEmail(projectId, contactId, messageId);
+
+			const event = createSNSEvent(messageId, "Reject", {
+				reject: {
+					reason: "Bad content",
+				},
+			});
+
+			const result = await handler(event);
+
+			expect(result.statusCode).toBe(200);
+			expect(result.body).toBe("OK");
+
+			// Verify email status was updated
+			const emailPersistence = new EmailPersistence(projectId);
+			const emails = await emailPersistence.listAll();
+			const email = emails.find((e) => e.messageId === messageId);
+			expect(email?.status).toBe("REJECTED");
+
+			// Verify event was created
+			const eventPersistence = new EventPersistence(projectId);
+			const events = await eventPersistence.listAll();
+			const rejectEvent = events.find((e) => e.eventType === "email.reject");
+			expect(rejectEvent).toBeDefined();
+			expect(rejectEvent?.contact).toBe(contactId);
+		});
+
+		test("should add reject event type to project when first occurrence", async () => {
+			const messageId = `test-message-${Date.now()}`;
+			await createTestEmail(projectId, contactId, messageId);
+
+			// Verify project doesn't have email.reject event type yet
+			const projectPersistence = new ProjectPersistence();
+			let project = await projectPersistence.get(projectId);
+			expect(project?.eventTypes.includes("email.reject")).toBe(false);
+
+			const event = createSNSEvent(messageId, "Reject", {
+				reject: {
+					reason: "Bad content",
+				},
+			});
+
+			await handler(event);
+
+			// Verify event type was added to project
+			project = await projectPersistence.get(projectId);
+			expect(project?.eventTypes.includes("email.reject")).toBe(true);
+		});
+	});
+
+	describe("Click Events", () => {
+		test("should handle click event successfully", async () => {
+			const messageId = `test-message-${Date.now()}`;
+			await createTestEmail(projectId, contactId, messageId);
+
+			const event = createSNSEvent(messageId, "Click", {
+				click: {
+					timestamp: new Date().toISOString(),
+					userAgent: "Mozilla/5.0",
+					ipAddress: "192.168.1.1",
+					link: "https://example.com/link",
+					linkTags: {
+						"campaign": ["newsletter"],
+					},
+				},
+			});
+
+			const result = await handler(event);
+
+			expect(result.statusCode).toBe(200);
+			expect(result.body).toBe("OK");
+
+			// Verify email status was NOT updated (click doesn't change status)
+			const emailPersistence = new EmailPersistence(projectId);
+			const emails = await emailPersistence.listAll();
+			const email = emails.find((e) => e.messageId === messageId);
+			// Status should remain SENT since click is not in eventMap
+			expect(email?.status).toBe("SENT");
+
+			// Verify event was created
+			const eventPersistence = new EventPersistence(projectId);
+			const events = await eventPersistence.listAll();
+			const clickEvent = events.find((e) => e.eventType === "email.click");
+			expect(clickEvent).toBeDefined();
+			expect(clickEvent?.contact).toBe(contactId);
+			expect(clickEvent?.data).toHaveProperty("details");
+		});
+
+		test("should add click event type to project when first occurrence", async () => {
+			const messageId = `test-message-${Date.now()}`;
+			await createTestEmail(projectId, contactId, messageId);
+
+			// Verify project doesn't have email.click event type yet
+			const projectPersistence = new ProjectPersistence();
+			let project = await projectPersistence.get(projectId);
+			expect(project?.eventTypes.includes("email.click")).toBe(false);
+
+			const event = createSNSEvent(messageId, "Click", {
+				click: {
+					timestamp: new Date().toISOString(),
+					userAgent: "Mozilla/5.0",
+					ipAddress: "192.168.1.1",
+					link: "https://example.com/link",
+				},
+			});
+
+			await handler(event);
+
+			// Verify event type was added to project
+			project = await projectPersistence.get(projectId);
+			expect(project?.eventTypes.includes("email.click")).toBe(true);
 		});
 	});
 

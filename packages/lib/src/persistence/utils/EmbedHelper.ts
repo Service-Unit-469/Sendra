@@ -38,15 +38,6 @@ export const embedHelper = async <T extends ProjectEntity>(items: T[], key: stri
         });
       }
 
-      let templates: Template[] | undefined;
-      if (embed.includes("templates")) {
-        const templatePersistence = new TemplatePersistence(item.project);
-        templates = await templatePersistence.findAllBy({
-          key,
-          value: item.id,
-        });
-      }
-
       let events: Event[] | undefined;
       if (embed.includes("events")) {
         const eventPersistence = new EventPersistence(item.project);
@@ -55,14 +46,13 @@ export const embedHelper = async <T extends ProjectEntity>(items: T[], key: stri
           value: item.id,
         });
       }
-      if (events || emails || templates || actions) {
+      if (events || emails || actions) {
         return {
           ...item,
           _embed: {
             actions,
             emails,
             events,
-            templates,
           },
         };
       }

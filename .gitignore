@@ -20,3 +20,4 @@ coverage/
 .dynamodb/
 
 tsconfig.tsbuildinfo
+.cursor/

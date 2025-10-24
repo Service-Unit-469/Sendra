@@ -16,10 +16,8 @@
 	"devDependencies": {
 		"@sendra/test": "*",
 		"@types/aws-lambda": "^8.10.155",
-		"@vitest/coverage-v8": "^2.1.8",
 		"ts-node-dev": "^2.0.0",
-		"typescript": "^5.5.3",
-		"vitest": "^2.1.8"
+		"typescript": "^5.5.3"
 	},
 	"dependencies": {
 		"@aws-sdk/client-sns": "^3.490.0",

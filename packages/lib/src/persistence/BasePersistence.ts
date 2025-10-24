@@ -65,7 +65,7 @@ export type BaseItem = {
   updatedAt: string;
 };
 
-export type Embeddable = "actions" | "emails" | "events" | "templates";
+export type Embeddable = "actions" | "emails" | "events";
 
 export type StopFn<T> = (item: T) => boolean;
 

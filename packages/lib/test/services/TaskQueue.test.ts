@@ -5,11 +5,13 @@ import type { Task } from "@sendra/shared";
 vi.mock("@aws-sdk/client-sqs", () => {
 	const mockSend = vi.fn();
 	return {
-		SQSClient: vi.fn(() => ({
-			send: mockSend,
-		})),
-		SendMessageCommand: vi.fn((params) => params),
-		GetQueueAttributesCommand: vi.fn((params) => params),
+		SQSClient: vi.fn(function() {
+			return {
+				send: mockSend,
+			};
+		}),
+		SendMessageCommand: vi.fn(function(params) { return params; }),
+		GetQueueAttributesCommand: vi.fn(function(params) { return params; }),
 		__mockSend: mockSend,
 	};
 });
@@ -17,10 +19,12 @@ vi.mock("@aws-sdk/client-sqs", () => {
 vi.mock("@aws-sdk/client-sfn", () => {
 	const mockSfnSend = vi.fn();
 	return {
-		SFNClient: vi.fn(() => ({
-			send: mockSfnSend,
-		})),
-		StartExecutionCommand: vi.fn((params) => params),
+		SFNClient: vi.fn(function() {
+			return {
+				send: mockSfnSend,
+			};
+		}),
+		StartExecutionCommand: vi.fn(function(params) { return params; }),
 		__mockSfnSend: mockSfnSend,
 	};
 });
@@ -40,7 +44,9 @@ vi.mock("sst", () => ({
 import { TaskQueue } from "../../src/services/TaskQueue";
 
 // Get mock functions after import
+// @ts-expect-error mocking
 const mockSend = vi.mocked((await import("@aws-sdk/client-sqs")).__mockSend as any);
+// @ts-expect-error mocking
 const mockSfnSend = vi.mocked((await import("@aws-sdk/client-sfn")).__mockSfnSend as any);
 
 describe("TaskQueue", () => {
@@ -163,7 +169,7 @@ describe("TaskQueue", () => {
 
 		it("should handle different task types", async () => {
 			const task: Task = {
-				type: "deleteContact",
+				type: "deleteContact" as any,
 				delaySeconds: 60,
 				payload: {
 					contact: "contact-123",

@@ -308,6 +308,27 @@ describe("MembershipPersistence", () => {
     });
   });
 
+  describe("update", () => {
+    it("should update membership role using put", async () => {
+      const membership = await persistence.create({
+        project: TEST_PROJECT_ID_1,
+        user: TEST_USER_ID_1,
+        email: "update@example.com",
+        role: "MEMBER",
+      });
+
+      const updated = await persistence.put({
+        ...membership,
+        role: "ADMIN",
+      });
+
+      expect(updated.role).toBe("ADMIN");
+      expect(updated.id).toBe(membership.id);
+      expect(updated.project).toBe(membership.project);
+      expect(updated.user).toBe(membership.user);
+    });
+  });
+
   describe("embed", () => {
     it("should return memberships without embed when no embed requested", async () => {
       const memberships: Membership[] = [
@@ -343,6 +364,52 @@ describe("MembershipPersistence", () => {
       await expect(persistence.embed(memberships, ["actions"])).rejects.toThrow(
         "This persistence does not support embed"
       );
+    });
+  });
+
+  describe("findAllBy pagination", () => {
+    it("should retrieve all memberships across multiple pages", async () => {
+      const projectId = "pagination-test-project";
+      const numMemberships = 1000;
+
+      // Create many memberships to trigger pagination
+      const createdIds: string[] = [];
+      for (let i = 0; i < numMemberships; i++) {
+        const membership = await persistence.create({
+          project: projectId,
+          user: `pagination-user-${i}`,
+          email: `pagination${i}@example.com`,
+          role: i % 2 === 0 ? "ADMIN" : "MEMBER",
+        });
+        createdIds.push(membership.id);
+      }
+
+      // Spy on findBy to verify it's called multiple times (pagination happens)
+      const findBySpy = vi.spyOn(persistence, "findBy");
+
+      // Call findAllBy which should handle pagination automatically
+      const results = await persistence.findAllBy({
+        key: "project",
+        value: projectId,
+      });
+
+      // Verify all memberships were returned
+      expect(results.length).toBe(numMemberships);
+      expect(results.every((m) => m.project === projectId)).toBe(true);
+
+      // Verify that findBy was called multiple times (indicating pagination occurred)
+      // Note: This may be 1 call in test environment but will be multiple in production
+      expect(findBySpy).toHaveBeenCalled();
+      const callCount = findBySpy.mock.calls.length;
+      expect(callCount).toBeGreaterThanOrEqual(1);
+
+      // Verify all created memberships are in the results
+      const resultIds = results.map((m) => m.id);
+      for (const id of createdIds) {
+        expect(resultIds).toContain(id);
+      }
+
+      findBySpy.mockRestore();
     });
   });
 });

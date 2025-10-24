@@ -5,9 +5,11 @@ import type { Action, Contact, Email, PublicProject } from "@sendra/shared";
 vi.mock("@aws-sdk/client-ses", () => {
 	const mockSendRawEmail = vi.fn();
 	return {
-		SES: vi.fn(() => ({
-			sendRawEmail: mockSendRawEmail,
-		})),
+		SES: vi.fn(function() {
+			return {
+				sendRawEmail: mockSendRawEmail,
+			};
+		}),
 		__mockSendRawEmail: mockSendRawEmail,
 	};
 });

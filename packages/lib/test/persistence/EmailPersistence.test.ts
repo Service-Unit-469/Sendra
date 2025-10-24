@@ -220,6 +220,31 @@ describe("EmailPersistence", () => {
     });
   });
 
+  describe("update", () => {
+    it("should update email status using put", async () => {
+      const email = await persistence.create({
+        project: TEST_PROJECT_ID,
+        contact: "contact-update",
+        email: "update@example.com",
+        subject: "Test Email",
+        body: "Test Body",
+        sendType: "MARKETING" as const,
+        status: "SENT" as const,
+        source: "source-update",
+        messageId: "msg-update-123",
+      });
+
+      const updated = await persistence.put({
+        ...email,
+        status: "DELIVERED" as const,
+      });
+
+      expect(updated.status).toBe("DELIVERED");
+      expect(updated.id).toBe(email.id);
+      expect(updated.messageId).toBe(email.messageId);
+    });
+  });
+
   describe("embed", () => {
     it("should return emails without embed when no embed requested", async () => {
       const emails: Email[] = [

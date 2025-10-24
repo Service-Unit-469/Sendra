@@ -91,11 +91,11 @@ describe("ActionsService", () => {
     };
 
     vi.mocked(ActionPersistence).mockImplementation(
-      () => mockActionPersistence
+      function() { return mockActionPersistence; }
     );
-    vi.mocked(EventPersistence).mockImplementation(() => mockEventPersistence);
+    vi.mocked(EventPersistence).mockImplementation(function() { return mockEventPersistence; });
     vi.mocked(TemplatePersistence).mockImplementation(
-      () => mockTemplatePersistence
+      function() { return mockTemplatePersistence; }
     );
   });
 

@@ -114,15 +114,14 @@ describe("ContactPersistence", () => {
     it("should handle pagination when retrieving contacts from all projects", async () => {
       const email = "paginated@example.com";
       
-      // Create multiple contacts with same email across different projects
-      // This test verifies the pagination logic works correctly
-      const promises = [];
-      for (let i = 0; i < 3; i++) {
-        const projectId = `test-project-paginate-${i}`;
-        const { ContactPersistence } = await import("../../src/persistence/ContactPersistence");
-        const p = new ContactPersistence(projectId);
-        promises.push(
-          p.create({
+      // Create 60 contacts across different projects with the same email
+      // This will trigger pagination since DynamoDB page size is typically 50
+      const contactPromises = [];
+      for (let i = 0; i < 60; i++) {
+        const projectId = `pagination-project-${i}`;
+        const projectPersistence = new ContactPersistence(projectId);
+        contactPromises.push(
+          projectPersistence.create({
             project: projectId,
             email,
             data: { index: i },
@@ -130,12 +129,18 @@ describe("ContactPersistence", () => {
           })
         );
       }
-      await Promise.all(promises);
       
+      await Promise.all(contactPromises);
+
       const results = await ContactPersistence.getByEmailFromAllProjects(email);
 
-      expect(results.length).toBeGreaterThanOrEqual(3);
+      expect(results.length).toBe(60);
       expect(results.every((c: Contact) => c.email === email)).toBe(true);
+      
+      // Verify that all contacts have unique projects
+      const projectIds = results.map((c: Contact) => c.project);
+      const uniqueProjectIds = new Set(projectIds);
+      expect(uniqueProjectIds.size).toBe(60);
     });
   });
 
@@ -272,6 +277,46 @@ describe("ContactPersistence", () => {
       const result = await persistence.embed(contacts);
 
       expect(result).toEqual(contacts);
+    });
+
+    it("should throw error when attempting to embed templates", async () => {
+      const contacts: Contact[] = [
+        {
+          id: "embed-test-2",
+          project: TEST_PROJECT_ID,
+          email: "embed-error@example.com",
+          data: {},
+          subscribed: true,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        },
+      ];
+
+      await expect(persistence.embed(contacts, ["actions"])).rejects.toThrow(
+        "Only emails, events are supported"
+      );
+    });
+
+    it("should throw error when attempting to embed unsupported types", async () => {
+      const contacts: Contact[] = [
+        {
+          id: "embed-test-3",
+          project: TEST_PROJECT_ID,
+          email: "embed-error-2@example.com",
+          data: {},
+          subscribed: true,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        },
+      ];
+
+      await expect(persistence.embed(contacts, ["actions"])).rejects.toThrow(
+        "Only emails, events are supported"
+      );
+
+      await expect(persistence.embed(contacts, ["actions"])).rejects.toThrow(
+        "Only emails, events are supported"
+      );
     });
   });
 });

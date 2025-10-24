@@ -137,6 +137,33 @@ describe("GroupPersistence", () => {
     });
   });
 
+  describe("update", () => {
+    it("should update group using put", async () => {
+      const contact = await contactPersistence.create({
+        project: TEST_PROJECT_ID,
+        email: "newcontact@example.com",
+        data: { name: "New Contact" },
+        subscribed: true,
+      });
+
+      const group = await persistence.create({
+        project: TEST_PROJECT_ID,
+        name: "Original Group Name",
+        contacts: [],
+      });
+
+      const updated = await persistence.put({
+        ...group,
+        name: "Updated Group Name",
+        contacts: [contact.id],
+      });
+
+      expect(updated.name).toBe("Updated Group Name");
+      expect(updated.contacts).toEqual([contact.id]);
+      expect(updated.id).toBe(group.id);
+    });
+  });
+
   describe("embed", () => {
     it("should return groups without embed when no embed requested", async () => {
       const groups: Group[] = [
@@ -168,6 +195,40 @@ describe("GroupPersistence", () => {
       ];
 
       await expect(persistence.embed(groups, ["actions"])).rejects.toThrow(
+        "This persistence does not support embed"
+      );
+    });
+
+    it("should return groups without embed when embedAll is called with no embed requested", async () => {
+      const groups: Group[] = [
+        {
+          id: "embed-test-3",
+          project: TEST_PROJECT_ID,
+          name: "Embed All Test",
+          contacts: [],
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        },
+      ];
+
+      const result = await persistence.embedAll(groups);
+
+      expect(result).toEqual(groups);
+    });
+
+    it("should throw error when embedAll is called with embed requested", async () => {
+      const groups: Group[] = [
+        {
+          id: "embed-test-4",
+          project: TEST_PROJECT_ID,
+          name: "Embed All Test 2",
+          contacts: [],
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        },
+      ];
+
+      await expect(persistence.embedAll(groups, ["actions"])).rejects.toThrow(
         "This persistence does not support embed"
       );
     });

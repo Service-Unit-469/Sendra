@@ -238,6 +238,31 @@ describe("EventPersistence", () => {
     });
   });
 
+  describe("update", () => {
+    it("should update event data using put", async () => {
+      const event = await persistence.create({
+        project: TEST_PROJECT_ID,
+        eventType: "update-test-event",
+        contact: "update-contact",
+        relation: "relation-1",
+        relationType: "ACTION",
+        data: { version: 1 },
+      });
+
+      const updated = await persistence.put({
+        ...event,
+        data: { version: 2, updated: true },
+        relationType: "CAMPAIGN",
+      });
+
+      expect(updated.data).toBeDefined();
+      expect(updated.data?.version).toBe(2);
+      expect(updated.data?.updated).toBe(true);
+      expect(updated.relationType).toBe("CAMPAIGN");
+      expect(updated.id).toBe(event.id);
+    });
+  });
+
   describe("embed", () => {
     it("should return events without embed when no embed requested", async () => {
       const events: Event[] = [
@@ -271,6 +296,135 @@ describe("EventPersistence", () => {
       await expect(() =>
         persistence.embed(events, ["actions"])
       ).rejects.toThrow("This persistence does not support embed");
+    });
+  });
+
+  describe("listAll", () => {
+    beforeAll(async () => {
+      // Create multiple events for listAll tests
+      for (let i = 1; i <= 5; i++) {
+        await persistence.create({
+          project: TEST_PROJECT_ID,
+          eventType: `listall-event-type-${i}`,
+          contact: `listall-contact-${i}`,
+          relation: `listall-relation-${i}`,
+          relationType: i % 2 === 0 ? "ACTION" : "CAMPAIGN",
+        });
+      }
+    });
+
+    it("should list all events without pagination", async () => {
+      const result = await persistence.listAll();
+
+      expect(Array.isArray(result)).toBe(true);
+      expect(result.length).toBeGreaterThanOrEqual(5);
+      expect(result.every((event: Event) => event.project === TEST_PROJECT_ID)).toBe(true);
+    });
+
+    it("should stop early when stop condition is met", async () => {
+      // Create events with specific ordering by creating them in sequence
+      const testEvents: Event[] = [];
+      for (let i = 1; i <= 10; i++) {
+        const event = await persistence.create({
+          project: TEST_PROJECT_ID,
+          eventType: `stop-test-event-${i}`,
+          contact: `stop-contact-${i}`,
+          relation: `stop-relation-${i}`,
+        });
+        testEvents.push(event);
+      }
+
+      // Stop after finding 3 events that match our criteria
+      let count = 0;
+      const result = await persistence.listAll({
+        stop: (event: Event) => {
+          if (event.eventType?.startsWith("stop-test-event-")) {
+            count++;
+            return count >= 3;
+          }
+          return false;
+        },
+      });
+
+      // Should have stopped early - at most 3 items matching our stop criteria
+      const matchingEvents = result.filter((e: Event) =>
+        e.eventType?.startsWith("stop-test-event-")
+      );
+      expect(matchingEvents.length).toBeLessThanOrEqual(3);
+    });
+
+    it("should return all items when stop condition is never met", async () => {
+      const result = await persistence.listAll({
+        stop: () => false, // Never stop
+      });
+
+      expect(Array.isArray(result)).toBe(true);
+      expect(result.length).toBeGreaterThan(0);
+    });
+
+    it("should stop immediately when stop condition is always true", async () => {
+      const result = await persistence.listAll({
+        stop: () => true, // Always stop
+      });
+
+      // Should return no items since we stop immediately
+      expect(Array.isArray(result)).toBe(true);
+      expect(result.length).toBe(0);
+    });
+
+    it("should work with complex stop conditions", async () => {
+      // Create events with specific event types
+      await persistence.create({
+        project: TEST_PROJECT_ID,
+        eventType: "critical-event",
+        contact: "critical-contact",
+        relation: "critical-relation",
+        relationType: "ACTION",
+      });
+
+      // Stop when we encounter a critical event
+      const result = await persistence.listAll({
+        stop: (event: Event) => event.eventType === "critical-event",
+      });
+
+      // Should not include the critical event itself
+      const hasCritical = result.some((e: Event) => e.eventType === "critical-event");
+      expect(hasCritical).toBe(false);
+    });
+
+    it("should handle listAll without any options", async () => {
+      const result = await persistence.listAll();
+
+      expect(Array.isArray(result)).toBe(true);
+      // Should have all the events we created in all tests
+      expect(result.length).toBeGreaterThan(0);
+    });
+
+    it("should handle pagination internally in listAll", async () => {
+      // Create many events to test pagination (more than the default page size of 100)
+      const manyEventsPromises = [];
+      for (let i = 1; i <= 25; i++) {
+        manyEventsPromises.push(
+          persistence.create({
+            project: TEST_PROJECT_ID,
+            eventType: `pagination-event-${i}`,
+            contact: `pagination-contact-${i}`,
+            relation: `pagination-relation-${i}`,
+          })
+        );
+      }
+      await Promise.all(manyEventsPromises);
+
+      const result = await persistence.listAll();
+
+      // Should have retrieved all events, including ones that might require pagination
+      expect(Array.isArray(result)).toBe(true);
+      expect(result.length).toBeGreaterThanOrEqual(25);
+      
+      const paginationEvents = result.filter((e: Event) =>
+        e.eventType?.startsWith("pagination-event-")
+      );
+      expect(paginationEvents.length).toBe(25);
     });
   });
 });

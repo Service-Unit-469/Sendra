@@ -1,6 +1,7 @@
 import type { Template } from "@sendra/shared";
 import { startupDynamoDB, stopDynamoDB } from "@sendra/test";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { ActionPersistence } from "../../src/persistence/ActionPersistence";
 import { TemplatePersistence } from "../../src/persistence/TemplatePersistence";
 
 const TEST_PROJECT_ID = "test-project-123";
@@ -207,6 +208,72 @@ describe("TemplatePersistence", () => {
       const result = await persistence.embed(templates);
 
       expect(result).toEqual(templates);
+    });
+
+    it("should embed actions when requested", async () => {
+      // Create a template
+      const template = await persistence.create({
+        project: TEST_PROJECT_ID,
+        subject: "Template with Actions",
+        body: "Test Body",
+        templateType: "MARKETING",
+      });
+
+      // Create actions associated with this template
+      const actionPersistence = new ActionPersistence(TEST_PROJECT_ID);
+      
+      const action1 = await actionPersistence.create({
+        project: TEST_PROJECT_ID,
+        name: "Action 1",
+        runOnce: false,
+        delay: 0,
+        template: template.id,
+        events: ["event-1"],
+        notevents: [],
+      });
+
+      const action2 = await actionPersistence.create({
+        project: TEST_PROJECT_ID,
+        name: "Action 2",
+        runOnce: true,
+        delay: 3600,
+        template: template.id,
+        events: ["event-2"],
+        notevents: [],
+      });
+
+      // Embed actions
+      const result = await persistence.embed([template], ["actions"]);
+
+      expect(result.length).toBe(1);
+      expect(result[0]._embed).toBeDefined();
+      expect(result[0]._embed?.actions).toBeDefined();
+      expect(result[0]._embed?.actions?.length).toBe(2);
+      
+      const actionIds = result[0]._embed?.actions?.map((a) => a.id).sort();
+      expect(actionIds).toEqual([action1.id, action2.id].sort());
+    });
+
+    it("should throw error when attempting to embed unsupported types", async () => {
+      const templates: Template[] = [
+        {
+          id: "embed-error-test",
+          project: TEST_PROJECT_ID,
+          subject: "Error Test",
+          body: "Body",
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          templateType: "MARKETING",
+        },
+      ];
+
+      await expect(persistence.embed(templates, ["emails"])).rejects.toThrow(
+        "Only actions are supported"
+      );
+
+      await expect(persistence.embed(templates, ["events"])).rejects.toThrow(
+        "Only actions are supported"
+      );
     });
   });
 });

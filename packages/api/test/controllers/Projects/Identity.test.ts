@@ -19,13 +19,16 @@ vi.mock("@aws-sdk/client-ses", async () => {
   const actual = await vi.importActual("@aws-sdk/client-ses");
   return {
     ...actual,
-    SES: vi.fn(() => ({
-      verifyEmailIdentity: vi.fn(),
-      verifyDomainDkim: vi.fn(),
-      setIdentityMailFromDomain: vi.fn(),
-      getIdentityVerificationAttributes: vi.fn(),
-      getIdentityDkimAttributes: vi.fn(),
-    })),
+    SES: vi.fn().mockImplementation(function () {
+      return {
+        verifyEmailIdentity: vi.fn(),
+        verifyDomainDkim: vi.fn(),
+        setIdentityMailFromDomain: vi.fn(),
+        getIdentityVerificationAttributes: vi.fn(),
+        getIdentityDkimAttributes: vi.fn(),
+        sendEmail: vi.fn(),
+      };
+    }),
   };
 });
 

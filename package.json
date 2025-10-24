@@ -24,17 +24,19 @@
     "test": "npm run test --workspaces --if-present",
     "typecheck": "npm run typecheck --workspaces"
   },
-	"workspaces": [
+  "workspaces": [
     "packages/test",
-		"packages/shared",
-		"packages/lib",
-		"packages/api",
-		"packages/subscribers",
-		"packages/dashboard",
-		"packages/cli"
-	],
+    "packages/shared",
+    "packages/lib",
+    "packages/api",
+    "packages/subscribers",
+    "packages/dashboard",
+    "packages/cli"
+  ],
   "dependencies": {
-    "sst": "3.17.14"
+    "@vitest/coverage-v8": "^4.0.2",
+    "sst": "3.17.14",
+    "vitest": "^4.0.2"
   },
   "overrides": {
     "uglify-js": "npm:dry-uninstall",
