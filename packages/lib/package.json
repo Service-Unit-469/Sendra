@@ -15,9 +15,7 @@
     "zod": "^4.1.11"
   },
   "devDependencies": {
-    "@sendra/test": "1.0.0",
-    "aws-dynamodb-local": "^0.0.11",
-    "pick-port": "^2.2.0",
+    "@sendra/test": "*",
     "typescript": "^5.5.3"
   },
   "scripts": {
