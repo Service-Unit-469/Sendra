@@ -61,7 +61,45 @@ describe("Info Endpoint Contract Tests", () => {
         clicks: expect.any(Array),
       });
 
+      expect(data.contacts.timeseries.length).toBe(7);
+    });
+
+    test("should return analytics with correct timeseries length for month period", async () => {
+      const { project, token } = await createTestSetup();
+
+      const response = await app.request(
+        `/projects/${project.id}/analytics?period=month`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      expect(response.status).toBe(200);
+
+      const data = await response.json();
       expect(data.contacts.timeseries.length).toBe(30);
+    });
+
+    test("should return analytics with correct timeseries length for year period", async () => {
+      const { project, token } = await createTestSetup();
+
+      const response = await app.request(
+        `/projects/${project.id}/analytics?period=year`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      expect(response.status).toBe(200);
+
+      const data = await response.json();
+      expect(data.contacts.timeseries.length).toBe(365);
     });
 
     test("should return analytics with contact data", async () => {

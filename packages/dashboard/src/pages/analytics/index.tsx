@@ -1,8 +1,10 @@
 import { Ring } from "@uiball/loaders";
 import dayjs from "dayjs";
 import { ArrowDown, ArrowUp } from "lucide-react";
+import { useState } from "react";
 import { Area, AreaChart, CartesianGrid, Cell, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { AnalyticsTabs, Card, FullscreenLoader } from "../../components";
+import { Dropdown } from "../../components/Input";
 import { Dashboard } from "../../layouts";
 import { useAnalytics } from "../../lib/hooks/analytics";
 import { useActiveProject } from "../../lib/hooks/projects";
@@ -34,7 +36,8 @@ export const valueFormatter = (number: number) => {
  */
 export default function Index() {
   const project = useActiveProject();
-  const { data: analytics } = useAnalytics();
+  const [period, setPeriod] = useState<"week" | "month" | "year">("week");
+  const { data: analytics } = useAnalytics(period);
 
   if (!project) {
     return <FullscreenLoader />;
@@ -42,7 +45,20 @@ export default function Index() {
 
   return (
     <Dashboard>
-      <AnalyticsTabs />
+      <div className={"mb-6 flex items-center justify-between"}>
+        <AnalyticsTabs />
+        <div className={"w-40"}>
+          <Dropdown
+            values={[
+              { name: "Week", value: "week" },
+              { name: "Month", value: "month" },
+              { name: "Year", value: "year" },
+            ]}
+            selectedValue={period}
+            onChange={(value) => setPeriod(value as "week" | "month" | "year")}
+          />
+        </div>
+      </div>
 
       <div className={"grid grid-cols-2 gap-6"}>
         <Card>
