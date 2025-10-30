@@ -1,1 +1,0 @@
-export { ContactMetadataForm } from "./ContactMetadataForm";

@@ -2,7 +2,9 @@ import type { ContactCreate } from "@sendra/shared";
 import { motion } from "framer-motion";
 import { Save } from "lucide-react";
 import { useState } from "react";
-import { ContactMetadataForm, Input, Toggle } from "../";
+import { ContactMetadataForm } from "../ContactMetadataForm/ContactMetadataForm";
+import Input from "../Input/Input/Input";
+import Toggle from "../Input/Toggle/Toggle";
 import { useContactForm } from "./useContactForm";
 
 export type ContactFormProps = {

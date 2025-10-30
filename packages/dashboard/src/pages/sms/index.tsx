@@ -1,6 +1,6 @@
 import GroupOrContacts from "dashboard/src/components/ContactSelector/GroupOrContacts";
 import { useState } from "react";
-import { Card } from "../../components";
+import Card from "../../components/Card/Card";
 import { Dashboard } from "../../layouts";
 
 /**

@@ -8,7 +8,8 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { FullscreenLoader, Redirect } from "../../components";
+import FullscreenLoader from "../../components/Utility/FullscreenLoader/FullscreenLoader";
+import Redirect from "../../components/Utility/Redirect/Redirect";
 import { useUser } from "../../lib/hooks/users";
 import { network } from "../../lib/network";
 

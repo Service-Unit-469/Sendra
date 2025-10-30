@@ -44,7 +44,11 @@ export default function Table({ values }: TableProps) {
                         }
 
                         if (typeof value[1] === "boolean") {
-                          return <td className="whitespace-nowrap px-6 py-4 text-sm text-neutral-500">{value[1] ? <Check size={18} /> : <X size={18} />}</td>;
+                          return (
+                            <td className="whitespace-nowrap px-6 py-4 text-sm text-neutral-500 flex justify-center">
+                              {value[1] ? <Check size={18} className="text-green-500" /> : <X size={18} className="text-red-500" />}
+                            </td>
+                          );
                         }
                         return (
                           <td className="whitespace-nowrap px-6 py-4 text-sm text-neutral-500" key={`${value[0]}-${value[1]}`}>

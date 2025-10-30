@@ -6,7 +6,16 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import z from "zod";
-import { Badge, BlackButton, Card, Dropdown, Empty, ErrorAlert, FullscreenLoader, Input, MenuButton, Modal, Skeleton } from "../../components";
+import { ErrorAlert } from "../../components/Alert/ErrorAlert";
+import Badge from "../../components/Badge/Badge";
+import { BlackButton } from "../../components/Buttons/BlackButton";
+import Card from "../../components/Card/Card";
+import Dropdown from "../../components/Input/Dropdown/Dropdown";
+import Input from "../../components/Input/Input/Input";
+import Modal from "../../components/Overlay/Modal/Modal";
+import Skeleton from "../../components/Skeleton/Skeleton";
+import Empty from "../../components/Utility/Empty/Empty";
+import FullscreenLoader from "../../components/Utility/FullscreenLoader/FullscreenLoader";
 import { Dashboard } from "../../layouts";
 import { useCampaignsWithEmails } from "../../lib/hooks/campaigns";
 import { useActiveProject } from "../../lib/hooks/projects";
@@ -104,10 +113,10 @@ export default function Index() {
         title="Campaigns"
         description="Send your contacts emails in bulk with a few clicks"
         actions={
-          <MenuButton>
+          <BlackButton>
             <Plus strokeWidth={1.5} size={18} />
             New
-          </MenuButton>
+          </BlackButton>
         }
       >
         {campaigns ? (

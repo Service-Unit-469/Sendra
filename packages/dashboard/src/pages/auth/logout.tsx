@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { useEffect } from "react";
-import { FullscreenLoader } from "../../components/";
+import FullscreenLoader from "../../components/Utility/FullscreenLoader/FullscreenLoader";
 import { TOKEN_KEY } from "../../lib/constants";
 import { useUser } from "../../lib/hooks/users";
 

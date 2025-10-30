@@ -3,7 +3,7 @@ import { Ring } from "@uiball/loaders";
 import { AnimatePresence, motion } from "framer-motion";
 import { Search, Users2, XIcon } from "lucide-react";
 import { useState } from "react";
-import { MultiselectDropdown } from "../Input";
+import MultiselectDropdown from "../Input/MultiselectDropdown/MultiselectDropdown";
 import ContactFilterForm from "./ContactFilterForm";
 
 export default function ContactSelector({

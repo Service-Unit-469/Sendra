@@ -7,7 +7,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { FullscreenLoader } from "../../components";
+import FullscreenLoader from "../../components/Utility/FullscreenLoader/FullscreenLoader";
 import { network } from "../../lib/network";
 
 /**

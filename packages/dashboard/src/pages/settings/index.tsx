@@ -1,4 +1,4 @@
-import { Redirect } from "../../components";
+import Redirect from "../../components/Utility/Redirect/Redirect";
 
 /**
  *

@@ -1,7 +1,13 @@
 import dayjs from "dayjs";
 import { Book, Eye, Frown, Globe, LineChart, LineChartIcon, Send } from "lucide-react";
 import Link from "next/link";
-import { Badge, Card, Empty, FullscreenLoader, Redirect, Skeleton, Table } from "../components";
+import Badge from "../components/Badge/Badge";
+import Card from "../components/Card/Card";
+import Skeleton from "../components/Skeleton/Skeleton";
+import Table from "../components/Table/Table";
+import Empty from "../components/Utility/Empty/Empty";
+import FullscreenLoader from "../components/Utility/FullscreenLoader/FullscreenLoader";
+import Redirect from "../components/Utility/Redirect/Redirect";
 import { Dashboard } from "../layouts";
 import { useActiveProject, useActiveProjectFeed, useActiveProjectIdentity, useProjects } from "../lib/hooks/projects";
 

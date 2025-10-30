@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { type ReactElement, useState } from "react";
 import SendraLogo from "../../../icons/SendraLogo";
-import { ProjectSelector } from "../../index";
+import ProjectSelector from "../ProjectSelector/ProjectSelector";
 
 interface SidebarLinkType {
   to: string;

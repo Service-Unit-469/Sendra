@@ -1,7 +1,7 @@
 import type { Contact } from "@sendra/shared";
 import { Trash } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { Dropdown } from "../Dropdown";
+import Dropdown from "../Dropdown/Dropdown";
 import { type Condition, conditions, type MetadataFilterType } from "./types";
 
 /**

@@ -1,7 +1,10 @@
 import { RefreshCw } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Card, FullscreenLoader, Modal, SettingTabs } from "../../components";
+import Card from "../../components/Card/Card";
+import SettingTabs from "../../components/Navigation/SettingTabs/SettingTabs";
+import Modal from "../../components/Overlay/Modal/Modal";
+import FullscreenLoader from "../../components/Utility/FullscreenLoader/FullscreenLoader";
 import { Dashboard } from "../../layouts";
 import { API_URI } from "../../lib/constants";
 import { useActiveProject, useActiveProjectKeys } from "../../lib/hooks/projects";

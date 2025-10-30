@@ -3,7 +3,9 @@ import { Menu } from "lucide-react";
 import { useRouter } from "next/router";
 import type React from "react";
 import { useState } from "react";
-import { FullscreenLoader, Redirect, Sidebar } from "../components";
+import Sidebar from "../components/Navigation/Sidebar/Sidebar";
+import FullscreenLoader from "../components/Utility/FullscreenLoader/FullscreenLoader";
+import Redirect from "../components/Utility/Redirect/Redirect";
 import { useActiveProject, useProjects } from "../lib/hooks/projects";
 import { useUser } from "../lib/hooks/users";
 

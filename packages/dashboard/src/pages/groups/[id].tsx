@@ -1,7 +1,10 @@
 import { Trash } from "lucide-react";
 import { useRouter } from "next/router";
 import { toast } from "sonner";
-import { Card, FullscreenLoader, GroupForm, MenuButton } from "../../components";
+import { MenuButton } from "../../components/Buttons/MenuButton";
+import Card from "../../components/Card/Card";
+import { GroupForm } from "../../components/GroupForm/Form";
+import FullscreenLoader from "../../components/Utility/FullscreenLoader/FullscreenLoader";
 import { Dashboard } from "../../layouts";
 import { useGroup } from "../../lib/hooks/groups";
 import { useActiveProject } from "../../lib/hooks/projects";

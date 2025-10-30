@@ -2,9 +2,11 @@ import type { Contact } from "@sendra/shared";
 import { motion } from "framer-motion";
 import { Plus } from "lucide-react";
 import { useMemo, useState } from "react";
-import { MetadataFilterEditor, type MetadataFilterGroupType, Skeleton } from "../../components";
 import { useEventTypes } from "../../lib/hooks/events";
 import { useActiveProject } from "../../lib/hooks/projects";
+import MetadataFilterEditor from "../Input/MetadataFilter/Editor";
+import type { MetadataFilterGroupType } from "../Input/MetadataFilter/types";
+import Skeleton from "../Skeleton/Skeleton";
 import useFilterContacts from "./filter";
 
 /**

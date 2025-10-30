@@ -14,7 +14,8 @@ import "nprogress/nprogress.css";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 import duration from "dayjs/plugin/duration";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { FullscreenLoader, Redirect } from "../components";
+import FullscreenLoader from "../components/Utility/FullscreenLoader/FullscreenLoader";
+import Redirect from "../components/Utility/Redirect/Redirect";
 import { NO_AUTH_ROUTES } from "../lib/constants";
 import { useUser } from "../lib/hooks/users";
 

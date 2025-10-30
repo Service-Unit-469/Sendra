@@ -5,11 +5,12 @@ import { Save } from "lucide-react";
 import { useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { ContactSelector } from "../../components/ContactSelector";
 import { useAllContacts } from "../../lib/hooks/contacts";
 import { useActiveProject } from "../../lib/hooks/projects";
 import { network } from "../../lib/network";
-import { Input, Skeleton } from "../";
+import ContactSelector from "../ContactSelector/ContactSelector";
+import Input from "../Input/Input/Input";
+import Skeleton from "../Skeleton/Skeleton";
 
 export type GroupFormProps = {
   groupId?: string;

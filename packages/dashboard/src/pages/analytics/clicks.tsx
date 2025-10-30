@@ -1,6 +1,8 @@
 import { Ring } from "@uiball/loaders";
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-import { AnalyticsTabs, Card, FullscreenLoader } from "../../components";
+import Card from "../../components/Card/Card";
+import AnalyticsTabs from "../../components/Navigation/AnalyticsTabs/AnalyticsTabs";
+import FullscreenLoader from "../../components/Utility/FullscreenLoader/FullscreenLoader";
 import { Dashboard } from "../../layouts";
 import { useAnalytics } from "../../lib/hooks/analytics";
 import { useActiveProject } from "../../lib/hooks/projects";

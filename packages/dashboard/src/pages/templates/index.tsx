@@ -2,7 +2,10 @@ import dayjs from "dayjs";
 import { motion } from "framer-motion";
 import { Edit3, LayoutTemplate, Plus } from "lucide-react";
 import Link from "next/link";
-import { Badge, Card, Empty, Skeleton } from "../../components";
+import Badge from "../../components/Badge/Badge";
+import Card from "../../components/Card/Card";
+import Skeleton from "../../components/Skeleton/Skeleton";
+import Empty from "../../components/Utility/Empty/Empty";
 import { Dashboard } from "../../layouts";
 import { useTemplates } from "../../lib/hooks/templates";
 
