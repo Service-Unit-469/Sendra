@@ -1,4 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
+import { Check } from "lucide-react";
 import React, { type MutableRefObject, useEffect, useState } from "react";
 
 export interface Dropdownprops {
@@ -143,9 +144,7 @@ export default function Dropdown({ onChange, values, selectedValue, className, w
                           <span className="truncate">{value.name.charAt(0).toUpperCase() + value.name.slice(1).toLowerCase()}</span>
                           {value.value === selectedValue ? (
                             <span className="absolute inset-y-0 right-0 flex items-center pr-3 text-neutral-800">
-                              <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                              </svg>
+                              <Check size={18} />
                             </span>
                           ) : null}
                         </li>

@@ -8,7 +8,7 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { Card, Dropdown, FullscreenLoader, Input, Toggle, Tooltip } from "../../components";
+import { Card, Dropdown, ErrorAlert, FullscreenLoader, Input, MenuButton, Toggle, Tooltip } from "../../components";
 import { EmailEditor } from "../../components/EmailEditor";
 import { Dashboard } from "../../layouts";
 import { useActiveProject, useActiveProjectIdentity } from "../../lib/hooks/projects";
@@ -158,14 +158,14 @@ export default function Index() {
         title="Update your template"
         options={
           <>
-            <button onClick={duplicate} className="flex w-full items-center gap-2 px-4 py-2 text-sm text-neutral-700 transition hover:bg-neutral-100" role="menuitem" tabIndex={-1}>
-              <Copy />
+            <MenuButton onClick={duplicate}>
+              <Copy size={18} />
               Duplicate
-            </button>
-            <button onClick={remove} className="flex w-full items-center gap-2 px-4 py-2 text-sm text-neutral-700 transition hover:bg-neutral-100" role="menuitem" tabIndex={-1}>
-              <Trash />
+            </MenuButton>
+            <MenuButton onClick={remove}>
+              <Trash size={18} />
               Delete
-            </button>
+            </MenuButton>
           </>
         }
       >
@@ -196,13 +196,6 @@ export default function Index() {
                     </ul>
                   </>
                 }
-                icon={
-                  <>
-                    <path d="M12 16v.01" />
-                    <path d="M12 13a2.003 2.003 0 0 0 .914 -3.782a1.98 1.98 0 0 0 -2.414 .483" />
-                    <circle cx="12" cy="12" r="9" />
-                  </>
-                }
               />
             </label>
             <Dropdown
@@ -213,13 +206,7 @@ export default function Index() {
               ]}
               selectedValue={watch("templateType") ?? ""}
             />
-            <AnimatePresence>
-              {errors.templateType?.message && (
-                <motion.p initial={{ height: 0 }} animate={{ height: "auto" }} exit={{ height: 0 }} className="mt-1 text-xs text-red-500">
-                  {errors.templateType.message}
-                </motion.p>
-              )}
-            </AnimatePresence>
+            <ErrorAlert message={errors.templateType?.message} />
           </div>
 
           <div className={"sm:col-span-6"}>
@@ -235,21 +222,12 @@ export default function Index() {
                 <Tooltip
                   content={
                     <>
-                      <p className={"mb-2 text-base font-semibold"}>What is a Quick Email Template?</p>
-                      <p className={"text-sm"}>
-                        Quick email templates allow you to create campaigns with a simple text editor instead of the full MJML editor.
+                      <p className="mb-2 text-base font-semibold">What is a Quick Email Template?</p>
+                      <p className="text-sm">
+                        Quick email templates allow you to create campaigns with a simple text editor instead of the full editor.
                         <br />
-                        <br />
-                        Include <code className="bg-neutral-700 px-1 rounded">{"{{quickBody}}"}</code> or <code className="bg-neutral-700 px-1 rounded">{"{{{quickBody}}}"}</code> in your template
-                        where you want the campaign body to be inserted.
+                        Include <code>{"{{quickBody}}"}</code> or <code>{"{{{quickBody}}}"}</code> in your template where you want the campaign body to be inserted.
                       </p>
-                    </>
-                  }
-                  icon={
-                    <>
-                      <path d="M12 16v.01" />
-                      <path d="M12 13a2.003 2.003 0 0 0 .914 -3.782a1.98 1.98 0 0 0 -2.414 .483" />
-                      <circle cx="12" cy="12" r="9" />
                     </>
                   }
                 />

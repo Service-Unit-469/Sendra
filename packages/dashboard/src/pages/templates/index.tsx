@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import { motion } from "framer-motion";
-import { LayoutTemplate, Plus } from "lucide-react";
+import { Edit3, LayoutTemplate, Plus } from "lucide-react";
 import Link from "next/link";
 import { Badge, Card, Empty, Skeleton } from "../../components";
 import { Dashboard } from "../../layouts";
@@ -67,16 +67,7 @@ export default function Index() {
                               href={`/templates/${t.id}`}
                               className="relative -mr-px inline-flex w-0 flex-1 items-center justify-center rounded-bl border border-transparent py-4 text-sm font-medium text-neutral-800 transition hover:bg-neutral-50 hover:text-neutral-700"
                             >
-                              <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                <path
-                                  stroke="currentColor"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth="1.5"
-                                  d="M4.75 19.25L9 18.25L18.2929 8.95711C18.6834 8.56658 18.6834 7.93342 18.2929 7.54289L16.4571 5.70711C16.0666 5.31658 15.4334 5.31658 15.0429 5.70711L5.75 15L4.75 19.25Z"
-                                />
-                                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19.25 19.25H13.75" />
-                              </svg>
+                              <Edit3 size={18} />
 
                               <span className="ml-3">Edit</span>
                             </Link>

@@ -1,4 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
+import { EllipsisVertical } from "lucide-react";
 import React, { type MutableRefObject, useEffect, useState } from "react";
 
 export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -61,9 +62,7 @@ export default function Card({ title, description, children, className, actions,
               >
                 <span className="sr-only">Open options</span>
 
-                <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                  <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
-                </svg>
+                <EllipsisVertical size={18} />
               </button>
             </div>
 

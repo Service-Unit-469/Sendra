@@ -1,10 +1,9 @@
 import { useAllGroups } from "dashboard/src/lib/hooks/groups";
 import dayjs from "dayjs";
-import { motion } from "framer-motion";
 import { Edit2, Plus } from "lucide-react";
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { Card, Empty, FullscreenLoader, GroupForm, Modal, Skeleton, Table } from "../../components";
+import { BlackButton, Card, Empty, FullscreenLoader, GroupForm, Modal, Skeleton, Table } from "../../components";
 import { Dashboard } from "../../layouts";
 import { useActiveProject } from "../../lib/hooks/projects";
 import { useUser } from "../../lib/hooks/users";
@@ -61,15 +60,10 @@ export default function Index() {
                 value={query}
                 className="rounded border-neutral-300 transition ease-in-out focus:border-neutral-800 focus:ring-neutral-800 sm:text-sm"
               />
-              <motion.button
-                onClick={() => setGroupModal(true)}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.9 }}
-                className={"flex items-center justify-center gap-x-1 rounded bg-neutral-800 px-8 py-2 text-center text-sm font-medium text-white"}
-              >
+              <BlackButton onClick={() => setGroupModal(true)}>
                 <Plus strokeWidth={1.5} size={18} />
                 New
-              </motion.button>
+              </BlackButton>
             </div>
           }
         >

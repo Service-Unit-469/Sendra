@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useAtom } from "jotai";
+import { Check } from "lucide-react";
 import { useRouter } from "next/router";
 import React, { type MutableRefObject, useEffect } from "react";
 import { atomActiveProject } from "../../../lib/atoms/project";
@@ -101,9 +102,7 @@ const ProjectSelector = React.forwardRef<HTMLDivElement, ProjectSelectorProps>((
                         <span className={`${project.id === activeProject?.id ? "font-medium" : "font-normal"} flex items-center truncate`}>{project.name}</span>
                         {project.id === activeProject?.id ? (
                           <span className="absolute inset-y-0 right-0 flex items-center pr-4 text-neutral-800">
-                            <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                            </svg>
+                            <Check size={18} />
                           </span>
                         ) : null}
                       </li>

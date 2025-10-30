@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { Home, LayoutTemplate, LineChart, LogOut, Send, Settings, TerminalSquare, User, Users2, Workflow } from "lucide-react";
+import { Home, LayoutTemplate, LineChart, LogOut, Send, Settings, TerminalSquare, User, Users2, Workflow, X } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { type ReactElement, useState } from "react";
@@ -170,9 +170,7 @@ export default function Sidebar({ mobileOpen, onSidebarVisibilityChange }: Sideb
                   onClick={() => onSidebarVisibilityChange()}
                 >
                   <span className="sr-only">Close sidebar</span>
-                  <svg className="h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
+                  <X />
                 </button>
               </div>
 

@@ -1,4 +1,5 @@
 import type { Contact } from "@sendra/shared";
+import { Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import Toggle from "../Toggle/Toggle";
 import Filter from "./Filter";
@@ -53,10 +54,7 @@ export default function MetadataFilterEditor({ onChange, contacts }: { onChange:
             "mt-6 flex items-center justify-center gap-x-1 rounded border border-neutral-300 bg-white px-8 py-1 text-center text-sm font-medium text-neutral-800 transition ease-in-out hover:bg-neutral-100"
           }
         >
-          <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
-            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 5.75V18.25" />
-            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M18.25 12L5.75 12" />
-          </svg>
+          <Plus size={18} />
           Add filter
         </button>
       </div>

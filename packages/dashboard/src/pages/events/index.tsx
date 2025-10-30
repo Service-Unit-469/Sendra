@@ -1,13 +1,12 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { EventSchemas } from "@sendra/shared";
 import dayjs from "dayjs";
-import { motion } from "framer-motion";
 import { Plus, TerminalSquare } from "lucide-react";
 import { useCallback, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Area, AreaChart, ResponsiveContainer, YAxis } from "recharts";
 import { toast } from "sonner";
-import { Badge, Card, Empty, FullscreenLoader, Input, Modal, Skeleton, Table } from "../../components";
+import { Badge, BlackButton, Card, Empty, FullscreenLoader, Input, Modal, Skeleton, Table } from "../../components";
 import { Dashboard } from "../../layouts";
 import { useAllContacts } from "../../lib/hooks/contacts";
 import { type EventType, useEventTypesWithEvents } from "../../lib/hooks/events";
@@ -85,16 +84,11 @@ export default function Index() {
         isOpen={eventModal}
         onToggle={() => setEventModal(!eventModal)}
         onAction={handleSubmit(create)}
-        type={"info"}
-        action={"Trigger"}
-        title={"Create a new event"}
-        description={"Trigger a new event to send out emails to your contacts"}
-        icon={
-          <>
-            <rect strokeWidth={2} width="14.5" height="14.5" x="4.75" y="4.75" rx="2" />
-            <path strokeWidth={2} d="M8.75 10.75L11.25 13L8.75 15.25" />
-          </>
-        }
+        type="info"
+        action="Trigger"
+        title="Create a new event"
+        description="Trigger a new event to send out emails to your contacts"
+        icon={<TerminalSquare />}
       >
         <Input register={register("event")} label={"Event"} placeholder={"user-signup"} error={errors.event} />
       </Modal>
@@ -104,15 +98,10 @@ export default function Index() {
           title={"Events"}
           description={"View the events your application has sent to Sendra"}
           actions={
-            <motion.button
-              onClick={() => setEventModal(true)}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.9 }}
-              className={"flex items-center gap-x-1 rounded bg-neutral-800 px-8 py-2 text-center text-sm font-medium text-white"}
-            >
+            <BlackButton onClick={() => setEventModal(true)}>
               <Plus strokeWidth={1.5} size={18} />
               New
-            </motion.button>
+            </BlackButton>
           }
         >
           {eventTypes && contacts ? (
@@ -228,7 +217,7 @@ export default function Index() {
             <Skeleton type={"table"} />
           )}
         </Card>
-        <Card title={"Template events"} description={"Events linked to your templates"}>
+        <Card title="Template events" description="Events linked to your templates">
           {eventTypes && contacts ? (
             eventTypes.length > 0 ? (
               <Table

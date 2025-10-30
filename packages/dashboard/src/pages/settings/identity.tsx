@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { IdentitySchemas, type ProjectIdentity } from "@sendra/shared";
 import { motion } from "framer-motion";
-import { Copy, Unlink } from "lucide-react";
+import { Copy, Plus, Unlink } from "lucide-react";
 import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -269,10 +269,7 @@ export default function Index() {
               whileTap={{ scale: 0.9 }}
               className={"ml-auto flex items-center gap-x-0.5 rounded bg-neutral-800 px-8 py-2 text-center text-sm font-medium text-white"}
             >
-              <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
-                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 5.75V18.25" />
-                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M18.25 12L5.75 12" />
-              </svg>
+              <Plus size={18} />
               Verify identity
             </motion.button>
           </form>

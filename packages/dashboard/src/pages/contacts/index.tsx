@@ -1,9 +1,8 @@
 import dayjs from "dayjs";
-import { motion } from "framer-motion";
 import { Edit2, Plus } from "lucide-react";
 import Link from "next/link";
 import { useCallback, useMemo, useState } from "react";
-import { Card, ContactForm, Dropdown, Empty, FullscreenLoader, Modal, Skeleton, Table } from "../../components";
+import { BlackButton, Card, ContactForm, Dropdown, Empty, FullscreenLoader, Modal, Skeleton, Table } from "../../components";
 import { Dashboard } from "../../layouts";
 import { useContacts } from "../../lib/hooks/contacts";
 import { useActiveProject } from "../../lib/hooks/projects";
@@ -136,16 +135,10 @@ export default function Index() {
                 ]}
                 selectedValue={statusFilter}
               />
-
-              <motion.button
-                onClick={() => setContactModal(true)}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.9 }}
-                className={"flex items-center justify-center gap-x-1 rounded bg-neutral-800 px-8 py-2 text-center text-sm font-medium text-white"}
-              >
+              <BlackButton onClick={() => setContactModal(true)}>
                 <Plus strokeWidth={1.5} size={18} />
                 New
-              </motion.button>
+              </BlackButton>
             </div>
           }
         >
