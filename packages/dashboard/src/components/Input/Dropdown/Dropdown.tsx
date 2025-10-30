@@ -12,6 +12,7 @@ export interface Dropdownprops {
   }[];
   selectedValue: string;
   className?: string;
+  ariaLabel?: string;
 }
 
 /**
@@ -24,7 +25,7 @@ export interface Dropdownprops {
  * @param root0.inModal
  * @param root0.disabled
  */
-export default function Dropdown({ onChange, values, selectedValue, className, withSearch = false, inModal = false, disabled = false }: Dropdownprops) {
+export default function Dropdown({ onChange, values, selectedValue, className, withSearch = false, inModal = false, disabled = false, ariaLabel = "Select a value" }: Dropdownprops) {
   const [open, setOpen] = useState(false);
   const ref = React.createRef<HTMLDivElement>();
 
@@ -56,7 +57,7 @@ export default function Dropdown({ onChange, values, selectedValue, className, w
           } relative w-full rounded border border-neutral-300 py-2 pl-3 pr-10 text-left focus:border-neutral-500 focus:outline-none focus:ring-1 focus:ring-neutral-500 sm:text-sm`}
           aria-haspopup="listbox"
           aria-expanded="true"
-          aria-labelledby="listbox-label"
+          aria-label={ariaLabel}
           onClick={() => {
             if (!disabled) {
               setOpen(!open);

@@ -10,7 +10,14 @@
 		"typecheck": "tsc --noEmit",
 		"build": "next build",
 		"start": "next start",
-		"clean": "rimraf .next node_modules .turbo"
+		"test": "vitest run",
+		"test:watch": "vitest",
+		"test:ui": "vitest --ui",
+		"test:coverage": "vitest run --coverage",
+		"test:e2e": "playwright test",
+		"test:e2e:ui": "playwright test --ui",
+		"test:e2e:headed": "playwright test --headed",
+		"clean": "rimraf .next node_modules .turbo .open-next"
 	},
 	"dependencies": {
 		"@grapesjs/react": "^1.0.0",
@@ -47,15 +54,24 @@
 		"zod": "^4.1.11"
 	},
 	"devDependencies": {
+		"@playwright/test": "^1.48.0",
 		"@tailwindcss/aspect-ratio": "^0.4.2",
 		"@tailwindcss/forms": "^0.5.7",
 		"@tailwindcss/typography": "^0.5.13",
+		"@testing-library/jest-dom": "^6.5.0",
+		"@testing-library/react": "^16.0.0",
+		"@testing-library/user-event": "^14.5.0",
+		"@types/dompurify": "^3.2.0",
 		"@types/node": "20.14.11",
 		"@types/nprogress": "^0.2.3",
 		"@types/react": "18.3.3",
 		"@types/react-dom": "18.3.3",
 		"@types/react-window": "^1",
+		"@vitejs/plugin-react": "^4.3.0",
 		"autoprefixer": "^10.4.19",
+		"jest-axe": "^9.0.0",
+		"jsdom": "^25.0.0",
+		"msw": "^2.6.0",
 		"postcss": "^8.4.39",
 		"tailwindcss": "^3.4.6",
 		"typescript": "5.9.3"

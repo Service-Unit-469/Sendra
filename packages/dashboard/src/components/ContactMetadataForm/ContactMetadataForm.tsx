@@ -35,11 +35,9 @@ export function ContactMetadataForm({ initialData = {}, onDataChange, className 
 
   return (
     <div className={className}>
-      <div className={"grid sm:col-span-2"}>
-        <div className={"grid items-center gap-3 sm:grid-cols-9"}>
-          <label htmlFor={"data"} className="block text-sm font-medium text-neutral-700 sm:col-span-8">
-            Metadata
-          </label>
+      <div className="grid sm:col-span-2">
+        <div className="grid items-center gap-3 sm:grid-cols-9">
+          <h5 className="block text-sm font-medium text-neutral-700 sm:col-span-8">Metadata</h5>
           <button
             onClick={(e) => {
               e.preventDefault();
@@ -59,33 +57,34 @@ export function ContactMetadataForm({ initialData = {}, onDataChange, className 
             return (
               <div key={field.id}>
                 <div className="grid w-full grid-cols-9 items-end gap-3">
-                  <div className={"col-span-4"}>
-                    <label htmlFor={"data"} className="text-xs font-light">
+                  <div className="col-span-4">
+                    <label className="text-xs font-light">
                       Key
+                      <input
+                        type={"text"}
+                        placeholder={"Key"}
+                        className={"block w-full rounded border-neutral-300 transition ease-in-out focus:border-neutral-800 focus:ring-neutral-800 sm:text-sm"}
+                        key={field.id}
+                        {...register(`data.${index}.value.key`)}
+                      />
                     </label>
-                    <input
-                      type={"text"}
-                      placeholder={"Key"}
-                      className={"block w-full rounded border-neutral-300 transition ease-in-out focus:border-neutral-800 focus:ring-neutral-800 sm:text-sm"}
-                      key={field.id}
-                      {...register(`data.${index}.value.key`)}
-                    />
                   </div>
 
-                  <div className={"col-span-4"}>
-                    <label htmlFor={"data"} className="text-xs font-light">
+                  <div className="col-span-4">
+                    <label className="text-xs font-light">
                       Value
+                      <input
+                        type={"text"}
+                        placeholder={"Value"}
+                        className={"block w-full rounded border-neutral-300 transition ease-in-out focus:border-neutral-800 focus:ring-neutral-800 sm:text-sm"}
+                        key={field.id}
+                        {...register(`data.${index}.value.value`)}
+                      />
                     </label>
-                    <input
-                      type={"text"}
-                      placeholder={"Value"}
-                      className={"block w-full rounded border-neutral-300 transition ease-in-out focus:border-neutral-800 focus:ring-neutral-800 sm:text-sm"}
-                      key={field.id}
-                      {...register(`data.${index}.value.value`)}
-                    />
                   </div>
                   <button
-                    className={"col-span-1 flex h-10 items-center justify-center rounded bg-red-100 text-sm text-red-800 transition hover:bg-red-200"}
+                    className="col-span-1 flex h-10 items-center justify-center rounded bg-red-100 text-sm text-red-800 transition hover:bg-red-200"
+                    aria-label="Remove field"
                     onClick={(e) => {
                       e.preventDefault();
                       fieldRemove(index);

@@ -18,15 +18,15 @@ export default $config({
   async run() {
     
     const web =  await import("./infra/web");
-    const emailTopic =  await import("./infra/email-topic");
-    const taskQueue =  await import("./infra/task-queue");
+    await import("./infra/email-topic");
+    await import("./infra/task-queue");
     const {api} =  await import("./infra/api");
+    const {dynamo} =  await import("./infra/dynamo");
     
     return {
-      emailTopic,
-      taskQueue,
       api,
       web,
+      dynamo,
     };
   },
 });

@@ -21,3 +21,12 @@ coverage/
 
 tsconfig.tsbuildinfo
 .cursor/
+
+playwright-report/
+test-results/
+
+# Playwright
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/

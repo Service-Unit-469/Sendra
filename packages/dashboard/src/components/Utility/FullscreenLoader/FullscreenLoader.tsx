@@ -15,7 +15,7 @@ export default function FullscreenLoader() {
         </h1>
         <p className={"text-center text-sm text-neutral-600"}>Does this take longer than expected? Try clearing your browser's cache or check if you have an ad blocker enabled!</p>
         <div className={"mt-6"}>
-          <LineWobble size={200} color={"#262626"} />
+          <LineWobble size={200} color={"#262626"} aria-role="progressbar" aria-label="Loading..." />
         </div>
       </div>
     </div>

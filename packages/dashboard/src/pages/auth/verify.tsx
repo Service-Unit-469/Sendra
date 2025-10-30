@@ -88,18 +88,18 @@ export default function Index() {
             <div className="rounded border border-neutral-200 bg-white px-4 py-8 sm:px-10">
               <form onSubmit={handleSubmit(signup)} className="space-y-6">
                 <div>
-                  <label htmlFor={"email"} className="block text-sm font-medium text-neutral-700">
+                  <label className="block text-sm font-medium text-neutral-700">
                     Your Email
+                    <div className="mt-1">
+                      <input
+                        type={"email"}
+                        className={"block w-full rounded border-neutral-300 transition ease-in-out focus:border-neutral-800 focus:ring-neutral-800 sm:text-sm"}
+                        autoComplete={"email"}
+                        placeholder={"hello@email.com"}
+                        {...register("email")}
+                      />
+                    </div>
                   </label>
-                  <div className="mt-1">
-                    <input
-                      type={"email"}
-                      className={"block w-full rounded border-neutral-300 transition ease-in-out focus:border-neutral-800 focus:ring-neutral-800 sm:text-sm"}
-                      autoComplete={"email"}
-                      placeholder={"hello@email.com"}
-                      {...register("email")}
-                    />
-                  </div>
                   <AnimatePresence>
                     {errors.email?.message && (
                       <motion.p initial={{ height: 0 }} animate={{ height: "auto" }} exit={{ height: 0 }} className="mt-1 text-xs text-red-500">
@@ -110,17 +110,17 @@ export default function Index() {
                 </div>
 
                 <div>
-                  <label htmlFor={"code"} className="block text-sm font-medium text-neutral-700">
+                  <label className="block text-sm font-medium text-neutral-700">
                     Verification Code
+                    <div className="mt-1">
+                      <input
+                        type={"text"}
+                        className={"block w-full rounded border-neutral-300 transition ease-in-out focus:border-neutral-800 focus:ring-neutral-800 sm:text-sm"}
+                        autoComplete={"off"}
+                        {...register("code")}
+                      />
+                    </div>
                   </label>
-                  <div className="mt-1">
-                    <input
-                      type={"text"}
-                      className={"block w-full rounded border-neutral-300 transition ease-in-out focus:border-neutral-800 focus:ring-neutral-800 sm:text-sm"}
-                      autoComplete={"off"}
-                      {...register("code")}
-                    />
-                  </div>
                   <AnimatePresence>
                     {errors.code?.message && (
                       <motion.p initial={{ height: 0 }} animate={{ height: "auto" }} exit={{ height: 0 }} className="mt-1 text-xs text-red-500">
@@ -146,13 +146,6 @@ export default function Index() {
                       "Verify Account"
                     )}
                   </motion.button>
-                  <AnimatePresence>
-                    {errors.email?.message && (
-                      <motion.p initial={{ height: 0 }} animate={{ height: "auto" }} exit={{ height: 0 }} className="mt-1 text-xs text-red-500">
-                        {errors.email.message}
-                      </motion.p>
-                    )}
-                  </AnimatePresence>
                 </div>
               </form>
             </div>

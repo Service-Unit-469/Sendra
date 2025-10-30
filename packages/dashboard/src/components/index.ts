@@ -1,5 +1,6 @@
 export * from "./Alert";
 export * from "./Badge";
+export * from "./Buttons";
 export * from "./Card";
 export * from "./ContactForm";
 export * from "./ContactMetadataForm";

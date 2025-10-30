@@ -78,18 +78,18 @@ export default function Index() {
             <div className="rounded border border-neutral-200 bg-white px-4 py-8 sm:px-10">
               <form onSubmit={handleSubmit(resetPassword)} className="space-y-6">
                 <div>
-                  <label htmlFor={"email"} className="block text-sm font-medium text-neutral-700">
+                  <label className="block text-sm font-medium text-neutral-700">
                     Your Email
+                    <div className="mt-1">
+                      <input
+                        type={"email"}
+                        className={"block w-full rounded border-neutral-300 transition ease-in-out focus:border-neutral-800 focus:ring-neutral-800 sm:text-sm"}
+                        autoComplete={"email"}
+                        placeholder={"hello@email.com"}
+                        {...register("email")}
+                      />
+                    </div>
                   </label>
-                  <div className="mt-1">
-                    <input
-                      type={"email"}
-                      className={"block w-full rounded border-neutral-300 transition ease-in-out focus:border-neutral-800 focus:ring-neutral-800 sm:text-sm"}
-                      autoComplete={"email"}
-                      placeholder={"hello@email.com"}
-                      {...register("email")}
-                    />
-                  </div>
                   <AnimatePresence>
                     {errors.email?.message && (
                       <motion.p initial={{ height: 0 }} animate={{ height: "auto" }} exit={{ height: 0 }} className="mt-1 text-xs text-red-500">
@@ -99,17 +99,17 @@ export default function Index() {
                   </AnimatePresence>
                 </div>
                 <div>
-                  <label htmlFor={"code"} className="block text-sm font-medium text-neutral-700">
+                  <label className="block text-sm font-medium text-neutral-700">
                     Verification Code
+                    <div className="mt-1">
+                      <input
+                        type={"text"}
+                        className={"block w-full rounded border-neutral-300 transition ease-in-out focus:border-neutral-800 focus:ring-neutral-800 sm:text-sm"}
+                        autoComplete={"off"}
+                        {...register("code")}
+                      />
+                    </div>
                   </label>
-                  <div className="mt-1">
-                    <input
-                      type={"text"}
-                      className={"block w-full rounded border-neutral-300 transition ease-in-out focus:border-neutral-800 focus:ring-neutral-800 sm:text-sm"}
-                      autoComplete={"off"}
-                      {...register("code")}
-                    />
-                  </div>
                   <AnimatePresence>
                     {errors.code?.message && (
                       <motion.p initial={{ height: 0 }} animate={{ height: "auto" }} exit={{ height: 0 }} className="mt-1 text-xs text-red-500">
@@ -119,21 +119,21 @@ export default function Index() {
                   </AnimatePresence>
                 </div>
                 <div>
-                  <label htmlFor={"password"} className="block text-sm font-semibold text-neutral-600">
+                  <label className="block text-sm font-semibold text-neutral-600">
                     New password
-                  </label>
-                  <div className="relative mt-1">
-                    <input
-                      type={hidePassword ? "password" : "text"}
-                      placeholder={hidePassword ? "•••••••••••••" : "Password"}
-                      autoComplete={"new-password"}
-                      className={"block w-full rounded border-neutral-300 transition ease-in-out focus:border-neutral-800 focus:ring-neutral-800 sm:text-sm"}
-                      {...register("password")}
-                    />
-                    <div className="absolute inset-y-0 right-0 flex cursor-pointer items-center pr-3">
-                      {hidePassword ? <Eye onClick={() => setHidePassword(!hidePassword)} /> : <EyeOff onClick={() => setHidePassword(!hidePassword)} />}
+                    <div className="relative mt-1">
+                      <input
+                        type={hidePassword ? "password" : "text"}
+                        placeholder={hidePassword ? "•••••••••••••" : "Password"}
+                        autoComplete={"new-password"}
+                        className={"block w-full rounded border-neutral-300 transition ease-in-out focus:border-neutral-800 focus:ring-neutral-800 sm:text-sm"}
+                        {...register("password")}
+                      />
+                      <div className="absolute inset-y-0 right-0 flex cursor-pointer items-center pr-3">
+                        {hidePassword ? <Eye onClick={() => setHidePassword(!hidePassword)} /> : <EyeOff onClick={() => setHidePassword(!hidePassword)} />}
+                      </div>
                     </div>
-                  </div>
+                  </label>
                   <AnimatePresence>
                     {errors.password?.message && (
                       <motion.p initial={{ height: 0 }} animate={{ height: "auto" }} exit={{ height: 0 }} className="mt-1 text-xs text-red-500">

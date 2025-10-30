@@ -78,7 +78,7 @@ export default function Index() {
                     "Last Updated": dayjs().to(u.updatedAt).toString(),
                     Subscribed: u.subscribed,
                     Edit: (
-                      <Link href={`/contacts/${u.id}`} className="transition hover:text-neutral-800">
+                      <Link href={`/contacts/${u.id}`} className="transition hover:text-neutral-800" aria-label="Edit contact">
                         <Edit2 size={18} />
                       </Link>
                     ),
@@ -123,9 +123,11 @@ export default function Index() {
                 type="search"
                 placeholder="Filter contacts"
                 className="rounded border-neutral-300 transition ease-in-out focus:border-neutral-800 focus:ring-neutral-800 sm:text-sm"
+                aria-label="Filter contacts by email"
               />
 
               <Dropdown
+                ariaLabel="Filter contacts by status"
                 onChange={(v) => setStatusFilter(v)}
                 values={[
                   { name: "All", value: "all" },

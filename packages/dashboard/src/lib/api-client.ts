@@ -9,7 +9,7 @@ import { API_URI, TOKEN_KEY } from "./constants";
 // biome-ignore lint/suspicious/noExplicitAny: Using any due to Hono version mismatch between packages
 export const client = hc<any>(API_URI, {
   headers: (): Record<string, string> => {
-    const token = typeof window !== "undefined" ? sessionStorage.getItem(TOKEN_KEY) : null;
+    const token = typeof window !== "undefined" ? localStorage.getItem(TOKEN_KEY) : null;
     if (token) {
       return { Authorization: `Bearer ${token}` };
     }
@@ -26,7 +26,7 @@ export const client = hc<any>(API_URI, {
  * @returns Parsed JSON response
  */
 export async function apiFetcher<T>(url: string, init?: RequestInit): Promise<T> {
-  const token = typeof window !== "undefined" ? sessionStorage.getItem(TOKEN_KEY) : null;
+  const token = typeof window !== "undefined" ? localStorage.getItem(TOKEN_KEY) : null;
 
   const response = await fetch(API_URI + url, {
     ...init,

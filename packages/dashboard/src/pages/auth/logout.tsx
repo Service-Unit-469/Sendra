@@ -17,7 +17,7 @@ export default function Index() {
   }
 
   useEffect(() => {
-    sessionStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(TOKEN_KEY);
     mutate(undefined, { revalidate: false });
     void router.push("/");
   }, [mutate, router.push]);

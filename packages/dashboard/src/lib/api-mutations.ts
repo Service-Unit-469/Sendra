@@ -15,7 +15,7 @@ import { API_URI, TOKEN_KEY } from "./constants";
  * Helper to create fetch requests with auth
  */
 function createAuthenticatedRequest(url: string, init?: RequestInit): Promise<Response> {
-  const token = typeof window !== "undefined" ? sessionStorage.getItem(TOKEN_KEY) : null;
+  const token = typeof window !== "undefined" ? localStorage.getItem(TOKEN_KEY) : null;
   return fetch(`${API_URI}${url}`, {
     ...init,
     headers: {
