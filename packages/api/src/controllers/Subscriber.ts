@@ -1,5 +1,5 @@
 import { createRoute, z } from "@hono/zod-openapi";
-import { ContactPersistence, ProjectPersistence } from "@sendra/lib";
+import { ContactPersistence, ContactService, ProjectPersistence } from "@sendra/lib";
 import { type Contact, SubscriberSchema, SubscriberUpdateSchema } from "@sendra/shared";
 import type { AppType } from "../app";
 import { NotFound } from "../exceptions";
@@ -90,11 +90,14 @@ export const registerSubscriberRoutes = (app: AppType) => {
           const newSubscribed = subscriptions.find((subscription) => subscription.id === contact.project)?.subscribed ?? contact.subscribed;
           if (newSubscribed !== contact.subscribed) {
             const contactPersistence = new ContactPersistence(contact.project);
-            const updatedContact = {
-              ...contact,
-              subscribed: newSubscribed,
-            };
-            await contactPersistence.put(updatedContact);
+            const updatedContact = await ContactService.updateContact({
+              oldContact: contact,
+              newContact: {
+                ...contact,
+                subscribed: newSubscribed,
+              },
+              contactPersistence,
+            });
             return updatedContact;
           }
           return contact;

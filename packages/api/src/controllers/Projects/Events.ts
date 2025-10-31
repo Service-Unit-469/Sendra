@@ -1,5 +1,5 @@
 import { createRoute, z } from "@hono/zod-openapi";
-import { ActionsService, ContactPersistence, EmailPersistence, EmailService, EventPersistence, ProjectPersistence, rootLogger } from "@sendra/lib";
+import { ActionsService, ContactPersistence, ContactService, EmailPersistence, EmailService, EventPersistence, ProjectPersistence, rootLogger } from "@sendra/lib";
 import { type Contact, type ContactSchemas, type Event, EventSchema, EventSchemas, id } from "@sendra/shared";
 import type { AppType } from "../../app";
 import { BadRequest, HttpException, NotAllowed, NotFound } from "../../exceptions";
@@ -175,9 +175,13 @@ export const registerEventsRoutes = (app: AppType) => {
           });
         } else {
           if (subscribed && contact.subscribed !== subscribed) {
-            contact = await contactPersistence.put({
-              ...contact,
-              subscribed,
+            contact = await ContactService.updateContact({
+              oldContact: contact,
+              newContact: {
+                ...contact,
+                subscribed,
+              },
+              contactPersistence,
             });
           }
         }
@@ -332,7 +336,17 @@ export const registerEventsRoutes = (app: AppType) => {
         contact.data = dataToUpdate;
       }
       if (contact.id) {
-        contact = await contactPersistence.put(contact as Contact);
+        // Contact exists - track old contact for subscription event detection
+        const oldContact = await contactPersistence.get(contact.id);
+        if (oldContact) {
+          contact = await ContactService.updateContact({
+            oldContact,
+            newContact: contact as Contact,
+            contactPersistence,
+          });
+        } else {
+          contact = await contactPersistence.put(contact as Contact);
+        }
       } else {
         contact = await contactPersistence.create({
           ...contact,
