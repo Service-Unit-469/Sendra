@@ -33,7 +33,7 @@ export default function Input(props: InputProps) {
             type={props.type}
             min={props.type === "number" ? props.min : undefined}
             max={props.type === "number" ? props.max : undefined}
-            className={"block w-full rounded border-neutral-300 transition ease-in-out focus:border-neutral-800 focus:ring-neutral-800 sm:text-sm"}
+            className={"block w-full rounded-sm border-neutral-300 transition ease-in-out focus:border-neutral-800 focus:ring-neutral-800 sm:text-sm"}
             placeholder={props.placeholder}
             {...props.register}
           />

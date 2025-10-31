@@ -49,7 +49,7 @@ const ProjectSelector = React.forwardRef<HTMLDivElement, ProjectSelectorProps>((
           <button
             type="button"
             className={
-              "relative w-full cursor-pointer rounded border border-neutral-300 bg-white py-2 pl-3 pr-10 text-left focus:border-neutral-500 focus:outline-none focus:ring-1 focus:ring-neutral-500 sm:text-sm"
+              "relative w-full cursor-pointer rounded-sm border border-neutral-300 bg-white py-2 pl-3 pr-10 text-left focus:border-neutral-500 focus:outline-hidden focus:ring-1 focus:ring-neutral-500 sm:text-sm"
             }
             aria-haspopup="listbox"
             aria-expanded="true"
@@ -69,7 +69,7 @@ const ProjectSelector = React.forwardRef<HTMLDivElement, ProjectSelectorProps>((
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.6 }}
                 transition={{ duration: 0.1 }}
-                className={"absolute z-50 mt-1 w-full rounded bg-white text-base shadow-md ring-1 ring-neutral-800 ring-opacity-5 focus:outline-none sm:text-sm"}
+                className={"absolute z-50 mt-1 w-full rounded-sm bg-white text-base shadow-md ring-1 ring-neutral-800 ring-opacity-5 focus:outline-hidden sm:text-sm"}
                 tabIndex={-1}
                 role="listbox"
                 aria-labelledby="listbox-label"

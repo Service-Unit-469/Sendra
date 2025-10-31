@@ -86,7 +86,7 @@ export default function Index() {
             </div>
           </div>
           <div className="items-center mx-auto w-full max-w-lg mt-12">
-            <div className="rounded border border-neutral-200 bg-white px-4 py-8 sm:px-10">
+            <div className="rounded-sm border border-neutral-200 bg-white px-4 py-8 sm:px-10">
               <form onSubmit={handleSubmit(signup)} className="space-y-6">
                 <div>
                   <label className="block text-sm font-medium text-neutral-700">
@@ -94,7 +94,7 @@ export default function Index() {
                     <div className="mt-1">
                       <input
                         type={"email"}
-                        className={"block w-full rounded border-neutral-300 transition ease-in-out focus:border-neutral-800 focus:ring-neutral-800 sm:text-sm"}
+                        className={"block w-full rounded-sm border-neutral-300 transition ease-in-out focus:border-neutral-800 focus:ring-neutral-800 sm:text-sm"}
                         autoComplete={"email"}
                         placeholder={"hello@email.com"}
                         {...register("email")}
@@ -118,7 +118,7 @@ export default function Index() {
                         type={hidePassword ? "password" : "text"}
                         placeholder={hidePassword ? "•••••••••••••" : "Password"}
                         autoComplete={"new-password"}
-                        className={"block w-full rounded border-neutral-300 transition ease-in-out focus:border-neutral-800 focus:ring-neutral-800 sm:text-sm"}
+                        className={"block w-full rounded-sm border-neutral-300 transition ease-in-out focus:border-neutral-800 focus:ring-neutral-800 sm:text-sm"}
                         {...register("password")}
                       />
                       <div className="absolute inset-y-0 right-0 flex cursor-pointer items-center pr-3">

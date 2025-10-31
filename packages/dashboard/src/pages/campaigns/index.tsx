@@ -124,9 +124,9 @@ export default function Index() {
             <div className={"grid grid-cols-1 gap-6 sm:grid-cols-2"}>
               {campaigns.map((c) => {
                 return (
-                  <div className="col-span-1 divide-y divide-neutral-200 rounded border border-neutral-200 bg-white" key={c.id}>
+                  <div className="col-span-1 divide-y divide-neutral-200 rounded-sm border border-neutral-200 bg-white" key={c.id}>
                     <div className="flex w-full items-center justify-between space-x-6 p-6">
-                      <span className="inline-flex rounded bg-neutral-100 p-3 text-neutral-800 ring-4 ring-white">
+                      <span className="inline-flex rounded-sm bg-neutral-100 p-3 text-neutral-800 ring-4 ring-white">
                         <Send size={20} />
                       </span>
                       <div className="flex-1 truncate">

@@ -51,7 +51,7 @@ export default function MetadataFilterEditor({ onChange, contacts }: { onChange:
             setGroup({ ...group, filters: [...group.filters, { field: "", value: "", condition: "is" }] });
           }}
           className={
-            "mt-6 flex items-center justify-center gap-x-1 rounded border border-neutral-300 bg-white px-8 py-1 text-center text-sm font-medium text-neutral-800 transition ease-in-out hover:bg-neutral-100"
+            "mt-6 flex items-center justify-center gap-x-1 rounded-sm border border-neutral-300 bg-white px-8 py-1 text-center text-sm font-medium text-neutral-800 transition ease-in-out hover:bg-neutral-100"
           }
         >
           <Plus size={18} />

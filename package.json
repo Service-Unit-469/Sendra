@@ -38,6 +38,7 @@
   "dependencies": {
     "@vitest/coverage-v8": "^4.0.2",
     "sst": "3.17.14",
+    "tailwindcss": "^4.1.16",
     "vitest": "^4.0.2"
   },
   "overrides": {

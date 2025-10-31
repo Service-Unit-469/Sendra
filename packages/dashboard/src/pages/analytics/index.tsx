@@ -186,7 +186,7 @@ export default function Index() {
                       // Customize the tooltip content here
                       const dataPoint = payload[0];
                       return (
-                        <div className="rounded border border-neutral-100 bg-white px-5 py-3 shadow-sm">
+                        <div className="rounded-sm border border-neutral-100 bg-white px-5 py-3 shadow-xs">
                           <p className="font-medium text-neutral-800">{`${label}`}</p>
                           <p className="text-neutral-600">{valueFormatter(dataPoint.value as number)}</p>
                         </div>
@@ -216,7 +216,7 @@ export default function Index() {
                       // Customize the tooltip content here
                       const dataPoint = payload[0];
                       return (
-                        <div className="rounded border border-neutral-100 bg-white px-5 py-3 shadow-sm">
+                        <div className="rounded-sm border border-neutral-100 bg-white px-5 py-3 shadow-xs">
                           <p className="font-medium text-neutral-800">{`${dataPoint.name}`}</p>
                           <p className="text-neutral-600">{valueFormatter(dataPoint.value as number)}</p>
                         </div>
@@ -291,7 +291,7 @@ export default function Index() {
                       // Customize the tooltip content here
                       const dataPoint = payload[0];
                       return (
-                        <div className="rounded border border-neutral-100 bg-white px-5 py-3 shadow-sm">
+                        <div className="rounded-sm border border-neutral-100 bg-white px-5 py-3 shadow-xs">
                           <p className="font-medium text-neutral-800">{`${dataPoint.name}`}</p>
                           <p className="text-neutral-600">{valueFormatter(dataPoint.value as number)}</p>
                         </div>

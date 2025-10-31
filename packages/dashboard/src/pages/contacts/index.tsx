@@ -100,7 +100,7 @@ export default function Index() {
               </div>
               <div className="flex flex-1 justify-between gap-1 sm:justify-end">
                 {hasMore && (
-                  <button onClick={() => setSize(size + 1)} className={"flex w-28 items-center justify-center gap-x-0.5 rounded bg-neutral-800 py-2 text-center text-sm font-medium text-white"}>
+                  <button onClick={() => setSize(size + 1)} className={"flex w-28 items-center justify-center gap-x-0.5 rounded-sm bg-neutral-800 py-2 text-center text-sm font-medium text-white"}>
                     Load More
                   </button>
                 )}
@@ -129,7 +129,7 @@ export default function Index() {
                 autoComplete="off"
                 type="search"
                 placeholder="Filter contacts"
-                className="rounded border-neutral-300 transition ease-in-out focus:border-neutral-800 focus:ring-neutral-800 sm:text-sm"
+                className="rounded-sm border-neutral-300 transition ease-in-out focus:border-neutral-800 focus:ring-neutral-800 sm:text-sm"
                 aria-label="Filter contacts by email"
               />
 

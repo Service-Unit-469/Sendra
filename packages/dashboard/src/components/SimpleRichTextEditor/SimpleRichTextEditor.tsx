@@ -32,7 +32,7 @@ export default function SimpleRichTextEditor({ initialValue = "", onChange, plac
     content: initialValue,
     editorProps: {
       attributes: {
-        class: "prose prose-sm max-w-none focus:outline-none min-h-[200px] p-4",
+        class: "prose prose-sm max-w-none focus:outline-hidden min-h-[200px] p-4",
         placeholder,
       },
     },
@@ -64,7 +64,7 @@ export default function SimpleRichTextEditor({ initialValue = "", onChange, plac
       onClick={onClick}
       disabled={disabled}
       title={title}
-      className={`p-2 rounded hover:bg-neutral-100 disabled:opacity-30 disabled:cursor-not-allowed ${isActive ? "bg-neutral-200 text-neutral-900" : "text-neutral-600"}`}
+      className={`p-2 rounded-sm hover:bg-neutral-100 disabled:opacity-30 disabled:cursor-not-allowed ${isActive ? "bg-neutral-200 text-neutral-900" : "text-neutral-600"}`}
     >
       {children}
     </button>

@@ -65,7 +65,7 @@ export default function Index() {
                 type="search"
                 placeholder="Filter groups"
                 value={query}
-                className="rounded border-neutral-300 transition ease-in-out focus:border-neutral-800 focus:ring-neutral-800 sm:text-sm"
+                className="rounded-sm border-neutral-300 transition ease-in-out focus:border-neutral-800 focus:ring-neutral-800 sm:text-sm"
               />
               <BlackButton onClick={() => setGroupModal(true)}>
                 <Plus strokeWidth={1.5} size={18} />

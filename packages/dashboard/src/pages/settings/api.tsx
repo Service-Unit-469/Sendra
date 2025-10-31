@@ -21,7 +21,7 @@ const ClipboardButton = ({ text, label, description }: { text: string; label: st
         className="w-full"
       >
         {label}
-        <p className="cursor-pointer rounded border border-neutral-300 bg-neutral-100 px-3 py-2 text-sm truncate" id="api-endpoint">
+        <p className="cursor-pointer rounded-sm border border-neutral-300 bg-neutral-100 px-3 py-2 text-sm truncate" id="api-endpoint">
           {text}
         </p>
 
@@ -91,7 +91,7 @@ export default function Index() {
           actions={
             <button
               onClick={() => setShowRegenerateModal(!showRegenerateModal)}
-              className={"flex items-center gap-x-1 rounded bg-red-600 px-8 py-2 text-center text-sm font-medium text-white transition ease-in-out hover:bg-red-700"}
+              className={"flex items-center gap-x-1 rounded-sm bg-red-600 px-8 py-2 text-center text-sm font-medium text-white transition ease-in-out hover:bg-red-700"}
             >
               <RefreshCw strokeWidth={1.5} size={18} />
               Regenerate

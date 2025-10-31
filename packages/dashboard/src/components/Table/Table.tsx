@@ -20,7 +20,7 @@ export default function Table({ values }: TableProps) {
     <div className="flex flex-col">
       <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
         <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-          <div className="overflow-hidden rounded border border-neutral-200">
+          <div className="overflow-hidden rounded-sm border border-neutral-200">
             <table className="min-w-full">
               <thead className="bg-neutral-50">
                 <tr>

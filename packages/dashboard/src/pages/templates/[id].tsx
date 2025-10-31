@@ -224,7 +224,7 @@ export default function Index() {
                   description="Allow simple text input instead of MJML editor. Include {{quickBody}} or {{{quickBody}}} token in your template."
                   toggled={watch("quickEmail") ?? false}
                   onToggle={() => setValue("quickEmail", !watch("quickEmail"))}
-                  className="flex-grow"
+                  className="grow"
                 />
                 <Tooltip
                   content={
@@ -269,12 +269,12 @@ export default function Index() {
                 return router.push("/templates");
               }}
               className={
-                "flex w-fit justify-center rounded border border-neutral-300 bg-white px-6 py-2 text-base font-medium text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-800 focus:ring-offset-2 sm:mt-0 sm:w-auto sm:text-sm"
+                "flex w-fit justify-center rounded-sm border border-neutral-300 bg-white px-6 py-2 text-base font-medium text-neutral-700 focus:outline-hidden focus:ring-2 focus:ring-neutral-800 focus:ring-offset-2 sm:mt-0 sm:w-auto sm:text-sm"
               }
             >
               Cancel
             </motion.button>
-            <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.9 }} className={"flex items-center gap-x-2 rounded bg-neutral-800 px-8 py-2 text-center text-sm font-medium text-white"}>
+            <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.9 }} className={"flex items-center gap-x-2 rounded-sm bg-neutral-800 px-8 py-2 text-center text-sm font-medium text-white"}>
               <Save strokeWidth={1.5} size={18} />
               Save
             </motion.button>

@@ -191,7 +191,7 @@ export default function Index() {
               onClick={() => setShowInviteModal(true)}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.9 }}
-              className={"ml-auto mt-4 self-end rounded bg-neutral-800 px-8 py-2.5 text-sm font-medium text-white"}
+              className={"ml-auto mt-4 self-end rounded-sm bg-neutral-800 px-8 py-2.5 text-sm font-medium text-white"}
             >
               Invite user
             </motion.button>
