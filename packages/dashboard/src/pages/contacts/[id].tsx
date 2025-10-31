@@ -174,7 +174,7 @@ export default function Index() {
                           </div>
                           {/* Expanded panel for all screen sizes */}
                           {expanded && (
-                            <div className="mt-4 mb-2 ml-10 rounded border border-neutral-200 bg-neutral-50 p-4 text-sm">
+                            <div className="mt-4 mb-2 ml-10 rounded-sm border border-neutral-200 bg-neutral-50 p-4 text-sm">
                               <div className="space-y-4">
                                 <div className="flex items-center gap-2">
                                   <span className="font-semibold text-neutral-700 w-20">Status</span>
@@ -191,7 +191,7 @@ export default function Index() {
                                   <div
                                     // biome-ignore lint/security/noDangerouslySetInnerHtml: Content is sanitized with DOMPurify
                                     dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(email.body) }}
-                                    className="rounded bg-white p-3 text-neutral-800 whitespace-pre-line max-h-64 overflow-y-auto"
+                                    className="rounded-sm bg-white p-3 text-neutral-800 whitespace-pre-line max-h-64 overflow-y-auto"
                                   />
                                 </div>
                               </div>

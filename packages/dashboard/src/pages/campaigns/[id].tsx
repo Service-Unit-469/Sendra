@@ -315,7 +315,7 @@ export default function Index() {
 
             {campaign.status !== "DRAFT" &&
               (emails?.length === 0 ? (
-                <div className={"flex items-center gap-6 rounded border border-neutral-300 px-6 py-3 sm:col-span-6"}>
+                <div className={"flex items-center gap-6 rounded-sm border border-neutral-300 px-6 py-3 sm:col-span-6"}>
                   <Ring size={20} />
                   <div>
                     <h1 className={"text-lg font-semibold text-neutral-800"}>Hang on!</h1>
@@ -323,7 +323,7 @@ export default function Index() {
                   </div>
                 </div>
               ) : (
-                <div className={"max-h-[400px] overflow-x-hidden overflow-y-scroll rounded border border-neutral-200 sm:col-span-6"}>
+                <div className={"max-h-[400px] overflow-x-hidden overflow-y-scroll rounded-sm border border-neutral-200 sm:col-span-6"}>
                   <Table
                     values={(emails ?? []).map((e: Email) => {
                       return {

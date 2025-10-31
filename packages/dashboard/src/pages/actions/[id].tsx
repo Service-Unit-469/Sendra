@@ -229,7 +229,7 @@ export default function Index() {
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.9 }}
-                  className={"flex h-full w-full items-center justify-center gap-x-1 rounded border border-neutral-300 bg-white text-center text-sm font-medium text-neutral-800"}
+                  className={"flex h-full w-full items-center justify-center gap-x-1 rounded-sm border border-neutral-300 bg-white text-center text-sm font-medium text-neutral-800"}
                 >
                   <Edit3 />
                   Edit
@@ -248,7 +248,7 @@ export default function Index() {
                   type={"number"}
                   autoComplete={"off"}
                   min={0}
-                  className={"block w-full rounded border-neutral-300 transition ease-in-out focus:border-neutral-800 focus:ring-neutral-800 sm:text-sm"}
+                  className={"block w-full rounded-sm border-neutral-300 transition ease-in-out focus:border-neutral-800 focus:ring-neutral-800 sm:text-sm"}
                   placeholder={"0"}
                   value={delay.delay}
                   onChange={(e) =>
@@ -296,13 +296,17 @@ export default function Index() {
                 return router.push("/actions");
               }}
               className={
-                "flex w-fit justify-center rounded border border-neutral-300 bg-white px-6 py-2 text-base font-medium text-neutral-800 focus:outline-none focus:ring-2 focus:ring-neutral-800 focus:ring-offset-2 sm:mt-0 sm:w-auto sm:text-sm"
+                "flex w-fit justify-center rounded-sm border border-neutral-300 bg-white px-6 py-2 text-base font-medium text-neutral-800 focus:outline-hidden focus:ring-2 focus:ring-neutral-800 focus:ring-offset-2 sm:mt-0 sm:w-auto sm:text-sm"
               }
             >
               Cancel
             </motion.button>
 
-            <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.9 }} className={"flex items-center gap-x-2 rounded bg-neutral-800 px-8 py-2 text-center text-sm font-medium text-white"}>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.9 }}
+              className={"flex items-center gap-x-2 rounded-sm bg-neutral-800 px-8 py-2 text-center text-sm font-medium text-white"}
+            >
               <Save strokeWidth={1.5} size={18} />
               Save
             </motion.button>
@@ -325,9 +329,9 @@ export default function Index() {
               .map((r) => {
                 return (
                   <Link href={`/actions/${r.id}`} key={r.id}>
-                    <div className={"flex items-center gap-6 rounded border border-solid border-neutral-200 bg-white px-8 py-4"}>
+                    <div className={"flex items-center gap-6 rounded-sm border border-solid border-neutral-200 bg-white px-8 py-4"}>
                       <div>
-                        <span className="inline-flex rounded bg-neutral-100 p-4 text-neutral-800 ring-4 ring-white">
+                        <span className="inline-flex rounded-sm bg-neutral-100 p-4 text-neutral-800 ring-4 ring-white">
                           <Workflow size={18} />
                         </span>
                       </div>

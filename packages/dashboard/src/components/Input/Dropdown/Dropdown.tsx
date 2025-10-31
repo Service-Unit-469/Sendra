@@ -56,7 +56,7 @@ export default function Dropdown({ onChange, values, selectedValue, className, w
           type="button"
           className={`${
             disabled ? "cursor-default bg-neutral-100" : "cursor-pointer bg-white"
-          } relative w-full rounded border border-neutral-300 py-2 pl-3 pr-10 text-left focus:border-neutral-500 focus:outline-none focus:ring-1 focus:ring-neutral-500 sm:text-sm`}
+          } relative w-full rounded border border-neutral-300 py-2 pl-3 pr-10 text-left focus:border-neutral-500 focus:outline-hidden focus:ring-1 focus:ring-neutral-500 sm:text-sm`}
           aria-haspopup="listbox"
           aria-expanded="true"
           aria-label={ariaLabel}
@@ -89,7 +89,7 @@ export default function Dropdown({ onChange, values, selectedValue, className, w
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.2, ease: "easeInOut" }}
-              className={`${inModal ? "fixed w-64" : "absolute w-full"} z-50 mt-1 max-h-72 rounded-md border border-black border-opacity-10 bg-white text-base shadow-lg focus:outline-none sm:text-sm`}
+              className={`${inModal ? "fixed w-64" : "absolute w-full"} z-50 mt-1 max-h-72 rounded-md border border-black border-opacity-10 bg-white text-base shadow-lg focus:outline-hidden sm:text-sm`}
               tabIndex={-1}
               role="listbox"
             >
@@ -101,7 +101,7 @@ export default function Dropdown({ onChange, values, selectedValue, className, w
                         type="search"
                         name="search"
                         autoComplete={"off"}
-                        className="block w-full rounded border-neutral-300 border-opacity-5 focus:border-neutral-800 sm:text-sm"
+                        className="block w-full rounded-sm border-neutral-300 border-opacity-5 focus:border-neutral-800 sm:text-sm"
                         placeholder={"Search"}
                         onChange={(e) => setQuery(e.target.value)}
                       />

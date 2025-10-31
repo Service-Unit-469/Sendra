@@ -119,7 +119,7 @@ export default function Index() {
                 <p className="text-sm text-neutral-400">Deleting your project may have unwanted consequences. All data associated with this project will get deleted and can not be recovered! </p>
               </div>
               <button
-                className="ml-auto h-1/2 self-center rounded bg-red-500 px-6 py-2 text-sm font-medium text-white transition ease-in-out hover:bg-red-600"
+                className="ml-auto h-1/2 self-center rounded-sm bg-red-500 px-6 py-2 text-sm font-medium text-white transition ease-in-out hover:bg-red-600"
                 onClick={() => setShowDeleteModal(true)}
               >
                 Delete project

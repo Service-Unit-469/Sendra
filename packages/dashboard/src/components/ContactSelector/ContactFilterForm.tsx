@@ -36,7 +36,7 @@ export default function ContactFilterForm({ contacts, onSelect }: { contacts: Co
           }}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.9 }}
-          className={"ml-auto flex items-center justify-center gap-x-0.5 rounded bg-neutral-800 px-8 py-2 text-center text-sm font-medium text-white"}
+          className={"ml-auto flex items-center justify-center gap-x-0.5 rounded-sm bg-neutral-800 px-8 py-2 text-center text-sm font-medium text-white"}
         >
           <Plus size={18} />
           Select {filteredContacts.length} contacts

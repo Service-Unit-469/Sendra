@@ -53,7 +53,7 @@ describe("Badge Component", () => {
 		render(<Badge type="info">Badge</Badge>);
 
 		const badge = screen.getByText("Badge");
-		expect(badge).toHaveClass("inline-flex", "items-center", "px-2", "py-0.5", "rounded", "text-xs", "font-medium");
+		expect(badge).toHaveClass("inline-flex", "items-center", "px-2", "py-0.5", "rounded-sm", "text-xs", "font-medium");
 	});
 });
 

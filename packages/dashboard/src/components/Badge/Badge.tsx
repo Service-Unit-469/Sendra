@@ -16,7 +16,7 @@ const styles = {
  * @param root0.children
  */
 export default function Badge({ type = "info", children }: React.ComponentProps<"span"> & BadgeProps) {
-  const classNames = ["inline-flex items-center px-2 py-0.5 rounded text-xs font-medium"];
+  const classNames = ["inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium"];
   classNames.push(styles[type]);
 
   return <span className={classNames.join(" ")}>{children}</span>;

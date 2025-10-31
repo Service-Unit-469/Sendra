@@ -44,7 +44,7 @@ export function ContactMetadataForm({ initialData = {}, onDataChange, className 
               fieldAppend({ value: { key: "", value: "" } });
             }}
             className={
-              "ml-auto flex w-full items-center justify-center gap-x-0.5 rounded border border-neutral-200 bg-white py-1 text-center text-sm text-neutral-700 transition ease-in-out hover:bg-neutral-50 sm:col-span-1"
+              "ml-auto flex w-full items-center justify-center gap-x-0.5 rounded-sm border border-neutral-200 bg-white py-1 text-center text-sm text-neutral-700 transition ease-in-out hover:bg-neutral-50 sm:col-span-1"
             }
           >
             <Plus strokeWidth={1.5} size={18} />
@@ -63,7 +63,7 @@ export function ContactMetadataForm({ initialData = {}, onDataChange, className 
                       <input
                         type={"text"}
                         placeholder={"Key"}
-                        className={"block w-full rounded border-neutral-300 transition ease-in-out focus:border-neutral-800 focus:ring-neutral-800 sm:text-sm"}
+                        className={"block w-full rounded-sm border-neutral-300 transition ease-in-out focus:border-neutral-800 focus:ring-neutral-800 sm:text-sm"}
                         key={field.id}
                         {...register(`data.${index}.value.key`)}
                       />
@@ -76,14 +76,14 @@ export function ContactMetadataForm({ initialData = {}, onDataChange, className 
                       <input
                         type={"text"}
                         placeholder={"Value"}
-                        className={"block w-full rounded border-neutral-300 transition ease-in-out focus:border-neutral-800 focus:ring-neutral-800 sm:text-sm"}
+                        className={"block w-full rounded-sm border-neutral-300 transition ease-in-out focus:border-neutral-800 focus:ring-neutral-800 sm:text-sm"}
                         key={field.id}
                         {...register(`data.${index}.value.value`)}
                       />
                     </label>
                   </div>
                   <button
-                    className="col-span-1 flex h-10 items-center justify-center rounded bg-red-100 text-sm text-red-800 transition hover:bg-red-200"
+                    className="col-span-1 flex h-10 items-center justify-center rounded-sm bg-red-100 text-sm text-red-800 transition hover:bg-red-200"
                     aria-label="Remove field"
                     onClick={(e) => {
                       e.preventDefault();

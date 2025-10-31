@@ -10,7 +10,7 @@ export interface SkeletonProps {
 export default function Skeleton({ type }: SkeletonProps) {
   if (type === "table") {
     return (
-      <div role="status" className="w-full animate-pulse space-y-4 divide-y divide-neutral-200 rounded border border-neutral-200 p-4 shadow md:p-6">
+      <div role="status" className="w-full animate-pulse space-y-4 divide-y divide-neutral-200 rounded-sm border border-neutral-200 p-4 shadow-sm md:p-6">
         <div className="flex items-center justify-between">
           <div>
             <div className="mb-2.5 h-2.5 w-24 rounded-full bg-neutral-300" />
@@ -72,7 +72,7 @@ export default function Skeleton({ type }: SkeletonProps) {
     );
   } else if (type === "form") {
     return (
-      <div role="status" className="w-full animate-pulse space-y-4 rounded p-4 shadow md:p-6">
+      <div role="status" className="w-full animate-pulse space-y-4 rounded-sm p-4 shadow-sm md:p-6">
         <div className="flex items-center justify-between">
           <div>
             <div className="mb-2.5 h-2.5 w-24 rounded-full bg-neutral-300" />
@@ -106,7 +106,7 @@ export default function Skeleton({ type }: SkeletonProps) {
     );
   } else if (type === "input") {
     return (
-      <div role="status" className="w-full animate-pulse space-y-4 rounded p-4 shadow md:p-6">
+      <div role="status" className="w-full animate-pulse space-y-4 rounded-sm p-4 shadow-sm md:p-6">
         <div className="flex items-center justify-between">
           <div>
             <div className="mb-2.5 h-2.5 w-24 rounded-full bg-neutral-300" />

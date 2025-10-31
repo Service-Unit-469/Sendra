@@ -93,7 +93,7 @@ export default function Index() {
                   <input
                     autoComplete={"off"}
                     type="text"
-                    className={"block w-full rounded border-neutral-300 transition ease-in-out focus:border-neutral-800 focus:ring-neutral-800 sm:text-sm"}
+                    className={"block w-full rounded-sm border-neutral-300 transition ease-in-out focus:border-neutral-800 focus:ring-neutral-800 sm:text-sm"}
                     placeholder="My project"
                     {...register("name")}
                   />
@@ -140,7 +140,7 @@ export default function Index() {
                   whileTap={isValid ? { scale: 0.9 } : {}}
                   type="submit"
                   disabled={!isValid || submitted}
-                  className={` ${isValid ? "bg-neutral-800 text-white" : "bg-neutral-200 text-white"} mt-5 flex w-full items-center justify-center rounded py-2.5 text-sm font-medium transition`}
+                  className={` ${isValid ? "bg-neutral-800 text-white" : "bg-neutral-200 text-white"} mt-5 flex w-full items-center justify-center rounded-sm py-2.5 text-sm font-medium transition`}
                 >
                   {submitted ? (
                     <LoaderCircle className="animate-spin" size={18} />
@@ -164,7 +164,7 @@ export default function Index() {
           </div>
         </div>
       </div>
-      <div className="relative hidden w-0 flex-1 items-center justify-center bg-gradient-to-br from-blue-50 to-white lg:flex">
+      <div className="relative hidden w-0 flex-1 items-center justify-center bg-linear-to-br from-blue-50 to-white lg:flex">
         <div className={"w-full max-w-lg rounded-2xl border border-neutral-200 bg-white p-9"}>
           <Shared />
         </div>

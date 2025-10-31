@@ -19,7 +19,7 @@ export interface ToggleProps {
 export default function Toggle({ title, description, toggled, onToggle, disabled, className }: ToggleProps) {
   return (
     <div className={`flex items-center justify-between ${className}`}>
-      <span className="flex flex-grow flex-col">
+      <span className="flex grow flex-col">
         <span className={`${disabled ? "text-neutral-400" : "text-neutral-800"} text-sm font-medium transition ease-in-out`}>{title}</span>
         <span className={`${disabled ? "text-neutral-300" : "text-neutral-500"} w-10/12 text-sm`}>{description}</span>
       </span>
@@ -27,7 +27,7 @@ export default function Toggle({ title, description, toggled, onToggle, disabled
         type="button"
         className={`${
           disabled ? "bg-neutral-100" : toggled ? "bg-neutral-800" : "bg-neutral-200"
-        } relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-neutral-800 focus:ring-offset-2`}
+        } relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition duration-200 ease-in-out focus:outline-hidden focus:ring-2 focus:ring-neutral-800 focus:ring-offset-2`}
         role="switch"
         aria-checked="false"
         aria-labelledby="availability-label"
