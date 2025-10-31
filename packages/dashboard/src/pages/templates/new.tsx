@@ -152,8 +152,8 @@ export default function Index() {
                         Quick email templates allow you to create campaigns with a simple text editor instead of the full MJML editor.
                         <br />
                         <br />
-                        Include <code className="bg-neutral-700 px-1 rounded-sm">{"{{quickBody}}"}</code> or <code className="bg-neutral-700 px-1 rounded-sm">{"{{{quickBody}}}"}</code> in your template
-                        where you want the campaign body to be inserted.
+                        Include <code className="bg-neutral-700 px-1 rounded-sm">{"{{quickBody}}"}</code> or <code className="bg-neutral-700 px-1 rounded-sm">{"{{{quickBody}}}"}</code> in your
+                        template where you want the campaign body to be inserted.
                       </p>
                     </>
                   }
@@ -199,7 +199,11 @@ export default function Index() {
               Cancel
             </motion.button>
 
-            <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.9 }} className={"flex items-center gap-x-0.5 rounded-sm bg-neutral-800 px-8 py-2 text-center text-sm font-medium text-white"}>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.9 }}
+              className={"flex items-center gap-x-0.5 rounded-sm bg-neutral-800 px-8 py-2 text-center text-sm font-medium text-white"}
+            >
               <Plus size={18} />
               Create
             </motion.button>
