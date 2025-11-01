@@ -31,6 +31,7 @@ describe("CampaignPersistence", () => {
           email: "sender@example.com",
           from: "Sender Name",
           recipients: ["recipient-1", "recipient-2"],
+          template: "test-template-id",
           status: "DRAFT" as const,
         };
 
@@ -53,6 +54,7 @@ describe("CampaignPersistence", () => {
           subject: "A".repeat(71), // Too long (max 70)
           body: "Body content",
           recipients: ["recipient-1"],
+          template: "test-template-id",
           status: "DRAFT" as const,
         };
 
@@ -65,6 +67,22 @@ describe("CampaignPersistence", () => {
           subject: "Valid Subject",
           // Missing body
           recipients: ["recipient-1"],
+          template: "test-template-id",
+          status: "DRAFT" as const,
+        };
+
+        await expect(
+          persistence.create(invalidCampaign as Campaign)
+        ).rejects.toThrow();
+      });
+
+      it("should enforce schema validation for required template field", async () => {
+        const invalidCampaign = {
+          project: TEST_PROJECT_ID,
+          subject: "Valid Subject",
+          body: "Valid Body",
+          recipients: ["recipient-1"],
+          // Missing template
           status: "DRAFT" as const,
         };
 
@@ -84,6 +102,7 @@ describe("CampaignPersistence", () => {
           email: "test@example.com",
           from: "Test Sender",
           recipients: ["rec-1"],
+          template: "test-template-id",
           status: "DRAFT",
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
@@ -102,6 +121,7 @@ describe("CampaignPersistence", () => {
           subject: "Another Subject",
           body: "Another Body",
           recipients: ["rec-2"],
+          template: "test-template-id",
           status: "DELIVERED",
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
@@ -138,6 +158,7 @@ describe("CampaignPersistence", () => {
           subject: "Embed Test Campaign",
           body: "Test body for embed",
           recipients: ["recipient-embed"],
+          template: "test-template-id",
           status: "DRAFT",
         });
 
@@ -154,6 +175,7 @@ describe("CampaignPersistence", () => {
           subject: "Embed with Emails Test",
           body: "Test body",
           recipients: ["recipient-emails"],
+          template: "test-template-id",
           status: "DRAFT",
         });
 
@@ -179,6 +201,7 @@ describe("CampaignPersistence", () => {
           subject: "Draft Campaign",
           body: "Draft body",
           recipients: ["rec-draft"],
+          template: "test-template-id",
           status: "DRAFT",
         });
 
@@ -191,6 +214,7 @@ describe("CampaignPersistence", () => {
           subject: "Delivered Campaign",
           body: "Delivered body",
           recipients: ["rec-delivered"],
+          template: "test-template-id",
           status: "DELIVERED",
         });
 
@@ -203,6 +227,7 @@ describe("CampaignPersistence", () => {
           subject: "Invalid Status Campaign",
           body: "Body",
           recipients: ["rec-invalid"],
+          template: "test-template-id",
           status: "INVALID_STATUS",
         };
 
@@ -217,6 +242,7 @@ describe("CampaignPersistence", () => {
           subject: "Status Update Test",
           body: "Body",
           recipients: ["rec-update"],
+          template: "test-template-id",
           status: "DRAFT",
         });
 
@@ -236,6 +262,7 @@ describe("CampaignPersistence", () => {
           subject: "No Email Field",
           body: "Body content",
           recipients: ["rec-no-email"],
+          template: "test-template-id",
           status: "DRAFT",
         });
 
@@ -249,6 +276,7 @@ describe("CampaignPersistence", () => {
           body: "Body content",
           email: "sender@example.com",
           recipients: ["rec-with-email"],
+          template: "test-template-id",
           status: "DRAFT",
         });
 
@@ -261,6 +289,7 @@ describe("CampaignPersistence", () => {
           subject: "No From Field",
           body: "Body content",
           recipients: ["rec-no-from"],
+          template: "test-template-id",
           status: "DRAFT",
         });
 
@@ -274,6 +303,7 @@ describe("CampaignPersistence", () => {
           body: "Body content",
           email: "not-a-valid-email",
           recipients: ["rec-invalid-email"],
+          template: "test-template-id",
           status: "DRAFT",
         };
 
@@ -290,6 +320,7 @@ describe("CampaignPersistence", () => {
           subject: "Multiple Recipients",
           body: "Body",
           recipients: ["rec-1", "rec-2", "rec-3", "rec-4", "rec-5"],
+          template: "test-template-id",
           status: "DRAFT",
         });
 
@@ -302,6 +333,7 @@ describe("CampaignPersistence", () => {
           subject: "Single Recipient",
           body: "Body",
           recipients: ["rec-single"],
+          template: "test-template-id",
           status: "DRAFT",
         });
 
@@ -315,6 +347,7 @@ describe("CampaignPersistence", () => {
           subject: "Empty Recipients Test",
           body: "Body",
           recipients: [],
+          template: "test-template-id",
           status: "DRAFT",
         });
 
