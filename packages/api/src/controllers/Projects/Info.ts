@@ -112,7 +112,7 @@ export const registerProjectInfoRoutes = (app: AppType) => {
 
       // Simple timeseries data (simplified version)
       const timeseries = [];
-      for (let i = 0; i < 30; i++) {
+      for (let i = 0; i < periods[period ?? "week"]; i++) {
         const date = dayjs().subtract(i, "days").format("YYYY-MM-DD");
         const dayContacts = allContacts.filter((c) => dayjs(c.createdAt).format("YYYY-MM-DD") === date).length;
         timeseries.push({ day: date, count: dayContacts });
