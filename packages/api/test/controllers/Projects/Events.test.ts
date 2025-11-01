@@ -32,7 +32,7 @@ describe("Events Endpoint Contract Tests", () => {
   });
 
   describe("GET /projects/:projectId/event-types/all", () => {
-    test("should successfully list all event types", async () => {
+    test("should successfully list all event types including OOTB events", async () => {
       const { project, token } = await createTestSetup();
 
       const response = await app.request(`/projects/${project.id}/event-types/all`, {
@@ -47,9 +47,13 @@ describe("Events Endpoint Contract Tests", () => {
       const data = await response.json();
       expect(data).toHaveProperty("eventTypes");
       expect(Array.isArray(data.eventTypes)).toBe(true);
-      expect(data.eventTypes.length).toBe(2); // Default has "user.signup" and "user.login"
+      // Should include 8 OOTB events + 2 custom events ("user.signup" and "user.login")
+      expect(data.eventTypes.length).toBe(10);
       expect(data.eventTypes[0]).toHaveProperty("name");
-      expect(data.eventTypes[0].name).toBe("user.signup");
+      // OOTB events come first
+      expect(data.eventTypes[0].name).toBe("subscribe");
+      // Custom events come after OOTB events
+      expect(data.eventTypes.some((et: { name: string }) => et.name === "user.signup")).toBe(true);
     });
 
     test("should list event types with embedded events", async () => {
@@ -72,10 +76,10 @@ describe("Events Endpoint Contract Tests", () => {
       expect(Array.isArray(data.eventTypes[0]._embed.events)).toBe(true);
     });
 
-    test("should return empty event types for project without event types", async () => {
+    test("should return OOTB events for project without custom event types", async () => {
       const { project, token } = await createTestSetup();
       
-      // Update project to have no event types
+      // Update project to have no custom event types
       const projectPersistence = new ProjectPersistence();
       const updatedProject = await projectPersistence.put({
         ...project,
@@ -92,7 +96,10 @@ describe("Events Endpoint Contract Tests", () => {
       expect(response.status).toBe(200);
 
       const data = await response.json();
-      expect(data.eventTypes).toHaveLength(0);
+      // Should still have 8 OOTB events
+      expect(data.eventTypes).toHaveLength(8);
+      expect(data.eventTypes[0].name).toBe("subscribe");
+      expect(data.eventTypes[1].name).toBe("unsubscribe");
     });
 
     test("should return 404 when project does not exist", async () => {
@@ -1117,7 +1124,7 @@ describe("Events Endpoint Contract Tests", () => {
       expect(ActionsService.trigger).toHaveBeenCalled();
     });
 
-    test("should return 400 for reserved event name 'subscribe'", async () => {
+    test("should allow tracking OOTB event 'subscribe' and not add to project.eventTypes", async () => {
       const { project, token } = await createTestSetup();
 
       const eventPayload = {
@@ -1136,12 +1143,17 @@ describe("Events Endpoint Contract Tests", () => {
         body: JSON.stringify(eventPayload),
       });
 
-      expect(response.status).toBe(403);
+      expect(response.status).toBe(200);
       const data = await response.json();
-      expect(data.detail).toContain("reserved event names");
+      expect(data.success).toBe(true);
+      expect(data.eventType).toBe("subscribe");
+
+      // Verify the event was not added to project.eventTypes
+      const updatedProject = await new ProjectPersistence().get(project.id);
+      expect(updatedProject?.eventTypes).not.toContain("subscribe");
     });
 
-    test("should return 400 for reserved event name 'unsubscribe'", async () => {
+    test("should allow tracking OOTB event 'unsubscribe' and not add to project.eventTypes", async () => {
       const { project, token } = await createTestSetup();
 
       const eventPayload = {
@@ -1160,9 +1172,14 @@ describe("Events Endpoint Contract Tests", () => {
         body: JSON.stringify(eventPayload),
       });
 
-      expect(response.status).toBe(403);
+      expect(response.status).toBe(200);
       const data = await response.json();
-      expect(data.detail).toContain("reserved event names");
+      expect(data.success).toBe(true);
+      expect(data.eventType).toBe("unsubscribe");
+
+      // Verify the event was not added to project.eventTypes
+      const updatedProject = await new ProjectPersistence().get(project.id);
+      expect(updatedProject?.eventTypes).not.toContain("unsubscribe");
     });
 
     test("should return 400 with invalid payload", async () => {

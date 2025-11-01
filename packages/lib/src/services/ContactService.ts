@@ -1,4 +1,4 @@
-import type { Contact } from "@sendra/shared";
+import { type Contact, OOTB_EVENT_VALUES } from "@sendra/shared";
 import { rootLogger } from "../logging";
 import type { ContactPersistence } from "../persistence/ContactPersistence";
 import { EventPersistence } from "../persistence/EventPersistence";
@@ -37,29 +37,16 @@ export class ContactService {
         `Contact subscription status changed, creating ${eventType} event`,
       );
 
-      // Add event type to project if not present
-      const projectPersistence = new ProjectPersistence();
-      const project = await projectPersistence.get(newContact.project);
+      // Note: subscribe/unsubscribe are OOTB events and should not be added to project.eventTypes
+      // Create the subscription event
+      const eventPersistence = new EventPersistence(newContact.project);
+      await eventPersistence.create({
+        eventType,
+        contact: newContact.id,
+        project: newContact.project,
+      });
 
-      if (project) {
-        if (!project.eventTypes.includes(eventType)) {
-          logger.info({ projectId: project.id, eventType }, "Adding event type to project");
-          project.eventTypes.push(eventType);
-          await projectPersistence.put(project);
-        }
-
-        // Create the subscription event
-        const eventPersistence = new EventPersistence(newContact.project);
-        await eventPersistence.create({
-          eventType,
-          contact: newContact.id,
-          project: newContact.project,
-        });
-
-        logger.info({ contact: newContact.id, eventType, project: newContact.project }, `Created ${eventType} event`);
-      } else {
-        logger.warn({ projectId: newContact.project }, "Project not found, skipping event creation");
-      }
+      logger.info({ contact: newContact.id, eventType, project: newContact.project }, `Created ${eventType} event`);
     }
 
     // Update the contact

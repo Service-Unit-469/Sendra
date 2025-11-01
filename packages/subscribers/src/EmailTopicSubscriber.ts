@@ -1,5 +1,5 @@
 import { ActionsService, ContactPersistence, ContactService, EmailPersistence, EventPersistence, ProjectPersistence, rootLogger } from "@sendra/lib";
-import { type DeliveryEvent, DeliveryEventSchema, type Email } from "@sendra/shared";
+import { type DeliveryEvent, DeliveryEventSchema, type Email, OOTB_EVENT_VALUES } from "@sendra/shared";
 import type { SNSEvent, SNSEventRecord } from "aws-lambda";
 import type { Logger } from "pino";
 
@@ -102,7 +102,8 @@ async function handleEmailEvent(deliveryEvent: DeliveryEvent, email: Email, logg
 
   // add the event
   const eventType = `email.${deliveryEvent.eventType.toLowerCase()}`;
-  if (!project.eventTypes.includes(eventType)) {
+  // Only add custom event types to project.eventTypes (skip out-of-the-box email events)
+  if (!OOTB_EVENT_VALUES.includes(eventType) && !project.eventTypes.includes(eventType)) {
     project.eventTypes.push(eventType);
     await new ProjectPersistence().put(project);
   }

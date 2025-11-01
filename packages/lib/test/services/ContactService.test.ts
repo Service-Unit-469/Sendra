@@ -62,14 +62,14 @@ describe("ContactService", () => {
 				value: contact.id,
 			});
 
-			expect(events.items).toHaveLength(1);
-			expect(events.items[0].eventType).toBe("subscribe");
-			expect(events.items[0].contact).toBe(contact.id);
-			expect(events.items[0].project).toBe(testProject.id);
+		expect(events.items).toHaveLength(1);
+		expect(events.items[0].eventType).toBe("subscribe");
+		expect(events.items[0].contact).toBe(contact.id);
+		expect(events.items[0].project).toBe(testProject.id);
 
-			// Check that event type was added to project
-			const updatedProject = await projectPersistence.get(testProject.id);
-			expect(updatedProject?.eventTypes).toContain("subscribe");
+		// OOTB events should NOT be added to project.eventTypes
+		const updatedProject = await projectPersistence.get(testProject.id);
+		expect(updatedProject?.eventTypes).not.toContain("subscribe");
 		});
 
 		it("should create unsubscribe event when changing from true to false", async () => {
@@ -96,14 +96,14 @@ describe("ContactService", () => {
 				value: contact.id,
 			});
 
-			expect(events.items).toHaveLength(1);
-			expect(events.items[0].eventType).toBe("unsubscribe");
-			expect(events.items[0].contact).toBe(contact.id);
-			expect(events.items[0].project).toBe(testProject.id);
+		expect(events.items).toHaveLength(1);
+		expect(events.items[0].eventType).toBe("unsubscribe");
+		expect(events.items[0].contact).toBe(contact.id);
+		expect(events.items[0].project).toBe(testProject.id);
 
-			// Check that event type was added to project
-			const updatedProject = await projectPersistence.get(testProject.id);
-			expect(updatedProject?.eventTypes).toContain("unsubscribe");
+		// OOTB events should NOT be added to project.eventTypes
+		const updatedProject = await projectPersistence.get(testProject.id);
+		expect(updatedProject?.eventTypes).not.toContain("unsubscribe");
 		});
 
 		it("should not create event when subscription status does not change", async () => {
@@ -299,16 +299,16 @@ describe("ContactService", () => {
 				value: contact.id,
 			});
 
-			expect(events.items).toHaveLength(2);
-			expect(events.items.map((e) => e.eventType).sort()).toEqual([
-				"subscribe",
-				"unsubscribe",
-			]);
+		expect(events.items).toHaveLength(2);
+		expect(events.items.map((e) => e.eventType).sort()).toEqual([
+			"subscribe",
+			"unsubscribe",
+		]);
 
-			// Check that both event types are in project
-			const updatedProject = await projectPersistence.get(testProject.id);
-			expect(updatedProject?.eventTypes).toContain("subscribe");
-			expect(updatedProject?.eventTypes).toContain("unsubscribe");
+		// OOTB events should NOT be added to project.eventTypes
+		const updatedProject = await projectPersistence.get(testProject.id);
+		expect(updatedProject?.eventTypes).not.toContain("subscribe");
+		expect(updatedProject?.eventTypes).not.toContain("unsubscribe");
 		});
 
 		it("should handle contact with all fields updated including subscription", async () => {

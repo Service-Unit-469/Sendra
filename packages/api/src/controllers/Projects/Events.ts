@@ -1,8 +1,8 @@
 import { createRoute, z } from "@hono/zod-openapi";
 import { ActionsService, ContactPersistence, ContactService, EmailPersistence, EmailService, EventPersistence, ProjectPersistence, rootLogger } from "@sendra/lib";
-import { type Contact, type ContactSchemas, type Event, EventSchema, EventSchemas, id } from "@sendra/shared";
+import { type Contact, type ContactSchemas, type Event, EventSchema, EventSchemas, id, OOTB_EVENT_VALUES } from "@sendra/shared";
 import type { AppType } from "../../app";
-import { BadRequest, HttpException, NotAllowed, NotFound } from "../../exceptions";
+import { BadRequest, HttpException, NotFound } from "../../exceptions";
 import { getProblemResponseSchema } from "../../exceptions/responses";
 
 import { BearerAuth, isAuthenticatedProjectMemberKey, isAuthenticatedProjectMemberOrSecretKey } from "../../middleware/auth";
@@ -57,7 +57,13 @@ export const registerEventsRoutes = (app: AppType) => {
         throw new NotFound("project");
       }
 
-      const eventTypes: { name: string; _embed?: { events: Event[] } }[] = project.eventTypes.map((eventType) => ({
+      // Combine OOTB events with custom project event types
+      const allEventTypeNames = [
+        ...OOTB_EVENT_VALUES,
+        ...project.eventTypes.filter((eventType) => !OOTB_EVENT_VALUES.includes(eventType)),
+      ];
+
+      const eventTypes: { name: string; _embed?: { events: Event[] } }[] = allEventTypeNames.map((eventType) => ({
         name: eventType,
       }));
 
@@ -295,11 +301,8 @@ export const registerEventsRoutes = (app: AppType) => {
 
       const { event: name, email, data, subscribed, transientData } = result.data;
 
-      if (name === "subscribe" || name === "unsubscribe") {
-        throw new NotAllowed("subscribe & unsubscribe are reserved event names.");
-      }
-
-      if (!project.eventTypes.includes(name)) {
+      // Only add custom event types to project.eventTypes (skip out-of-the-box events)
+      if (!OOTB_EVENT_VALUES.includes(name) && !project.eventTypes.includes(name)) {
         logger.info({ projectId, eventType: name }, "Adding event type to project");
         project.eventTypes.push(name);
         await projectPersistence.put(project);
