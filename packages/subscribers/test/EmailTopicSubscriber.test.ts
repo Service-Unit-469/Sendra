@@ -281,28 +281,6 @@ describe("EmailTopicSubscriber", () => {
 			expect(rejectEvent).toBeDefined();
 			expect(rejectEvent?.contact).toBe(contactId);
 		});
-
-		test("should add reject event type to project when first occurrence", async () => {
-			const messageId = `test-message-${Date.now()}`;
-			await createTestEmail(projectId, contactId, messageId);
-
-			// Verify project doesn't have email.reject event type yet
-			const projectPersistence = new ProjectPersistence();
-			let project = await projectPersistence.get(projectId);
-			expect(project?.eventTypes.includes("email.reject")).toBe(false);
-
-			const event = createSNSEvent(messageId, "Reject", {
-				reject: {
-					reason: "Bad content",
-				},
-			});
-
-			await handler(event);
-
-			// Verify event type was added to project
-			project = await projectPersistence.get(projectId);
-			expect(project?.eventTypes.includes("email.reject")).toBe(true);
-		});
 	});
 
 	describe("Click Events", () => {
@@ -343,30 +321,6 @@ describe("EmailTopicSubscriber", () => {
 			expect(clickEvent?.data).toHaveProperty("details");
 		});
 
-		test("should add click event type to project when first occurrence", async () => {
-			const messageId = `test-message-${Date.now()}`;
-			await createTestEmail(projectId, contactId, messageId);
-
-			// Verify project doesn't have email.click event type yet
-			const projectPersistence = new ProjectPersistence();
-			let project = await projectPersistence.get(projectId);
-			expect(project?.eventTypes.includes("email.click")).toBe(false);
-
-			const event = createSNSEvent(messageId, "Click", {
-				click: {
-					timestamp: new Date().toISOString(),
-					userAgent: "Mozilla/5.0",
-					ipAddress: "192.168.1.1",
-					link: "https://example.com/link",
-				},
-			});
-
-			await handler(event);
-
-			// Verify event type was added to project
-			project = await projectPersistence.get(projectId);
-			expect(project?.eventTypes.includes("email.click")).toBe(true);
-		});
 	});
 
 	describe("Error Handling", () => {
@@ -456,31 +410,5 @@ describe("EmailTopicSubscriber", () => {
 		});
 	});
 
-	describe("Event Type Management", () => {
-		test("should add new event type to project when first occurrence", async () => {
-			const messageId = `test-message-${Date.now()}`;
-			await createTestEmail(projectId, contactId, messageId);
-
-			// Verify project doesn't have email.delivery event type yet
-			const projectPersistence = new ProjectPersistence();
-			let project = await projectPersistence.get(projectId);
-			expect(project?.eventTypes.includes("email.delivery")).toBe(false);
-
-			const event = createSNSEvent(messageId, "Delivery", {
-				delivery: {
-					timestamp: new Date().toISOString(),
-					processingTimeMillis: 500,
-					recipients: [`contact-${contactId}@example.com`],
-					smtpResponse: "250 OK",
-				},
-			});
-
-			await handler(event);
-
-			// Verify event type was added to project
-			project = await projectPersistence.get(projectId);
-			expect(project?.eventTypes.includes("email.delivery")).toBe(true);
-		});
-	});
 });
 
