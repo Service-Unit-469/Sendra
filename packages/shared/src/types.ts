@@ -87,14 +87,14 @@ export type UserGet = z.infer<typeof UserSchemas.get>;
  * These events are always available and should not be added to project.eventTypes.
  */
 export const OOTB_EVENTS = {
-	SUBSCRIBE: "subscribe",
-	UNSUBSCRIBE: "unsubscribe",
-	EMAIL_DELIVERY: "email.delivery",
-	EMAIL_BOUNCE: "email.bounce",
-	EMAIL_COMPLAINT: "email.complaint",
-	EMAIL_OPEN: "email.open",
-	EMAIL_CLICK: "email.click",
-	EMAIL_REJECT: "email.reject",
+  SUBSCRIBE: "subscribe",
+  UNSUBSCRIBE: "unsubscribe",
+  EMAIL_DELIVERY: "email.delivery",
+  EMAIL_BOUNCE: "email.bounce",
+  EMAIL_COMPLAINT: "email.complaint",
+  EMAIL_OPEN: "email.open",
+  EMAIL_CLICK: "email.click",
+  EMAIL_REJECT: "email.reject",
 } as const;
 
 export const OOTB_EVENT_VALUES: readonly string[] = Object.values(OOTB_EVENTS);

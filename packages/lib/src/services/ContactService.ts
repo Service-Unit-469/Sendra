@@ -1,8 +1,7 @@
-import { type Contact, OOTB_EVENT_VALUES } from "@sendra/shared";
+import type { Contact } from "@sendra/shared";
 import { rootLogger } from "../logging";
 import type { ContactPersistence } from "../persistence/ContactPersistence";
 import { EventPersistence } from "../persistence/EventPersistence";
-import { ProjectPersistence } from "../persistence/ProjectPersistence";
 
 const logger = rootLogger.child({
   module: "ContactService",

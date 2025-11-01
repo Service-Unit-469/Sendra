@@ -58,10 +58,7 @@ export const registerEventsRoutes = (app: AppType) => {
       }
 
       // Combine OOTB events with custom project event types
-      const allEventTypeNames = [
-        ...OOTB_EVENT_VALUES,
-        ...project.eventTypes.filter((eventType) => !OOTB_EVENT_VALUES.includes(eventType)),
-      ];
+      const allEventTypeNames = [...OOTB_EVENT_VALUES, ...project.eventTypes.filter((eventType) => !OOTB_EVENT_VALUES.includes(eventType))];
 
       const eventTypes: { name: string; _embed?: { events: Event[] } }[] = allEventTypeNames.map((eventType) => ({
         name: eventType,
