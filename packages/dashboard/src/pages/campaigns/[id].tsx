@@ -3,17 +3,27 @@ import type { CampaignUpdate, Email } from "@sendra/shared";
 import { CampaignSchemas } from "@sendra/shared";
 import { Ring } from "@uiball/loaders";
 import GroupOrContacts from "dashboard/src/components/ContactSelector/GroupOrContacts";
-import { EmailEditor } from "dashboard/src/components/EmailEditor";
 import dayjs from "dayjs";
 import { AnimatePresence, motion } from "framer-motion";
-import { Eye, Save } from "lucide-react";
+import { Copy, Eye, Save, Send, Trash } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 import { type FieldError, useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { Alert, Badge, Card, Dropdown, FullscreenLoader, Input, Modal, SimpleRichTextEditor, Table } from "../../components";
-import Send from "../../icons/Send";
+import Alert from "../../components/Alert/Alert";
+import { ErrorAlert } from "../../components/Alert/ErrorAlert";
+import Badge from "../../components/Badge/Badge";
+import { BlackButton } from "../../components/Buttons/BlackButton";
+import { MenuButton } from "../../components/Buttons/MenuButton";
+import Card from "../../components/Card/Card";
+import { EmailEditor } from "../../components/EmailEditor";
+import Dropdown from "../../components/Input/Dropdown/Dropdown";
+import Input from "../../components/Input/Input/Input";
+import Modal from "../../components/Overlay/Modal/Modal";
+import SimpleRichTextEditor from "../../components/SimpleRichTextEditor/SimpleRichTextEditor";
+import Table from "../../components/Table/Table";
+import FullscreenLoader from "../../components/Utility/FullscreenLoader/FullscreenLoader";
 import { Dashboard } from "../../layouts";
 import { useCampaign, useCampaignsWithEmails } from "../../lib/hooks/campaigns";
 import { useEmailsByCampaign } from "../../lib/hooks/emails";
@@ -259,39 +269,14 @@ export default function Index() {
           title={campaign.status !== "DRAFT" ? "View campaign" : "Update campaign"}
           options={
             <>
-              <button onClick={duplicate} className="flex w-full items-center gap-2 px-4 py-2 text-sm text-neutral-700 transition hover:bg-neutral-100" role="menuitem" tabIndex={-1}>
-                <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
-                  <path
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="1.5"
-                    d="M6.5 15.25V15.25C5.5335 15.25 4.75 14.4665 4.75 13.5V6.75C4.75 5.64543 5.64543 4.75 6.75 4.75H13.5C14.4665 4.75 15.25 5.5335 15.25 6.5V6.5"
-                  />
-                  <rect width="10.5" height="10.5" x="8.75" y="8.75" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" rx="2" />
-                </svg>
+              <MenuButton onClick={duplicate}>
+                <Copy size={18} />
                 Duplicate
-              </button>
-              <button onClick={remove} className="flex w-full items-center gap-2 px-4 py-2 text-sm text-neutral-700 transition hover:bg-neutral-100" role="menuitem" tabIndex={-1}>
-                <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
-                  <path
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="1.5"
-                    d="M6.75 7.75L7.59115 17.4233C7.68102 18.4568 8.54622 19.25 9.58363 19.25H14.4164C15.4538 19.25 16.319 18.4568 16.4088 17.4233L17.25 7.75"
-                  />
-                  <path
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="1.5"
-                    d="M9.75 7.5V6.75C9.75 5.64543 10.6454 4.75 11.75 4.75H12.25C13.3546 4.75 14.25 5.64543 14.25 6.75V7.5"
-                  />
-                  <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M5 7.75H19" />
-                </svg>
+              </MenuButton>
+              <MenuButton onClick={remove}>
+                <Trash size={18} />
                 Delete
-              </button>
+              </MenuButton>
             </>
           }
         >
@@ -315,13 +300,7 @@ export default function Index() {
               selectedGroups={campaign.groups}
             />
 
-            <AnimatePresence>
-              {(errors.recipients as FieldError | undefined)?.message && (
-                <motion.p initial={{ height: 0 }} animate={{ height: "auto" }} exit={{ height: 0 }} className="mt-1 text-xs text-red-500">
-                  {(errors.recipients as FieldError | undefined)?.message}
-                </motion.p>
-              )}
-            </AnimatePresence>
+            <ErrorAlert message={(errors.recipients as FieldError | undefined)?.message} />
 
             <AnimatePresence>
               {watch("recipients").length >= 10 && campaign.status !== "DELIVERED" && (
@@ -336,7 +315,7 @@ export default function Index() {
 
             {campaign.status !== "DRAFT" &&
               (emails?.length === 0 ? (
-                <div className={"flex items-center gap-6 rounded border border-neutral-300 px-6 py-3 sm:col-span-6"}>
+                <div className={"flex items-center gap-6 rounded-sm border border-neutral-300 px-6 py-3 sm:col-span-6"}>
                   <Ring size={20} />
                   <div>
                     <h1 className={"text-lg font-semibold text-neutral-800"}>Hang on!</h1>
@@ -344,7 +323,7 @@ export default function Index() {
                   </div>
                 </div>
               ) : (
-                <div className={"max-h-[400px] overflow-x-hidden overflow-y-scroll rounded border border-neutral-200 sm:col-span-6"}>
+                <div className={"max-h-[400px] overflow-x-hidden overflow-y-scroll rounded-sm border border-neutral-200 sm:col-span-6"}>
                   <Table
                     values={(emails ?? []).map((e: Email) => {
                       return {
@@ -383,47 +362,29 @@ export default function Index() {
               ) : (
                 <EmailEditor initialValue={campaign.body} onChange={(value) => setValue("body", value)} />
               )}
-              <AnimatePresence>
-                {errors.body?.message && (
-                  <motion.p initial={{ height: 0 }} animate={{ height: "auto" }} exit={{ height: 0 }} className="mt-1 text-xs text-red-500">
-                    {errors.body.message}
-                  </motion.p>
-                )}
-              </AnimatePresence>
+              <ErrorAlert message={errors.body?.message} />
             </div>
 
             <div className={"ml-auto mt-6 sm:flex justify-end sm:gap-x-5 sm:col-span-6"}>
               {campaign.status === "DRAFT" ? (
                 <>
-                  <motion.button
-                    onClick={handleSubmit(sendTest)}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.9 }}
-                    className={"ml-auto mt-6 flex items-center gap-x-0.5 rounded bg-neutral-800 px-6 py-2 text-center text-sm font-medium text-white"}
-                  >
+                  <BlackButton onClick={handleSubmit(sendTest)}>
                     <Send />
                     Send test to {project.name}'s members
-                  </motion.button>
-                  <motion.button
+                  </BlackButton>
+                  <BlackButton
                     onClick={(e) => {
                       e.preventDefault();
                       setConfirmModal(true);
                     }}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.9 }}
-                    className={"ml-auto mt-6 flex items-center gap-x-0.5 rounded bg-neutral-800 px-6 py-2 text-center text-sm font-medium text-white"}
                   >
                     <Send />
                     Save & Send
-                  </motion.button>
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.9 }}
-                    className={"ml-auto mt-6 flex items-center gap-x-2 rounded bg-neutral-800 px-6 py-2 text-center text-sm font-medium text-white"}
-                  >
+                  </BlackButton>
+                  <BlackButton>
                     <Save strokeWidth={1.5} size={18} />
                     Save
-                  </motion.button>
+                  </BlackButton>
                 </>
               ) : null}
             </div>

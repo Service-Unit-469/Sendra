@@ -1,4 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
+import { X } from "lucide-react";
 import type React from "react";
 
 export type ModalProps = {
@@ -48,18 +49,16 @@ export default function Modal({ title, description, isOpen, onToggle, onAction, 
                     onToggle();
                   }}
                   type="button"
-                  className="rounded-md bg-white text-neutral-400 transition hover:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                  className="rounded-md bg-white text-neutral-400 transition hover:text-neutral-500 focus:outline-hidden focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                 >
                   <span className="sr-only">Close</span>
 
-                  <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" aria-hidden="true">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
+                  <X />
                 </button>
               </div>
               <div className="sm:flex sm:items-start">
                 {type === "info" ? (
-                  <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-neutral-100 p-3 text-neutral-800 sm:mx-0 sm:h-12 sm:w-12">
+                  <div className="mx-auto flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-neutral-100 p-3 text-neutral-800 sm:mx-0 sm:h-12 sm:w-12">
                     <svg
                       className="h-6 w-6"
                       xmlns="http://www.w3.org/2000/svg"
@@ -75,7 +74,7 @@ export default function Modal({ title, description, isOpen, onToggle, onAction, 
                     </svg>
                   </div>
                 ) : (
-                  <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-red-50 sm:mx-0 sm:h-10 sm:w-10">
+                  <div className="mx-auto flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-red-50 sm:mx-0 sm:h-10 sm:w-10">
                     <svg
                       className="h-6 w-6 text-red-900"
                       xmlns="http://www.w3.org/2000/svg"
@@ -116,7 +115,7 @@ export default function Modal({ title, description, isOpen, onToggle, onAction, 
                     type="button"
                     className={`${
                       type === "info" ? "bg-neutral-800 focus:ring-neutral-800" : "bg-red-600 hover:bg-red-700 focus:ring-red-500"
-                    } inline-flex w-full justify-center rounded border border-transparent px-6 py-2 text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm`}
+                    } inline-flex w-full justify-center rounded border border-transparent px-6 py-2 text-base font-medium text-white focus:outline-hidden focus:ring-2 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm`}
                     onClick={onAction}
                   >
                     {action ? action : "Confirm"}
@@ -125,7 +124,7 @@ export default function Modal({ title, description, isOpen, onToggle, onAction, 
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     type="button"
-                    className="mt-3 inline-flex w-full justify-center rounded border border-neutral-300 bg-white px-6 py-2 text-base font-medium text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-800 focus:ring-offset-2 sm:mt-0 sm:w-auto sm:text-sm"
+                    className="mt-3 inline-flex w-full justify-center rounded-sm border border-neutral-300 bg-white px-6 py-2 text-base font-medium text-neutral-700 focus:outline-hidden focus:ring-2 focus:ring-neutral-800 focus:ring-offset-2 sm:mt-0 sm:w-auto sm:text-sm"
                     onClick={onToggle}
                   >
                     Cancel

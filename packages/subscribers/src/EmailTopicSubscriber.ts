@@ -1,4 +1,4 @@
-import { ActionsService, ContactPersistence, EmailPersistence, EventPersistence, ProjectPersistence, rootLogger } from "@sendra/lib";
+import { ActionsService, ContactPersistence, ContactService, EmailPersistence, EventPersistence, ProjectPersistence, rootLogger } from "@sendra/lib";
 import { type DeliveryEvent, DeliveryEventSchema, type Email } from "@sendra/shared";
 import type { SNSEvent, SNSEventRecord } from "aws-lambda";
 import type { Logger } from "pino";
@@ -71,9 +71,13 @@ async function handleEmailEvent(deliveryEvent: DeliveryEvent, email: Email, logg
       logger.info({ contact: email.contact, project: email.project, email: email.id }, "Unsubscribing contact");
       const contact = await contactPersistence.get(email.contact);
       if (contact) {
-        await contactPersistence.put({
-          ...contact,
-          subscribed: false,
+        await ContactService.updateContact({
+          oldContact: contact,
+          newContact: {
+            ...contact,
+            subscribed: false,
+          },
+          contactPersistence,
         });
       }
     }

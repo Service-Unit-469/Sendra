@@ -1,10 +1,10 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { Home, LayoutTemplate, LineChart, LogOut, Send, Settings, TerminalSquare, User, Users2, Workflow } from "lucide-react";
+import { Home, LayoutTemplate, LineChart, LogOut, Send, Settings, TerminalSquare, User, Users2, Workflow, X } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { type ReactElement, useState } from "react";
 import SendraLogo from "../../../icons/SendraLogo";
-import { ProjectSelector } from "../../index";
+import ProjectSelector from "../ProjectSelector/ProjectSelector";
 
 interface SidebarLinkType {
   to: string;
@@ -116,7 +116,7 @@ function SidebarLink({ active, to, text, disabled, highlight, svgPath }: Sidebar
       >
         <div className="flex h-5 w-5 items-center justify-center">{svgPath}</div>
         {text}
-        {highlight && <div className="ml-auto rounded bg-blue-100 px-2 py-0.5 text-xs text-blue-800">New</div>}
+        {highlight && <div className="ml-auto rounded-sm bg-blue-100 px-2 py-0.5 text-xs text-blue-800">New</div>}
       </button>
     );
   }
@@ -131,7 +131,7 @@ function SidebarLink({ active, to, text, disabled, highlight, svgPath }: Sidebar
     >
       <div className="flex h-5 w-5 items-center justify-center">{svgPath}</div>
       {text}
-      {highlight && <div className="ml-auto rounded bg-blue-100 px-2 py-0.5 text-xs text-blue-800">New</div>}
+      {highlight && <div className="ml-auto rounded-sm bg-blue-100 px-2 py-0.5 text-xs text-blue-800">New</div>}
     </Link>
   );
 }
@@ -166,18 +166,16 @@ export default function Sidebar({ mobileOpen, onSidebarVisibilityChange }: Sideb
             <div className="relative flex h-full w-full max-w-xs flex-1 flex-col bg-white">
               <div className="absolute right-0 top-0 -mr-12 pt-2">
                 <button
-                  className="ml-1 flex h-10 w-10 items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+                  className="ml-1 flex h-10 w-10 items-center justify-center rounded-full focus:outline-hidden focus:ring-2 focus:ring-inset focus:ring-white"
                   onClick={() => onSidebarVisibilityChange()}
                 >
                   <span className="sr-only">Close sidebar</span>
-                  <svg className="h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
+                  <X />
                 </button>
               </div>
 
               <div className="h-0 flex-1 overflow-y-auto pb-4 pt-5">
-                <div className="flex flex-shrink-0 items-center px-4">
+                <div className="flex shrink-0 items-center px-4">
                   <Link href={"/"} passHref>
                     <SendraLogo width="100%" height="90px" />
                   </Link>
@@ -216,17 +214,17 @@ export default function Sidebar({ mobileOpen, onSidebarVisibilityChange }: Sideb
               </div>
             </div>
 
-            <div className="w-14 flex-shrink-0" />
+            <div className="w-14 shrink-0" />
           </motion.div>
         )}
       </AnimatePresence>
 
       {/* Static sidebar for desktop */}
-      <div className="hidden md:flex md:flex-shrink-0">
+      <div className="hidden md:flex md:shrink-0">
         <div className="flex w-72 flex-col">
           <div className="flex h-0 flex-1 flex-col border-r border-neutral-100 bg-white px-6">
             <div className="flex flex-1 flex-col overflow-y-auto pb-4 pt-5">
-              <div className="flex flex-shrink-0 items-center justify-center px-4">
+              <div className="flex shrink-0 items-center justify-center px-4">
                 <Link href={"/"} passHref>
                   <SendraLogo width="100%" />
                 </Link>
@@ -292,7 +290,7 @@ export default function Sidebar({ mobileOpen, onSidebarVisibilityChange }: Sideb
             <div className="flex-0 mb-4 w-full space-y-1 bg-white px-2">
               <Link
                 href={"/auth/logout"}
-                className={"flex cursor-pointer items-center gap-x-3 rounded p-2 text-sm font-medium text-neutral-400 transition ease-in-out hover:bg-neutral-50 hover:text-neutral-700"}
+                className={"flex cursor-pointer items-center gap-x-3 rounded-sm p-2 text-sm font-medium text-neutral-400 transition ease-in-out hover:bg-neutral-50 hover:text-neutral-700"}
               >
                 <div className="flex h-5 w-5 items-center justify-center">
                   <LogOut />

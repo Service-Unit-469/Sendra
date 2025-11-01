@@ -3,13 +3,20 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import type { TemplateUpdate } from "@sendra/shared";
 import { TemplateSchemas } from "@sendra/shared";
 import { AnimatePresence, motion } from "framer-motion";
-import { Save, Trash } from "lucide-react";
+import { Copy, Save, Trash } from "lucide-react";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { Card, Dropdown, FullscreenLoader, Input, Toggle, Tooltip } from "../../components";
+import { ErrorAlert } from "../../components/Alert/ErrorAlert";
+import { MenuButton } from "../../components/Buttons/MenuButton";
+import Card from "../../components/Card/Card";
 import { EmailEditor } from "../../components/EmailEditor";
+import Dropdown from "../../components/Input/Dropdown/Dropdown";
+import Input from "../../components/Input/Input/Input";
+import Toggle from "../../components/Input/Toggle/Toggle";
+import FullscreenLoader from "../../components/Utility/FullscreenLoader/FullscreenLoader";
+import Tooltip from "../../components/Utility/Tooltip/Tooltip";
 import { Dashboard } from "../../layouts";
 import { useActiveProject, useActiveProjectIdentity } from "../../lib/hooks/projects";
 import { useTemplate, useTemplates } from "../../lib/hooks/templates";
@@ -155,26 +162,17 @@ export default function Index() {
   return (
     <Dashboard>
       <Card
-        title={"Update your template"}
+        title="Update your template"
         options={
           <>
-            <button onClick={duplicate} className="flex w-full items-center gap-2 px-4 py-2 text-sm text-neutral-700 transition hover:bg-neutral-100" role="menuitem" tabIndex={-1}>
-              <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
-                <path
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="1.5"
-                  d="M6.5 15.25V15.25C5.5335 15.25 4.75 14.4665 4.75 13.5V6.75C4.75 5.64543 5.64543 4.75 6.75 4.75H13.5C14.4665 4.75 15.25 5.5335 15.25 6.5V6.5"
-                />
-                <rect width="10.5" height="10.5" x="8.75" y="8.75" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" rx="2" />
-              </svg>
+            <MenuButton onClick={duplicate}>
+              <Copy size={18} />
               Duplicate
-            </button>
-            <button onClick={remove} className="flex w-full items-center gap-2 px-4 py-2 text-sm text-neutral-700 transition hover:bg-neutral-100" role="menuitem" tabIndex={-1}>
-              <Trash />
+            </MenuButton>
+            <MenuButton onClick={remove}>
+              <Trash size={18} />
               Delete
-            </button>
+            </MenuButton>
           </>
         }
       >
@@ -205,13 +203,6 @@ export default function Index() {
                     </ul>
                   </>
                 }
-                icon={
-                  <>
-                    <path d="M12 16v.01" />
-                    <path d="M12 13a2.003 2.003 0 0 0 .914 -3.782a1.98 1.98 0 0 0 -2.414 .483" />
-                    <circle cx="12" cy="12" r="9" />
-                  </>
-                }
               />
             </label>
             <Dropdown
@@ -222,13 +213,7 @@ export default function Index() {
               ]}
               selectedValue={watch("templateType") ?? ""}
             />
-            <AnimatePresence>
-              {errors.templateType?.message && (
-                <motion.p initial={{ height: 0 }} animate={{ height: "auto" }} exit={{ height: 0 }} className="mt-1 text-xs text-red-500">
-                  {errors.templateType.message}
-                </motion.p>
-              )}
-            </AnimatePresence>
+            <ErrorAlert message={errors.templateType?.message} />
           </div>
 
           <div className={"sm:col-span-6"}>
@@ -239,26 +224,17 @@ export default function Index() {
                   description="Allow simple text input instead of MJML editor. Include {{quickBody}} or {{{quickBody}}} token in your template."
                   toggled={watch("quickEmail") ?? false}
                   onToggle={() => setValue("quickEmail", !watch("quickEmail"))}
-                  className="flex-grow"
+                  className="grow"
                 />
                 <Tooltip
                   content={
                     <>
-                      <p className={"mb-2 text-base font-semibold"}>What is a Quick Email Template?</p>
-                      <p className={"text-sm"}>
-                        Quick email templates allow you to create campaigns with a simple text editor instead of the full MJML editor.
+                      <p className="mb-2 text-base font-semibold">What is a Quick Email Template?</p>
+                      <p className="text-sm">
+                        Quick email templates allow you to create campaigns with a simple text editor instead of the full editor.
                         <br />
-                        <br />
-                        Include <code className="bg-neutral-700 px-1 rounded">{"{{quickBody}}"}</code> or <code className="bg-neutral-700 px-1 rounded">{"{{{quickBody}}}"}</code> in your template
-                        where you want the campaign body to be inserted.
+                        Include <code>{"{{quickBody}}"}</code> or <code>{"{{{quickBody}}}"}</code> in your template where you want the campaign body to be inserted.
                       </p>
-                    </>
-                  }
-                  icon={
-                    <>
-                      <path d="M12 16v.01" />
-                      <path d="M12 13a2.003 2.003 0 0 0 .914 -3.782a1.98 1.98 0 0 0 -2.414 .483" />
-                      <circle cx="12" cy="12" r="9" />
                     </>
                   }
                 />
@@ -293,12 +269,16 @@ export default function Index() {
                 return router.push("/templates");
               }}
               className={
-                "flex w-fit justify-center rounded border border-neutral-300 bg-white px-6 py-2 text-base font-medium text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-800 focus:ring-offset-2 sm:mt-0 sm:w-auto sm:text-sm"
+                "flex w-fit justify-center rounded-sm border border-neutral-300 bg-white px-6 py-2 text-base font-medium text-neutral-700 focus:outline-hidden focus:ring-2 focus:ring-neutral-800 focus:ring-offset-2 sm:mt-0 sm:w-auto sm:text-sm"
               }
             >
               Cancel
             </motion.button>
-            <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.9 }} className={"flex items-center gap-x-2 rounded bg-neutral-800 px-8 py-2 text-center text-sm font-medium text-white"}>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.9 }}
+              className={"flex items-center gap-x-2 rounded-sm bg-neutral-800 px-8 py-2 text-center text-sm font-medium text-white"}
+            >
               <Save strokeWidth={1.5} size={18} />
               Save
             </motion.button>

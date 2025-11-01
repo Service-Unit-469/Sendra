@@ -1,7 +1,7 @@
 import type { Contact } from "@sendra/shared";
 import { Trash } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { Dropdown } from "../Dropdown";
+import Dropdown from "../Dropdown/Dropdown";
 import { type Condition, conditions, type MetadataFilterType } from "./types";
 
 /**
@@ -64,7 +64,7 @@ export default function Filter({
   }, [contacts, filter.field]);
 
   return (
-    <div className="grid w-full grid-cols-8 items-start gap-3 rounded border border-neutral-300 px-6 py-6">
+    <div className="grid w-full grid-cols-8 items-start gap-3 rounded-sm border border-neutral-300 px-6 py-6">
       <div className={"sm:col-span-2"}>
         <Dropdown
           onChange={(e) =>
@@ -108,7 +108,7 @@ export default function Filter({
                 <input
                   autoComplete={"off"}
                   type="text"
-                  className={"block w-full rounded border-neutral-300 transition ease-in-out focus:border-neutral-800 focus:ring-neutral-800 sm:text-sm"}
+                  className={"block w-full rounded-sm border-neutral-300 transition ease-in-out focus:border-neutral-800 focus:ring-neutral-800 sm:text-sm"}
                   aria-label="Value"
                   placeholder="Value"
                   value={filter.value ?? "any value"}
@@ -121,7 +121,7 @@ export default function Filter({
       </div>
 
       <button
-        className={"col-span-1 flex h-10 items-center justify-center rounded bg-red-100 text-sm text-red-800 transition hover:bg-red-200"}
+        className={"col-span-1 flex h-10 items-center justify-center rounded-sm bg-red-100 text-sm text-red-800 transition hover:bg-red-200"}
         onClick={(e) => {
           e.preventDefault();
           onFilterRemove(index);

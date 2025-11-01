@@ -3,7 +3,9 @@ import { Menu } from "lucide-react";
 import { useRouter } from "next/router";
 import type React from "react";
 import { useState } from "react";
-import { FullscreenLoader, Redirect, Sidebar } from "../components";
+import Sidebar from "../components/Navigation/Sidebar/Sidebar";
+import FullscreenLoader from "../components/Utility/FullscreenLoader/FullscreenLoader";
+import Redirect from "../components/Utility/Redirect/Redirect";
 import { useActiveProject, useProjects } from "../lib/hooks/projects";
 import { useUser } from "../lib/hooks/users";
 
@@ -29,14 +31,14 @@ export const Dashboard = (props: { children: React.ReactNode }) => {
       <div className="flex w-0 flex-1 flex-col overflow-hidden">
         <div className="pl-1 pt-1 sm:pl-3 sm:pt-3 md:hidden">
           <button
-            className="focus:ring-azure-500 -ml-0.5 -mt-0.5 inline-flex h-12 w-12 items-center justify-center rounded text-neutral-500 hover:text-neutral-800 focus:outline-none focus:ring-2 focus:ring-inset"
+            className="focus:ring-azure-500 -ml-0.5 -mt-0.5 inline-flex h-12 w-12 items-center justify-center rounded-sm text-neutral-500 hover:text-neutral-800 focus:outline-hidden focus:ring-2 focus:ring-inset"
             onClick={() => setMobileSidebarOpen(true)}
           >
             <span className="sr-only">Open sidebar</span>
             <Menu />
           </button>
         </div>
-        <main className="relative z-0 flex-1 overflow-y-scroll focus:outline-none">
+        <main className="relative z-0 flex-1 overflow-y-scroll focus:outline-hidden">
           <div className="min-h-screen">
             <div className="relative mx-auto min-h-screen">
               <AnimatePresence>

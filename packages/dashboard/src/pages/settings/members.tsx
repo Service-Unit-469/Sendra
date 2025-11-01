@@ -7,7 +7,13 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import type z from "zod";
-import { Card, Dropdown, FullscreenLoader, Input, Modal, SettingTabs, Table } from "../../components";
+import Card from "../../components/Card/Card";
+import Dropdown from "../../components/Input/Dropdown/Dropdown";
+import Input from "../../components/Input/Input/Input";
+import SettingTabs from "../../components/Navigation/SettingTabs/SettingTabs";
+import Modal from "../../components/Overlay/Modal/Modal";
+import Table from "../../components/Table/Table";
+import FullscreenLoader from "../../components/Utility/FullscreenLoader/FullscreenLoader";
 import { Dashboard } from "../../layouts";
 import { useActiveProject, useActiveProjectMemberships, useProjects } from "../../lib/hooks/projects";
 import { useUser } from "../../lib/hooks/users";
@@ -185,7 +191,7 @@ export default function Index() {
               onClick={() => setShowInviteModal(true)}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.9 }}
-              className={"ml-auto mt-4 self-end rounded bg-neutral-800 px-8 py-2.5 text-sm font-medium text-white"}
+              className={"ml-auto mt-4 self-end rounded-sm bg-neutral-800 px-8 py-2.5 text-sm font-medium text-white"}
             >
               Invite user
             </motion.button>

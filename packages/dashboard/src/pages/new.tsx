@@ -3,12 +3,14 @@ import type { ProjectCreate, PublicProject } from "@sendra/shared";
 import { ProjectSchemas } from "@sendra/shared";
 import { AnimatePresence, motion } from "framer-motion";
 import { useAtom } from "jotai";
+import { LoaderCircle, Rocket } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { useForm, useFormState } from "react-hook-form";
 import Shared from "../../public/assets/shared.svg";
-import { FullscreenLoader, Redirect } from "../components";
+import FullscreenLoader from "../components/Utility/FullscreenLoader/FullscreenLoader";
+import Redirect from "../components/Utility/Redirect/Redirect";
 import { atomActiveProject } from "../lib/atoms/project";
 import { useProjects } from "../lib/hooks/projects";
 import { useUser } from "../lib/hooks/users";
@@ -91,7 +93,7 @@ export default function Index() {
                   <input
                     autoComplete={"off"}
                     type="text"
-                    className={"block w-full rounded border-neutral-300 transition ease-in-out focus:border-neutral-800 focus:ring-neutral-800 sm:text-sm"}
+                    className={"block w-full rounded-sm border-neutral-300 transition ease-in-out focus:border-neutral-800 focus:ring-neutral-800 sm:text-sm"}
                     placeholder="My project"
                     {...register("name")}
                   />
@@ -138,30 +140,13 @@ export default function Index() {
                   whileTap={isValid ? { scale: 0.9 } : {}}
                   type="submit"
                   disabled={!isValid || submitted}
-                  className={` ${isValid ? "bg-neutral-800 text-white" : "bg-neutral-200 text-white"} mt-5 flex w-full items-center justify-center rounded py-2.5 text-sm font-medium transition`}
+                  className={` ${isValid ? "bg-neutral-800 text-white" : "bg-neutral-200 text-white"} mt-5 flex w-full items-center justify-center rounded-sm py-2.5 text-sm font-medium transition`}
                 >
                   {submitted ? (
-                    <svg className="-ml-1 mr-3 h-6 w-6 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                    </svg>
+                    <LoaderCircle className="animate-spin" size={18} />
                   ) : (
                     <span className={"flex items-center justify-center gap-x-2"}>
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        strokeWidth="1.5"
-                        stroke="currentColor"
-                        fill="none"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path d="M4 13a8 8 0 0 1 7 7a6 6 0 0 0 3 -5a9 9 0 0 0 6 -8a3 3 0 0 0 -3 -3a9 9 0 0 0 -8 6a6 6 0 0 0 -5 3" />
-                        <path d="M7 14a6 6 0 0 0 -3 6a6 6 0 0 0 6 -3" />
-                        <circle cx="15" cy="9" r="1" />
-                      </svg>
+                      <Rocket size={18} />
                       Launch
                     </span>
                   )}
@@ -179,7 +164,7 @@ export default function Index() {
           </div>
         </div>
       </div>
-      <div className="relative hidden w-0 flex-1 items-center justify-center bg-gradient-to-br from-blue-50 to-white lg:flex">
+      <div className="relative hidden w-0 flex-1 items-center justify-center bg-linear-to-br from-blue-50 to-white lg:flex">
         <div className={"w-full max-w-lg rounded-2xl border border-neutral-200 bg-white p-9"}>
           <Shared />
         </div>

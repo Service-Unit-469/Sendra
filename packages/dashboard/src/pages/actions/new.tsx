@@ -2,11 +2,17 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import type { Action, ActionCreate } from "@sendra/shared";
 import { ActionSchemas } from "@sendra/shared";
 import { AnimatePresence, motion } from "framer-motion";
+import { Plus } from "lucide-react";
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
 import { type FieldError, useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { Card, Dropdown, FullscreenLoader, Input, MultiselectDropdown, Toggle } from "../../components";
+import Card from "../../components/Card/Card";
+import Dropdown from "../../components/Input/Dropdown/Dropdown";
+import Input from "../../components/Input/Input/Input";
+import MultiselectDropdown from "../../components/Input/MultiselectDropdown/MultiselectDropdown";
+import Toggle from "../../components/Input/Toggle/Toggle";
+import FullscreenLoader from "../../components/Utility/FullscreenLoader/FullscreenLoader";
 import { Dashboard } from "../../layouts";
 import { useActions } from "../../lib/hooks/actions";
 import { useEventTypes } from "../../lib/hooks/events";
@@ -168,7 +174,7 @@ export default function Index() {
                   type={"number"}
                   autoComplete={"off"}
                   min={0}
-                  className={"block w-full rounded border-neutral-300 transition ease-in-out focus:border-neutral-800 focus:ring-neutral-800 sm:text-sm"}
+                  className={"block w-full rounded-sm border-neutral-300 transition ease-in-out focus:border-neutral-800 focus:ring-neutral-800 sm:text-sm"}
                   placeholder={"0"}
                   value={delay.delay}
                   onChange={(e) =>
@@ -216,17 +222,18 @@ export default function Index() {
                 return router.push("/actions");
               }}
               className={
-                "flex w-fit justify-center rounded border border-neutral-300 bg-white px-6 py-2 text-base font-medium text-neutral-700 focus:outline-none focus:ring-2 focus:ring-neutral-800 focus:ring-offset-2 sm:mt-0 sm:w-auto sm:text-sm"
+                "flex w-fit justify-center rounded-sm border border-neutral-300 bg-white px-6 py-2 text-base font-medium text-neutral-700 focus:outline-hidden focus:ring-2 focus:ring-neutral-800 focus:ring-offset-2 sm:mt-0 sm:w-auto sm:text-sm"
               }
             >
               Cancel
             </motion.button>
 
-            <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.9 }} className={"flex items-center gap-x-0.5 rounded bg-neutral-800 px-8 py-2 text-center text-sm font-medium text-white"}>
-              <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
-                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 5.75V18.25" />
-                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M18.25 12L5.75 12" />
-              </svg>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.9 }}
+              className={"flex items-center gap-x-0.5 rounded-sm bg-neutral-800 px-8 py-2 text-center text-sm font-medium text-white"}
+            >
+              <Plus size={18} />
               Create
             </motion.button>
           </div>

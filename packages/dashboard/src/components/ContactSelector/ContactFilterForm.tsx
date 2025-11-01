@@ -1,9 +1,12 @@
 import type { Contact } from "@sendra/shared";
 import { motion } from "framer-motion";
+import { Plus } from "lucide-react";
 import { useMemo, useState } from "react";
-import { MetadataFilterEditor, type MetadataFilterGroupType, Skeleton } from "../../components";
 import { useEventTypes } from "../../lib/hooks/events";
 import { useActiveProject } from "../../lib/hooks/projects";
+import MetadataFilterEditor from "../Input/MetadataFilter/Editor";
+import type { MetadataFilterGroupType } from "../Input/MetadataFilter/types";
+import Skeleton from "../Skeleton/Skeleton";
 import useFilterContacts from "./filter";
 
 /**
@@ -33,12 +36,9 @@ export default function ContactFilterForm({ contacts, onSelect }: { contacts: Co
           }}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.9 }}
-          className={"ml-auto flex items-center justify-center gap-x-0.5 rounded bg-neutral-800 px-8 py-2 text-center text-sm font-medium text-white"}
+          className={"ml-auto flex items-center justify-center gap-x-0.5 rounded-sm bg-neutral-800 px-8 py-2 text-center text-sm font-medium text-white"}
         >
-          <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
-            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 5.75V18.25" />
-            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M18.25 12L5.75 12" />
-          </svg>
+          <Plus size={18} />
           Select {filteredContacts.length} contacts
         </motion.button>
       </div>

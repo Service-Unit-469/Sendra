@@ -1,5 +1,6 @@
 import type { Action, Contact, Email, Membership, ProjectIdentity, ProjectKeys, PublicProject } from "@sendra/shared";
 import { useAtom } from "jotai";
+import { useMemo } from "react";
 import useSWR from "swr";
 import { atomActiveProject } from "../atoms/project";
 
@@ -14,24 +15,24 @@ export function useProjects() {
  *
  */
 export function useActiveProject(): PublicProject | null {
-  const [activeProject, setActiveProject] = useAtom(atomActiveProject);
+  const [activeProjectId, setActiveProjectId] = useAtom(atomActiveProject);
   const { data: projects } = useProjects();
 
-  if (!projects) {
-    return null;
-  }
+  const activeProject = useMemo(() => {
+    if (!projects || projects.length === 0) {
+      return null;
+    }
 
-  if (activeProject && !projects.find((project) => project.id === activeProject)) {
-    setActiveProject(null);
-    window.localStorage.removeItem("project");
-  }
+    let foundProject = projects.find((project) => project.id === activeProjectId);
+    if (!foundProject && projects.length > 0) {
+      foundProject = projects[0];
+      window.localStorage.setItem("project", foundProject.id);
+      setActiveProjectId(foundProject.id);
+    }
+    return foundProject ?? null;
+  }, [projects, activeProjectId, setActiveProjectId]);
 
-  if (!activeProject && projects.length > 0) {
-    setActiveProject(projects[0].id);
-    window.localStorage.setItem("project", projects[0].id);
-  }
-
-  return projects.find((project) => project.id === activeProject) ?? null;
+  return activeProject;
 }
 
 /**

@@ -9,14 +9,15 @@ import Router, { useRouter } from "next/router";
 import NProgress from "nprogress";
 import { Toaster } from "sonner";
 import { SWRConfig } from "swr";
-import { apiFetcher } from "../lib/api-client";
 import "nprogress/nprogress.css";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 import duration from "dayjs/plugin/duration";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { FullscreenLoader, Redirect } from "../components";
+import FullscreenLoader from "../components/Utility/FullscreenLoader/FullscreenLoader";
+import Redirect from "../components/Utility/Redirect/Redirect";
 import { NO_AUTH_ROUTES } from "../lib/constants";
 import { useUser } from "../lib/hooks/users";
+import { network } from "../lib/network";
 
 dayjs.extend(relativeTime);
 dayjs.extend(utc);
@@ -66,7 +67,7 @@ export default function WithProviders(props: AppProps) {
   return (
     <SWRConfig
       value={{
-        fetcher: apiFetcher,
+        fetcher: network.fetch,
         revalidateOnFocus: true,
       }}
     >

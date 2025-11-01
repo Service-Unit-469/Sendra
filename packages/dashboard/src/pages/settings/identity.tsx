@@ -1,12 +1,19 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { IdentitySchemas, type ProjectIdentity } from "@sendra/shared";
 import { motion } from "framer-motion";
-import { Copy, Unlink } from "lucide-react";
+import { Copy, Plus, Unlink } from "lucide-react";
 import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import type z from "zod";
-import { Alert, Badge, Card, Dropdown, FullscreenLoader, Input, SettingTabs, Table } from "../../components";
+import Alert from "../../components/Alert/Alert";
+import Badge from "../../components/Badge/Badge";
+import Card from "../../components/Card/Card";
+import Dropdown from "../../components/Input/Dropdown/Dropdown";
+import Input from "../../components/Input/Input/Input";
+import SettingTabs from "../../components/Navigation/SettingTabs/SettingTabs";
+import Table from "../../components/Table/Table";
+import FullscreenLoader from "../../components/Utility/FullscreenLoader/FullscreenLoader";
 import { Dashboard } from "../../layouts";
 import { AWS_REGION } from "../../lib/constants";
 import { useActiveProject, useActiveProjectIdentity, useProjects } from "../../lib/hooks/projects";
@@ -138,7 +145,7 @@ export default function Index() {
         description="By sending emails from your own domain you build up domain authority and trust."
         actions={
           activeProject.email && (
-            <button onClick={unlink} className={"flex items-center gap-x-2 rounded bg-red-600 px-8 py-2 text-center text-sm font-medium text-white transition ease-in-out hover:bg-red-700"}>
+            <button onClick={unlink} className={"flex items-center gap-x-2 rounded-sm bg-red-600 px-8 py-2 text-center text-sm font-medium text-white transition ease-in-out hover:bg-red-700"}>
               <Unlink strokeWidth={1.5} size={18} />
               Unlink domain
             </button>
@@ -267,12 +274,9 @@ export default function Index() {
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.9 }}
-              className={"ml-auto flex items-center gap-x-0.5 rounded bg-neutral-800 px-8 py-2 text-center text-sm font-medium text-white"}
+              className={"ml-auto flex items-center gap-x-0.5 rounded-sm bg-neutral-800 px-8 py-2 text-center text-sm font-medium text-white"}
             >
-              <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
-                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M12 5.75V18.25" />
-                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M18.25 12L5.75 12" />
-              </svg>
+              <Plus size={18} />
               Verify identity
             </motion.button>
           </form>
@@ -292,7 +296,7 @@ export default function Index() {
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.9 }}
-            className={"ml-auto flex items-center gap-x-0.5 rounded bg-neutral-800 px-8 py-2 text-center text-sm font-medium text-white"}
+            className={"ml-auto flex items-center gap-x-0.5 rounded-sm bg-neutral-800 px-8 py-2 text-center text-sm font-medium text-white"}
           >
             Save
           </motion.button>

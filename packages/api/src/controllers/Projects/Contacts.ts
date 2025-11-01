@@ -1,5 +1,5 @@
 import { createRoute, z } from "@hono/zod-openapi";
-import { ContactPersistence } from "@sendra/lib";
+import { ContactPersistence, ContactService } from "@sendra/lib";
 import { ContactSchema, ContactSchemas, EmailSchema, EventSchema } from "@sendra/shared";
 import type { AppType } from "../../app";
 import { HttpException, NotFound } from "../../exceptions";
@@ -71,8 +71,11 @@ export const registerContactsRoutes = (app: AppType) => {
         throw new NotFound("contact");
       }
 
-      const updatedContact = { ...contact, subscribed: true };
-      await contactPersistence.put(updatedContact);
+      const updatedContact = await ContactService.updateContact({
+        oldContact: contact,
+        newContact: { ...contact, subscribed: true },
+        contactPersistence,
+      });
 
       return c.json(updatedContact, 200);
     },

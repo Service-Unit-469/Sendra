@@ -3,7 +3,7 @@ import { Ring } from "@uiball/loaders";
 import { AnimatePresence, motion } from "framer-motion";
 import { Search, Users2, XIcon } from "lucide-react";
 import { useState } from "react";
-import { MultiselectDropdown } from "../Input";
+import MultiselectDropdown from "../Input/MultiselectDropdown/MultiselectDropdown";
 import ContactFilterForm from "./ContactFilterForm";
 
 export default function ContactSelector({
@@ -67,7 +67,7 @@ export default function ContactSelector({
                     setSelectedContacts(contacts.filter((c) => c.subscribed));
                   }}
                   className={
-                    "mt-6 flex items-center justify-center gap-x-1 rounded border border-neutral-300 bg-white px-8 py-1 text-center text-sm font-medium text-neutral-800 transition ease-in-out hover:bg-neutral-100"
+                    "mt-6 flex items-center justify-center gap-x-1 rounded-sm border border-neutral-300 bg-white px-8 py-1 text-center text-sm font-medium text-neutral-800 transition ease-in-out hover:bg-neutral-100"
                   }
                 >
                   {selectedContacts.length === 0 ? <Users2 size={18} /> : <XIcon size={18} />}
@@ -79,7 +79,7 @@ export default function ContactSelector({
                     setAdvancedSelector(!advancedSelector);
                   }}
                   className={
-                    "mt-6 flex items-center justify-center gap-x-1 rounded border border-neutral-300 bg-white px-8 py-1 text-center text-sm font-medium text-neutral-800 transition ease-in-out hover:bg-neutral-100"
+                    "mt-6 flex items-center justify-center gap-x-1 rounded-sm border border-neutral-300 bg-white px-8 py-1 text-center text-sm font-medium text-neutral-800 transition ease-in-out hover:bg-neutral-100"
                   }
                 >
                   {advancedSelector ? <XIcon size={18} /> : <Search size={18} />}
@@ -96,7 +96,7 @@ export default function ContactSelector({
                 animate={{ opacity: 1, height: "auto" }}
                 exit={{ opacity: 0, height: 0 }}
                 transition={{ duration: 0.2 }}
-                className="grid gap-6 sm:col-span-6 sm:grid-cols-4 relative z-20 rounded border border-neutral-300 px-6 py-6"
+                className="grid gap-6 sm:col-span-6 sm:grid-cols-4 relative z-20 rounded-sm border border-neutral-300 px-6 py-6"
               >
                 <ContactFilterForm contacts={contacts} onSelect={(contacts) => setSelectedContacts(contacts)} />
               </motion.div>
@@ -105,7 +105,7 @@ export default function ContactSelector({
         </>
       )}
       {!contacts && !disabled && (
-        <div className={"flex items-center gap-6 rounded border border-neutral-300 px-8 py-3 sm:col-span-6"}>
+        <div className={"flex items-center gap-6 rounded-sm border border-neutral-300 px-8 py-3 sm:col-span-6"}>
           <Ring size={20} />
           <div>
             <h1 className={"text-lg font-semibold text-neutral-800"}>Hang on!</h1>

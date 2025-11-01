@@ -1,6 +1,5 @@
 export interface BadgeProps {
   type: "info" | "danger" | "warning" | "success" | "purple";
-  children: string;
 }
 
 const styles = {
@@ -16,8 +15,8 @@ const styles = {
  * @param root0.type
  * @param root0.children
  */
-export default function Badge({ type = "info", children }: BadgeProps) {
-  const classNames = ["inline-flex items-center px-2 py-0.5 rounded text-xs font-medium"];
+export default function Badge({ type = "info", children }: React.ComponentProps<"span"> & BadgeProps) {
+  const classNames = ["inline-flex items-center px-2 py-0.5 rounded-sm text-xs font-medium"];
   classNames.push(styles[type]);
 
   return <span className={classNames.join(" ")}>{children}</span>;

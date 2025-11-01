@@ -1,4 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
+import { EllipsisVertical } from "lucide-react";
 import React, { type MutableRefObject, useEffect, useState } from "react";
 
 export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -38,7 +39,7 @@ export default function Card({ title, description, children, className, actions,
   }, [ref, optionsOpen]);
 
   return (
-    <div className={`rounded border border-neutral-200 bg-white px-8 py-4 ${className}`}>
+    <div className={`rounded-sm border border-neutral-200 bg-white px-8 py-4 ${className}`}>
       <div className={"flex items-center"}>
         <div className={"flex w-full flex-col gap-3 md:flex-row md:items-center"}>
           <div>
@@ -61,9 +62,7 @@ export default function Card({ title, description, children, className, actions,
               >
                 <span className="sr-only">Open options</span>
 
-                <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                  <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
-                </svg>
+                <EllipsisVertical size={18} />
               </button>
             </div>
 
@@ -74,7 +73,7 @@ export default function Card({ title, description, children, className, actions,
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.9 }}
                   transition={{ duration: 0.1 }}
-                  className="absolute right-0 z-50 mt-2 w-56 origin-top-right rounded-md bg-white p-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                  className="absolute right-0 z-50 mt-2 w-56 origin-top-right rounded-md bg-white p-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-hidden"
                   role="menu"
                   aria-orientation="vertical"
                   aria-labelledby="menu-button"

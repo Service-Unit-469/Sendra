@@ -1,9 +1,16 @@
 import dayjs from "dayjs";
-import { motion } from "framer-motion";
 import { Edit2, Plus } from "lucide-react";
 import Link from "next/link";
 import { useCallback, useMemo, useState } from "react";
-import { Card, ContactForm, Dropdown, Empty, FullscreenLoader, Modal, Skeleton, Table } from "../../components";
+import { BlackButton } from "../../components/Buttons/BlackButton";
+import Card from "../../components/Card/Card";
+import { ContactForm } from "../../components/ContactForm/ContactForm";
+import Dropdown from "../../components/Input/Dropdown/Dropdown";
+import Modal from "../../components/Overlay/Modal/Modal";
+import Skeleton from "../../components/Skeleton/Skeleton";
+import Table from "../../components/Table/Table";
+import Empty from "../../components/Utility/Empty/Empty";
+import FullscreenLoader from "../../components/Utility/FullscreenLoader/FullscreenLoader";
 import { Dashboard } from "../../layouts";
 import { useContacts } from "../../lib/hooks/contacts";
 import { useActiveProject } from "../../lib/hooks/projects";
@@ -78,7 +85,7 @@ export default function Index() {
                     "Last Updated": dayjs().to(u.updatedAt).toString(),
                     Subscribed: u.subscribed,
                     Edit: (
-                      <Link href={`/contacts/${u.id}`} className="transition hover:text-neutral-800">
+                      <Link href={`/contacts/${u.id}`} className="transition hover:text-neutral-800" aria-label="Edit contact">
                         <Edit2 size={18} />
                       </Link>
                     ),
@@ -93,7 +100,7 @@ export default function Index() {
               </div>
               <div className="flex flex-1 justify-between gap-1 sm:justify-end">
                 {hasMore && (
-                  <button onClick={() => setSize(size + 1)} className={"flex w-28 items-center justify-center gap-x-0.5 rounded bg-neutral-800 py-2 text-center text-sm font-medium text-white"}>
+                  <button onClick={() => setSize(size + 1)} className={"flex w-28 items-center justify-center gap-x-0.5 rounded-sm bg-neutral-800 py-2 text-center text-sm font-medium text-white"}>
                     Load More
                   </button>
                 )}
@@ -122,10 +129,12 @@ export default function Index() {
                 autoComplete="off"
                 type="search"
                 placeholder="Filter contacts"
-                className="rounded border-neutral-300 transition ease-in-out focus:border-neutral-800 focus:ring-neutral-800 sm:text-sm"
+                className="rounded-sm border-neutral-300 transition ease-in-out focus:border-neutral-800 focus:ring-neutral-800 sm:text-sm"
+                aria-label="Filter contacts by email"
               />
 
               <Dropdown
+                ariaLabel="Filter contacts by status"
                 onChange={(v) => setStatusFilter(v)}
                 values={[
                   { name: "All", value: "all" },
@@ -134,16 +143,10 @@ export default function Index() {
                 ]}
                 selectedValue={statusFilter}
               />
-
-              <motion.button
-                onClick={() => setContactModal(true)}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.9 }}
-                className={"flex items-center justify-center gap-x-1 rounded bg-neutral-800 px-8 py-2 text-center text-sm font-medium text-white"}
-              >
+              <BlackButton onClick={() => setContactModal(true)}>
                 <Plus strokeWidth={1.5} size={18} />
                 New
-              </motion.button>
+              </BlackButton>
             </div>
           }
         >

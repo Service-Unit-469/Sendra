@@ -2,12 +2,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { type UserGet, type UserReset, UserSchemas } from "@sendra/shared";
 import SendraLogo from "dashboard/src/icons/SendraLogo";
 import { AnimatePresence, motion } from "framer-motion";
-import { CheckCircle, Eye, EyeOff } from "lucide-react";
+import { CheckCircle, Eye, EyeOff, LoaderCircle } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { FullscreenLoader } from "../../components";
+import FullscreenLoader from "../../components/Utility/FullscreenLoader/FullscreenLoader";
 import { network } from "../../lib/network";
 
 /**
@@ -75,21 +75,21 @@ export default function Index() {
             <h2 className="mt-6 text-3xl font-extrabold text-neutral-800">Reset password</h2>
           </div>
           <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-            <div className="rounded border border-neutral-200 bg-white px-4 py-8 sm:px-10">
+            <div className="rounded-sm border border-neutral-200 bg-white px-4 py-8 sm:px-10">
               <form onSubmit={handleSubmit(resetPassword)} className="space-y-6">
                 <div>
-                  <label htmlFor={"email"} className="block text-sm font-medium text-neutral-700">
+                  <label className="block text-sm font-medium text-neutral-700">
                     Your Email
+                    <div className="mt-1">
+                      <input
+                        type={"email"}
+                        className={"block w-full rounded-sm border-neutral-300 transition ease-in-out focus:border-neutral-800 focus:ring-neutral-800 sm:text-sm"}
+                        autoComplete={"email"}
+                        placeholder={"hello@email.com"}
+                        {...register("email")}
+                      />
+                    </div>
                   </label>
-                  <div className="mt-1">
-                    <input
-                      type={"email"}
-                      className={"block w-full rounded border-neutral-300 transition ease-in-out focus:border-neutral-800 focus:ring-neutral-800 sm:text-sm"}
-                      autoComplete={"email"}
-                      placeholder={"hello@email.com"}
-                      {...register("email")}
-                    />
-                  </div>
                   <AnimatePresence>
                     {errors.email?.message && (
                       <motion.p initial={{ height: 0 }} animate={{ height: "auto" }} exit={{ height: 0 }} className="mt-1 text-xs text-red-500">
@@ -99,17 +99,17 @@ export default function Index() {
                   </AnimatePresence>
                 </div>
                 <div>
-                  <label htmlFor={"code"} className="block text-sm font-medium text-neutral-700">
+                  <label className="block text-sm font-medium text-neutral-700">
                     Verification Code
+                    <div className="mt-1">
+                      <input
+                        type={"text"}
+                        className={"block w-full rounded-sm border-neutral-300 transition ease-in-out focus:border-neutral-800 focus:ring-neutral-800 sm:text-sm"}
+                        autoComplete={"off"}
+                        {...register("code")}
+                      />
+                    </div>
                   </label>
-                  <div className="mt-1">
-                    <input
-                      type={"text"}
-                      className={"block w-full rounded border-neutral-300 transition ease-in-out focus:border-neutral-800 focus:ring-neutral-800 sm:text-sm"}
-                      autoComplete={"off"}
-                      {...register("code")}
-                    />
-                  </div>
                   <AnimatePresence>
                     {errors.code?.message && (
                       <motion.p initial={{ height: 0 }} animate={{ height: "auto" }} exit={{ height: 0 }} className="mt-1 text-xs text-red-500">
@@ -119,21 +119,21 @@ export default function Index() {
                   </AnimatePresence>
                 </div>
                 <div>
-                  <label htmlFor={"password"} className="block text-sm font-semibold text-neutral-600">
+                  <label className="block text-sm font-semibold text-neutral-600">
                     New password
-                  </label>
-                  <div className="relative mt-1">
-                    <input
-                      type={hidePassword ? "password" : "text"}
-                      placeholder={hidePassword ? "•••••••••••••" : "Password"}
-                      autoComplete={"new-password"}
-                      className={"block w-full rounded border-neutral-300 transition ease-in-out focus:border-neutral-800 focus:ring-neutral-800 sm:text-sm"}
-                      {...register("password")}
-                    />
-                    <div className="absolute inset-y-0 right-0 flex cursor-pointer items-center pr-3">
-                      {hidePassword ? <Eye onClick={() => setHidePassword(!hidePassword)} /> : <EyeOff onClick={() => setHidePassword(!hidePassword)} />}
+                    <div className="relative mt-1">
+                      <input
+                        type={hidePassword ? "password" : "text"}
+                        placeholder={hidePassword ? "•••••••••••••" : "Password"}
+                        autoComplete={"new-password"}
+                        className={"block w-full rounded-sm border-neutral-300 transition ease-in-out focus:border-neutral-800 focus:ring-neutral-800 sm:text-sm"}
+                        {...register("password")}
+                      />
+                      <div className="absolute inset-y-0 right-0 flex cursor-pointer items-center pr-3">
+                        {hidePassword ? <Eye onClick={() => setHidePassword(!hidePassword)} /> : <EyeOff onClick={() => setHidePassword(!hidePassword)} />}
+                      </div>
                     </div>
-                  </div>
+                  </label>
                   <AnimatePresence>
                     {errors.password?.message && (
                       <motion.p initial={{ height: 0 }} animate={{ height: "auto" }} exit={{ height: 0 }} className="mt-1 text-xs text-red-500">
@@ -150,14 +150,7 @@ export default function Index() {
                     type="submit"
                     className={"flex w-full items-center justify-center rounded-md bg-neutral-800 py-2.5 text-sm font-medium text-white"}
                   >
-                    {state === "loading" ? (
-                      <svg className="-ml-1 mr-3 h-5 w-5 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                      </svg>
-                    ) : (
-                      "Change password"
-                    )}
+                    {state === "loading" ? <LoaderCircle className="animate-spin" size={18} /> : "Change password"}
                   </motion.button>
                 </div>
               </form>

@@ -24,7 +24,7 @@ export default function Tabs({ links }: TabProps) {
         <select
           id="tabs"
           name="tabs"
-          className="focus:ring-mirage-500 focus:border-mirage-500 block w-full rounded border-neutral-300 py-2 pl-3 pr-10 text-base focus:outline-none sm:text-sm"
+          className="focus:ring-mirage-500 focus:border-mirage-500 block w-full rounded-sm border-neutral-300 py-2 pl-3 pr-10 text-base focus:outline-hidden sm:text-sm"
           onChange={(e) => router.push(e.target.value)}
         >
           {links.map((link) => (

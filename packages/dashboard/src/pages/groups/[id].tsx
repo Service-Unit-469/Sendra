@@ -1,7 +1,10 @@
 import { Trash } from "lucide-react";
 import { useRouter } from "next/router";
 import { toast } from "sonner";
-import { Card, FullscreenLoader, GroupForm } from "../../components";
+import { MenuButton } from "../../components/Buttons/MenuButton";
+import Card from "../../components/Card/Card";
+import { GroupForm } from "../../components/GroupForm/Form";
+import FullscreenLoader from "../../components/Utility/FullscreenLoader/FullscreenLoader";
 import { Dashboard } from "../../layouts";
 import { useGroup } from "../../lib/hooks/groups";
 import { useActiveProject } from "../../lib/hooks/projects";
@@ -36,10 +39,10 @@ export default function Index() {
       <Card
         title={group.name}
         options={
-          <button onClick={remove} className="flex w-full items-center gap-2 px-4 py-2 text-sm text-neutral-700 transition hover:bg-neutral-100" role="menuitem" tabIndex={-1}>
-            <Trash />
+          <MenuButton onClick={remove}>
+            <Trash size={18} />
             Delete
-          </button>
+          </MenuButton>
         }
       >
         <div className="space-y-6">

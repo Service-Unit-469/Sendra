@@ -2,13 +2,21 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ActionSchemas, type ActionUpdate } from "@sendra/shared";
 import dayjs from "dayjs";
 import { AnimatePresence, motion } from "framer-motion";
-import { Save, Trash } from "lucide-react";
+import { Edit3, Save, Trash, Workflow } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
 import { type FieldError, useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { Badge, Card, Dropdown, Empty, FullscreenLoader, Input, MultiselectDropdown, Toggle } from "../../components";
+import Badge from "../../components/Badge/Badge";
+import { MenuButton } from "../../components/Buttons/MenuButton";
+import Card from "../../components/Card/Card";
+import Dropdown from "../../components/Input/Dropdown/Dropdown";
+import Input from "../../components/Input/Input/Input";
+import MultiselectDropdown from "../../components/Input/MultiselectDropdown/MultiselectDropdown";
+import Toggle from "../../components/Input/Toggle/Toggle";
+import Empty from "../../components/Utility/Empty/Empty";
+import FullscreenLoader from "../../components/Utility/FullscreenLoader/FullscreenLoader";
 import { Dashboard } from "../../layouts";
 import { useAction, useActions, useRelatedActions } from "../../lib/hooks/actions";
 import { useEventTypes } from "../../lib/hooks/events";
@@ -46,7 +54,7 @@ export default function Index() {
     reset,
     setValue,
   } = useForm({
-    defaultValues: { events: [], notevents: [], name: "", template: "", delay: 0, runOnce: false },
+    defaultValues: { events: [] as string[], notevents: [] as string[], name: "", template: "", delay: 0, runOnce: false },
     resolver: zodResolver(ActionSchemas.update.omit({ id: true })),
   });
 
@@ -134,11 +142,11 @@ export default function Index() {
     <Dashboard>
       <Card
         title={"Edit your action"}
-        actions={
-          <button onClick={remove} className="flex w-full items-center gap-2 px-4 py-2 text-sm text-neutral-800 transition hover:bg-neutral-100" role="menuitem" tabIndex={-1}>
-            <Trash />
+        options={
+          <MenuButton onClick={remove}>
+            <Trash size={18} />
             Delete
-          </button>
+          </MenuButton>
         }
       >
         <form onSubmit={handleSubmit(updateAction)} className="mx-auto my-3 max-w-xl space-y-6">
@@ -221,18 +229,9 @@ export default function Index() {
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.9 }}
-                  className={"flex h-full w-full items-center justify-center gap-x-1 rounded border border-neutral-300 bg-white text-center text-sm font-medium text-neutral-800"}
+                  className={"flex h-full w-full items-center justify-center gap-x-1 rounded-sm border border-neutral-300 bg-white text-center text-sm font-medium text-neutral-800"}
                 >
-                  <svg className={"h-5 w-5"} fill="none" viewBox="0 0 24 24">
-                    <path
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="1.5"
-                      d="M4.75 19.25L9 18.25L18.2929 8.95711C18.6834 8.56658 18.6834 7.93342 18.2929 7.54289L16.4571 5.70711C16.0666 5.31658 15.4334 5.31658 15.0429 5.70711L5.75 15L4.75 19.25Z"
-                    />
-                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19.25 19.25H13.75" />
-                  </svg>
+                  <Edit3 />
                   Edit
                 </motion.button>
               </Link>
@@ -249,7 +248,7 @@ export default function Index() {
                   type={"number"}
                   autoComplete={"off"}
                   min={0}
-                  className={"block w-full rounded border-neutral-300 transition ease-in-out focus:border-neutral-800 focus:ring-neutral-800 sm:text-sm"}
+                  className={"block w-full rounded-sm border-neutral-300 transition ease-in-out focus:border-neutral-800 focus:ring-neutral-800 sm:text-sm"}
                   placeholder={"0"}
                   value={delay.delay}
                   onChange={(e) =>
@@ -297,13 +296,17 @@ export default function Index() {
                 return router.push("/actions");
               }}
               className={
-                "flex w-fit justify-center rounded border border-neutral-300 bg-white px-6 py-2 text-base font-medium text-neutral-800 focus:outline-none focus:ring-2 focus:ring-neutral-800 focus:ring-offset-2 sm:mt-0 sm:w-auto sm:text-sm"
+                "flex w-fit justify-center rounded-sm border border-neutral-300 bg-white px-6 py-2 text-base font-medium text-neutral-800 focus:outline-hidden focus:ring-2 focus:ring-neutral-800 focus:ring-offset-2 sm:mt-0 sm:w-auto sm:text-sm"
               }
             >
               Cancel
             </motion.button>
 
-            <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.9 }} className={"flex items-center gap-x-2 rounded bg-neutral-800 px-8 py-2 text-center text-sm font-medium text-white"}>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.9 }}
+              className={"flex items-center gap-x-2 rounded-sm bg-neutral-800 px-8 py-2 text-center text-sm font-medium text-white"}
+            >
               <Save strokeWidth={1.5} size={18} />
               Save
             </motion.button>
@@ -326,16 +329,10 @@ export default function Index() {
               .map((r) => {
                 return (
                   <Link href={`/actions/${r.id}`} key={r.id}>
-                    <div className={"flex items-center gap-6 rounded border border-solid border-neutral-200 bg-white px-8 py-4"}>
+                    <div className={"flex items-center gap-6 rounded-sm border border-solid border-neutral-200 bg-white px-8 py-4"}>
                       <div>
-                        <span className="inline-flex rounded bg-neutral-100 p-4 text-neutral-800 ring-4 ring-white">
-                          <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                            <path strokeWidth={"1.5"} d="M16 21h3c.81 0 1.48 -.67 1.48 -1.48l.02 -.02c0 -.82 -.69 -1.5 -1.5 -1.5h-3v3z" />
-                            <path strokeWidth={"1.5"} d="M16 15h2.5c.84 -.01 1.5 .66 1.5 1.5s-.66 1.5 -1.5 1.5h-2.5v-3z" />
-                            <path strokeWidth={"1.5"} d="M4 9v-4c0 -1.036 .895 -2 2 -2s2 .964 2 2v4" />
-                            <path strokeWidth={"1.5"} d="M2.99 11.98a9 9 0 0 0 9 9m9 -9a9 9 0 0 0 -9 -9" />
-                            <path strokeWidth={"1.5"} d="M8 7h-4" />
-                          </svg>
+                        <span className="inline-flex rounded-sm bg-neutral-100 p-4 text-neutral-800 ring-4 ring-white">
+                          <Workflow size={18} />
                         </span>
                       </div>
                       <div className={"text-sm"}>

@@ -15,12 +15,12 @@
 	},
 	"devDependencies": {
 		"@sendra/test": "*",
-		"@types/aws-lambda": "^8.10.155",
+		"@types/aws-lambda": "^8.10.157",
 		"ts-node-dev": "^2.0.0",
 		"typescript": "^5.5.3"
 	},
 	"dependencies": {
-		"@aws-sdk/client-sns": "^3.490.0",
+		"@aws-sdk/client-sns": "^3.922.0",
 		"@sendra/lib": "1.0.0"
 	}
 }

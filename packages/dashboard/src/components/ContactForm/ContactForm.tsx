@@ -2,7 +2,9 @@ import type { ContactCreate } from "@sendra/shared";
 import { motion } from "framer-motion";
 import { Save } from "lucide-react";
 import { useState } from "react";
-import { ContactMetadataForm, Input, Toggle } from "../";
+import { ContactMetadataForm } from "../ContactMetadataForm/ContactMetadataForm";
+import Input from "../Input/Input/Input";
+import Toggle from "../Input/Toggle/Toggle";
 import { useContactForm } from "./useContactForm";
 
 export type ContactFormProps = {
@@ -59,7 +61,7 @@ export function ContactForm({ projectId, contactId, onSuccess, initialData, show
           type="submit"
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.9 }}
-          className={"ml-auto mt-6 flex items-center gap-x-2 rounded bg-neutral-800 px-6 py-2 text-center text-sm font-medium text-white"}
+          className={"ml-auto mt-6 flex items-center gap-x-2 rounded-sm bg-neutral-800 px-6 py-2 text-center text-sm font-medium text-white"}
         >
           <Save strokeWidth={1.5} size={18} />
           {submitButtonText}

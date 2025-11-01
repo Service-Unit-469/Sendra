@@ -1,18 +1,26 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { defaultTemplate } from "@sendra/shared";
-import { useTemplates } from "dashboard/src/lib/hooks/templates";
-import { network } from "dashboard/src/lib/network";
-import { motion } from "framer-motion";
-import { Plus, Save, Send } from "lucide-react";
+import { Edit2, Eye, Plus, Save, Send } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import z from "zod";
-import { Badge, Card, Dropdown, Empty, FullscreenLoader, Input, Modal, Skeleton } from "../../components";
+import { ErrorAlert } from "../../components/Alert/ErrorAlert";
+import Badge from "../../components/Badge/Badge";
+import { BlackButton } from "../../components/Buttons/BlackButton";
+import Card from "../../components/Card/Card";
+import Dropdown from "../../components/Input/Dropdown/Dropdown";
+import Input from "../../components/Input/Input/Input";
+import Modal from "../../components/Overlay/Modal/Modal";
+import Skeleton from "../../components/Skeleton/Skeleton";
+import Empty from "../../components/Utility/Empty/Empty";
+import FullscreenLoader from "../../components/Utility/FullscreenLoader/FullscreenLoader";
 import { Dashboard } from "../../layouts";
 import { useCampaignsWithEmails } from "../../lib/hooks/campaigns";
 import { useActiveProject } from "../../lib/hooks/projects";
+import { useTemplates } from "../../lib/hooks/templates";
+import { network } from "../../lib/network";
 
 const createCampaignFormSchema = z.object({
   subject: z.string().min(1, "Subject is required"),
@@ -37,7 +45,7 @@ export default function Index() {
     resolver: zodResolver(createCampaignFormSchema),
     defaultValues: {
       subject: "",
-      template: undefined,
+      template: undefined as string | undefined,
     },
   });
 
@@ -83,42 +91,32 @@ export default function Index() {
           <div>
             <label htmlFor="template" className={"text-sm font-medium text-neutral-700"}>
               Template
+              <Dropdown
+                className={"w-full"}
+                values={[{ name: "Default Template", value: "" }, ...templates.map((t) => ({ name: t.subject, value: t.id }))]}
+                selectedValue={watch("template") ?? ""}
+                onChange={(v) => setValue("template", v)}
+              />
+              <ErrorAlert message={errors.template?.message} />
             </label>
-            <br />
-            <Dropdown
-              className={"w-full"}
-              values={[{ name: "Default Template", value: "" }, ...templates.map((t) => ({ name: t.subject, value: t.id }))]}
-              selectedValue={watch("template") ?? ""}
-              onChange={(v) => setValue("template", v)}
-            />
           </div>
 
           <div className={"col-span-2 ml-auto flex justify-end gap-x-5"}>
-            <motion.button
-              type="submit"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.9 }}
-              className={"ml-auto mt-6 flex items-center gap-x-2 rounded bg-neutral-800 px-6 py-2 text-center text-sm font-medium text-white"}
-            >
+            <BlackButton>
               <Save strokeWidth={1.5} size={18} />
               Create Campaign
-            </motion.button>
+            </BlackButton>
           </div>
         </form>
       </Modal>
       <Card
-        title={"Campaigns"}
-        description={"Send your contacts emails in bulk with a few clicks"}
+        title="Campaigns"
+        description="Send your contacts emails in bulk with a few clicks"
         actions={
-          <motion.button
-            onClick={() => setNewCampaignModal(true)}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.9 }}
-            className={"flex items-center gap-x-1 rounded bg-neutral-800 px-8 py-2 text-center text-sm font-medium text-white"}
-          >
+          <BlackButton>
             <Plus strokeWidth={1.5} size={18} />
             New
-          </motion.button>
+          </BlackButton>
         }
       >
         {campaigns ? (
@@ -126,9 +124,9 @@ export default function Index() {
             <div className={"grid grid-cols-1 gap-6 sm:grid-cols-2"}>
               {campaigns.map((c) => {
                 return (
-                  <div className="col-span-1 divide-y divide-neutral-200 rounded border border-neutral-200 bg-white" key={c.id}>
+                  <div className="col-span-1 divide-y divide-neutral-200 rounded-sm border border-neutral-200 bg-white" key={c.id}>
                     <div className="flex w-full items-center justify-between space-x-6 p-6">
-                      <span className="inline-flex rounded bg-neutral-100 p-3 text-neutral-800 ring-4 ring-white">
+                      <span className="inline-flex rounded-sm bg-neutral-100 p-3 text-neutral-800 ring-4 ring-white">
                         <Send size={20} />
                       </span>
                       <div className="flex-1 truncate">
@@ -206,32 +204,7 @@ export default function Index() {
                             href={`/campaigns/${c.id}`}
                             className="relative inline-flex w-0 flex-1 items-center justify-center rounded-bl rounded-br py-4 text-sm font-medium text-neutral-800 transition hover:bg-neutral-50 hover:text-neutral-700"
                           >
-                            <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
-                              {c.status === "DELIVERED" ? (
-                                <>
-                                  <path
-                                    stroke="currentColor"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth="1.5"
-                                    d="M19.25 12C19.25 13 17.5 18.25 12 18.25C6.5 18.25 4.75 13 4.75 12C4.75 11 6.5 5.75 12 5.75C17.5 5.75 19.25 11 19.25 12Z"
-                                  />
-                                  <circle cx="12" cy="12" r="2.25" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
-                                </>
-                              ) : (
-                                <>
-                                  <path
-                                    stroke="currentColor"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth="1.5"
-                                    d="M4.75 19.25L9 18.25L18.2929 8.95711C18.6834 8.56658 18.6834 7.93342 18.2929 7.54289L16.4571 5.70711C16.0666 5.31658 15.4334 5.31658 15.0429 5.70711L5.75 15L4.75 19.25Z"
-                                  />
-                                  <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19.25 19.25H13.75" />
-                                </>
-                              )}
-                            </svg>
-
+                            {c.status === "DELIVERED" ? <Eye size={18} /> : <Edit2 size={18} />}
                             <span className="ml-3">{c.status === "DELIVERED" ? "View" : "Edit"}</span>
                           </Link>
                         </div>
