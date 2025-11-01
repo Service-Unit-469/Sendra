@@ -81,3 +81,21 @@ export type UserVerify = z.infer<typeof UserSchemas.verify>;
 export type UserReset = z.infer<typeof UserSchemas.reset>;
 export type UserRequestReset = z.infer<typeof UserSchemas.requestReset>;
 export type UserGet = z.infer<typeof UserSchemas.get>;
+
+/**
+ * Out-of-the-box event types that are automatically tracked by the system.
+ * These events are always available and should not be added to project.eventTypes.
+ */
+export const OOTB_EVENTS = {
+  SUBSCRIBE: "subscribe",
+  UNSUBSCRIBE: "unsubscribe",
+  EMAIL_DELIVERY: "email.delivery",
+  EMAIL_BOUNCE: "email.bounce",
+  EMAIL_COMPLAINT: "email.complaint",
+  EMAIL_OPEN: "email.open",
+  EMAIL_CLICK: "email.click",
+  EMAIL_REJECT: "email.reject",
+} as const;
+
+export const OOTB_EVENT_VALUES: readonly string[] = Object.values(OOTB_EVENTS);
+export type OOTBEvent = (typeof OOTB_EVENTS)[keyof typeof OOTB_EVENTS];

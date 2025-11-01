@@ -1,4 +1,4 @@
-import type { Contact, Project } from "@sendra/shared";
+import { type Contact, OOTB_EVENT_VALUES, type Project } from "@sendra/shared";
 import { rootLogger } from "../logging";
 import { ActionPersistence, EventPersistence, ProjectPersistence, TemplatePersistence } from "../persistence";
 import { TaskQueue } from "./TaskQueue";
@@ -57,7 +57,8 @@ export class ActionsService {
         continue;
       }
 
-      if (!project.eventTypes.includes(eventType)) {
+      // Only add custom event types to project.eventTypes (skip out-of-the-box events)
+      if (!OOTB_EVENT_VALUES.includes(eventType) && !project.eventTypes.includes(eventType)) {
         logger.info({ projectId: project.id, eventType }, "Adding event type to project");
         const projectPersistence = new ProjectPersistence();
         project.eventTypes.push(eventType);
