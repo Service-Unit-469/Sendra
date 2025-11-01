@@ -11,10 +11,9 @@ import { toast } from "sonner";
 import { ErrorAlert } from "../../components/Alert/ErrorAlert";
 import { MenuButton } from "../../components/Buttons/MenuButton";
 import Card from "../../components/Card/Card";
-import { EmailEditor } from "../../components/EmailEditor";
 import Dropdown from "../../components/Input/Dropdown/Dropdown";
 import Input from "../../components/Input/Input/Input";
-import Toggle from "../../components/Input/Toggle/Toggle";
+import { MJMLEditor } from "../../components/MJMLEditor";
 import FullscreenLoader from "../../components/Utility/FullscreenLoader/FullscreenLoader";
 import Tooltip from "../../components/Utility/Tooltip/Tooltip";
 import { Dashboard } from "../../layouts";
@@ -81,12 +80,6 @@ export default function Index() {
   const update = (data: Omit<TemplateUpdate, "id">) => {
     if (data.email?.trim() === "") {
       delete data.email;
-    }
-
-    // Validate quickEmail templates have the quickBody token
-    if (data.quickEmail && !data.body.match(/\{\{\{?quickBody\}?\}\}/)) {
-      toast.error("Quick email templates must include {{quickBody}} or {{{quickBody}}} token in the body");
-      return;
     }
 
     toast.promise(
@@ -216,32 +209,6 @@ export default function Index() {
             <ErrorAlert message={errors.templateType?.message} />
           </div>
 
-          <div className={"sm:col-span-6"}>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Toggle
-                  title="Quick Email Template"
-                  description="Allow simple text input instead of MJML editor. Include {{quickBody}} or {{{quickBody}}} token in your template."
-                  toggled={watch("quickEmail") ?? false}
-                  onToggle={() => setValue("quickEmail", !watch("quickEmail"))}
-                  className="grow"
-                />
-                <Tooltip
-                  content={
-                    <>
-                      <p className="mb-2 text-base font-semibold">What is a Quick Email Template?</p>
-                      <p className="text-sm">
-                        Quick email templates allow you to create campaigns with a simple text editor instead of the full editor.
-                        <br />
-                        Include <code>{"{{quickBody}}"}</code> or <code>{"{{{quickBody}}}"}</code> in your template where you want the campaign body to be inserted.
-                      </p>
-                    </>
-                  }
-                />
-              </div>
-            </div>
-          </div>
-
           {projectIdentity?.identity?.verified && <Input className={"sm:col-span-3"} label={"Sender Email"} placeholder={`${project.email}`} register={register("email")} error={errors.email} />}
 
           {projectIdentity?.identity?.verified && (
@@ -249,7 +216,7 @@ export default function Index() {
           )}
 
           <div className={"sm:col-span-6"}>
-            <EmailEditor initialValue={template.body} onChange={(value) => setValue("body", value)} />
+            <MJMLEditor initialValue={template.body} onChange={(value) => setValue("body", value)} />
 
             <AnimatePresence>
               {errors.body?.message && (

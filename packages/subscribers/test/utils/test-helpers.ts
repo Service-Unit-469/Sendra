@@ -99,6 +99,9 @@ export const createTestAction = async (projectId: string, templateId: string) =>
  * @returns The created campaign
  */
 export const createTestCampaign = async (projectId: string) => {
+	// Create a default template for the campaign
+	const template = await createTestTemplate(projectId);
+	
 	const campaignPersistence = new CampaignPersistence(projectId);
 	return await campaignPersistence.create({
 		project: projectId,
@@ -106,6 +109,7 @@ export const createTestCampaign = async (projectId: string) => {
 		body: "<p>Test campaign body</p>",
 		recipients: [],
 		status: "DRAFT",
+		template: template.id,
 	});
 };
 

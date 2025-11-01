@@ -6,6 +6,7 @@ import {
   EmailService,
   EventPersistence,
   getEmailConfig,
+  injectContentIntoTemplate,
   ProjectPersistence,
   rootLogger,
   TemplatePersistence,
@@ -96,24 +97,17 @@ export const sendEmail = async (task: SendEmailTask, recordId: string) => {
     email = project.identity?.verified && project.email ? (campaign.email ?? project.email) : emailConfig.defaultEmail;
     name = campaign.from ?? project.from ?? project.name;
 
-    // Check if campaign uses a quick email template
-    if (campaign.template) {
-      const template = await templatePersistence.get(campaign.template);
-      if (template?.quickEmail) {
-        // Merge campaign body into template's {{quickBody}} or {{{quickBody}}} token
-        body = template.body.replace(/\{\{\{?quickBody\}?\}\}/g, campaign.body);
-        subject = campaign.subject;
-        logger.info({ templateId: template.id, templateSubject: template.subject }, "Using quick email template");
-      } else {
-        // Regular campaign with template reference but not a quick email
-        body = campaign.body;
-        subject = campaign.subject;
-      }
-    } else {
-      // Regular campaign without template
-      body = campaign.body;
-      subject = campaign.subject;
+    // Get the template (required for campaigns)
+    const template = await templatePersistence.get(campaign.template);
+    if (!template) {
+      logger.warn({ templateId: campaign.template }, "Template not found for campaign");
+      return;
     }
+
+    // Inject campaign body (Editor.js JSON) into template's {{body}} token
+    body = injectContentIntoTemplate(template.body, campaign.body);
+    subject = campaign.subject;
+    logger.info({ templateId: template.id }, "Injecting campaign content into template");
   }
 
   logger.info({ subject: body, body: body.length }, "Compiling subject and body");

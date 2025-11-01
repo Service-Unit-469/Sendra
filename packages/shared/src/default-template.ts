@@ -34,61 +34,10 @@ export const defaultTemplate = `<mjml>
       </mj-column>
     </mj-section>
 
-    <!-- Main Content Section -->
+    <!-- Main Content Section - Campaign content will be injected here -->
     <mj-section background-color="#ffffff" padding="40px 25px">
       <mj-column>
-        <mj-text font-size="16px" color="#111827" padding-bottom="15px">
-          Hi {{contact.data.firstName}},
-        </mj-text>
-        <mj-text font-size="14px" padding-bottom="15px">
-          Thank you for joining our community! We're thrilled to have you here and can't wait to share amazing content with you.
-        </mj-text>
-        <mj-text font-size="14px" padding-bottom="15px">
-          Here's what you can expect from us:
-        </mj-text>
-        <mj-text padding-bottom="10px">
-          <ul style="margin: 0; padding-left: 20px;">
-            <li style="margin-bottom: 8px;">Regular updates and insights</li>
-            <li style="margin-bottom: 8px;">Exclusive offers and early access</li>
-            <li style="margin-bottom: 8px;">Helpful tips and resources</li>
-          </ul>
-        </mj-text>
-      </mj-column>
-    </mj-section>
-
-    <!-- Call to Action -->
-    <mj-section background-color="#ffffff" padding="0 25px 40px">
-      <mj-column>
-        <mj-button 
-          background-color="#2563eb" 
-          color="#ffffff" 
-          font-size="16px" 
-          font-weight="bold"
-          border-radius="6px"
-          padding="15px 30px"
-          href="https://example.com">
-          Get Started
-        </mj-button>
-      </mj-column>
-    </mj-section>
-
-    <!-- Divider -->
-    <mj-section background-color="#ffffff" padding="0 25px">
-      <mj-column>
-        <mj-divider border-width="1px" border-color="#e5e7eb" />
-      </mj-column>
-    </mj-section>
-
-    <!-- Additional Content Section -->
-    <mj-section background-color="#ffffff" padding="30px 25px">
-      <mj-column>
-        <mj-text font-size="14px">
-          If you have any questions or need assistance, don't hesitate to reach out. We're here to help!
-        </mj-text>
-        <mj-text font-size="14px" padding-top="15px">
-          Best regards,<br/>
-          The {{project.name}} Team
-        </mj-text>
+        {{body}}
       </mj-column>
     </mj-section>
 

@@ -7,7 +7,6 @@ export const TemplateSchema = ProjectEntitySchema.extend({
   email: email.optional().or(z.literal("")),
   from: z.string().optional(),
   templateType: z.enum(SEND_TYPES).default(SEND_TYPES[0]),
-  quickEmail: z.boolean().default(false),
 });
 
 export const TemplateSchemas = {

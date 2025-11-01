@@ -8,7 +8,7 @@ export const CampaignSchema = ProjectEntitySchema.extend({
   from: z.string().optional(),
   recipients: z.array(id),
   groups: z.array(id).optional(),
-  template: id.optional(),
+  template: id, // Required: campaigns must use a template with {{body}} token
 
   status: z.enum(["DRAFT", "DELIVERED"]).default("DRAFT"),
 });

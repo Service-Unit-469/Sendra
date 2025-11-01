@@ -1,5 +1,4 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { defaultTemplate } from "@sendra/shared";
 import { Edit2, Eye, Plus, Save, Send } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
@@ -54,16 +53,13 @@ export default function Index() {
   }
 
   const createCampaign = async (data: z.infer<typeof createCampaignFormSchema>) => {
-    const selectedTemplate = templates.find((t) => t.id === data.template);
-    const isQuickEmail = selectedTemplate?.quickEmail ?? false;
-
     toast.promise(
       network.fetch(`/projects/${project.id}/campaigns`, {
         method: "POST",
         body: {
           subject: data.subject,
           template: data.template || undefined,
-          body: isQuickEmail ? "" : (selectedTemplate?.body ?? defaultTemplate),
+          body: "",
           recipients: [],
           groups: [],
         },
@@ -113,7 +109,7 @@ export default function Index() {
         title="Campaigns"
         description="Send your contacts emails in bulk with a few clicks"
         actions={
-          <BlackButton>
+          <BlackButton onClick={() => setNewCampaignModal(true)}>
             <Plus strokeWidth={1.5} size={18} />
             New
           </BlackButton>

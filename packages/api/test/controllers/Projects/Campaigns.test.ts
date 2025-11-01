@@ -12,6 +12,7 @@ import { AuthService } from "../../../src/services/AuthService";
 import {
   createTestContact,
   createTestSetup,
+  createTestTemplate,
 } from "../../utils/test-helpers";
 
 // Mock the EmailService methods
@@ -32,11 +33,13 @@ describe("Campaigns Endpoint Contract Tests", () => {
     test("should successfully create a new campaign", async () => {
       const { project, token } = await createTestSetup();
       const contact = await createTestContact(project.id);
+      const template = await createTestTemplate(project.id);
 
       const campaignPayload = {
         subject: "Test Campaign Subject",
         body: "This is the campaign body content",
         recipients: [contact.id],
+        template: template.id,
       };
 
       const response = await app.request(`/projects/${project.id}/campaigns`, {
@@ -56,6 +59,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
         subject: "Test Campaign Subject",
         body: "This is the campaign body content",
         recipients: [contact.id],
+        template: template.id,
         status: "DRAFT",
         project: project.id,
         createdAt: expect.any(String),
@@ -67,11 +71,13 @@ describe("Campaigns Endpoint Contract Tests", () => {
       const { project, token } = await createTestSetup();
       const contact1 = await createTestContact(project.id);
       const contact2 = await createTestContact(project.id);
+      const template = await createTestTemplate(project.id);
 
       const campaignPayload = {
         subject: "Multi-Recipient Campaign",
         body: "Campaign for multiple recipients",
         recipients: [contact1.id, contact2.id],
+        template: template.id,
       };
 
       const response = await app.request(`/projects/${project.id}/campaigns`, {
@@ -96,11 +102,13 @@ describe("Campaigns Endpoint Contract Tests", () => {
       await createTestContact(project.id);
       await createTestContact(project.id);
       await createTestContact(project.id);
+      const template = await createTestTemplate(project.id);
 
       const campaignPayload = {
         subject: "All Recipients Campaign",
         body: "Campaign for all contacts",
         recipients: ["all"],
+        template: template.id,
       };
 
       const response = await app.request(`/projects/${project.id}/campaigns`, {
@@ -120,11 +128,13 @@ describe("Campaigns Endpoint Contract Tests", () => {
 
     test("should create campaign with email addresses and auto-create contacts", async () => {
       const { project, token } = await createTestSetup();
+      const template = await createTestTemplate(project.id);
 
       const campaignPayload = {
         subject: "Email Address Campaign",
         body: "Campaign with email addresses",
         recipients: ["newcontact@example.com"],
+        template: template.id,
       };
 
       const response = await app.request(`/projects/${project.id}/campaigns`, {
@@ -151,11 +161,13 @@ describe("Campaigns Endpoint Contract Tests", () => {
     test("should return 400 when subject exceeds 70 characters", async () => {
       const { project, token } = await createTestSetup();
       const contact = await createTestContact(project.id);
+      const template = await createTestTemplate(project.id);
 
       const campaignPayload = {
         subject: "A".repeat(71),
         body: "Campaign body",
         recipients: [contact.id],
+        template: template.id,
       };
 
       const response = await app.request(`/projects/${project.id}/campaigns`, {
@@ -173,11 +185,13 @@ describe("Campaigns Endpoint Contract Tests", () => {
     test("should return 401 when no authentication is provided", async () => {
       const { project } = await createTestSetup();
       const contact = await createTestContact(project.id);
+      const template = await createTestTemplate(project.id);
 
       const campaignPayload = {
         subject: "Unauthorized Campaign",
         body: "Campaign body",
         recipients: [contact.id],
+        template: template.id,
       };
 
       const response = await app.request(`/projects/${project.id}/campaigns`, {
@@ -196,6 +210,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
     test("should successfully get a campaign by id", async () => {
       const { project, token } = await createTestSetup();
       const contact = await createTestContact(project.id);
+      const template = await createTestTemplate(project.id);
 
       const campaignPersistence = new CampaignPersistence(project.id);
       const campaign = await campaignPersistence.create({
@@ -203,6 +218,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
         subject: "Get Campaign Test",
         body: "Test campaign body",
         recipients: [contact.id],
+        template: template.id,
         status: "DRAFT",
       });
 
@@ -221,6 +237,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
         subject: "Get Campaign Test",
         body: "Test campaign body",
         recipients: [contact.id],
+        template: template.id,
         status: "DRAFT",
         project: project.id,
       });
@@ -258,6 +275,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
     test("should list campaigns with pagination", async () => {
       const { project, token } = await createTestSetup();
       const contact = await createTestContact(project.id);
+      const template = await createTestTemplate(project.id);
 
       const campaignPersistence = new CampaignPersistence(project.id);
 
@@ -267,6 +285,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
         subject: "Campaign 1",
         body: "Body 1",
         recipients: [contact.id],
+        template: template.id,
         status: "DRAFT",
       });
       await campaignPersistence.create({
@@ -274,6 +293,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
         subject: "Campaign 2",
         body: "Body 2",
         recipients: [contact.id],
+        template: template.id,
         status: "DRAFT",
       });
 
@@ -297,6 +317,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
     test("should list campaigns with limit parameter", async () => {
       const { project, token } = await createTestSetup();
       const contact = await createTestContact(project.id);
+      const template = await createTestTemplate(project.id);
 
       const campaignPersistence = new CampaignPersistence(project.id);
 
@@ -307,6 +328,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
           subject: `Campaign ${i}`,
           body: `Body ${i}`,
           recipients: [contact.id],
+          template: template.id,
           status: "DRAFT",
         });
       }
@@ -355,6 +377,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
     test("should list all campaigns without pagination", async () => {
       const { project, token } = await createTestSetup();
       const contact = await createTestContact(project.id);
+      const template = await createTestTemplate(project.id);
 
       const campaignPersistence = new CampaignPersistence(project.id);
 
@@ -364,6 +387,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
         subject: "All Campaign 1",
         body: "Body 1",
         recipients: [contact.id],
+        template: template.id,
         status: "DRAFT",
       });
       const campaign2 = await campaignPersistence.create({
@@ -371,6 +395,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
         subject: "All Campaign 2",
         body: "Body 2",
         recipients: [contact.id],
+        template: template.id,
         status: "DELIVERED",
       });
 
@@ -407,6 +432,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
     test("should successfully update a campaign", async () => {
       const { project, token } = await createTestSetup();
       const contact = await createTestContact(project.id);
+      const template = await createTestTemplate(project.id);
 
       const campaignPersistence = new CampaignPersistence(project.id);
       const campaign = await campaignPersistence.create({
@@ -414,6 +440,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
         subject: "Original Subject",
         body: "Original Body",
         recipients: [contact.id],
+        template: template.id,
         status: "DRAFT",
       });
 
@@ -422,6 +449,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
         subject: "Updated Subject",
         body: "Updated Body",
         recipients: [contact.id],
+        template: template.id,
         status: "DRAFT",
       };
 
@@ -442,6 +470,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
         subject: "Updated Subject",
         body: "Updated Body",
         recipients: [contact.id],
+        template: template.id,
         project: project.id,
       });
     });
@@ -450,6 +479,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
       const { project, token } = await createTestSetup();
       const contact1 = await createTestContact(project.id);
       const contact2 = await createTestContact(project.id);
+      const template = await createTestTemplate(project.id);
 
       const campaignPersistence = new CampaignPersistence(project.id);
       const campaign = await campaignPersistence.create({
@@ -457,6 +487,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
         subject: "Update Recipients Test",
         body: "Test Body",
         recipients: [contact1.id],
+        template: template.id,
         status: "DRAFT",
       });
 
@@ -465,6 +496,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
         subject: "Update Recipients Test",
         body: "Test Body",
         recipients: [contact1.id, contact2.id],
+        template: template.id,
         status: "DRAFT",
       };
 
@@ -488,6 +520,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
     test("should return 400 when id in body does not match url", async () => {
       const { project, token } = await createTestSetup();
       const contact = await createTestContact(project.id);
+      const template = await createTestTemplate(project.id);
 
       const campaignPersistence = new CampaignPersistence(project.id);
       const campaign = await campaignPersistence.create({
@@ -495,6 +528,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
         subject: "Test Subject",
         body: "Test Body",
         recipients: [contact.id],
+        template: template.id,
         status: "DRAFT",
       });
 
@@ -503,6 +537,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
         subject: "Updated Subject",
         body: "Updated Body",
         recipients: [contact.id],
+        template: template.id,
         status: "DRAFT",
       };
 
@@ -524,12 +559,14 @@ describe("Campaigns Endpoint Contract Tests", () => {
     test("should return 404 when campaign does not exist", async () => {
       const { project, token } = await createTestSetup();
       const contact = await createTestContact(project.id);
+      const template = await createTestTemplate(project.id);
 
       const updatePayload = {
         id: "non-existent-id",
         subject: "Updated Subject",
         body: "Updated Body",
         recipients: [contact.id],
+        template: template.id,
         status: "DRAFT",
       };
 
@@ -548,12 +585,14 @@ describe("Campaigns Endpoint Contract Tests", () => {
     test("should return 401 when no authentication is provided", async () => {
       const { project } = await createTestSetup();
       const contact = await createTestContact(project.id);
+      const template = await createTestTemplate(project.id);
 
       const updatePayload = {
         id: "some-id",
         subject: "Updated Subject",
         body: "Updated Body",
         recipients: [contact.id],
+        template: template.id,
         status: "DRAFT",
       };
 
@@ -573,6 +612,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
     test("should successfully delete a campaign", async () => {
       const { project, token } = await createTestSetup();
       const contact = await createTestContact(project.id);
+      const template = await createTestTemplate(project.id);
 
       const campaignPersistence = new CampaignPersistence(project.id);
       const campaign = await campaignPersistence.create({
@@ -580,6 +620,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
         subject: "Campaign to Delete",
         body: "Test Body",
         recipients: [contact.id],
+        template: template.id,
         status: "DRAFT",
       });
 
@@ -612,13 +653,15 @@ describe("Campaigns Endpoint Contract Tests", () => {
     test("should successfully send a test campaign (live=false)", async () => {
       const { project, token, user } = await createTestSetup();
       const contact = await createTestContact(project.id);
+      const template = await createTestTemplate(project.id);
 
       const campaignPersistence = new CampaignPersistence(project.id);
       const campaign = await campaignPersistence.create({
         project: project.id,
         subject: "Test Campaign",
-        body: "Test Body",
+        body: JSON.stringify({ blocks: [] }),
         recipients: [contact.id],
+        template: template.id,
         status: "DRAFT",
       });
 
@@ -646,13 +689,15 @@ describe("Campaigns Endpoint Contract Tests", () => {
     test("should successfully send a live campaign (live=true)", async () => {
       const { project, token } = await createTestSetup();
       const contact = await createTestContact(project.id);
+      const template = await createTestTemplate(project.id);
 
       const campaignPersistence = new CampaignPersistence(project.id);
       const campaign = await campaignPersistence.create({
         project: project.id,
         subject: "Live Campaign",
-        body: "Live Body",
+        body: JSON.stringify({ blocks: [] }),
         recipients: [contact.id],
+        template: template.id,
         status: "DRAFT",
       });
 
@@ -687,13 +732,15 @@ describe("Campaigns Endpoint Contract Tests", () => {
     test("should send live campaign with delay", async () => {
       const { project, token } = await createTestSetup();
       const contact = await createTestContact(project.id);
+      const template = await createTestTemplate(project.id);
 
       const campaignPersistence = new CampaignPersistence(project.id);
       const campaign = await campaignPersistence.create({
         project: project.id,
         subject: "Delayed Campaign",
-        body: "Delayed Body",
+        body: JSON.stringify({ blocks: [] }),
         recipients: [contact.id],
+        template: template.id,
         status: "DRAFT",
       });
 
@@ -722,13 +769,15 @@ describe("Campaigns Endpoint Contract Tests", () => {
         createTestContact(project.id),
         createTestContact(project.id),
       ]);
+      const template = await createTestTemplate(project.id);
 
       const campaignPersistence = new CampaignPersistence(project.id);
       const campaign = await campaignPersistence.create({
         project: project.id,
         subject: "Multi-Recipient Campaign",
-        body: "Multi-Recipient Body",
+        body: JSON.stringify({ blocks: [] }),
         recipients: contacts.map((c) => c.id),
+        template: template.id,
         status: "DRAFT",
       });
 
@@ -758,13 +807,15 @@ describe("Campaigns Endpoint Contract Tests", () => {
 
     test("should return 400 when sending live campaign with no recipients", async () => {
       const { project, token } = await createTestSetup();
+      const template = await createTestTemplate(project.id);
 
       const campaignPersistence = new CampaignPersistence(project.id);
       const campaign = await campaignPersistence.create({
         project: project.id,
         subject: "Empty Recipients Campaign",
-        body: "Test Body",
+        body: JSON.stringify({ blocks: [] }),
         recipients: [],
+        template: template.id,
         status: "DRAFT",
       });
 
@@ -839,6 +890,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
     test("should allow access with valid secret key", async () => {
       const { project } = await createTestSetup();
       const contact = await createTestContact(project.id);
+      const template = await createTestTemplate(project.id);
 
       // Create a proper secret token using AuthService
       const secretToken = AuthService.createProjectToken(project.secret, "secret", project.id);
@@ -847,6 +899,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
         subject: "Secret Key Campaign",
         body: "Campaign created with secret key",
         recipients: [contact.id],
+        template: template.id,
       };
 
       const response = await app.request(`/projects/${project.id}/campaigns`, {
@@ -864,11 +917,13 @@ describe("Campaigns Endpoint Contract Tests", () => {
     test("should deny access with invalid secret key format", async () => {
       const { project } = await createTestSetup();
       const contact = await createTestContact(project.id);
+      const template = await createTestTemplate(project.id);
 
       const campaignPayload = {
         subject: "Invalid Secret Campaign",
         body: "Campaign body",
         recipients: [contact.id],
+        template: template.id,
       };
 
       const response = await app.request(`/projects/${project.id}/campaigns`, {
@@ -884,24 +939,15 @@ describe("Campaigns Endpoint Contract Tests", () => {
     });
   });
 
-  describe("Quick Email Campaign Tests", () => {
-    test("should create a campaign with a quick email template reference", async () => {
+  describe("Campaign with Template Tests", () => {
+    test("should create a campaign with a template reference", async () => {
       const { project, token } = await createTestSetup();
       const contact = await createTestContact(project.id);
-
-      // Create a quick email template
-      const templatePersistence = new TemplatePersistence(project.id);
-      const template = await templatePersistence.create({
-        project: project.id,
-        subject: "Quick Email Template",
-        body: "<mjml><mj-body><mj-section><mj-column><mj-text>{{{quickBody}}}</mj-text></mj-column></mj-section></mj-body></mjml>",
-        templateType: "MARKETING",
-        quickEmail: true,
-      });
+      const template = await createTestTemplate(project.id);
 
       const campaignPayload = {
-        subject: "Test Quick Email Campaign",
-        body: "This is the quick email body that will be inserted",
+        subject: "Campaign with Template",
+        body: JSON.stringify({ blocks: [] }),
         recipients: [contact.id],
         template: template.id,
       };
@@ -920,8 +966,8 @@ describe("Campaigns Endpoint Contract Tests", () => {
       const data = await response.json();
       expect(data).toMatchObject({
         id: expect.any(String),
-        subject: "Test Quick Email Campaign",
-        body: "This is the quick email body that will be inserted",
+        subject: "Campaign with Template",
+        body: JSON.stringify({ blocks: [] }),
         template: template.id,
         recipients: [contact.id],
         status: "DRAFT",
@@ -929,25 +975,15 @@ describe("Campaigns Endpoint Contract Tests", () => {
       });
     });
 
-    test("should create campaign with empty body when using quick email template", async () => {
+    test("should require template field when creating campaign", async () => {
       const { project, token } = await createTestSetup();
       const contact = await createTestContact(project.id);
 
-      // Create a quick email template
-      const templatePersistence = new TemplatePersistence(project.id);
-      const template = await templatePersistence.create({
-        project: project.id,
-        subject: "Quick Email Template 2",
-        body: "<mjml><mj-body><mj-section><mj-column><mj-text>Header</mj-text><mj-text>{{quickBody}}</mj-text></mj-column></mj-section></mj-body></mjml>",
-        templateType: "TRANSACTIONAL",
-        quickEmail: true,
-      });
-
       const campaignPayload = {
-        subject: "Quick Email",
-        body: "",
+        subject: "Campaign without Template",
+        body: JSON.stringify({ blocks: [] }),
         recipients: [contact.id],
-        template: template.id,
+        // No template field
       };
 
       const response = await app.request(`/projects/${project.id}/campaigns`, {
@@ -959,7 +995,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
         body: JSON.stringify(campaignPayload),
       });
 
-      expect(response.status).toBe(201);
+      expect(response.status).toBe(400);
     });
   });
 });

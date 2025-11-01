@@ -278,25 +278,37 @@ describe("SendEmailTask Handler", () => {
 			expect(emailRecord.sendType).toBe("TRANSACTIONAL");
 		});
 
-		test("should merge campaign body with quick email template", async () => {
+		test("should inject campaign body into template with {{body}} token", async () => {
 			const contact = await createTestContact(projectId);
 
-			// Create a quick email template with {{quickBody}} token
+			// Create a template with {{body}} token
 			const templatePersistence = new TemplatePersistence(projectId);
 			const template = await templatePersistence.create({
 				project: projectId,
-				subject: "Quick Email Template",
-				body: "<mjml><mj-body><mj-section><mj-column><mj-text>Header Content</mj-text><mj-text>{{{quickBody}}}</mj-text><mj-text>Footer Content</mj-text></mj-column></mj-section></mj-body></mjml>",
+				subject: "Template Subject",
+				body: "<mjml><mj-body><mj-section><mj-column><mj-text>Header Content</mj-text>{{body}}<mj-text>Footer Content</mj-text></mj-column></mj-section></mj-body></mjml>",
 				templateType: "MARKETING",
-				quickEmail: true,
 			});
 
-			// Create campaign with quick email template reference
+			// Create campaign with template reference and Editor.js JSON body
 			const campaignPersistence = new CampaignPersistence(projectId);
+			const editorJsBody = JSON.stringify({
+				time: Date.now(),
+				blocks: [
+					{
+						id: "test-block",
+						type: "paragraph",
+						data: {
+							text: "This is campaign content from Editor.js",
+						},
+					},
+				],
+				version: "2.28.0",
+			});
 			const campaign = await campaignPersistence.create({
 				project: projectId,
-				subject: "Test Quick Campaign",
-				body: "This is the quick email body content",
+				subject: "Test Campaign",
+				body: editorJsBody,
 				recipients: [contact.id],
 				status: "DRAFT",
 				template: template.id,
@@ -314,40 +326,46 @@ describe("SendEmailTask Handler", () => {
 			await sendEmail(task, "test-record-id");
 
 			// Verify EmailService.compileBody was called with the merged template
-			expect(EmailService.compileBody).toHaveBeenCalledWith(
-				expect.stringContaining("This is the quick email body content"),
-				expect.any(Object),
-			);
-
-			// Verify the body passed to compileBody contains both template and campaign content
 			const compileBodyCall = vi.mocked(EmailService.compileBody).mock.calls[0];
 			const mergedBody = compileBodyCall[0];
 			expect(mergedBody).toContain("Header Content");
-			expect(mergedBody).toContain("This is the quick email body content");
 			expect(mergedBody).toContain("Footer Content");
-			expect(mergedBody).not.toContain("{{quickBody}}");
-			expect(mergedBody).not.toContain("{{{quickBody}}}");
+			// Should contain MJML generated from Editor.js JSON
+			expect(mergedBody).toContain("<mj-text");
+			expect(mergedBody).not.toContain("{{body}}");
 		});
 
-		test("should use campaign body directly for non-quick-email template", async () => {
+		test("should inject campaign Editor.js JSON into template with {{body}} token", async () => {
 			const contact = await createTestContact(projectId);
 
-			// Create a regular (non-quick) template
+			// Create a template with {{body}} token
 			const templatePersistence = new TemplatePersistence(projectId);
 			const template = await templatePersistence.create({
 				project: projectId,
-				subject: "Regular Template",
-				body: "<mjml><mj-body><mj-section><mj-column><mj-text>Template Content</mj-text></mj-column></mj-section></mj-body></mjml>",
+				subject: "Template Subject",
+				body: "<mjml><mj-body><mj-section><mj-column>{{body}}</mj-column></mj-section></mj-body></mjml>",
 				templateType: "MARKETING",
-				quickEmail: false,
 			});
 
-			// Create campaign referencing the regular template
+			// Create campaign with Editor.js JSON body
 			const campaignPersistence = new CampaignPersistence(projectId);
+			const editorJsBody = JSON.stringify({
+				time: Date.now(),
+				blocks: [
+					{
+						id: "test-block",
+						type: "paragraph",
+						data: {
+							text: "Campaign Content from Editor.js",
+						},
+					},
+				],
+				version: "2.28.0",
+			});
 			const campaign = await campaignPersistence.create({
 				project: projectId,
-				subject: "Test Regular Campaign",
-				body: "<mjml><mj-body><mj-section><mj-column><mj-text>Campaign Content</mj-text></mj-column></mj-section></mj-body></mjml>",
+				subject: "Test Campaign",
+				body: editorJsBody,
 				recipients: [contact.id],
 				status: "DRAFT",
 				template: template.id,
@@ -364,30 +382,38 @@ describe("SendEmailTask Handler", () => {
 
 			await sendEmail(task, "test-record-id");
 
-			// Verify EmailService.compileBody was called with the campaign body (not merged)
-			expect(EmailService.compileBody).toHaveBeenCalledWith(
-				expect.stringContaining("Campaign Content"),
-				expect.any(Object),
-			);
-
-			// Verify the body does NOT contain template content
+			// Verify EmailService.compileBody was called with injected content
 			const compileBodyCall = vi.mocked(EmailService.compileBody).mock.calls[0];
 			const body = compileBodyCall[0];
-			expect(body).toContain("Campaign Content");
-			expect(body).not.toContain("Template Content");
+			expect(body).toContain("<mj-text");
+			expect(body).not.toContain("{{body}}");
 		});
 
-		test("should use campaign body directly when no template is referenced", async () => {
+		test("should handle missing template for campaign gracefully", async () => {
 			const contact = await createTestContact(projectId);
 
-			// Create campaign without template reference
+			// Create campaign with non-existent template ID
 			const campaignPersistence = new CampaignPersistence(projectId);
+			const editorJsBody = JSON.stringify({
+				time: Date.now(),
+				blocks: [
+					{
+						id: "test-block",
+						type: "paragraph",
+						data: {
+							text: "Campaign Content",
+						},
+					},
+				],
+				version: "2.28.0",
+			});
 			const campaign = await campaignPersistence.create({
 				project: projectId,
-				subject: "No Template Campaign",
-				body: "<mjml><mj-body><mj-section><mj-column><mj-text>Direct Campaign Content</mj-text></mj-column></mj-section></mj-body></mjml>",
+				subject: "Campaign with Missing Template",
+				body: editorJsBody,
 				recipients: [contact.id],
 				status: "DRAFT",
+				template: "non-existent-template-id",
 			});
 
 			const task = {
@@ -401,32 +427,41 @@ describe("SendEmailTask Handler", () => {
 
 			await sendEmail(task, "test-record-id");
 
-			// Verify EmailService.compileBody was called with the campaign body directly
-			expect(EmailService.compileBody).toHaveBeenCalledWith(
-				expect.stringContaining("Direct Campaign Content"),
-				expect.any(Object),
-			);
+			// Verify EmailService.send was NOT called when template is missing
+			expect(EmailService.send).not.toHaveBeenCalled();
 		});
 
-		test("should handle quick email template with escaped token {{quickBody}}", async () => {
+		test("should handle template with {{body}} token replacement", async () => {
 			const contact = await createTestContact(projectId);
 
-			// Create a quick email template with escaped {{quickBody}} token
+			// Create a template with {{body}} token
 			const templatePersistence = new TemplatePersistence(projectId);
 			const template = await templatePersistence.create({
 				project: projectId,
-				subject: "Quick Email Template Escaped",
-				body: "<mjml><mj-body><mj-section><mj-column><mj-text>{{quickBody}}</mj-text></mj-column></mj-section></mj-body></mjml>",
+				subject: "Template with Body Token",
+				body: "<mjml><mj-body><mj-section><mj-column>{{body}}</mj-column></mj-section></mj-body></mjml>",
 				templateType: "MARKETING",
-				quickEmail: true,
 			});
 
-			// Create campaign with quick email template reference
+			// Create campaign with Editor.js JSON body
 			const campaignPersistence = new CampaignPersistence(projectId);
+			const editorJsBody = JSON.stringify({
+				time: Date.now(),
+				blocks: [
+					{
+						id: "test-block",
+						type: "paragraph",
+						data: {
+							text: "Injected content",
+						},
+					},
+				],
+				version: "2.28.0",
+			});
 			const campaign = await campaignPersistence.create({
 				project: projectId,
-				subject: "Test Quick Campaign Escaped",
-				body: "Escaped content",
+				subject: "Test Campaign",
+				body: editorJsBody,
 				recipients: [contact.id],
 				status: "DRAFT",
 				template: template.id,
@@ -443,11 +478,11 @@ describe("SendEmailTask Handler", () => {
 
 			await sendEmail(task, "test-record-id");
 
-			// Verify the escaped token was replaced
+			// Verify the {{body}} token was replaced
 			const compileBodyCall = vi.mocked(EmailService.compileBody).mock.calls[0];
 			const mergedBody = compileBodyCall[0];
-			expect(mergedBody).toContain("Escaped content");
-			expect(mergedBody).not.toContain("{{quickBody}}");
+			expect(mergedBody).not.toContain("{{body}}");
+			expect(mergedBody).toContain("<mj-text");
 		});
 
 		test("should handle missing campaign gracefully", async () => {

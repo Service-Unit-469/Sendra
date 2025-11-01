@@ -21,7 +21,6 @@ import { EmailEditor } from "../../components/EmailEditor";
 import Dropdown from "../../components/Input/Dropdown/Dropdown";
 import Input from "../../components/Input/Input/Input";
 import Modal from "../../components/Overlay/Modal/Modal";
-import SimpleRichTextEditor from "../../components/SimpleRichTextEditor/SimpleRichTextEditor";
 import Table from "../../components/Table/Table";
 import FullscreenLoader from "../../components/Utility/FullscreenLoader/FullscreenLoader";
 import { Dashboard } from "../../layouts";
@@ -46,8 +45,6 @@ export default function Index() {
 
   const [confirmModal, setConfirmModal] = useState(false);
   const [delay, setDelay] = useState(0);
-
-  const isQuickEmail = template?.quickEmail ?? false;
 
   const {
     register,
@@ -343,25 +340,7 @@ export default function Index() {
               ))}
 
             <div className={"sm:col-span-6"}>
-              {isQuickEmail ? (
-                <div>
-                  <label htmlFor="body" className="block text-sm font-medium text-neutral-700 mb-2">
-                    Email Body
-                  </label>
-                  {template && (
-                    <p className="text-xs text-neutral-500 mb-2">
-                      Using quick email template: <strong>{template.subject}</strong>
-                    </p>
-                  )}
-                  <SimpleRichTextEditor
-                    initialValue={campaign.body}
-                    onChange={(value) => setValue("body", value)}
-                    placeholder="Enter your email content here. It will be inserted into the template."
-                  />
-                </div>
-              ) : (
-                <EmailEditor initialValue={campaign.body} onChange={(value) => setValue("body", value)} />
-              )}
+              <EmailEditor initialValue={campaign.body} onChange={(value) => setValue("body", value)} templateMjml={template?.body} />
               <ErrorAlert message={errors.body?.message} />
             </div>
 

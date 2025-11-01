@@ -43,7 +43,7 @@ export const createTestSetup = async () => {
 };
 
 /**
- * Creates a test template for a project
+ * Creates a test template for a project with {{body}} token
  * @param projectId - The ID of the project to create the template for
  * @returns The created template
  */
@@ -52,7 +52,7 @@ export const createTestTemplate = async (projectId: string) => {
   return await templatePersistence.create({
     project: projectId,
     subject: "Test Email Subject",
-    body: "Test email body content",
+    body: '<mjml><mj-body><mj-section><mj-column><mj-text>Header</mj-text>{{body}}<mj-text>Footer</mj-text></mj-column></mj-section></mj-body></mjml>',
     templateType: "MARKETING",
   });
 };
