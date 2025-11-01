@@ -45,7 +45,7 @@ export default function Index() {
     resolver: zodResolver(createCampaignFormSchema),
     defaultValues: {
       subject: "",
-      template: undefined,
+      template: undefined as string | undefined,
     },
   });
 

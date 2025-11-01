@@ -19,10 +19,7 @@ const LOADING_MESSAGES = [
 ];
 
 export const RandomLoadingMessage = () => {
-  return useMemo(
-    () => LOADING_MESSAGES[Math.floor(Math.random() * LOADING_MESSAGES.length)],
-    []
-  );
+  return useMemo(() => LOADING_MESSAGES[Math.floor(Math.random() * LOADING_MESSAGES.length)], []);
 };
 
 /**
@@ -35,11 +32,11 @@ export default function FullscreenLoader() {
         <div className="mt-6">
           <LoaderCircle size={48} className="animate-spin" />
         </div>
-        <h1 className="mt-3 text-center">
-          Loading...
-        </h1>
+        <h1 className="mt-3 text-center">Loading...</h1>
         <p className="text-center text-sm text-neutral-600">
-          <Suspense fallback={<></>}><RandomLoadingMessage /></Suspense>
+          <Suspense fallback={null}>
+            <RandomLoadingMessage />
+          </Suspense>
         </p>
       </div>
     </div>

@@ -54,7 +54,7 @@ export default function Index() {
     reset,
     setValue,
   } = useForm({
-    defaultValues: { events: [], notevents: [], name: "", template: "", delay: 0, runOnce: false },
+    defaultValues: { events: [] as string[], notevents: [] as string[], name: "", template: "", delay: 0, runOnce: false },
     resolver: zodResolver(ActionSchemas.update.omit({ id: true })),
   });
 

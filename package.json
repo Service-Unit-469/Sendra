@@ -37,10 +37,12 @@
     "packages/dashboard"
   ],
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.922.0",
     "sst": "^3.17.21",
     "tailwindcss": "^4.1.16"
   },
   "overrides": {
+    "hono": "^4.10.4",
     "uglify-js": "npm:dry-uninstall",
     "zod": "^4.1.11"
   }
