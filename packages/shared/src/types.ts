@@ -2,6 +2,8 @@ import type { z } from "@hono/zod-openapi";
 import type {
   ActionSchema,
   ActionSchemas,
+  AssetSchema,
+  AssetSchemas,
   BaseSchema,
   CampaignSchema,
   CampaignSchemas,
@@ -34,6 +36,11 @@ import type {
 export type Action = z.infer<typeof ActionSchema>;
 export type ActionCreate = z.infer<typeof ActionSchemas.create>;
 export type ActionUpdate = z.infer<typeof ActionSchemas.update>;
+
+export type Asset = z.infer<typeof AssetSchema>;
+export type AssetCreate = z.infer<typeof AssetSchemas.create>;
+export type AssetUpdate = z.infer<typeof AssetSchemas.update>;
+export type AssetUploadUrl = z.infer<typeof AssetSchemas.uploadUrl>;
 
 export type BaseType = z.infer<typeof BaseSchema>;
 

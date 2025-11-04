@@ -1,3 +1,4 @@
+import { assetsBucket } from "./assets";
 import { dynamo } from "./dynamo";
 import { passEnvironmentVariables } from "./env";
 import { jwtSecret } from "./secrets";
@@ -8,12 +9,13 @@ export const api = new sst.aws.Function("Api", {
     cors: false,
   },
   handler: "packages/api/src/app.handler",
-  link: [dynamo, taskQueue, delayedTaskStateMachine, jwtSecret],
+  link: [dynamo, taskQueue, delayedTaskStateMachine, jwtSecret, assetsBucket],
   logging: {
     retention: "1 week",
   },
   environment: {
     EMAIL_CONFIGURATION_SET_NAME: `SendraConfigurationSet-${$app.stage}`,
+    ASSETS_BUCKET_NAME: assetsBucket.name,
     ...passEnvironmentVariables([
       "LOG_LEVEL",
       "LOG_PRETTY",

@@ -10,6 +10,10 @@ declare module "sst" {
       "type": "sst.aws.Function"
       "url": string
     }
+    "AssetsBucket": {
+      "name": string
+      "type": "sst.aws.Bucket"
+    }
     "Dashboard": {
       "type": "sst.aws.Nextjs"
       "url": string

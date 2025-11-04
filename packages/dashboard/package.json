@@ -22,7 +22,6 @@
 	"dependencies": {
 		"@codemirror/lang-html": "^6.4.11",
 		"@codemirror/lang-xml": "^6.1.0",
-		"@editorjs/delimiter": "^1.4.2",
 		"@editorjs/editorjs": "^2.31.0",
 		"@editorjs/header": "^2.8.8",
 		"@editorjs/image": "^2.10.3",
@@ -32,6 +31,7 @@
 		"@editorjs/quote": "^2.7.6",
 		"@hookform/resolvers": "^5.2.2",
 		"@sendra/shared": "1.0.0",
+		"@sendra/templating": "^1.0.0",
 		"@tailwindcss/postcss": "^4.1.16",
 		"@tippyjs/react": "^4.2.6",
 		"@uiball/loaders": "^1.3.1",
@@ -39,6 +39,7 @@
 		"dayjs": "^1.11.12",
 		"dequal": "^2.0.3",
 		"dompurify": "^3.2.6",
+		"editor-js-alignment-tune": "^1.0.1",
 		"framer-motion": "^12.23.24",
 		"jotai": "^2.15.0",
 		"lucide-react": "^0.552.0",

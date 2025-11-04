@@ -1,24 +1,26 @@
-import Delimiter from "@editorjs/delimiter";
 import EditorJS, { type OutputData } from "@editorjs/editorjs";
 import Header from "@editorjs/header";
 import Image from "@editorjs/image";
 import List from "@editorjs/list";
 import Paragraph from "@editorjs/paragraph";
-import Quote from "@editorjs/quote";
+import { editorJsToMjml, injectBodyToken } from "@sendra/templating";
 import { Edit, Eye } from "lucide-react";
+import * as mjmlBrowser from "mjml-browser";
 import { useCallback, useEffect, useRef, useState } from "react";
-
-import { editorJsToMjml, mjmlToEditorJs } from "../../lib/editorjs-to-mjml";
 import EmailButton from "../../lib/editorjs-tools/EmailButton";
 import EmailDivider from "../../lib/editorjs-tools/EmailDivider";
 import EmailSpacer from "../../lib/editorjs-tools/EmailSpacer";
-import { injectContentIntoTemplate } from "../../lib/template-utils";
 
-export interface EmailEditorProps {
+import AlignmentTune from 'editor-js-alignment-tune';
+
+import { uploadAsset } from "../../lib/hooks/assets";
+import { useActiveProject } from "../../lib/hooks/projects";
+
+export type EmailEditorProps = {
   initialValue: string;
   onChange: (value: string) => void;
-  templateMjml?: string; // Optional template MJML for preview
-}
+  templateMjml: string;
+};
 
 export default function DefaultEditor({ initialValue, onChange, templateMjml }: EmailEditorProps) {
   const editorRef = useRef<EditorJS | null>(null);
@@ -28,17 +30,8 @@ export default function DefaultEditor({ initialValue, onChange, templateMjml }: 
   const [showPreview, setShowPreview] = useState(false);
   const [previewHtml, setPreviewHtml] = useState<string>("");
   const [currentMjml, setCurrentMjml] = useState<string>("");
-  const [mjml2html, setMjml2html] = useState<((mjml: string, options?: { validationLevel?: string }) => { html: string; errors: Array<{ message: string }> }) | null>(null);
-
-  // Load mjml-browser dynamically on mount
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      import("mjml-browser").then((module) => {
-        // biome-ignore lint/suspicious/noExplicitAny: because it's a dynamic import
-        setMjml2html(() => module.default as any);
-      });
-    }
-  }, []);
+  const [pendingImageResolve, setPendingImageResolve] = useState<((value: { success: number; file: { url: string } }) => void) | null>(null);
+  const activeProject = useActiveProject();
 
   // Initialize currentMjml from initialValue on mount
   useEffect(() => {
@@ -59,9 +52,7 @@ export default function DefaultEditor({ initialValue, onChange, templateMjml }: 
     async (api: { saver: { save: () => Promise<OutputData> } }) => {
       try {
         const outputData = await api.saver.save();
-        // Store the Editor.js JSON directly
         const jsonString = JSON.stringify(outputData);
-        // Also convert to MJML for preview
         const mjml = editorJsToMjml(outputData);
         setCurrentMjml(mjml);
         onChange(jsonString);
@@ -83,9 +74,6 @@ export default function DefaultEditor({ initialValue, onChange, templateMjml }: 
       if (initialValue.trim().startsWith("{")) {
         // Try to parse as Editor.js JSON (preferred format)
         initialData = JSON.parse(initialValue);
-      } else if (initialValue.includes("<mjml>") || initialValue.includes("<mj-")) {
-        // Legacy MJML - convert to Editor.js
-        initialData = mjmlToEditorJs(initialValue);
       } else {
         // Empty or invalid - start fresh
         initialData = {
@@ -117,35 +105,53 @@ export default function DefaultEditor({ initialValue, onChange, templateMjml }: 
             defaultLevel: 2,
           },
           inlineToolbar: true,
+          tunes: ['alignmentTune'],
         },
         paragraph: {
           // @ts-expect-error - Editor.js type compatibility issue
           class: Paragraph,
           inlineToolbar: true,
+          tunes: ['alignmentTune'],
         },
         list: {
           class: List,
           inlineToolbar: true,
+          tunes: ['alignmentTune'],
         },
         image: {
           class: Image,
           config: {
+            features: {
+              border: false,
+              stretch: false,
+              background: false,
+            },
             uploader: {
               async uploadByFile(file: File) {
-                // In production, implement your image upload logic here
-                // For now, we'll use a data URL
-                return new Promise((resolve) => {
-                  const reader = new FileReader();
-                  reader.onload = (e) => {
-                    resolve({
-                      success: 1,
-                      file: {
-                        url: e.target?.result as string,
-                      },
-                    });
+                try {
+                  const asset = await uploadAsset(activeProject?.id ?? "", file);
+                  return {
+                    success: 1,
+                    file: {
+                      url: asset.url,
+                    },
                   };
-                  reader.readAsDataURL(file);
-                });
+                } catch (error) {
+                  console.error("Error uploading asset:", error);
+                  // Fallback to data URL
+                  return new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                      resolve({
+                        success: 1,
+                        file: {
+                          url: e.target?.result as string,
+                        },
+                      });
+                    };
+                    reader.readAsDataURL(file);
+                  });
+                }
               },
               async uploadByUrl(url: string) {
                 return {
@@ -157,12 +163,15 @@ export default function DefaultEditor({ initialValue, onChange, templateMjml }: 
               },
             },
           },
+          tunes: ['alignmentTune'],
         },
-        quote: Quote,
-        delimiter: Delimiter,
         emailButton: EmailButton,
         emailDivider: EmailDivider,
         emailSpacer: EmailSpacer,
+        alignmentTune: {
+            // @ts-expect-error - Editor.js type compatibility issue
+            class: AlignmentTune
+        },
       },
       placeholder: "Start writing your email content...",
       minHeight: 400,
@@ -177,21 +186,20 @@ export default function DefaultEditor({ initialValue, onChange, templateMjml }: 
         isInitialized.current = false;
       }
     };
-  }, [handleChange, initialValue]);
+  }, [handleChange, initialValue, activeProject?.id]);
 
   // Update preview when content or template changes
   useEffect(() => {
-    if (templateMjml && currentMjml && mjml2html) {
+    if (templateMjml && currentMjml) {
       try {
-        // currentMjml is already in MJML format (converted in the initial effect)
-        const fullMjml = injectContentIntoTemplate(templateMjml, currentMjml);
-        const result = mjml2html(fullMjml, { validationLevel: "soft" });
+        const fullMjml = injectBodyToken(templateMjml, currentMjml);
+        const result = mjmlBrowser(fullMjml, { validationLevel: "soft" });
         setPreviewHtml(result.html);
       } catch (error) {
         console.error("Error generating preview:", error);
       }
     }
-  }, [currentMjml, templateMjml, mjml2html]);
+  }, [currentMjml, templateMjml]);
 
   // Update iframe when preview changes
   useEffect(() => {
@@ -206,8 +214,10 @@ export default function DefaultEditor({ initialValue, onChange, templateMjml }: 
     }
   }, [previewHtml, showPreview]);
 
+
   return (
     <div>
+
       {/* Toggle Button - only show if template is provided */}
       {templateMjml && (
         <div className="mb-2 flex items-center justify-end gap-2">
@@ -227,53 +237,14 @@ export default function DefaultEditor({ initialValue, onChange, templateMjml }: 
         </div>
       )}
 
-      {/* Editor and Preview */}
-      <div
-        style={{
-          display: "flex",
-          gap: "8px",
-          height: "calc(100vh - 300px)",
-          border: "1px solid #e0e0e0",
-          borderRadius: "4px",
-          overflow: "hidden",
-        }}
-      >
-        {/* Editor - keep mounted but hide when preview is shown */}
-        <div
-          style={{
-            display: showPreview ? "none" : "block",
-            flex: 1,
-            overflow: "auto",
-            padding: "20px",
-            backgroundColor: "#ffffff",
-            width: "100%",
-            height: "100%",
-          }}
-        >
+      <div className="flex gap-2 h-[calc(100vh-300px)] border border-neutral-200 rounded-sm overflow-hidden">
+        <div className={`flex-1 overflow-auto p-4 bg-white ${showPreview ? "hidden" : "block"}`}>
           <div ref={holderRef} style={{ width: "100%", height: "100%" }} />
         </div>
 
-        {/* Preview */}
         {showPreview && templateMjml && (
-          <div
-            style={{
-              flex: 1,
-              overflow: "auto",
-              backgroundColor: "#f5f5f5",
-              padding: "16px",
-            }}
-          >
-            <iframe
-              ref={iframeRef}
-              title="Email Preview"
-              style={{
-                width: "100%",
-                height: "100%",
-                border: "none",
-                backgroundColor: "white",
-                borderRadius: "4px",
-              }}
-            />
+          <div className="flex-1 overflow-auto bg-neutral-50 p-4">
+            <iframe ref={iframeRef} title="Email Preview" className="w-full h-full border-none bg-white rounded-sm" />
           </div>
         )}
       </div>

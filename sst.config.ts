@@ -22,11 +22,13 @@ export default $config({
     await import("./infra/task-queue");
     const {api} =  await import("./infra/api");
     const {dynamo} =  await import("./infra/dynamo");
+    const {assetsBucket} =  await import("./infra/assets");
     
     return {
       api,
       web,
       dynamo,
+      assetsBucket,
     };
   },
 });

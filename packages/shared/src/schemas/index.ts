@@ -1,4 +1,5 @@
 export * from "./action";
+export * from "./asset";
 export * from "./campaign";
 export * from "./common";
 export * from "./contact";

@@ -1,0 +1,183 @@
+import type { Asset } from "@sendra/shared";
+import dayjs from "dayjs";
+import { motion } from "framer-motion";
+import { FileImage, FileText, Plus, Trash2, Upload } from "lucide-react";
+import Image from "next/image";
+import { useCallback, useState } from "react";
+import { toast } from "sonner";
+import Badge from "../../components/Badge/Badge";
+import Card from "../../components/Card/Card";
+import Modal from "../../components/Overlay/Modal/Modal";
+import Skeleton from "../../components/Skeleton/Skeleton";
+import Empty from "../../components/Utility/Empty/Empty";
+import FullscreenLoader from "../../components/Utility/FullscreenLoader/FullscreenLoader";
+import { Dashboard } from "../../layouts";
+import { deleteAsset, uploadAsset, useAssets } from "../../lib/hooks/assets";
+import { useActiveProject } from "../../lib/hooks/projects";
+
+/**
+ * Assets management page
+ */
+export default function Index() {
+  const { data: assets, mutate } = useAssets();
+  const [uploading, setUploading] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [assetToDelete, setAssetToDelete] = useState<Asset | null>(null);
+  const activeProject = useActiveProject();
+
+  const handleFileUpload = useCallback(
+    async (event: React.ChangeEvent<HTMLInputElement>) => {
+      const files = event.target.files;
+      if (!files || files.length === 0) return;
+
+      setUploading(true);
+      try {
+        for (const file of Array.from(files)) {
+          await uploadAsset(activeProject?.id ?? "", file);
+          toast.success(`Uploaded ${file.name}`);
+        }
+        await mutate();
+      } catch (error) {
+        toast.error(`Failed to upload file: ${error instanceof Error ? error.message : "Unknown error"}`);
+      } finally {
+        setUploading(false);
+        // Reset file input
+        event.target.value = "";
+      }
+    },
+    [mutate, activeProject],
+  );
+
+  const handleDelete = useCallback(async () => {
+    if (!assetToDelete) return;
+
+    try {
+      await deleteAsset(activeProject?.id ?? "", assetToDelete.id);
+      toast.success("Asset deleted successfully");
+      await mutate();
+      setDeleteModalOpen(false);
+      setAssetToDelete(null);
+    } catch (error) {
+      toast.error(`Failed to delete asset: ${error instanceof Error ? error.message : "Unknown error"}`);
+    }
+  }, [assetToDelete, mutate, activeProject]);
+
+  const formatFileSize = (bytes: number): string => {
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+  };
+
+  if (!activeProject) {
+    return <FullscreenLoader />;
+  }
+
+  return (
+    <Dashboard>
+      <Card
+        title={"Assets"}
+        description={"Images and attachments for your emails"}
+        actions={
+          <label htmlFor="file-upload">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.9 }}
+              className={"flex items-center gap-x-1 rounded-sm bg-neutral-800 px-8 py-2 text-center text-sm font-medium text-white disabled:opacity-50"}
+              disabled={uploading}
+              onClick={() => document.getElementById("file-upload")?.click()}
+              type="button"
+            >
+              {uploading ? <Upload strokeWidth={1.5} size={18} className="animate-pulse" /> : <Plus strokeWidth={1.5} size={18} />}
+              {uploading ? "Uploading..." : "Upload"}
+            </motion.button>
+            <input id="file-upload" type="file" multiple accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.txt,.csv" className="hidden" onChange={handleFileUpload} disabled={uploading} />
+          </label>
+        }
+      >
+        {assets ? (
+          assets.length > 0 ? (
+            <div className={"grid grid-cols-1 gap-6 lg:grid-cols-3"}>
+              {assets.map((asset) => {
+                const isImage = asset.mimeType.startsWith("image/");
+                return (
+                  <div className="col-span-1 divide-y divide-neutral-200 rounded-sm border border-neutral-200 bg-white" key={asset.id}>
+                    <div className="flex w-full items-start justify-between space-x-4 p-6">
+                      {isImage ? (
+                        <div className="h-20 w-20 flex-shrink-0 overflow-hidden rounded-sm border border-neutral-200">
+                          <Image src={asset.url} alt={asset.name} className="h-full w-full object-cover" width={80} height={80} />
+                        </div>
+                      ) : (
+                        <span className="inline-flex flex-shrink-0 rounded-sm bg-neutral-100 p-3 text-neutral-800 ring-4 ring-white">
+                          <FileText size={32} />
+                        </span>
+                      )}
+                      <div className="flex-1 truncate">
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <h3 className="truncate text-sm font-medium text-neutral-800">{asset.name}</h3>
+                            <p className="mt-1 text-xs text-neutral-500">{formatFileSize(asset.size)}</p>
+                            <div className="mt-2">
+                              <Badge type={isImage ? "success" : "info"}>{isImage ? "IMAGE" : "ATTACHMENT"}</Badge>
+                            </div>
+                          </div>
+                        </div>
+                        <p className="mt-2 text-xs text-neutral-400">Uploaded {dayjs().to(asset.updatedAt)}</p>
+                      </div>
+                    </div>
+                    <div>
+                      <div className="-mt-px flex divide-x divide-neutral-200">
+                        <div className="flex w-0 flex-1">
+                          <a
+                            href={asset.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="relative -mr-px inline-flex w-0 flex-1 items-center justify-center border border-transparent py-4 text-sm font-medium text-neutral-800 transition hover:bg-neutral-50 hover:text-neutral-700"
+                          >
+                            <FileImage size={18} />
+                            <span className="ml-3">View</span>
+                          </a>
+                        </div>
+                        <div className="flex w-0 flex-1">
+                          <button
+                            onClick={() => {
+                              setAssetToDelete(asset);
+                              setDeleteModalOpen(true);
+                            }}
+                            className="relative inline-flex w-0 flex-1 items-center justify-center rounded-br border border-transparent py-4 text-sm font-medium text-red-600 transition hover:bg-red-50 hover:text-red-700"
+                          >
+                            <Trash2 size={18} />
+                            <span className="ml-3">Delete</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <Empty title={"No assets yet"} description={"Upload images and attachments to use in your email templates"} />
+          )
+        ) : (
+          <Skeleton type={"table"} />
+        )}
+      </Card>
+
+      {/* Delete Confirmation Modal */}
+      <Modal
+        title="Delete Asset"
+        description={`Are you sure you want to delete "${assetToDelete?.name}"? This action cannot be undone.`}
+        isOpen={deleteModalOpen}
+        onAction={() => {
+          handleDelete();
+          setDeleteModalOpen(false);
+        }}
+        type="danger"
+        onToggle={() => {
+          setDeleteModalOpen(false);
+          setAssetToDelete(null);
+        }}
+      />
+    </Dashboard>
+  );
+}

@@ -2,9 +2,10 @@ import { z } from "@hono/zod-openapi";
 import { ActionPersistence, TemplatePersistence } from "@sendra/lib";
 import { ActionSchema, TemplateSchema, TemplateSchemas } from "@sendra/shared";
 import type { AppType } from "../../app";
-import { NotAllowed } from "../../exceptions";
+import { BadRequest, NotAllowed } from "../../exceptions";
 import { registerProjectEntityCrudRoutes } from "./ProjectEntity";
 import { validateEmail } from "./utils";
+import { validateTemplate } from "templating/dist/templateUtils";
 
 export const registerTemplatesRoutes = (app: AppType) => {
   registerProjectEntityCrudRoutes(app, {
@@ -28,10 +29,16 @@ export const registerTemplatesRoutes = (app: AppType) => {
     },
     preUpdateEntity: async (projectId, template) => {
       await validateEmail(projectId, template.email);
+      try {
+        validateTemplate(template.body);
+      } catch (error) {
+        throw new BadRequest(`Invalid template: ${(error as Error).message ?? ""}`);
+      }
       return template;
     },
     preDeleteEntity: async (projectId, template) => {
       const actionPersistence = new ActionPersistence(projectId);
+
       const actions = await actionPersistence.findBy({
         key: "template",
         value: template,

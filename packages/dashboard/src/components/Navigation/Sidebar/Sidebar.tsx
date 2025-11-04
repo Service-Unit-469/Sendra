@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { Home, LayoutTemplate, LineChart, LogOut, Send, Settings, TerminalSquare, User, Users2, Workflow, X } from "lucide-react";
+import { FileImage, Home, LayoutTemplate, LineChart, LogOut, Send, Settings, TerminalSquare, User, Users2, Workflow, X } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { type ReactElement, useState } from "react";
@@ -71,6 +71,13 @@ const links: SidebarLinkType[] = [
     disabled: false,
     position: "top",
     icon: <LayoutTemplate />,
+  },
+  {
+    to: "/assets",
+    text: "Assets",
+    disabled: false,
+    position: "top",
+    icon: <FileImage />,
   },
   {
     to: "/actions",

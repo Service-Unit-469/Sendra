@@ -4,6 +4,7 @@ import { GetQueueAttributesCommand, SendMessageCommand, SQSClient } from "@aws-s
 import type { Task } from "@sendra/shared";
 import { Resource } from "sst";
 import { rootLogger } from "../logging";
+import { getTaskQueueConfig } from "./AppConfig";
 
 const logger = rootLogger.child({
   module: "TaskQueue",
@@ -14,11 +15,11 @@ const sfn = new SFNClient();
 
 export class TaskQueue {
   public static async addTask(task: Task) {
+    const { queueUrl, stateMachineArn } = getTaskQueueConfig();
     if (task.delaySeconds && task.delaySeconds > 900) {
       logger.info({ task }, "Adding delayed task");
       const command = new StartExecutionCommand({
-        // @ts-expect-error
-        stateMachineArn: Resource.DelayedTaskStateMachine.stateMachineArn,
+        stateMachineArn,
         input: JSON.stringify({
           delaySeconds: task.delaySeconds,
           task: JSON.stringify(task),
@@ -31,7 +32,7 @@ export class TaskQueue {
     }
     logger.info({ task }, "Adding task to queue");
     const command = new SendMessageCommand({
-      QueueUrl: Resource.TaskQueue.url,
+      QueueUrl: queueUrl,
       MessageBody: JSON.stringify(task),
     });
     const result = await sqs.send(command);
@@ -39,8 +40,9 @@ export class TaskQueue {
   }
 
   public static async getQueueStatus() {
+    const { queueUrl } = getTaskQueueConfig();
     const command = new GetQueueAttributesCommand({
-      QueueUrl: Resource.TaskQueue.url,
+      QueueUrl: queueUrl,
       AttributeNames: ["ApproximateNumberOfMessages", "ApproximateNumberOfMessagesDelayed", "ApproximateNumberOfMessagesNotVisible"],
     });
     const result = await sqs.send(command);

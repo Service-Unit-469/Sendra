@@ -2,7 +2,27 @@ import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { Resource } from "sst";
 import { z } from "zod";
 
-const TTLSchema = z.union([z.number(), z.string().regex(/^\d+ (Y|W|D|H|M|s|Ms)$/)]);
+const LocalResource = Resource as unknown as {
+  SendraDatabase: {
+    name: string;
+  };
+  TaskQueue: {
+    url: string;
+  };
+  DelayedTaskStateMachine: {
+    stateMachineArn: string;
+  };
+};
+
+const TTLSchema = z.union([
+  z.number(),
+  z.string().regex(/^\d+ (Y|W|D|H|M|s|Ms)$/),
+]);
+
+const AssetsConfigSchema = z.object({
+  ASSETS_BUCKET_NAME: z.string(),
+});
+export const getAssetsConfig = () => AssetsConfigSchema.parse(process.env);
 
 const AuthConfigSchema = z
   .object({
@@ -36,13 +56,16 @@ export const getLogConfig = () => LogConfigSchema.parse(process.env);
 
 const EmailConfigSchema = z
   .object({
-    ALLOW_DUPLICATE_PROJECT_IDENTITIES: z.enum(["true", "false"]).default("false"),
+    ALLOW_DUPLICATE_PROJECT_IDENTITIES: z
+      .enum(["true", "false"])
+      .default("false"),
     APP_URL: z.url(),
     DEFAULT_EMAIL: z.email(),
     EMAIL_CONFIGURATION_SET_NAME: z.string(),
   })
   .transform((env) => ({
-    allowDuplicateProjectIdentities: env.ALLOW_DUPLICATE_PROJECT_IDENTITIES === "true",
+    allowDuplicateProjectIdentities:
+      env.ALLOW_DUPLICATE_PROJECT_IDENTITIES === "true",
     appUrl: env.APP_URL,
     defaultEmail: env.DEFAULT_EMAIL,
     emailConfigurationSetName: env.EMAIL_CONFIGURATION_SET_NAME,
@@ -62,8 +85,14 @@ const PersistenceConfigSchema = z.object({
 export const getPersistenceConfig = () => {
   const config = PersistenceConfigSchema.parse(process.env);
   if (config.PERSISTENCE_PROVIDER === "local") {
-    if (!config.AWS_ACCESS_KEY_ID || !config.AWS_SECRET_ACCESS_KEY || !config.TABLE_NAME) {
-      throw new Error("TABLE_NAME,AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY are required when PERSISTENCE_PROVIDER is local");
+    if (
+      !config.AWS_ACCESS_KEY_ID ||
+      !config.AWS_SECRET_ACCESS_KEY ||
+      !config.TABLE_NAME
+    ) {
+      throw new Error(
+        "TABLE_NAME,AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY are required when PERSISTENCE_PROVIDER is local"
+      );
     }
     return {
       tableName: config.TABLE_NAME,
@@ -79,6 +108,13 @@ export const getPersistenceConfig = () => {
   }
   return {
     client: new DynamoDBClient(),
-    tableName: Resource.SendraDatabase.name,
+    tableName: LocalResource.SendraDatabase.name,
+  };
+};
+
+export const getTaskQueueConfig = () => {
+  return {
+    queueUrl: LocalResource.TaskQueue.url,
+    stateMachineArn: LocalResource.DelayedTaskStateMachine.stateMachineArn,
   };
 };

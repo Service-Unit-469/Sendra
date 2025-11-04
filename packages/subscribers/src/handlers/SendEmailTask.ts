@@ -6,11 +6,11 @@ import {
   EmailService,
   EventPersistence,
   getEmailConfig,
-  injectContentIntoTemplate,
   ProjectPersistence,
   rootLogger,
   TemplatePersistence,
 } from "@sendra/lib";
+import { injectBodyToken } from "@sendra/templating";
 import type { Action, Campaign, Email, SendEmailTaskSchema } from "@sendra/shared";
 import type { z } from "zod";
 
@@ -105,7 +105,7 @@ export const sendEmail = async (task: SendEmailTask, recordId: string) => {
     }
 
     // Inject campaign body (Editor.js JSON) into template's {{body}} token
-    body = injectContentIntoTemplate(template.body, campaign.body);
+    body = injectBodyToken(template.body, campaign.body);
     subject = campaign.subject;
     logger.info({ templateId: template.id }, "Injecting campaign content into template");
   }

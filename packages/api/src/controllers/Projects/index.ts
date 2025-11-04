@@ -1,5 +1,6 @@
 import type { AppType } from "../../app";
 import { registerActionsRoutes } from "./Actions";
+import { registerAssetsRoutes } from "./Assets";
 import { registerCampaignsRoutes } from "./Campaigns";
 import { registerContactsRoutes } from "./Contacts";
 import { registerEmailsRoutes } from "./Emails";
@@ -19,6 +20,7 @@ export const registerProjectRoutes = (app: AppType) => {
 
   // Entities
   registerActionsRoutes(app);
+  registerAssetsRoutes(app);
   registerCampaignsRoutes(app);
   registerContactsRoutes(app);
   registerGroupsRoutes(app);
