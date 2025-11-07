@@ -340,7 +340,7 @@ export default function Index() {
               ))}
 
             <div className={"sm:col-span-6"}>
-              <EmailEditor initialValue={campaign.body} onChange={(value) => setValue("body", value)} templateMjml={template?.body} />
+              <EmailEditor initialValue={campaign.body} onChange={(value) => setValue("body", value)} templateMjml={template?.body ?? ""} />
               <ErrorAlert message={errors.body?.message} />
             </div>
 

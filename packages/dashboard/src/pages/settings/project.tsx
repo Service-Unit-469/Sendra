@@ -113,7 +113,7 @@ export default function Index() {
               <Input register={register("name")} label="Name" placeholder="ACME Inc." error={errors.name} />
               <Input register={register("url")} label="URL" placeholder="https://example.com" error={errors.url} />
             </div>
-            <ColorList name="colors" label="Brand Colors" control={control} watch={watch} setValue={setValue} error={errors.colors} />
+            <ColorList name="colors" label="Brand Colors" watch={watch} setValue={setValue} error={errors.colors} />
             <div className="flex justify-end">
               <BlackButton>Save</BlackButton>
             </div>
