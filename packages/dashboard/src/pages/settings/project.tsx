@@ -31,7 +31,6 @@ export default function Index() {
     handleSubmit,
     formState: { errors },
     reset,
-    control,
     watch,
     setValue,
   } = useForm({
