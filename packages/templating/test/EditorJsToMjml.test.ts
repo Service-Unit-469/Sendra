@@ -74,7 +74,7 @@ describe("editorJsToMjml", () => {
 
       const result = editorJsToMjml(data);
 
-      expect(result).toBe("<mj-text>This is a paragraph.</mj-text>");
+      expect(result).toBe("<mj-text >This is a paragraph.</mj-text>");
     });
 
     it("should render a list block", () => {
@@ -87,7 +87,10 @@ describe("editorJsToMjml", () => {
             type: "list",
             data: {
               style: "unordered",
-              items: ["Item 1", "Item 2"],
+              items: [
+                { content: "Item 1", items: [] },
+                { content: "Item 2", items: [] },
+              ],
             },
           },
         ],
@@ -96,7 +99,7 @@ describe("editorJsToMjml", () => {
       const result = editorJsToMjml(data);
 
       expect(result).toBe(
-        '<mj-text padding-bottom="10px"><ul><li>Item 1</li><li>Item 2</li></ul></mj-text>'
+        '<mj-text ><ul><li>Item 1<ul></ul></li><li>Item 2<ul></ul></li></ul></mj-text>'
       );
     });
 
@@ -121,24 +124,21 @@ describe("editorJsToMjml", () => {
       const result = editorJsToMjml(data);
 
       expect(result).toBe(
-        '<mj-image src="https://example.com/image.jpg" alt="Test image" />'
+        '<mj-image src="https://example.com/image.jpg" alt="Test image"  />'
       );
     });
 
-    it("should render an emailButton block", () => {
+    it("should render a button block", () => {
       const data: OutputData = {
         time: Date.now(),
         version: "2.0",
         blocks: [
           {
             id: "btn1",
-            type: "emailButton",
+            type: "button",
             data: {
               text: "Click Me",
               url: "https://example.com",
-              backgroundColor: "#4A90E2",
-              textColor: "#FFFFFF",
-              align: "center",
             },
           },
         ],
@@ -147,41 +147,36 @@ describe("editorJsToMjml", () => {
       const result = editorJsToMjml(data);
 
       expect(result).toBe(
-        '<mj-button href="https://example.com" background-color="#4A90E2" color="#FFFFFF" align="center" padding="10px 0">Click Me</mj-button>'
+        '<mj-button href="https://example.com" >Click Me</mj-button>'
       );
     });
 
-    it("should render an emailDivider block", () => {
+    it("should render a divider block", () => {
       const data: OutputData = {
         time: Date.now(),
         version: "2.0",
         blocks: [
           {
             id: "div1",
-            type: "emailDivider",
-            data: {
-              borderColor: "#e0e0e0",
-              borderWidth: "1px",
-            },
+            type: "divider",
+            data: {},
           },
         ],
       };
 
       const result = editorJsToMjml(data);
 
-      expect(result).toBe(
-        '<mj-divider border-width="1px" border-color="#e0e0e0" />'
-      );
+      expect(result).toBe('<mj-divider  />');
     });
 
-    it("should render an emailSpacer block", () => {
+    it("should render a spacer block", () => {
       const data: OutputData = {
         time: Date.now(),
         version: "2.0",
         blocks: [
           {
             id: "spacer1",
-            type: "emailSpacer",
+            type: "spacer",
             data: {
               height: "20px",
             },
@@ -229,7 +224,7 @@ describe("editorJsToMjml", () => {
       const result = editorJsToMjml(data);
 
       expect(result).toBe(
-        '<mj-text font-size="32px">Title</mj-text>\n<mj-text>First paragraph.</mj-text>\n<mj-text>Second paragraph.</mj-text>'
+        '<mj-text font-size="32px">Title</mj-text>\n<mj-text >First paragraph.</mj-text>\n<mj-text >Second paragraph.</mj-text>'
       );
     });
 
@@ -248,7 +243,7 @@ describe("editorJsToMjml", () => {
           },
           {
             id: "spacer1",
-            type: "emailSpacer",
+            type: "spacer",
             data: {
               height: "20px",
             },
@@ -274,7 +269,11 @@ describe("editorJsToMjml", () => {
             type: "list",
             data: {
               style: "ordered",
-              items: ["Feature 1", "Feature 2", "Feature 3"],
+              items: [
+                { content: "Feature 1", items: [] },
+                { content: "Feature 2", items: [] },
+                { content: "Feature 3", items: [] },
+              ],
             },
           },
           {
@@ -291,10 +290,10 @@ describe("editorJsToMjml", () => {
 
       expect(result).toContain('<mj-text font-size="28px">Newsletter Title</mj-text>');
       expect(result).toContain('<mj-spacer height="20px" />');
-      expect(result).toContain("<mj-text>Welcome to our newsletter!</mj-text>");
-      expect(result).toContain('<mj-image src="https://example.com/banner.jpg" alt="" />');
+      expect(result).toContain("<mj-text >Welcome to our newsletter!</mj-text>");
+      expect(result).toContain('<mj-image src="https://example.com/banner.jpg" alt=""  />');
       expect(result).toContain("<ol>");
-      expect(result).toContain("<li>Feature 1</li>");
+      expect(result).toContain("<li>Feature 1<ol></ol></li>");
       expect(result).toContain("Check out our latest features!");
       // Verify blocks are separated by newlines
       expect(result.split("\n")).toHaveLength(6);
@@ -407,7 +406,7 @@ describe("editorJsToMjml", () => {
       // Empty strings should not contribute to output, so we get 3 lines
       expect(result).toContain('<mj-text font-size="32px">Known Block</mj-text>');
       expect(result).toContain("<mj-text>Unknown with text</mj-text>");
-      expect(result).toContain("<mj-text>Another known block</mj-text>");
+      expect(result).toContain("<mj-text >Another known block</mj-text>");
     });
   });
 
@@ -459,7 +458,7 @@ describe("editorJsToMjml", () => {
       const result = editorJsToMjml(data);
 
       expect(result).toBe(
-        '<mj-text font-size="28px"></mj-text>\n<mj-text></mj-text>'
+        '<mj-text font-size="28px"></mj-text>\n<mj-text ></mj-text>'
       );
     });
 
@@ -549,7 +548,11 @@ describe("editorJsToMjml", () => {
             type: "list",
             data: {
               style: "ordered",
-              items: ["First", "Second", "Third"],
+              items: [
+                { content: "First", items: [] },
+                { content: "Second", items: [] },
+                { content: "Third", items: [] },
+              ],
             },
           },
         ],
@@ -565,14 +568,14 @@ describe("editorJsToMjml", () => {
   });
 
   describe("block type routing", () => {
-    it("should handle emailSpacer through the switch statement", () => {
+    it("should handle spacer through the switch statement", () => {
       const data: OutputData = {
         time: Date.now(),
         version: "2.0",
         blocks: [
           {
             id: "spacer1",
-            type: "emailSpacer",
+            type: "spacer",
             data: {
               height: "30px",
             },
@@ -585,7 +588,7 @@ describe("editorJsToMjml", () => {
       expect(result).toBe('<mj-spacer height="30px" />');
     });
 
-    it("should handle unknown button type as fallback", () => {
+    it("should handle button type correctly", () => {
       const data: OutputData = {
         time: Date.now(),
         version: "2.0",
@@ -601,9 +604,9 @@ describe("editorJsToMjml", () => {
         ],
       };
 
-      // Falls through to default case and renders text property
+      // Button is now a supported type
       const result = editorJsToMjml(data);
-      expect(result).toBe("<mj-text>Click</mj-text>");
+      expect(result).toBe('<mj-button href="https://example.com" >Click</mj-button>');
     });
 
     it("should handle unknown delimiter type as empty", () => {

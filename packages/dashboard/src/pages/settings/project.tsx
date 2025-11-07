@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { BlackButton } from "../../components/Buttons/BlackButton";
 import Card from "../../components/Card/Card";
+import ColorList from "../../components/Input/ColorList/ColorList";
 import Input from "../../components/Input/Input/Input";
 import SettingTabs from "../../components/Navigation/SettingTabs/SettingTabs";
 import Modal from "../../components/Overlay/Modal/Modal";
@@ -30,8 +31,14 @@ export default function Index() {
     handleSubmit,
     formState: { errors },
     reset,
+    control,
+    watch,
+    setValue,
   } = useForm({
     resolver: zodResolver(ProjectSchemas.update.omit({ id: true })),
+    defaultValues: {
+      colors: [],
+    },
   });
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -106,6 +113,7 @@ export default function Index() {
               <Input register={register("name")} label="Name" placeholder="ACME Inc." error={errors.name} />
               <Input register={register("url")} label="URL" placeholder="https://example.com" error={errors.url} />
             </div>
+            <ColorList name="colors" label="Brand Colors" control={control} watch={watch} setValue={setValue} error={errors.colors} />
             <div className="flex justify-end">
               <BlackButton>Save</BlackButton>
             </div>

@@ -10,8 +10,8 @@ import {
   rootLogger,
   TemplatePersistence,
 } from "@sendra/lib";
-import { injectBodyToken } from "@sendra/templating";
 import type { Action, Campaign, Email, SendEmailTaskSchema } from "@sendra/shared";
+import { injectBodyToken } from "@sendra/templating";
 import type { z } from "zod";
 
 type SendEmailTask = z.infer<typeof SendEmailTaskSchema>;

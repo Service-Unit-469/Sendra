@@ -32,11 +32,11 @@ function blockToMjml(block: OutputBlockData): string {
       return renderList(listSchema.parse(block));
     case "image":
       return renderImage(imageSchema.parse(block));
-    case "emailButton":
+    case "button":
       return renderButton(buttonSchema.parse(block));
-    case "emailDivider":
+    case "divider":
       return renderDivider(dividerSchema.parse(block));
-    case "emailSpacer":
+    case "spacer":
       return renderSpacer(spacerSchema.parse(block));
     default:
       // Fallback: try to render as paragraph if it has text

@@ -224,7 +224,7 @@ export class AssetService {
             const headResponse = await this.s3Client.send(headCommand);
             assets.push(this.s3ObjectToAsset(object.Key, headResponse));
           } catch (error) {
-            logger.warn({ key: object.Key }, "Failed to fetch metadata for object");
+            logger.warn({ key: object.Key, err: error }, "Failed to fetch metadata for object");
           }
         }
       }

@@ -668,7 +668,7 @@ describe("Templates Endpoint Contract Tests", () => {
       const updatePayload = {
         id: template.id,
         subject: "Updated Subject",
-        body: "Updated body content",
+        body: "Updated {{body}} content",
         templateType: "MARKETING" as const,
       };
 
@@ -803,7 +803,7 @@ describe("Templates Endpoint Contract Tests", () => {
       const updatePayload = {
         id: "non-existent-id",
         subject: "Updated Subject",
-        body: "Updated body",
+        body: "Updated {{body}}",
         templateType: "TRANSACTIONAL" as const,
       };
 

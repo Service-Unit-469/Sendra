@@ -40,6 +40,7 @@
 		"dequal": "^2.0.3",
 		"dompurify": "^3.2.6",
 		"editor-js-alignment-tune": "^1.0.1",
+		"editorjs-button": "^3.0.3",
 		"framer-motion": "^12.23.24",
 		"jotai": "^2.15.0",
 		"lucide-react": "^0.552.0",

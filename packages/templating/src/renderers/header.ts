@@ -1,5 +1,6 @@
 import DOMPurify from "dompurify";
 import { z } from "zod";
+import { applyTunes } from "../tunes/manager";
 import type { EditorJsBlockRenderer } from "../types";
 import { OutputBlockDataSchema } from "../types";
 
@@ -27,5 +28,5 @@ export const renderHeader: EditorJsBlockRenderer<"header", HeaderData> = (block)
 
   const fontSize = fontSizes[level] || "28px";
 
-  return `<mj-text font-size="${fontSize}">${DOMPurify.sanitize(text)}</mj-text>`;
+  return `<mj-text ${applyTunes(block, { "font-size": fontSize })}>${DOMPurify.sanitize(text)}</mj-text>`;
 };

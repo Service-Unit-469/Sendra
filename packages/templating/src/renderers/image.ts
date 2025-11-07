@@ -1,5 +1,6 @@
 import DOMPurify from "dompurify";
-import z, { url } from "zod";
+import z from "zod";
+import { applyTunes } from "../tunes/manager";
 import { type EditorJsBlockRenderer, OutputBlockDataSchema } from "../types";
 
 export const imageSchema = OutputBlockDataSchema.extend({
@@ -20,5 +21,5 @@ export const renderImage: EditorJsBlockRenderer<"image", ImageData> = (block): s
   if (!file.url) {
     return "";
   }
-  return `<mj-image src="${file.url}" alt="${caption ? DOMPurify.sanitize(caption) : ""}" />`;
+  return `<mj-image src="${file.url}" alt="${caption ? DOMPurify.sanitize(caption) : ""}" ${applyTunes(block, {})} />`;
 };

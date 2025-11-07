@@ -4,17 +4,19 @@ import Image from "@editorjs/image";
 import List from "@editorjs/list";
 import Paragraph from "@editorjs/paragraph";
 import { editorJsToMjml, injectBodyToken } from "@sendra/templating";
+import ColorTune from "dashboard/src/components/EditorJs/Tunes/ColorTune";
+import SizeTune from "dashboard/src/components/EditorJs/Tunes/SizeTune";
+import AlignmentTune from "editor-js-alignment-tune";
 import { Edit, Eye } from "lucide-react";
+// @ts-expect-error - mjml-browser is not a default export
 import * as mjmlBrowser from "mjml-browser";
 import { useCallback, useEffect, useRef, useState } from "react";
-import EmailButton from "../../lib/editorjs-tools/EmailButton";
-import EmailDivider from "../../lib/editorjs-tools/EmailDivider";
-import EmailSpacer from "../../lib/editorjs-tools/EmailSpacer";
-
-import AlignmentTune from 'editor-js-alignment-tune';
-
 import { uploadAsset } from "../../lib/hooks/assets";
 import { useActiveProject } from "../../lib/hooks/projects";
+import Button from "../EditorJs/Blocks/Button";
+import Divider from "../EditorJs/Blocks/Divider";
+import Spacer from "../EditorJs/Blocks/Spacer";
+import PaddingTune from "../EditorJs/Tunes/PaddingTune";
 
 export type EmailEditorProps = {
   initialValue: string;
@@ -30,7 +32,6 @@ export default function DefaultEditor({ initialValue, onChange, templateMjml }: 
   const [showPreview, setShowPreview] = useState(false);
   const [previewHtml, setPreviewHtml] = useState<string>("");
   const [currentMjml, setCurrentMjml] = useState<string>("");
-  const [pendingImageResolve, setPendingImageResolve] = useState<((value: { success: number; file: { url: string } }) => void) | null>(null);
   const activeProject = useActiveProject();
 
   // Initialize currentMjml from initialValue on mount
@@ -105,18 +106,18 @@ export default function DefaultEditor({ initialValue, onChange, templateMjml }: 
             defaultLevel: 2,
           },
           inlineToolbar: true,
-          tunes: ['alignmentTune'],
+          tunes: ["alignmentTune", "backgroundColorTune", "colorTune", "paddingTune"],
         },
         paragraph: {
           // @ts-expect-error - Editor.js type compatibility issue
           class: Paragraph,
           inlineToolbar: true,
-          tunes: ['alignmentTune'],
+          tunes: ["alignmentTune", "backgroundColorTune", "colorTune", "paddingTune"],
         },
         list: {
           class: List,
           inlineToolbar: true,
-          tunes: ['alignmentTune'],
+          tunes: ["alignmentTune", "backgroundColorTune", "colorTune", "paddingTune"],
         },
         image: {
           class: Image,
@@ -163,14 +164,73 @@ export default function DefaultEditor({ initialValue, onChange, templateMjml }: 
               },
             },
           },
-          tunes: ['alignmentTune'],
+          tunes: ["alignmentTune", "paddingTune"],
         },
-        emailButton: EmailButton,
-        emailDivider: EmailDivider,
-        emailSpacer: EmailSpacer,
+        button: {
+          class: Button,
+          tunes: ["alignmentTune", "backgroundColorTune", "colorTune", "paddingTune"],
+        },
+        divider: {
+          class: Divider,
+          tunes: ["borderColorTune", "borderWidthTune", "paddingTune"],
+        },
+        spacer: {
+          class: Spacer,
+          tunes: ["heightTune"],
+        },
+
         alignmentTune: {
-            // @ts-expect-error - Editor.js type compatibility issue
-            class: AlignmentTune
+          // @ts-expect-error - Editor.js type compatibility issue
+          class: AlignmentTune,
+        },
+        borderColorTune: {
+          // @ts-expect-error - Editor.js type compatibility issue
+          class: ColorTune,
+          config: {
+            title: "Border Color",
+            colors: [...(activeProject?.colors ?? []), "#000000"],
+            styleKey: "borderColor",
+            defaultColor: "#000000",
+          },
+        },
+        borderWidthTune: {
+          // @ts-expect-error - Editor.js type compatibility issue
+          class: SizeTune,
+          config: {
+            title: "Border Width",
+            sizes: ["1px", "2px", "3px", "4px"],
+            styleKey: "borderWidth",
+          },
+        },
+        backgroundColorTune: {
+          // @ts-expect-error - Editor.js type compatibility issue
+          class: ColorTune,
+          config: {
+            title: "Background Color",
+            colors: activeProject?.colors ?? [],
+          },
+        },
+        colorTune: {
+          // @ts-expect-error - Editor.js type compatibility issue
+          class: ColorTune,
+          config: {
+            title: "Text Color",
+            colors: [...(activeProject?.colors ?? []), "#000000", "#FFFFFF"],
+            styleKey: "color",
+          },
+        },
+        heightTune: {
+          // @ts-expect-error - Editor.js type compatibility issue
+          class: SizeTune,
+          config: {
+            title: "Height",
+            sizes: ["5px", "10px", "15px", "20px", "25px", "30px", "35px", "40px", "45px", "50px"],
+            styleKey: "height",
+          },
+        },
+        paddingTune: {
+          // @ts-expect-error - Editor.js type compatibility issue
+          class: PaddingTune,
         },
       },
       placeholder: "Start writing your email content...",
@@ -186,7 +246,7 @@ export default function DefaultEditor({ initialValue, onChange, templateMjml }: 
         isInitialized.current = false;
       }
     };
-  }, [handleChange, initialValue, activeProject?.id]);
+  }, [handleChange, initialValue, activeProject]);
 
   // Update preview when content or template changes
   useEffect(() => {
@@ -214,11 +274,8 @@ export default function DefaultEditor({ initialValue, onChange, templateMjml }: 
     }
   }, [previewHtml, showPreview]);
 
-
   return (
     <div>
-
-      {/* Toggle Button - only show if template is provided */}
       {templateMjml && (
         <div className="mb-2 flex items-center justify-end gap-2">
           <button type="button" onClick={() => setShowPreview(!showPreview)} className="flex items-center gap-2 rounded-sm bg-neutral-100 px-3 py-1.5 text-sm text-neutral-700 hover:bg-neutral-200">

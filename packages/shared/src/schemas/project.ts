@@ -18,6 +18,7 @@ export const ProjectSchema = BaseSchema.extend({
   public: z.string(),
   secret: z.string(),
   url: z.url(),
+  colors: z.array(z.string()).default([]),
 });
 
 export const ProjectKeysSchema = z.object({
@@ -44,6 +45,7 @@ export const ProjectSchemas = {
     name: true,
     url: true,
     id: true,
+    colors: true,
   }),
   analytics: z.object({
     method: z.enum(["week", "month", "year"]).default("week"),

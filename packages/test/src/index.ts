@@ -107,7 +107,7 @@ export const startupDynamoDB = async () => {
     type: "tcp",
   });
   await install();
-  await start({ port, docker: true });
+  await start({ port, docker: true});
 
   const { vi } = await import("vitest");
 

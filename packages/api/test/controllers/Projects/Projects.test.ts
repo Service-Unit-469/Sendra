@@ -562,6 +562,31 @@ describe("Projects Endpoint Contract Tests", () => {
       expect(data.project.url).toBe(updatePayload.url);
     });
 
+    test("should update project colors", async () => {
+      const { project, token } = await createTestSetup();
+
+      const updatePayload = {
+        id: project.id,
+        name: project.name,
+        url: project.url,
+        colors: ["#FF0000", "#00FF00", "#0000FF"],
+      };
+
+      const response = await app.request(`/projects/${project.id}`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatePayload),
+      });
+
+      expect(response.status).toBe(200);
+
+      const data = await response.json();
+      expect(data.project.colors).toEqual(updatePayload.colors);
+    });
+
     test("should return 404 when project does not exist", async () => {
       const { token } = await createTestSetup();
 

@@ -2,7 +2,6 @@ import { randomUUID } from "node:crypto";
 import { SFNClient, StartExecutionCommand } from "@aws-sdk/client-sfn";
 import { GetQueueAttributesCommand, SendMessageCommand, SQSClient } from "@aws-sdk/client-sqs";
 import type { Task } from "@sendra/shared";
-import { Resource } from "sst";
 import { rootLogger } from "../logging";
 import { getTaskQueueConfig } from "./AppConfig";
 

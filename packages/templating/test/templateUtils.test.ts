@@ -138,20 +138,14 @@ describe("templateUtils", () => {
     it("should validate a correct template with {{body}}", () => {
       const template = "<mjml><mj-body>{{body}}</mj-body></mjml>";
 
-      const result = validateTemplate(template);
-
-      expect(result.valid).toBe(true);
-      expect(result.error).toBeUndefined();
+      expect(() => validateTemplate(template)).not.toThrow();
     });
 
     it("should reject template with {{BODY}} in uppercase (case-sensitive validation)", () => {
       const template = "<mjml><mj-body>{{BODY}}</mj-body></mjml>";
 
-      const result = validateTemplate(template);
-
       // validateTemplate uses case-sensitive includes() check
-      expect(result.valid).toBe(false);
-      expect(result.error).toBe(
+      expect(() => validateTemplate(template)).toThrow(
         "Template must contain {{body}} token for campaign content injection"
       );
     });
@@ -159,10 +153,7 @@ describe("templateUtils", () => {
     it("should reject template without {{body}} token", () => {
       const template = "<mjml><mj-body><mj-text>Static</mj-text></mj-body></mjml>";
 
-      const result = validateTemplate(template);
-
-      expect(result.valid).toBe(false);
-      expect(result.error).toBe(
+      expect(() => validateTemplate(template)).toThrow(
         "Template must contain {{body}} token for campaign content injection"
       );
     });
@@ -170,10 +161,7 @@ describe("templateUtils", () => {
     it("should reject template without <mjml> tag", () => {
       const template = "<html><body>{{body}}</body></html>";
 
-      const result = validateTemplate(template);
-
-      expect(result.valid).toBe(false);
-      expect(result.error).toBe(
+      expect(() => validateTemplate(template)).toThrow(
         "Template must be valid MJML (must contain <mjml> tag)"
       );
     });
@@ -181,10 +169,7 @@ describe("templateUtils", () => {
     it("should reject empty template", () => {
       const template = "";
 
-      const result = validateTemplate(template);
-
-      expect(result.valid).toBe(false);
-      expect(result.error).toBeDefined();
+      expect(() => validateTemplate(template)).toThrow();
     });
 
     it("should validate template with {{body}} in various positions", () => {
@@ -203,9 +188,7 @@ describe("templateUtils", () => {
         </mjml>
       `;
 
-      const result = validateTemplate(template);
-
-      expect(result.valid).toBe(true);
+      expect(() => validateTemplate(template)).not.toThrow();
     });
 
     it("should validate template with multiple {{body}} tokens", () => {
@@ -218,27 +201,19 @@ describe("templateUtils", () => {
         </mjml>
       `;
 
-      const result = validateTemplate(template);
-
-      expect(result.valid).toBe(true);
+      expect(() => validateTemplate(template)).not.toThrow();
     });
 
     it("should reject template with only {{body}} but no MJML", () => {
       const template = "{{body}}";
 
-      const result = validateTemplate(template);
-
-      expect(result.valid).toBe(false);
-      expect(result.error).toContain("mjml");
+      expect(() => validateTemplate(template)).toThrow("mjml");
     });
 
     it("should reject template with <mjml> but no {{body}}", () => {
       const template = "<mjml><mj-body><mj-text>Content</mj-text></mj-body></mjml>";
 
-      const result = validateTemplate(template);
-
-      expect(result.valid).toBe(false);
-      expect(result.error).toContain("{{body}}");
+      expect(() => validateTemplate(template)).toThrow("{{body}}");
     });
 
     it("should validate complex valid template", () => {
@@ -261,10 +236,7 @@ describe("templateUtils", () => {
         </mjml>
       `;
 
-      const result = validateTemplate(template);
-
-      expect(result.valid).toBe(true);
-      expect(result.error).toBeUndefined();
+      expect(() => validateTemplate(template)).not.toThrow();
     });
 
     it("should handle template with HTML comments", () => {
@@ -277,17 +249,13 @@ describe("templateUtils", () => {
         </mjml>
       `;
 
-      const result = validateTemplate(template);
-
-      expect(result.valid).toBe(true);
+      expect(() => validateTemplate(template)).not.toThrow();
     });
 
     it("should handle whitespace around tokens", () => {
       const template = "<mjml><mj-body>  {{body}}  </mj-body></mjml>";
 
-      const result = validateTemplate(template);
-
-      expect(result.valid).toBe(true);
+      expect(() => validateTemplate(template)).not.toThrow();
     });
   });
 
@@ -315,10 +283,7 @@ describe("templateUtils", () => {
     });
 
     it("should pass validation", () => {
-      const result = validateTemplate(DEFAULT_TEMPLATE);
-
-      expect(result.valid).toBe(true);
-      expect(result.error).toBeUndefined();
+      expect(() => validateTemplate(DEFAULT_TEMPLATE)).not.toThrow();
     });
 
     it("should be injectable with content", () => {
@@ -356,8 +321,7 @@ describe("templateUtils", () => {
   describe("integration tests", () => {
     it("should validate and inject content into DEFAULT_TEMPLATE", () => {
       // First validate
-      const validation = validateTemplate(DEFAULT_TEMPLATE);
-      expect(validation.valid).toBe(true);
+      expect(() => validateTemplate(DEFAULT_TEMPLATE)).not.toThrow();
 
       // Then inject
       const content = `
@@ -382,8 +346,7 @@ describe("templateUtils", () => {
     });
 
     it("should work with empty content injection", () => {
-      const validation = validateTemplate(DEFAULT_TEMPLATE);
-      expect(validation.valid).toBe(true);
+      expect(() => validateTemplate(DEFAULT_TEMPLATE)).not.toThrow();
 
       const result = injectBodyToken(DEFAULT_TEMPLATE, "");
 
@@ -406,8 +369,7 @@ describe("templateUtils", () => {
         </mjml>
       `;
 
-      const validation = validateTemplate(customTemplate);
-      expect(validation.valid).toBe(true);
+      expect(() => validateTemplate(customTemplate)).not.toThrow();
 
       const content = "<mj-text>Custom content here</mj-text>";
       const result = injectBodyToken(customTemplate, content);

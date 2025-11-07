@@ -29,3 +29,4 @@ vi.mock("@sendra/lib", async (importOriginal) => {
 vi.stubEnv("DEFAULT_EMAIL", "test@example.com");
 vi.stubEnv("EMAIL_CONFIGURATION_SET_NAME", "test");
 vi.stubEnv("APP_URL", "https://test.com");
+vi.stubEnv("ASSETS_BUCKET_NAME", "test-assets-bucket");

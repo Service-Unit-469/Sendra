@@ -1,11 +1,11 @@
 import { z } from "@hono/zod-openapi";
 import { ActionPersistence, TemplatePersistence } from "@sendra/lib";
 import { ActionSchema, TemplateSchema, TemplateSchemas } from "@sendra/shared";
+import { validateTemplate } from "@sendra/templating";
 import type { AppType } from "../../app";
 import { BadRequest, NotAllowed } from "../../exceptions";
 import { registerProjectEntityCrudRoutes } from "./ProjectEntity";
 import { validateEmail } from "./utils";
-import { validateTemplate } from "templating/dist/templateUtils";
 
 export const registerTemplatesRoutes = (app: AppType) => {
   registerProjectEntityCrudRoutes(app, {

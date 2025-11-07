@@ -1,5 +1,6 @@
 import { html } from "@codemirror/lang-html";
 import { EditorView } from "@codemirror/view";
+import { DEFAULT_TEMPLATE } from "@sendra/templating";
 import CodeMirror from "@uiw/react-codemirror";
 import { Code, Eye } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -8,22 +9,6 @@ export interface MJMLEditorProps {
   initialValue: string;
   onChange: (value: string) => void;
 }
-
-const DEFAULT_TEMPLATE = `<mjml>
-  <mj-head>
-    <mj-attributes>
-      <mj-text font-family="Arial, sans-serif" font-size="14px" line-height="1.6" color="#000000" />
-      <mj-all padding="0px" />
-    </mj-attributes>
-  </mj-head>
-  <mj-body background-color="#ffffff">
-    <mj-section padding="20px">
-      <mj-column>
-        {{body}}
-      </mj-column>
-    </mj-section>
-  </mj-body>
-</mjml>`;
 
 export default function MJMLEditor({ initialValue, onChange }: MJMLEditorProps) {
   const [value, setValue] = useState(initialValue || DEFAULT_TEMPLATE);
@@ -99,7 +84,6 @@ export default function MJMLEditor({ initialValue, onChange }: MJMLEditorProps) 
 
   return (
     <div>
-      {/* Toggle Button */}
       <div className="mb-2 flex items-center justify-end gap-2">
         <button type="button" onClick={() => setShowPreview(!showPreview)} className="flex items-center gap-2 rounded-sm bg-neutral-100 px-3 py-1.5 text-sm text-neutral-700 hover:bg-neutral-200">
           {showPreview ? (
@@ -116,33 +100,14 @@ export default function MJMLEditor({ initialValue, onChange }: MJMLEditorProps) 
         </button>
       </div>
 
-      {/* Error Alert */}
       {error && (
         <div className="mb-2 rounded-sm bg-red-50 border border-red-200 px-3 py-2 text-sm text-red-700">
           <strong>MJML Error:</strong> {error}
         </div>
       )}
 
-      {/* Editor and Preview */}
-      <div
-        style={{
-          display: "flex",
-          gap: "8px",
-          height: "calc(100vh - 350px)",
-          border: "1px solid #e0e0e0",
-          borderRadius: "4px",
-          overflow: "hidden",
-        }}
-      >
-        {/* Code Editor */}
-        <div
-          style={{
-            flex: showPreview ? 1 : "none",
-            width: showPreview ? "50%" : "100%",
-            overflow: "auto",
-            borderRight: showPreview ? "1px solid #e0e0e0" : "none",
-          }}
-        >
+      <div className="flex gap-2 h-[calc(100vh-350px)] border border-gray-300 rounded overflow-hidden">
+        <div className={`${showPreview ? "flex-1 w-1/2 border-r" : "w-full"} overflow-auto ${showPreview ? "border-gray-300" : ""}`}>
           <CodeMirror
             value={value}
             height="100%"
@@ -174,29 +139,9 @@ export default function MJMLEditor({ initialValue, onChange }: MJMLEditorProps) 
             }}
           />
         </div>
-
-        {/* Preview Pane */}
         {showPreview && (
-          <div
-            style={{
-              flex: 1,
-              width: "50%",
-              overflow: "auto",
-              backgroundColor: "#f5f5f5",
-              padding: "16px",
-            }}
-          >
-            <iframe
-              ref={iframeRef}
-              title="MJML Preview"
-              style={{
-                width: "100%",
-                height: "100%",
-                border: "none",
-                backgroundColor: "white",
-                borderRadius: "4px",
-              }}
-            />
+          <div className="flex-1 w-1/2 overflow-auto bg-gray-100 p-4">
+            <iframe ref={iframeRef} title="MJML Preview" className="w-full h-full border-none bg-white rounded-sm" />
           </div>
         )}
       </div>
