@@ -3,7 +3,7 @@ import { Puck } from "@measured/puck";
 import "@measured/puck/puck.css";
 import { toPlainText } from "@react-email/render";
 import { useCallback, useEffect, useState } from "react";
-import { emailEditorConfig, initialEmailData } from "./config";
+import { emailEditorConfig } from "./config";
 import { renderEmailHtml } from "./renderer";
 
 export interface PuckEmailEditorProps {
@@ -14,19 +14,13 @@ export interface PuckEmailEditorProps {
 }
 
 export default function PuckEmailEditor({ initialData, onChange, actions, fields }: PuckEmailEditorProps) {
-  const [data, setData] = useState<Data>(initialEmailData);
+  const [data, setData] = useState<Data>(initialData);
 
   useEffect(() => {
-    if (!initialData) {
-      setData(initialEmailData);
-      return;
-    }
-
     try {
       setData(initialData);
     } catch (error) {
-      console.error("Failed to set initial value:", error);
-      setData(initialEmailData);
+      console.error("Failed to set initial value", error);
     }
   }, [initialData]);
 

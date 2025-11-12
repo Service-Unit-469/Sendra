@@ -34,10 +34,6 @@ project:
 
 So for example to get the city from my contact's data I would use `{{contact.data.city}}` or to add the project name: `{{project.name}}`
 
-### MJML in Templates
-
-The templates are created using [MJML](https://mjml.io/). You can use the visual editor or open up source mode to make detailed edits.
-
 ### Template Types
 
 Templates come in two types:

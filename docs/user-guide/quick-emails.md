@@ -2,7 +2,7 @@
 
 ## Quick Emails
 
-Quick emails allow you to send campaigns using a simple rich text editor instead of the full MJML editor. This is perfect for sending quick updates, announcements, or messages where you want to maintain a consistent design without rebuilding the entire email layout each time.
+Quick emails allow you to send campaigns using a simple rich text editor instead of the full editor. This is perfect for sending quick updates, announcements, or messages where you want to maintain a consistent design without rebuilding the entire email layout each time.
 
 ### How It Works
 
@@ -13,38 +13,15 @@ Quick emails allow you to send campaigns using a simple rich text editor instead
 ### Creating a Quick Email Template
 
 1. Go to **Templates** → **"New"**
-2. Design your email template using the MJML editor
-3. Add the token `{{quickBody}}` or `{{{quickBody}}}` where you want the campaign content to appear
-4. Check the **"Quick Email Template"** checkbox
-5. Click **"Create Template"**
+2. Add the token `{{quickBody}}` or `{{{quickBody}}}` where you want the campaign content to appear
+3. Check the **"Quick Email Template"** checkbox
+4. Click **"Create Template"**
 
 #### Token Options
 
 - `{{quickBody}}` - Escapes HTML in the campaign body (safer for plain text)
 - `{{{quickBody}}}` - Does NOT escape HTML (use if you want to include HTML formatting in your campaign)
 
-#### Example Template
-
-```mjml
-<mjml>
-  <mj-body>
-    <mj-section>
-      <mj-column>
-        <mj-text font-size="20px" color="#F45E43" font-family="helvetica">
-          Update from {{project.name}}
-        </mj-text>
-      </mj-column>
-    </mj-section>
-    <mj-section>
-      <mj-column>
-        <mj-text>
-          {{{quickBody}}}
-        </mj-text>
-      </mj-column>
-    </mj-section>
-  </mj-body>
-</mjml>
-```
 
 ### Creating a Quick Email Campaign
 
@@ -67,8 +44,8 @@ Quick emails allow you to send campaigns using a simple rich text editor instead
 
 | Feature | Regular Template | Quick Email Template |
 |---------|-----------------|---------------------|
-| Editor | Full MJML editor | Simple rich text editor |
-| Formatting | Full MJML/HTML control | Basic formatting (bold, lists, links, etc.) |
+| Editor | Full  editor | Simple rich text editor |
+| Formatting | Full HTML control | Basic formatting (bold, lists, links, etc.) |
 | Use Case | Complex designs, one-time campaigns | Consistent design, frequent updates |
 | Setup Time | Longer (design each time) | Faster (just write content) |
 | Flexibility | Full control per campaign | Consistent layout with formatted content |

@@ -51,7 +51,6 @@ export const initialEmailData = {
         id: "container-1",
         maxWidth: "600",
         backgroundColor: "#ffffff",
-
         content: [
           {
             type: "Heading",
@@ -80,15 +79,33 @@ export const initialEmailData = {
     props: {
       title: "My Email",
       backgroundColor: "#fafafa",
+      quickEmail: "false",
       style: `
-        a {
-          color: blue;
-          text-decoration: underline;
-        }
-        body {
-          color: black;
-          font-family: Verdana, Arial, sans-serif;
-        }
+a {
+  color: blue;
+  text-decoration: underline;
+}
+ol {
+  margin-left: 24px;
+  list-style: auto;
+}
+ul {
+  margin-left: 24px;
+  list-style: disc;
+}
+.ql-align-center {
+  text-align: center;
+}
+.ql-align-right {
+  text-align: right;
+}
+.ql-align-justify {
+  text-align: justify;
+}
+body {
+  color: black;
+  font-family: Verdana, Arial, sans-serif;
+}
       `,
     },
   },

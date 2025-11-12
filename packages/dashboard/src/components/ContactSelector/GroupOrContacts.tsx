@@ -43,10 +43,10 @@ const GroupSelector = ({ onRecipientsChange, onGroupsChange, disabled, selectedG
 export type GroupOrContactsProps = {
   onRecipientsChange: (value: string[]) => void;
   onGroupsChange: (value: string[]) => void;
-  selectedGroups?: string[];
-  selectedContacts?: string[];
   disabled: boolean;
   label: string;
+  selectedGroups?: string[];
+  selectedContacts?: string[];
 };
 
 export default function GroupOrContacts({ onRecipientsChange, onGroupsChange, disabled, label, selectedContacts, selectedGroups }: GroupOrContactsProps) {

@@ -149,9 +149,10 @@ export default function Index() {
           });
           const props = (value.data.root?.props ?? {}) as TemplateFormValues;
           setValue("subject", props.title ?? "");
-          setValue("email", props.email ?? "");
-          setValue("from", props.from ?? "");
+          setValue("email", props.email ?? undefined);
+          setValue("from", props.from ?? undefined);
           setValue("templateType", props.templateType ?? "MARKETING");
+          setValue("quickEmail", props.quickEmail === "true");
         }}
         actions={() => (
           <>
@@ -162,11 +163,12 @@ export default function Index() {
                   email: watch("email"),
                   from: watch("from"),
                   body: {
-                    data: JSON.stringify(watch("body").data),
+                    data: watch("body").data,
                     html: watch("body").html,
                     plainText: watch("body").plainText,
                   },
                   templateType: watch("templateType") as "MARKETING" | "TRANSACTIONAL",
+                  quickEmail: watch("quickEmail") ?? false,
                 })
               }
             >

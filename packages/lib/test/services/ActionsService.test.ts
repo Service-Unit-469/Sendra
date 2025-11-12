@@ -33,6 +33,7 @@ describe("ActionsService", () => {
     eventTypes: [mockEventType],
     createdAt: "1000",
     updatedAt: "1000",
+    colors: [],
   };
 
   const mockContact: Contact = {
@@ -62,7 +63,11 @@ describe("ActionsService", () => {
     id: "template-123",
     project: "project-123",
     subject: "Welcome!",
-    body: "<mjml><mj-body><mj-text>Welcome {{contact.email}}</mj-text></mj-body></mjml>",
+    body: {
+      data: "{} ",
+      html: "Welcome {{contact.email}}",
+      plainText: "Welcome {{contact.email}}",
+    },
     templateType: "TRANSACTIONAL",
     from: "Test Sender <sender@example.com>",
     createdAt: "1000",

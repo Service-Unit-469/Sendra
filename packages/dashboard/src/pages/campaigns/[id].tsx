@@ -2,29 +2,25 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import type { CampaignUpdate, Email } from "@sendra/shared";
 import { CampaignSchemas } from "@sendra/shared";
 import GroupOrContacts from "dashboard/src/components/ContactSelector/GroupOrContacts";
-import dayjs from "dayjs";
-import { AnimatePresence, motion } from "framer-motion";
 import { Copy, Edit, Eye, LoaderCircle, Save, Send, Trash } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 import { type FieldError, useForm } from "react-hook-form";
 import { toast } from "sonner";
-import Alert from "../../components/Alert/Alert";
 import { ErrorAlert } from "../../components/Alert/ErrorAlert";
 import Badge from "../../components/Badge/Badge";
 import { BlackButton } from "../../components/Buttons/BlackButton";
 import { MenuButton } from "../../components/Buttons/MenuButton";
 import Card from "../../components/Card/Card";
 import Dropdown from "../../components/Input/Dropdown/Dropdown";
-import Input from "../../components/Input/Input/Input";
 import Modal from "../../components/Overlay/Modal/Modal";
 import Table from "../../components/Table/Table";
 import FullscreenLoader from "../../components/Utility/FullscreenLoader/FullscreenLoader";
 import { Dashboard } from "../../layouts";
 import { useCampaign, useCampaignsWithEmails } from "../../lib/hooks/campaigns";
 import { useEmailsByCampaign } from "../../lib/hooks/emails";
-import { useActiveProject, useActiveProjectIdentity } from "../../lib/hooks/projects";
+import { useActiveProject } from "../../lib/hooks/projects";
 import { network } from "../../lib/network";
 
 /**
@@ -37,13 +33,11 @@ export default function Index() {
   const { data: campaign, mutate: campaignMutate } = useCampaign(router.query.id as string);
 
   const { data: emails } = useEmailsByCampaign(campaign?.id);
-  const { data: projectIdentity } = useActiveProjectIdentity();
 
   const [confirmModal, setConfirmModal] = useState(false);
   const [delay, setDelay] = useState(0);
 
   const {
-    register,
     handleSubmit,
     formState: { errors },
     watch,
@@ -274,16 +268,6 @@ export default function Index() {
           }
         >
           <form onSubmit={handleSubmit(update)} className="space-y-6 sm:space-y-0 sm:space-6 sm:grid sm:gap-6 sm:grid-cols-6">
-            <div className={"sm:col-span-6 grid sm:grid-cols-6 gap-6"}>
-              <Input className={"sm:col-span-6"} label={"Subject"} placeholder={`Welcome to ${project.name}!`} register={register("subject")} error={errors.subject} />
-
-              {projectIdentity?.identity?.verified && <Input className={"sm:col-span-3"} label={"Sender Email"} placeholder={`${project.email}`} register={register("email")} error={errors.email} />}
-
-              {projectIdentity?.identity?.verified && (
-                <Input className={"sm:col-span-3"} label={"Sender Name"} placeholder={`${project.from ?? project.name}`} register={register("from")} error={errors.from} />
-              )}
-            </div>
-
             <GroupOrContacts
               onRecipientsChange={(r: string[]) => setValue("recipients", r)}
               onGroupsChange={(g: string[]) => setValue("groups", g)}
@@ -294,17 +278,6 @@ export default function Index() {
             />
 
             <ErrorAlert message={(errors.recipients as FieldError | undefined)?.message} />
-
-            <AnimatePresence>
-              {watch("recipients").length >= 10 && campaign.status !== "DELIVERED" && (
-                <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className={"relative z-10 sm:col-span-6"}>
-                  <Alert type={"info"} title={"Automatic batching"}>
-                    Your campaign will be sent out in batches of 80 recipients each. It will be delivered to all contacts{" "}
-                    {dayjs().to(dayjs().add(Math.ceil(watch("recipients").length / 80), "minutes"))}
-                  </Alert>
-                </motion.div>
-              )}
-            </AnimatePresence>
 
             {campaign.status !== "DRAFT" &&
               (emails?.length === 0 ? (
@@ -337,19 +310,21 @@ export default function Index() {
 
             <div className={"sm:col-span-6"}>
               <div className="h-[calc(100vh-550px)] min-h-[600px]">
-                <div className="flex justify-end gap-2">
-                  <BlackButton
-                    onClick={() => {
-                      setValue("body", {
-                        ...campaign.body,
-                        data: JSON.stringify(campaign.body.data),
-                      });
-                    }}
-                  >
-                    <Edit size={18} />
-                    Edit
-                  </BlackButton>
+                <div className="flex justify-between gap-2">
+                  <h2 className="text-lg font-semibold text-neutral-800">Preview</h2>
+                  {campaign.status === "DRAFT" && (
+                    <BlackButton
+                      onClick={(e) => {
+                        e.preventDefault();
+                        router.push(`/campaigns/${campaign.id}/edit`);
+                      }}
+                    >
+                      <Edit size={18} />
+                      Edit
+                    </BlackButton>
+                  )}
                 </div>
+
                 <iframe srcDoc={campaign.body.html} className="w-full h-full" title={campaign.subject ?? "Campaign preview"} />
               </div>
               <ErrorAlert message={errors.body?.message} />

@@ -3,16 +3,18 @@ import type { Fields } from "@measured/puck";
 import type { CampaignUpdate } from "@sendra/shared";
 import { CampaignSchemas } from "@sendra/shared";
 import { ColorPickerRender } from "dashboard/src/components/EmailEditor/Fields";
-import { ArrowLeft, Save } from "lucide-react";
+import { Save } from "lucide-react";
 import { useRouter } from "next/router";
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { BlackButton } from "../../../components/Buttons/BlackButton";
 import { EmailEditor } from "../../../components/EmailEditor";
+import QuickEmailEditor from "../../../components/EmailEditor/QuickEmailEditor";
 import FullscreenLoader from "../../../components/Utility/FullscreenLoader/FullscreenLoader";
 import { Dashboard } from "../../../layouts";
 import { useCampaign } from "../../../lib/hooks/campaigns";
 import { useActiveProject, useActiveProjectIdentity } from "../../../lib/hooks/projects";
+import { useTemplate } from "../../../lib/hooks/templates";
 import { network } from "../../../lib/network";
 
 /**
@@ -23,11 +25,27 @@ export default function Index() {
   const project = useActiveProject();
   const { data: campaign, mutate: campaignMutate } = useCampaign(router.query.id as string);
   const { data: projectIdentity } = useActiveProjectIdentity();
+  const { data: template } = useTemplate(campaign?.template ?? "");
+  const [quickBodyContent, setQuickBodyContent] = useState<string>("");
 
-  const { watch, setValue, handleSubmit } = useForm({
+  const { setValue, watch } = useForm({
     resolver: zodResolver(CampaignSchemas.update.omit({ id: true })),
     defaultValues: { recipients: [], body: undefined },
   });
+
+  // Extract quick email content from campaign body if it's a quick email
+  useEffect(() => {
+    if (campaign && template?.quickEmail) {
+      try {
+        const bodyData = JSON.parse(campaign.body.data);
+        if (bodyData.quickBody) {
+          setQuickBodyContent(bodyData.quickBody);
+        }
+      } catch (error) {
+        console.error("Failed to parse campaign body data", error);
+      }
+    }
+  }, [campaign, template]);
 
   const fields = useMemo(() => {
     if (!projectIdentity) {
@@ -109,22 +127,87 @@ export default function Index() {
     return <FullscreenLoader />;
   }
 
-  if (!project || !campaign || (watch("body") as object | undefined) === undefined) {
+  if (!project || !campaign || !template) {
     return <FullscreenLoader />;
   }
 
+  // Render Quick Email Editor for quick email templates
+  if (template.quickEmail) {
+    return (
+      <Dashboard wideLayout={true}>
+        <QuickEmailEditor
+          templateHtml={template.body.html}
+          templatePlainText={template.body.plainText}
+          initialContent={quickBodyContent}
+          onChange={(value) => {
+            setValue("body", {
+              data: value.data,
+              html: value.html,
+              plainText: value.plainText,
+            });
+          }}
+          actions={() => (
+            <>
+              <BlackButton
+                onClick={() =>
+                  saveCampaign({
+                    subject: watch("subject") ?? campaign.subject,
+                    email: watch("email") ?? campaign.email,
+                    from: watch("from") ?? campaign.from,
+                    body: {
+                      data: watch("body")?.data ?? campaign.body.data,
+                      html: watch("body")?.html ?? campaign.body.html,
+                      plainText: watch("body")?.plainText ?? campaign.body.plainText,
+                    },
+                    recipients: watch("recipients") ?? campaign.recipients,
+                    template: campaign.template,
+                    status: campaign.status,
+                    groups: watch("groups") ?? campaign.groups,
+                  })
+                }
+              >
+                <Save strokeWidth={1.5} size={18} />
+                Save
+              </BlackButton>
+              <button type="button" className="flex items-center gap-x-2 text-sm text-neutral-500" onClick={() => router.push(`/campaigns/${campaign.id}`)}>
+                Back
+              </button>
+            </>
+          )}
+        />
+      </Dashboard>
+    );
+  }
+
+  // Render regular Email Editor for non-quick email templates
   return (
     <Dashboard wideLayout={true}>
       <EmailEditor
         fields={fields}
         actions={() => (
           <>
-            <BlackButton onClick={handleSubmit(saveCampaign)}>
+            <BlackButton
+              onClick={() =>
+                saveCampaign({
+                  subject: watch("subject") ?? "",
+                  email: watch("email") ?? undefined,
+                  from: watch("from") ?? undefined,
+                  body: {
+                    data: watch("body")?.data ?? "",
+                    html: watch("body")?.html ?? "",
+                    plainText: watch("body")?.plainText ?? undefined,
+                  },
+                  recipients: watch("recipients") ?? [],
+                  template: watch("template") ?? undefined,
+                  status: (watch("status") as "DRAFT" | "DELIVERED") ?? "DRAFT",
+                  groups: watch("groups") ?? [],
+                })
+              }
+            >
               <Save strokeWidth={1.5} size={18} />
               Save
             </BlackButton>
             <button type="button" className="flex items-center gap-x-2 text-sm text-neutral-500" onClick={() => router.push(`/campaigns/${campaign.id}`)}>
-              <ArrowLeft strokeWidth={1.5} size={18} />
               Back
             </button>
           </>
@@ -137,8 +220,8 @@ export default function Index() {
           });
           const props = (value.data.root?.props ?? {}) as { title?: string; email?: string; from?: string };
           setValue("subject", props.title ?? "");
-          setValue("email", props.email ?? "");
-          setValue("from", props.from ?? "");
+          setValue("email", props.email ?? undefined);
+          setValue("from", props.from ?? undefined);
         }}
       />
     </Dashboard>

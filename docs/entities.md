@@ -136,7 +136,7 @@ Groups are collections of contacts where a contact can belong to multiple groups
 - **MARKETING**: For campaigns and promotional content
 - **TRANSACTIONAL**: For system emails (receipts, notifications, etc.)
 
-Templates support variable interpolation using Handlebars syntax and are authored in MJML for rich formatting. 
+Templates support variable interpolation using Handlebars syntax and are authored in a block-based editor for rich formatting. 
 
 **Relationships**:
 - Belongs to one project

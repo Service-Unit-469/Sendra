@@ -7,6 +7,7 @@ import { useActiveProject, useActiveProjectIdentity } from "./projects";
 
 export type TemplateWithActions = Template & {
   _embed: { actions: Action[] };
+  quickEmail?: boolean;
 };
 
 /**
@@ -27,7 +28,7 @@ export function useTemplates() {
   return useSWR<TemplateWithActions[]>(activeProject ? `/projects/${activeProject.id}/templates/all?embed=actions` : null);
 }
 
-export type TemplateFormValues = Partial<Omit<TemplateCreate, "body" | "subject">> & { title?: string };
+export type TemplateFormValues = Partial<Omit<TemplateCreate, "body" | "subject" | "quickEmail">> & { title?: string; quickEmail: string };
 
 export function useTemplateFields(): Fields {
   const { data: projectIdentity } = useActiveProjectIdentity();
@@ -61,6 +62,14 @@ export function useTemplateFields(): Fields {
             { label: "Transactional", value: "TRANSACTIONAL" },
           ],
         },
+        quickEmail: {
+          type: "select",
+          label: "Quick Email Template",
+          options: [
+            { label: "Yes", value: "true" },
+            { label: "No", value: "false" },
+          ],
+        },
         backgroundColor: {
           type: "custom",
           label: "Background Color",
@@ -87,6 +96,14 @@ export function useTemplateFields(): Fields {
         options: [
           { label: "Marketing", value: "MARKETING" },
           { label: "Transactional", value: "TRANSACTIONAL" },
+        ],
+      },
+      quickEmail: {
+        type: "select",
+        label: "Quick Email Template",
+        options: [
+          { label: "Yes", value: "true" },
+          { label: "No", value: "false" },
         ],
       },
       backgroundColor: {

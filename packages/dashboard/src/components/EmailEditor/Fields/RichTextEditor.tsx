@@ -13,12 +13,7 @@ export type RichTextEditorFieldProps = {
   id: string;
 };
 
-/**
- * Custom Puck field component for rich text editing using React-Quill
- * Supports bold, italic, underline, links, text color, alignment, font size, and lists
- */
-const RichTextEditorField: React.FC<RichTextEditorFieldProps> = ({ value = "", onChange, name, id, label }) => {
-  // Quill modules configuration
+export const RichTextEditorField: React.FC<RichTextEditorFieldProps> = ({ value = "", onChange, name, id, label }) => {
   const modules = {
     toolbar: [["bold", "italic"], [{ align: [] }], [{ color: [] }], [{ list: "ordered" }, { list: "bullet" }], ["link"], ["clean"]],
   };

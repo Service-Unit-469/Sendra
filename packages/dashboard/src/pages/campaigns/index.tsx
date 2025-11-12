@@ -59,12 +59,33 @@ export default function Index() {
         if (!template) {
           throw new Error("Template is required");
         }
+
+        let campaignBody: {
+          data: string;
+          html: string;
+          plainText: string;
+        };
+        if (template.quickEmail) {
+          // For quick email templates, start with template HTML containing {{quickBody}} token
+          // The editor will replace this with actual content
+          campaignBody = {
+            data: JSON.stringify({ quickBody: "" }),
+            html: template.body.html,
+            plainText: template.body.plainText,
+          };
+        } else {
+          // For regular templates, copy the template body as-is
+          campaignBody = template.body;
+        }
+
         await network.fetch(`/projects/${project.id}/campaigns`, {
           method: "POST",
           body: {
             subject: data.subject,
             template: data.template || undefined,
-            body: template.body,
+            body: campaignBody,
+            email: template.email,
+            from: template.from,
             recipients: [],
             groups: [],
           },
@@ -93,12 +114,7 @@ export default function Index() {
           <div>
             <label htmlFor="template" className={"text-sm font-medium text-neutral-700"}>
               Template
-              <Dropdown
-                className={"w-full"}
-                values={[{ name: "Default Template", value: "" }, ...templates.map((t) => ({ name: t.subject, value: t.id }))]}
-                selectedValue={watch("template") ?? ""}
-                onChange={(v) => setValue("template", v)}
-              />
+              <Dropdown className={"w-full"} values={templates.map((t) => ({ name: t.subject, value: t.id }))} selectedValue={watch("template") ?? ""} onChange={(v) => setValue("template", v)} />
               <ErrorAlert message={errors.template?.message} />
             </label>
           </div>

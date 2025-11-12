@@ -28,13 +28,14 @@ export default function Index() {
   const { watch, setValue, setError, clearErrors } = useForm({
     resolver: zodResolver(TemplateSchemas.create),
     defaultValues: {
-      templateType: "MARKETING",
+      templateType: "MARKETING" as const,
       subject: "",
       body: {
         data: JSON.stringify({}),
         html: "",
         plainText: "",
       },
+      quickEmail: false,
     },
   });
   const { data: projectIdentity } = useActiveProjectIdentity();
@@ -51,6 +52,7 @@ export default function Index() {
       email: projectIdentity.identity?.verified ? project.email : undefined,
       from: projectIdentity.identity?.verified ? project.from : undefined,
       templateType: "MARKETING",
+      quickEmail: "false",
     };
     return data;
   }, [projectIdentity, project]);
@@ -100,9 +102,10 @@ export default function Index() {
           });
           const props = (value.data.root?.props ?? {}) as TemplateFormValues;
           setValue("subject", props.title ?? "");
-          setValue("email", props.email ?? "");
-          setValue("from", props.from ?? "");
+          setValue("email", props.email ?? undefined);
+          setValue("from", props.from ?? undefined);
           setValue("templateType", props.templateType ?? "MARKETING");
+          setValue("quickEmail", props.quickEmail === "true");
         }}
         actions={() => (
           <>
@@ -114,10 +117,11 @@ export default function Index() {
                   email: watch("email"),
                   from: watch("from"),
                   body: {
-                    data: JSON.stringify(watch("body").data),
+                    data: watch("body").data,
                     html: watch("body").html,
                     plainText: watch("body").plainText,
                   },
+                  quickEmail: watch("quickEmail") ?? false,
                 })
               }
             >
