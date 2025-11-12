@@ -13,26 +13,6 @@ export const useAssets = () => {
   });
 };
 
-export const useAsset = (id?: string) => {
-  const activeProject = useActiveProject();
-  return useSWR<Asset | undefined>(id ? ["assets", id] : null, async () => {
-    if (!id || !activeProject) {
-      return undefined;
-    }
-    return network.fetch<Asset | undefined, void>(`/projects/${activeProject.id}/assets/${id}`);
-  });
-};
-
-export const useAssetsByType = (assetType: "IMAGE" | "ATTACHMENT") => {
-  const activeProject = useActiveProject();
-  return useSWR<Asset[]>(["assets", "by-type", assetType], async () => {
-    if (!activeProject) {
-      return [];
-    }
-    return network.fetch<Asset[], void>(`/assets/by-type/${assetType}`);
-  });
-};
-
 export const uploadAsset = async (projectId: string, file: File): Promise<Asset> => {
   // Step 1: Get upload URL
   const uploadUrlResponse = await network.fetch<{ uploadUrl: string; id: string }, { name: string; size: number; mimeType: string }>(`/projects/${projectId}/assets/upload-url`, {
@@ -64,19 +44,6 @@ export const uploadAsset = async (projectId: string, file: File): Promise<Asset>
   const assetType = file.type.startsWith("image/") ? "IMAGE" : "ATTACHMENT";
   await mutate(["assets"]);
   await mutate(["assets", "by-type", assetType]);
-
-  return asset;
-};
-
-export const updateAsset = async (projectId: string, id: string, updates: Partial<Asset>): Promise<Asset> => {
-  const asset = await network.fetch<Asset, Partial<Asset>>(`/projects/${projectId}/assets/${id}`, {
-    method: "PUT",
-    body: updates,
-  });
-
-  // Invalidate cache
-  await mutate(["assets"]);
-  await mutate(["assets", id]);
 
   return asset;
 };

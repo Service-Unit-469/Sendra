@@ -16,7 +16,7 @@ const LOADING_MESSAGES = [
   "Caffeinating the database...",
 ];
 
-export const RandomLoadingMessage = () => {
+const RandomLoadingMessage = () => {
   return useMemo(() => LOADING_MESSAGES[Math.floor(Math.random() * LOADING_MESSAGES.length)], []);
 };
 

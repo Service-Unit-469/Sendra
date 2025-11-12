@@ -13,7 +13,7 @@ export type ColorPickerFieldProps = {
  * Custom Puck field component for color selection
  * Allows selecting from project brand colors or entering a custom hex code
  */
-export const ColorPickerField: React.FC<ColorPickerFieldProps> = ({ value = "#000000", onChange, name, id, label }) => {
+const ColorPickerField: React.FC<ColorPickerFieldProps> = ({ value = "#000000", onChange, name, id, label }) => {
   const activeProject = useActiveProject();
   const projectColors = activeProject?.colors || [];
 

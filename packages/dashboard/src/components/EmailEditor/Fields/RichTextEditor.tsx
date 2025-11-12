@@ -17,7 +17,7 @@ export type RichTextEditorFieldProps = {
  * Custom Puck field component for rich text editing using React-Quill
  * Supports bold, italic, underline, links, text color, alignment, font size, and lists
  */
-export const RichTextEditorField: React.FC<RichTextEditorFieldProps> = ({ value = "", onChange, name, id, label }) => {
+const RichTextEditorField: React.FC<RichTextEditorFieldProps> = ({ value = "", onChange, name, id, label }) => {
   // Quill modules configuration
   const modules = {
     toolbar: [["bold", "italic"], [{ align: [] }], [{ color: [] }], [{ list: "ordered" }, { list: "bullet" }], ["link"], ["clean"]],
@@ -86,25 +86,8 @@ export const RichTextEditorField: React.FC<RichTextEditorFieldProps> = ({ value 
 };
 
 /**
- * Puck custom field render function for rich text editor
- * Usage in component config:
- * ```
- * fields: {
- *   content: {
- *     type: "custom",
- *     label: "Content",
- *     render: RichTextEditorRender,
- *   }
- * }
- * ```
- */
-export const RichTextEditorRender: CustomField<string | undefined>["render"] = ({ value, onChange, name, id, field: { label } }) => (
-  <RichTextEditorField value={value} onChange={onChange} name={name} id={id} label={label} />
-);
-
-/**
  * Required variant that ensures a non-empty value
  */
-export const RichTextEditorRequiredRender: CustomField<string>["render"] = ({ value, onChange, name, id, field: { label } }) => (
+export const RichTextEditorRender: CustomField<string>["render"] = ({ value, onChange, name, id, field: { label } }) => (
   <RichTextEditorField value={value} onChange={(v) => onChange(v || "")} name={name} id={id} label={label} />
 );

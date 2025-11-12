@@ -1,4 +1,4 @@
-import type { Contact, Group } from "@sendra/shared";
+import type { Group } from "@sendra/shared";
 import useSWR from "swr";
 import { useActiveProject } from "./projects";
 
@@ -10,9 +10,4 @@ export function useAllGroups() {
 export const useGroup = (groupId: string) => {
   const activeProject = useActiveProject();
   return useSWR<Group>(activeProject?.id ? `/projects/${activeProject.id}/groups/${groupId}` : null);
-};
-
-export const useGroupContacts = (groupId: string) => {
-  const activeProject = useActiveProject();
-  return useSWR<{ contacts: Contact[] }>(activeProject?.id ? `/projects/${activeProject.id}/groups/${groupId}/contacts` : null);
 };

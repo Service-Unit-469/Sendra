@@ -76,7 +76,7 @@ const parsePadding = (value?: string): { mode: PaddingMode; values: PaddingValue
  * Custom Puck field component for padding
  * Allows setting either uniform padding or individual values for each direction
  */
-export const PaddingPickerField: React.FC<PaddingPickerFieldProps> = ({ value, onChange, name, id, label }) => {
+const PaddingPickerField: React.FC<PaddingPickerFieldProps> = ({ value, onChange, name, id, label }) => {
   const parsed = parsePadding(value);
   const [mode, setMode] = useState<PaddingMode>(parsed.mode);
   const [paddingValues, setPaddingValues] = useState<PaddingValues>(parsed.values);

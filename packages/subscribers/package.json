@@ -21,7 +21,6 @@
 	},
 	"dependencies": {
 		"@aws-sdk/client-sns": "^3.922.0",
-		"@sendra/lib": "1.0.0",
-		"@sendra/templating": "^1.0.0"
+		"@sendra/lib": "1.0.0"
 	}
 }

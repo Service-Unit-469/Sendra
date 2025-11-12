@@ -2,7 +2,7 @@ import type { ComponentConfig } from "@measured/puck";
 import { Text as ReactEmailText } from "@react-email/components";
 import DomPurify from "dompurify";
 import { PaddingPickerRender, toStyle } from "./PaddingPicker";
-import { RichTextEditorRequiredRender } from "./RichTextEditor";
+import { RichTextEditorRender } from "./RichTextEditor";
 
 export interface TextProps {
   text: string;
@@ -14,7 +14,7 @@ export const Text: ComponentConfig<TextProps> = {
     text: {
       type: "custom",
       label: "Text",
-      render: RichTextEditorRequiredRender,
+      render: RichTextEditorRender,
     },
     padding: {
       type: "custom",

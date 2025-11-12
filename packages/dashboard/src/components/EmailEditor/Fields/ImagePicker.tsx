@@ -16,7 +16,7 @@ export type ImagePickerProps = {
  * Custom Puck field component for asset selection
  * Allows selecting assets from the project's asset library
  */
-export const ImagePicker: React.FC<ImagePickerProps> = ({ value, onChange, name, id, label }) => {
+const ImagePicker: React.FC<ImagePickerProps> = ({ value, onChange, name, id, label }) => {
   const { data: assets, isLoading, error } = useAssets();
   const [manualUrl, setManualUrl] = useState(value || "");
   const [mode, setMode] = useState<"picker" | "manual">(value && assets && !assets.find((a) => a.url === value) ? "manual" : "picker");
