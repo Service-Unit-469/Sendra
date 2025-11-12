@@ -192,7 +192,7 @@ export const registerEventsRoutes = (app: AppType) => {
           contact,
           project,
         });
-        const compiledBody = EmailService.compileBody(body, {
+        const compiledHtml = EmailService.compileBody(body.html, {
           contact,
           project,
           email: {
@@ -200,6 +200,17 @@ export const registerEventsRoutes = (app: AppType) => {
             subject,
           },
         });
+        let compiledPlainText: string | undefined;
+        if (body.plainText) {
+          compiledPlainText = EmailService.compileBody(body.plainText, {
+            contact,
+            project,
+            email: {
+              sendType: "TRANSACTIONAL",
+              subject,
+            },
+          });
+        }
 
         const { messageId } = await EmailService.send({
           from: {
@@ -212,7 +223,8 @@ export const registerEventsRoutes = (app: AppType) => {
           attachments,
           content: {
             subject: compiledSubject,
-            html: compiledBody,
+            html: compiledHtml,
+            plainText: compiledPlainText,
           },
         });
 
@@ -222,7 +234,10 @@ export const registerEventsRoutes = (app: AppType) => {
           messageId,
           subject: compiledSubject,
           email: contact.email,
-          body: compiledBody,
+          body: {
+            html: compiledHtml,
+            plainText: compiledPlainText,
+          },
           contact: contact.id,
           status: "SENT",
           sendType: "TRANSACTIONAL",

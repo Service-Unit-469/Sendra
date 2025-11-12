@@ -27,7 +27,11 @@ describe("CampaignPersistence", () => {
         const campaignData = {
           project: TEST_PROJECT_ID,
           subject: "Test Campaign Subject",
-          body: "This is the email body content",
+          body: {
+            data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+            html: "<p>This is the email body content</p>",
+            plainText: "This is the email body content",
+          },
           email: "sender@example.com",
           from: "Sender Name",
           recipients: ["recipient-1", "recipient-2"],
@@ -52,7 +56,11 @@ describe("CampaignPersistence", () => {
         const invalidCampaign = {
           project: TEST_PROJECT_ID,
           subject: "A".repeat(71), // Too long (max 70)
-          body: "Body content",
+          body: {
+            data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+            html: "<p>Body content</p>",
+            plainText: "Body content",
+          },
           recipients: ["recipient-1"],
           template: "test-template-id",
           status: "DRAFT" as const,
@@ -80,7 +88,11 @@ describe("CampaignPersistence", () => {
         const invalidCampaign = {
           project: TEST_PROJECT_ID,
           subject: "Valid Subject",
-          body: "Valid Body",
+          body: {
+            data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+            html: "<p>Valid Body</p>",
+            plainText: "Valid Body",
+          },
           recipients: ["recipient-1"],
           // Missing template
           status: "DRAFT" as const,
@@ -98,7 +110,11 @@ describe("CampaignPersistence", () => {
           id: "test-id",
           project: TEST_PROJECT_ID,
           subject: "Test Subject",
-          body: "Test Body",
+          body: {
+            data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+            html: "<p>Test Body</p>",
+            plainText: "Test Body",
+          },
           email: "test@example.com",
           from: "Test Sender",
           recipients: ["rec-1"],
@@ -119,7 +135,11 @@ describe("CampaignPersistence", () => {
           id: "test-id-2",
           project: TEST_PROJECT_ID,
           subject: "Another Subject",
-          body: "Another Body",
+          body: {
+            data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+            html: "<p>Another Body</p>",
+            plainText: "Another Body",
+          },
           recipients: ["rec-2"],
           template: "test-template-id",
           status: "DELIVERED",
@@ -156,7 +176,11 @@ describe("CampaignPersistence", () => {
         const campaign = await persistence.create({
           project: TEST_PROJECT_ID,
           subject: "Embed Test Campaign",
-          body: "Test body for embed",
+          body: {
+            data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+            html: "<p>Test body for embed</p>",
+            plainText: "Test body for embed",
+          },
           recipients: ["recipient-embed"],
           template: "test-template-id",
           status: "DRAFT",
@@ -173,7 +197,11 @@ describe("CampaignPersistence", () => {
         const campaign = await persistence.create({
           project: TEST_PROJECT_ID,
           subject: "Embed with Emails Test",
-          body: "Test body",
+          body: {
+            data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+            html: "<p>Test body</p>",
+            plainText: "Test body",
+          },
           recipients: ["recipient-emails"],
           template: "test-template-id",
           status: "DRAFT",
@@ -199,7 +227,11 @@ describe("CampaignPersistence", () => {
         const campaign = await persistence.create({
           project: TEST_PROJECT_ID,
           subject: "Draft Campaign",
-          body: "Draft body",
+          body: {
+            data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+            html: "<p>Draft body</p>",
+            plainText: "Draft body",
+          },
           recipients: ["rec-draft"],
           template: "test-template-id",
           status: "DRAFT",
@@ -212,7 +244,11 @@ describe("CampaignPersistence", () => {
         const campaign = await persistence.create({
           project: TEST_PROJECT_ID,
           subject: "Delivered Campaign",
-          body: "Delivered body",
+          body: {
+            data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+            html: "<p>Delivered body</p>",
+            plainText: "Delivered body",
+          },
           recipients: ["rec-delivered"],
           template: "test-template-id",
           status: "DELIVERED",
@@ -225,7 +261,11 @@ describe("CampaignPersistence", () => {
         const invalidCampaign = {
           project: TEST_PROJECT_ID,
           subject: "Invalid Status Campaign",
-          body: "Body",
+          body: {
+            data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+            html: "<p>Body</p>",
+            plainText: "Body",
+          },
           recipients: ["rec-invalid"],
           template: "test-template-id",
           status: "INVALID_STATUS",
@@ -240,7 +280,11 @@ describe("CampaignPersistence", () => {
         const campaign = await persistence.create({
           project: TEST_PROJECT_ID,
           subject: "Status Update Test",
-          body: "Body",
+          body: {
+            data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+            html: "<p>Body</p>",
+            plainText: "Body",
+          },
           recipients: ["rec-update"],
           template: "test-template-id",
           status: "DRAFT",
@@ -260,7 +304,11 @@ describe("CampaignPersistence", () => {
         const campaign = await persistence.create({
           project: TEST_PROJECT_ID,
           subject: "No Email Field",
-          body: "Body content",
+          body: {
+            data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+            html: "<p>Body content</p>",
+            plainText: "Body content",
+          },
           recipients: ["rec-no-email"],
           template: "test-template-id",
           status: "DRAFT",
@@ -273,7 +321,11 @@ describe("CampaignPersistence", () => {
         const campaign = await persistence.create({
           project: TEST_PROJECT_ID,
           subject: "With Email Field",
-          body: "Body content",
+          body: {
+            data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+            html: "<p>Body content</p>",
+            plainText: "Body content",
+          },
           email: "sender@example.com",
           recipients: ["rec-with-email"],
           template: "test-template-id",
@@ -287,7 +339,11 @@ describe("CampaignPersistence", () => {
         const campaign = await persistence.create({
           project: TEST_PROJECT_ID,
           subject: "No From Field",
-          body: "Body content",
+          body: {
+            data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+            html: "<p>Body content</p>",
+            plainText: "Body content",
+          },
           recipients: ["rec-no-from"],
           template: "test-template-id",
           status: "DRAFT",
@@ -300,7 +356,11 @@ describe("CampaignPersistence", () => {
         const invalidEmailCampaign = {
           project: TEST_PROJECT_ID,
           subject: "Invalid Email",
-          body: "Body content",
+          body: {
+            data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+            html: "<p>Body content</p>",
+            plainText: "Body content",
+          },
           email: "not-a-valid-email",
           recipients: ["rec-invalid-email"],
           template: "test-template-id",
@@ -318,7 +378,11 @@ describe("CampaignPersistence", () => {
         const campaign = await persistence.create({
           project: TEST_PROJECT_ID,
           subject: "Multiple Recipients",
-          body: "Body",
+          body: {
+            data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+            html: "<p>Body</p>",
+            plainText: "Body",
+          },
           recipients: ["rec-1", "rec-2", "rec-3", "rec-4", "rec-5"],
           template: "test-template-id",
           status: "DRAFT",
@@ -331,7 +395,11 @@ describe("CampaignPersistence", () => {
         const campaign = await persistence.create({
           project: TEST_PROJECT_ID,
           subject: "Single Recipient",
-          body: "Body",
+          body: {
+            data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+            html: "<p>Body</p>",
+            plainText: "Body",
+          },
           recipients: ["rec-single"],
           template: "test-template-id",
           status: "DRAFT",
@@ -345,7 +413,11 @@ describe("CampaignPersistence", () => {
         const campaign = await persistence.create({
           project: TEST_PROJECT_ID,
           subject: "Empty Recipients Test",
-          body: "Body",
+          body: {
+            data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+            html: "<p>Body</p>",
+            plainText: "Body",
+          },
           recipients: [],
           template: "test-template-id",
           status: "DRAFT",

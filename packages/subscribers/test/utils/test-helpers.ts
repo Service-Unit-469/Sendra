@@ -49,10 +49,27 @@ export const createTestSetup = async () => {
  */
 export const createTestTemplate = async (projectId: string, quickEmail = false) => {
 	const templatePersistence = new TemplatePersistence(projectId);
+	const editorJsData = JSON.stringify({
+		time: Date.now(),
+		blocks: [
+			{
+				id: "test-block",
+				type: "paragraph",
+				data: {
+					text: "Test email body content",
+				},
+			},
+		],
+		version: "2.28.0",
+	});
 	return await templatePersistence.create({
 		project: projectId,
 		subject: "Test Email Subject",
-		body: "<p>Test email body content</p>",
+		body: {
+			data: editorJsData,
+			html: "<p>Test email body content</p>",
+			plainText: "Test email body content",
+		},
 		templateType: "MARKETING",
 		quickEmail,
 	});
@@ -103,10 +120,27 @@ export const createTestCampaign = async (projectId: string) => {
 	const template = await createTestTemplate(projectId);
 	
 	const campaignPersistence = new CampaignPersistence(projectId);
+	const editorJsData = JSON.stringify({
+		time: Date.now(),
+		blocks: [
+			{
+				id: "test-block",
+				type: "paragraph",
+				data: {
+					text: "Test campaign body",
+				},
+			},
+		],
+		version: "2.28.0",
+	});
 	return await campaignPersistence.create({
 		project: projectId,
 		subject: "Test Campaign Subject",
-		body: "<p>Test campaign body</p>",
+		body: {
+			data: editorJsData,
+			html: "<p>Test campaign body</p>",
+			plainText: "Test campaign body",
+		},
 		recipients: [],
 		status: "DRAFT",
 		template: template.id,
@@ -127,7 +161,10 @@ export const createTestEmail = async (projectId: string, contactId: string, mess
 		contact: contactId,
 		messageId,
 		subject: "Test Email",
-		body: "<p>Test body</p>",
+		body: {
+			html: "<p>Test body</p>",
+			plainText: "Test body",
+		},
 		email: "test@example.com",
 		status: "SENT",
 		sendType: "MARKETING",

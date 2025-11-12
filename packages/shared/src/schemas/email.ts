@@ -10,7 +10,10 @@ export const EmailSchema = ProjectEntitySchema.extend({
   contact: id,
   email,
   subject: z.string(),
-  body: z.string(),
+  body: z.object({
+    html: z.string(),
+    plainText: z.string().optional(),
+  }),
   sendType: z.enum(SEND_TYPES).default(SEND_TYPES[0]),
   status: EmailStatusSchema,
 });

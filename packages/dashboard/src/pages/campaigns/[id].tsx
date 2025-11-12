@@ -1,11 +1,10 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { CampaignUpdate, Email } from "@sendra/shared";
 import { CampaignSchemas } from "@sendra/shared";
-import { Ring } from "@uiball/loaders";
 import GroupOrContacts from "dashboard/src/components/ContactSelector/GroupOrContacts";
 import dayjs from "dayjs";
 import { AnimatePresence, motion } from "framer-motion";
-import { Copy, Eye, Save, Send, Trash } from "lucide-react";
+import { Copy, Edit, Eye, LoaderCircle, Save, Send, Trash } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
@@ -17,7 +16,6 @@ import Badge from "../../components/Badge/Badge";
 import { BlackButton } from "../../components/Buttons/BlackButton";
 import { MenuButton } from "../../components/Buttons/MenuButton";
 import Card from "../../components/Card/Card";
-import { EmailEditor } from "../../components/EmailEditor";
 import Dropdown from "../../components/Input/Dropdown/Dropdown";
 import Input from "../../components/Input/Input/Input";
 import Modal from "../../components/Overlay/Modal/Modal";
@@ -27,7 +25,6 @@ import { Dashboard } from "../../layouts";
 import { useCampaign, useCampaignsWithEmails } from "../../lib/hooks/campaigns";
 import { useEmailsByCampaign } from "../../lib/hooks/emails";
 import { useActiveProject, useActiveProjectIdentity } from "../../lib/hooks/projects";
-import { useTemplate } from "../../lib/hooks/templates";
 import { network } from "../../lib/network";
 
 /**
@@ -41,7 +38,6 @@ export default function Index() {
 
   const { data: emails } = useEmailsByCampaign(campaign?.id);
   const { data: projectIdentity } = useActiveProjectIdentity();
-  const { data: template } = useTemplate(campaign?.template ?? "");
 
   const [confirmModal, setConfirmModal] = useState(false);
   const [delay, setDelay] = useState(0);
@@ -110,7 +106,7 @@ export default function Index() {
     return <FullscreenLoader />;
   }
 
-  if (!project || !campaign || (watch("body") as string | undefined) === undefined) {
+  if (!project || !campaign || (watch("body") as object | undefined) === undefined) {
     return <FullscreenLoader />;
   }
 
@@ -313,7 +309,7 @@ export default function Index() {
             {campaign.status !== "DRAFT" &&
               (emails?.length === 0 ? (
                 <div className={"flex items-center gap-6 rounded-sm border border-neutral-300 px-6 py-3 sm:col-span-6"}>
-                  <Ring size={20} />
+                  <LoaderCircle size={20} className="animate-spin" />
                   <div>
                     <h1 className={"text-lg font-semibold text-neutral-800"}>Hang on!</h1>
                     <p className={"text-sm text-neutral-600"}>We are still sending your campaign. Emails will start appearing here once they are sent.</p>
@@ -340,7 +336,22 @@ export default function Index() {
               ))}
 
             <div className={"sm:col-span-6"}>
-              <EmailEditor initialValue={campaign.body} onChange={(value) => setValue("body", value)} templateMjml={template?.body ?? ""} />
+              <div className="h-[calc(100vh-550px)] min-h-[600px]">
+                <div className="flex justify-end gap-2">
+                  <BlackButton
+                    onClick={() => {
+                      setValue("body", {
+                        ...campaign.body,
+                        data: JSON.stringify(campaign.body.data),
+                      });
+                    }}
+                  >
+                    <Edit size={18} />
+                    Edit
+                  </BlackButton>
+                </div>
+                <iframe srcDoc={campaign.body.html} className="w-full h-full" title={campaign.subject ?? "Campaign preview"} />
+              </div>
               <ErrorAlert message={errors.body?.message} />
             </div>
 

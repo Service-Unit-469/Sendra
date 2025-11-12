@@ -54,16 +54,22 @@ export default function Index() {
 
   const createCampaign = async (data: z.infer<typeof createCampaignFormSchema>) => {
     toast.promise(
-      network.fetch(`/projects/${project.id}/campaigns`, {
-        method: "POST",
-        body: {
-          subject: data.subject,
-          template: data.template || undefined,
-          body: "",
-          recipients: [],
-          groups: [],
-        },
-      }),
+      async () => {
+        const template = templates.find((t) => t.id === data.template);
+        if (!template) {
+          throw new Error("Template is required");
+        }
+        await network.fetch(`/projects/${project.id}/campaigns`, {
+          method: "POST",
+          body: {
+            subject: data.subject,
+            template: data.template || undefined,
+            body: template.body,
+            recipients: [],
+            groups: [],
+          },
+        });
+      },
       {
         loading: "Creating new campaign",
         success: () => {

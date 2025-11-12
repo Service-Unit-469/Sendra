@@ -11,7 +11,6 @@ import {
   TemplatePersistence,
 } from "@sendra/lib";
 import type { Action, Campaign, Email, SendEmailTaskSchema } from "@sendra/shared";
-import { injectBodyToken } from "@sendra/templating";
 import type { z } from "zod";
 
 type SendEmailTask = z.infer<typeof SendEmailTaskSchema>;
@@ -60,7 +59,10 @@ export const sendEmail = async (task: SendEmailTask, recordId: string) => {
   }
 
   let subject = "";
-  let body = "";
+  let body = {
+    html: "",
+    plainText: "",
+  };
 
   let email = "";
   let name = "";
@@ -104,13 +106,12 @@ export const sendEmail = async (task: SendEmailTask, recordId: string) => {
       return;
     }
 
-    // Inject campaign body (Editor.js JSON) into template's {{body}} token
-    body = injectBodyToken(template.body, campaign.body);
+    body = campaign.body;
     subject = campaign.subject;
     logger.info({ templateId: template.id }, "Injecting campaign content into template");
   }
 
-  logger.info({ subject: body, body: body.length }, "Compiling subject and body");
+  logger.info({ subject, body: body.html.length }, "Compiling subject and body");
 
   const compiledSubject = EmailService.compileSubject(subject, {
     action,
@@ -122,14 +123,23 @@ export const sendEmail = async (task: SendEmailTask, recordId: string) => {
     sendType: action ? "MARKETING" : "TRANSACTIONAL",
     subject: compiledSubject,
   } as const;
-  const compiledBody = EmailService.compileBody(body, {
+  const compiledHtml = EmailService.compileBody(body.html, {
     action,
     contact,
     project,
     email: emailBase,
   });
+  let compiledPlainText: string | undefined;
+  if (body.plainText) {
+    compiledPlainText = EmailService.compileBody(body.plainText, {
+      action,
+      contact,
+      project,
+      email: emailBase,
+    });
+  }
 
-  logger.info({ subject: compiledSubject, body: compiledBody.length }, "Sending email");
+  logger.info({ subject: compiledSubject, body: compiledHtml.length }, "Sending email");
   const { messageId } = await EmailService.send({
     from: {
       name,
@@ -138,7 +148,8 @@ export const sendEmail = async (task: SendEmailTask, recordId: string) => {
     to: [contact.email],
     content: {
       subject: compiledSubject,
-      html: compiledBody,
+      html: compiledHtml,
+      plainText: compiledPlainText,
     },
   });
 
@@ -155,7 +166,10 @@ export const sendEmail = async (task: SendEmailTask, recordId: string) => {
       messageId,
       status: "SENT",
       subject,
-      body,
+      body: {
+        html: compiledHtml,
+        plainText: compiledPlainText,
+      },
     });
   } else {
     await emailPersistence.create({
@@ -163,7 +177,10 @@ export const sendEmail = async (task: SendEmailTask, recordId: string) => {
       messageId,
       status: "SENT",
       subject,
-      body,
+      body: {
+        html: compiledHtml,
+        plainText: compiledPlainText,
+      },
       email,
       source: action?.id ?? campaign?.id,
       sourceType: action ? "ACTION" : "CAMPAIGN",

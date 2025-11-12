@@ -6,6 +6,12 @@ export const id = z.string();
 
 export const subscribed = z.boolean().optional();
 
+export const BodySchema = z.object({
+  data: z.string(),
+  html: z.string(),
+  plainText: z.string(),
+});
+
 export const UtilitySchemas = {
   id: z.object({
     id,

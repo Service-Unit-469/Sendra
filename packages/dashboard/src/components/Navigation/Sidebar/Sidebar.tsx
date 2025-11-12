@@ -1,8 +1,8 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { FileImage, Home, LayoutTemplate, LineChart, LogOut, Send, Settings, TerminalSquare, User, Users2, Workflow, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, FileImage, Home, LayoutTemplate, LineChart, LogOut, Send, Settings, TerminalSquare, User, Users2, Workflow, X } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { type ReactElement, useState } from "react";
+import React, { type ReactElement, useEffect, useState } from "react";
 import SendraLogo from "../../../icons/SendraLogo";
 import ProjectSelector from "../ProjectSelector/ProjectSelector";
 
@@ -26,6 +26,7 @@ interface SidebarLinkProps {
 
 export interface SidebarProps {
   mobileOpen: boolean;
+  wideLayout?: boolean;
   onSidebarVisibilityChange: () => void;
 }
 
@@ -148,12 +149,12 @@ function SidebarLink({ active, to, text, disabled, highlight, svgPath }: Sidebar
  * @param root0.mobileOpen
  * @param root0.onSidebarVisibilityChange
  */
-export default function Sidebar({ mobileOpen, onSidebarVisibilityChange }: SidebarProps) {
+export default function Sidebar({ mobileOpen, onSidebarVisibilityChange, wideLayout }: SidebarProps) {
   const router = useRouter();
-
   const projectSelectorRef = React.createRef<HTMLDivElement>();
-
   const [projectSelectorOpen, setProjectSelectorOpen] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+  useEffect(() => setExpanded(!wideLayout), [wideLayout]);
 
   return (
     <>
@@ -226,86 +227,109 @@ export default function Sidebar({ mobileOpen, onSidebarVisibilityChange }: Sideb
         )}
       </AnimatePresence>
 
-      {/* Static sidebar for desktop */}
       <div className="hidden md:flex md:shrink-0">
-        <div className="flex w-72 flex-col">
-          <div className="flex h-0 flex-1 flex-col border-r border-neutral-100 bg-white px-6">
-            <div className="flex flex-1 flex-col overflow-y-auto pb-4 pt-5">
-              <div className="flex shrink-0 items-center justify-center px-4">
-                <Link href={"/"} passHref>
-                  <SendraLogo width="100%" />
-                </Link>
-              </div>
-
-              <div className={"px-2"}>
-                <ProjectSelector open={projectSelectorOpen} onToggle={() => setProjectSelectorOpen(!projectSelectorOpen)} ref={projectSelectorRef} />
-              </div>
-
-              <nav className="mt-5 flex-1 space-y-1 px-2">
-                {links
-                  .filter((l) => l.position === "top")
-                  .map((link, _index) => {
-                    if (link.to === "/events") {
-                      return (
-                        <div className={"pt-3"}>
-                          <p className={"pb-1 text-sm font-semibold text-neutral-500"}>Automations</p>
-                          <SidebarLink
-                            key={`desktop-top-${link.to}`}
-                            active={router.pathname.split("/")[1].includes(link.to.split("/")[1])}
-                            to={link.to}
-                            text={link.text}
-                            disabled={link.disabled}
-                            svgPath={link.icon}
-                            highlight={link.highlight}
-                          />
-                        </div>
-                      );
-                    }
-
-                    if (link.to === "/campaigns") {
-                      return (
-                        <div className={"pt-3"}>
-                          <p className={"pb-1 text-sm font-semibold text-neutral-500"}>Campaigns</p>
-                          <SidebarLink
-                            key={`desktop-top-${link.to}`}
-                            active={router.pathname.split("/")[1].includes(link.to.split("/")[1])}
-                            to={link.to}
-                            text={link.text}
-                            disabled={link.disabled}
-                            svgPath={link.icon}
-                            highlight={link.highlight}
-                          />
-                        </div>
-                      );
-                    }
-
-                    return (
-                      <SidebarLink
-                        key={`desktop-top-${link.to}`}
-                        active={link.to === "/" ? router.pathname === link.to : router.pathname.split("/")[1].includes(link.to.split("/")[1])}
-                        to={link.to}
-                        text={link.text}
-                        disabled={link.disabled}
-                        svgPath={link.icon}
-                        highlight={link.highlight}
-                      />
-                    );
-                  })}
-              </nav>
-            </div>
-
-            <div className="flex-0 mb-4 w-full space-y-1 bg-white px-2">
-              <Link
-                href={"/auth/logout"}
-                className={"flex cursor-pointer items-center gap-x-3 rounded-sm p-2 text-sm font-medium text-neutral-400 transition ease-in-out hover:bg-neutral-50 hover:text-neutral-700"}
+        <div className={`flex ${expanded ? "w-72" : "w-8"} flex-col`}>
+          {!expanded && (
+            <div className="flex flex-direction-column">
+              <button
+                className="ml-1 flex h-10 w-10 items-center justify-center rounded-full focus:outline-hidden focus:ring-2 focus:ring-inset focus:ring-white"
+                onClick={() => setExpanded(!expanded)}
               >
-                <div className="flex h-5 w-5 items-center justify-center">
-                  <LogOut />
-                </div>
-                Sign out
-              </Link>
+                <ChevronRight />
+              </button>
             </div>
-          </div>
+          )}
+          {expanded && (
+            <>
+              {wideLayout && (
+                <div className="flex flex-direction-column bg-white ">
+                  <button
+                    className="ml-1 flex h-10 w-10 items-center justify-center rounded-full focus:outline-hidden focus:ring-2 focus:ring-inset focus:ring-white"
+                    onClick={() => setExpanded(!expanded)}
+                  >
+                    <ChevronLeft />
+                  </button>
+                </div>
+              )}
+              <div className="flex h-0 flex-1 flex-col border-r border-neutral-100 bg-white px-6">
+                <div className="flex flex-1 flex-col overflow-y-auto pb-4 pt-5">
+                  <div className="flex shrink-0 items-center justify-center px-4">
+                    <Link href={"/"} passHref>
+                      <SendraLogo width="100%" />
+                    </Link>
+                  </div>
+
+                  <div className={"px-2"}>
+                    <ProjectSelector open={projectSelectorOpen} onToggle={() => setProjectSelectorOpen(!projectSelectorOpen)} ref={projectSelectorRef} />
+                  </div>
+
+                  <nav className="mt-5 flex-1 space-y-1 px-2">
+                    {links
+                      .filter((l) => l.position === "top")
+                      .map((link, _index) => {
+                        if (link.to === "/events") {
+                          return (
+                            <div className={"pt-3"}>
+                              <p className={"pb-1 text-sm font-semibold text-neutral-500"}>Automations</p>
+                              <SidebarLink
+                                key={`desktop-top-${link.to}`}
+                                active={router.pathname.split("/")[1].includes(link.to.split("/")[1])}
+                                to={link.to}
+                                text={link.text}
+                                disabled={link.disabled}
+                                svgPath={link.icon}
+                                highlight={link.highlight}
+                              />
+                            </div>
+                          );
+                        }
+
+                        if (link.to === "/campaigns") {
+                          return (
+                            <div className={"pt-3"}>
+                              <p className={"pb-1 text-sm font-semibold text-neutral-500"}>Campaigns</p>
+                              <SidebarLink
+                                key={`desktop-top-${link.to}`}
+                                active={router.pathname.split("/")[1].includes(link.to.split("/")[1])}
+                                to={link.to}
+                                text={link.text}
+                                disabled={link.disabled}
+                                svgPath={link.icon}
+                                highlight={link.highlight}
+                              />
+                            </div>
+                          );
+                        }
+
+                        return (
+                          <SidebarLink
+                            key={`desktop-top-${link.to}`}
+                            active={link.to === "/" ? router.pathname === link.to : router.pathname.split("/")[1].includes(link.to.split("/")[1])}
+                            to={link.to}
+                            text={link.text}
+                            disabled={link.disabled}
+                            svgPath={link.icon}
+                            highlight={link.highlight}
+                          />
+                        );
+                      })}
+                  </nav>
+                </div>
+
+                <div className="flex-0 mb-4 w-full space-y-1 bg-white px-2">
+                  <Link
+                    href={"/auth/logout"}
+                    className={"flex cursor-pointer items-center gap-x-3 rounded-sm p-2 text-sm font-medium text-neutral-400 transition ease-in-out hover:bg-neutral-50 hover:text-neutral-700"}
+                  >
+                    <div className="flex h-5 w-5 items-center justify-center">
+                      <LogOut />
+                    </div>
+                    Sign out
+                  </Link>
+                </div>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </>

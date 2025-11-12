@@ -55,10 +55,27 @@ describe("Actions Endpoint Contract Tests", () => {
   // Helper function to create a test template
   const createTestTemplate = async (projectId: string) => {
     const templatePersistence = new TemplatePersistence(projectId);
+    const editorJsData = JSON.stringify({
+      time: Date.now(),
+      blocks: [
+        {
+          id: "test-block",
+          type: "paragraph",
+          data: {
+            text: "Test email body content",
+          },
+        },
+      ],
+      version: "2.28.0",
+    });
     return await templatePersistence.create({
       project: projectId,
       subject: "Test Email Subject",
-      body: "Test email body content",
+      body: {
+        data: editorJsData,
+        html: "<p>Test email body content</p>",
+        plainText: "Test email body content",
+      },
       templateType: "MARKETING",
     });
   };

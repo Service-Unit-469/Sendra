@@ -14,7 +14,6 @@ import {
   UserPersistence,
 } from "@sendra/lib";
 import { CampaignSchema, CampaignSchemas, EmailSchema, type Project } from "@sendra/shared";
-import { injectBodyToken } from "@sendra/templating";
 import type { AppType } from "../../app";
 import { HttpException, NotFound } from "../../exceptions";
 import { getProblemResponseSchema } from "../../exceptions/responses";
@@ -214,9 +213,6 @@ export const registerCampaignsRoutes = (app: AppType) => {
           throw new NotFound("template");
         }
 
-        const emailBody = injectBodyToken(template.body, campaign.body);
-        logger.info({ templateId: template.id }, "Injecting campaign content into template for test");
-
         const params = {
           contact: {
             email: emailConfig.defaultEmail,
@@ -242,7 +238,8 @@ export const registerCampaignsRoutes = (app: AppType) => {
           to: users.map((m) => m.email),
           content: {
             subject,
-            html: EmailService.compileBody(emailBody, params as CompileProps),
+            html: EmailService.compileBody(campaign.body.html, params as CompileProps),
+            plainText: EmailService.compileBody(campaign.body.plainText, params as CompileProps),
           },
         });
       }

@@ -148,7 +148,10 @@ describe("Info Endpoint Contract Tests", () => {
         email: contact.email,
         messageId: "msg-1",
         subject: "Test Email 1",
-        body: "Body 1",
+        body: {
+          html: "<p>Body 1</p>",
+          plainText: "Body 1",
+        },
         status: "SENT",
         sendType: "TRANSACTIONAL",
       });
@@ -159,7 +162,10 @@ describe("Info Endpoint Contract Tests", () => {
         email: contact.email,
         messageId: "msg-2",
         subject: "Test Email 2",
-        body: "Body 2",
+        body: {
+          html: "<p>Body 2</p>",
+          plainText: "Body 2",
+        },
         status: "OPENED",
         sendType: "TRANSACTIONAL",
       });
@@ -170,7 +176,10 @@ describe("Info Endpoint Contract Tests", () => {
         email: contact.email,
         messageId: "msg-3",
         subject: "Test Email 3",
-        body: "Body 3",
+        body: {
+          html: "<p>Body 3</p>",
+          plainText: "Body 3",
+        },
         status: "BOUNCED",
         sendType: "TRANSACTIONAL",
       });
@@ -181,7 +190,10 @@ describe("Info Endpoint Contract Tests", () => {
         email: contact.email,
         messageId: "msg-4",
         subject: "Test Email 4",
-        body: "Body 4",
+        body: {
+          html: "<p>Body 4</p>",
+          plainText: "Body 4",
+        },
         status: "COMPLAINT",
         sendType: "TRANSACTIONAL",
       });
@@ -463,7 +475,10 @@ describe("Info Endpoint Contract Tests", () => {
         email: contact.email,
         messageId: "test-msg-1",
         subject: "Test Email",
-        body: "Test Body",
+        body: {
+          html: "<p>Test Body</p>",
+          plainText: "Test Body",
+        },
         status: "SENT",
         sendType: "TRANSACTIONAL",
       });
@@ -506,7 +521,10 @@ describe("Info Endpoint Contract Tests", () => {
         email: contact.email,
         messageId: "test-msg-1",
         subject: "Test Email",
-        body: "Test Body",
+        body: {
+          html: "<p>Test Body</p>",
+          plainText: "Test Body",
+        },
         status: "SENT",
         sendType: "TRANSACTIONAL",
       });
@@ -609,7 +627,10 @@ describe("Info Endpoint Contract Tests", () => {
           email: contact.email,
           messageId: `test-msg-${i}`,
           subject: `Test Email ${i}`,
-          body: "Test Body",
+          body: {
+            html: "<p>Test Body</p>",
+            plainText: "Test Body",
+          },
           status: "SENT",
           sendType: "TRANSACTIONAL",
         });
@@ -688,7 +709,10 @@ describe("Info Endpoint Contract Tests", () => {
         email: contact.email,
         messageId: "trans-1",
         subject: "Transactional Email 1",
-        body: "Body 1",
+        body: {
+          html: "<p>Body 1</p>",
+          plainText: "Body 1",
+        },
         status: "SENT",
         sendType: "TRANSACTIONAL",
       });
@@ -699,7 +723,10 @@ describe("Info Endpoint Contract Tests", () => {
         email: contact.email,
         messageId: "trans-2",
         subject: "Transactional Email 2",
-        body: "Body 2",
+        body: {
+          html: "<p>Body 2</p>",
+          plainText: "Body 2",
+        },
         status: "SENT",
         sendType: "TRANSACTIONAL",
       });
@@ -745,7 +772,10 @@ describe("Info Endpoint Contract Tests", () => {
         email: contact.email,
         messageId: "auto-1",
         subject: "Automation Email 1",
-        body: "Body 1",
+        body: {
+          html: "<p>Body 1</p>",
+          plainText: "Body 1",
+        },
         status: "SENT",
         sendType: "TRANSACTIONAL",
         source: action.id,
@@ -758,7 +788,10 @@ describe("Info Endpoint Contract Tests", () => {
         email: contact.email,
         messageId: "auto-2",
         subject: "Automation Email 2",
-        body: "Body 2",
+        body: {
+          html: "<p>Body 2</p>",
+          plainText: "Body 2",
+        },
         status: "SENT",
         sendType: "TRANSACTIONAL",
         source: action.id,
@@ -793,7 +826,10 @@ describe("Info Endpoint Contract Tests", () => {
         email: contact.email,
         messageId: "camp-1",
         subject: "Campaign Email 1",
-        body: "Body 1",
+        body: {
+          html: "<p>Body 1</p>",
+          plainText: "Body 1",
+        },
         status: "SENT",
         sendType: "MARKETING",
         source: "campaign-id-1",
@@ -806,7 +842,10 @@ describe("Info Endpoint Contract Tests", () => {
         email: contact.email,
         messageId: "camp-2",
         subject: "Campaign Email 2",
-        body: "Body 2",
+        body: {
+          html: "<p>Body 2</p>",
+          plainText: "Body 2",
+        },
         status: "SENT",
         sendType: "MARKETING",
         source: "campaign-id-1",
@@ -819,7 +858,10 @@ describe("Info Endpoint Contract Tests", () => {
         email: contact.email,
         messageId: "camp-3",
         subject: "Campaign Email 3",
-        body: "Body 3",
+        body: {
+          html: "<p>Body 3</p>",
+          plainText: "Body 3",
+        },
         status: "SENT",
         sendType: "MARKETING",
         source: "campaign-id-2",
@@ -867,7 +909,10 @@ describe("Info Endpoint Contract Tests", () => {
         email: contact.email,
         messageId: "trans-1",
         subject: "Transactional Email",
-        body: "Body",
+        body: {
+          html: "<p>Body</p>",
+          plainText: "Body",
+        },
         status: "SENT",
         sendType: "TRANSACTIONAL",
       });
@@ -878,7 +923,10 @@ describe("Info Endpoint Contract Tests", () => {
         email: contact.email,
         messageId: "auto-1",
         subject: "Automation Email",
-        body: "Body",
+        body: {
+          html: "<p>Body</p>",
+          plainText: "Body",
+        },
         status: "SENT",
         sendType: "TRANSACTIONAL",
         source: action.id,
@@ -891,7 +939,10 @@ describe("Info Endpoint Contract Tests", () => {
         email: contact.email,
         messageId: "camp-1",
         subject: "Campaign Email",
-        body: "Body",
+        body: {
+          html: "<p>Body</p>",
+          plainText: "Body",
+        },
         status: "SENT",
         sendType: "MARKETING",
         source: "campaign-id",
@@ -926,7 +977,10 @@ describe("Info Endpoint Contract Tests", () => {
         email: contact.email,
         messageId: "current-1",
         subject: "Current Month Email",
-        body: "Body",
+        body: {
+          html: "<p>Body</p>",
+          plainText: "Body",
+        },
         status: "SENT",
         sendType: "TRANSACTIONAL",
       });
@@ -985,7 +1039,10 @@ describe("Info Endpoint Contract Tests", () => {
         email: contact.email,
         messageId: "trans-1",
         subject: "Test Email",
-        body: "Body",
+        body: {
+          html: "<p>Body</p>",
+          plainText: "Body",
+        },
         status: "SENT",
         sendType: "TRANSACTIONAL",
       });

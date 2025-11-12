@@ -28,7 +28,10 @@ describe("Emails Endpoint Contract Tests", () => {
       contact: contactId,
       messageId: messageId || `test-message-${Date.now()}@example.com`,
       subject: "Test Email Subject",
-      body: "<p>Test email body</p>",
+      body: {
+        html: "<p>Test email body</p>",
+        plainText: "Test email body",
+      },
       email: "recipient@example.com",
       status: "SENT",
       sendType: "TRANSACTIONAL",
@@ -71,7 +74,7 @@ describe("Emails Endpoint Contract Tests", () => {
           project: project.id,
           messageId: expect.any(String),
           subject: expect.any(String),
-          body: expect.any(String),
+          body: expect.any(Object),
           status: expect.any(String),
         });
       }
@@ -580,7 +583,10 @@ describe("Emails Endpoint Contract Tests", () => {
         contact: contact.id,
         messageId: `sent-${Date.now()}@example.com`,
         subject: "Sent Email",
-        body: "<p>Body</p>",
+        body: {
+          html: "<p>Body</p>",
+          plainText: "Body",
+        },
         email: "recipient@example.com",
         status: "SENT",
         sendType: "TRANSACTIONAL",
@@ -591,7 +597,10 @@ describe("Emails Endpoint Contract Tests", () => {
         contact: contact.id,
         messageId: `bounced-${Date.now()}@example.com`,
         subject: "Bounced Email",
-        body: "<p>Body</p>",
+        body: {
+          html: "<p>Body</p>",
+          plainText: "Body",
+        },
         email: "recipient@example.com",
         status: "BOUNCED",
         sendType: "TRANSACTIONAL",
@@ -629,7 +638,10 @@ describe("Emails Endpoint Contract Tests", () => {
         contact: contact.id,
         messageId: `transactional-${Date.now()}@example.com`,
         subject: "Transactional Email",
-        body: "<p>Body</p>",
+        body: {
+          html: "<p>Body</p>",
+          plainText: "Body",
+        },
         email: "recipient@example.com",
         status: "SENT",
         sendType: "TRANSACTIONAL",
@@ -640,7 +652,10 @@ describe("Emails Endpoint Contract Tests", () => {
         contact: contact.id,
         messageId: `marketing-${Date.now()}@example.com`,
         subject: "Marketing Email",
-        body: "<p>Body</p>",
+        body: {
+          html: "<p>Body</p>",
+          plainText: "Body",
+        },
         email: "recipient@example.com",
         status: "SENT",
         sendType: "MARKETING",
@@ -707,7 +722,10 @@ describe("Emails Endpoint Contract Tests", () => {
         contact: contact.id,
         messageId: `large-body-${Date.now()}@example.com`,
         subject: "Email with Large Body",
-        body: largeBody,
+        body: {
+          html: largeBody,
+          plainText: "Lorem ipsum dolor sit amet. ".repeat(100),
+        },
         email: "recipient@example.com",
         status: "SENT",
         sendType: "TRANSACTIONAL",
@@ -726,7 +744,10 @@ describe("Emails Endpoint Contract Tests", () => {
       expect(response.status).toBe(200);
 
       const data = await response.json();
-      expect(data.body).toBe(largeBody);
+      expect(data.body).toMatchObject({
+        html: largeBody,
+        plainText: expect.any(String),
+      });
     });
 
     test("should handle empty filter results gracefully", async () => {

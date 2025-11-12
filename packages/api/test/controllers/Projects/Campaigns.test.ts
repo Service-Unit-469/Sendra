@@ -37,7 +37,11 @@ describe("Campaigns Endpoint Contract Tests", () => {
 
       const campaignPayload = {
         subject: "Test Campaign Subject",
-        body: "This is the campaign body content",
+        body: {
+          data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+          html: "<p>This is the campaign body content</p>",
+          plainText: "This is the campaign body content",
+        },
         recipients: [contact.id],
         template: template.id,
       };
@@ -57,7 +61,11 @@ describe("Campaigns Endpoint Contract Tests", () => {
       expect(data).toMatchObject({
         id: expect.any(String),
         subject: "Test Campaign Subject",
-        body: "This is the campaign body content",
+        body: {
+          data: expect.any(String),
+          html: "<p>This is the campaign body content</p>",
+          plainText: "This is the campaign body content",
+        },
         recipients: [contact.id],
         template: template.id,
         status: "DRAFT",
@@ -75,7 +83,11 @@ describe("Campaigns Endpoint Contract Tests", () => {
 
       const campaignPayload = {
         subject: "Multi-Recipient Campaign",
-        body: "Campaign for multiple recipients",
+        body: {
+          data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+          html: "<p>Campaign for multiple recipients</p>",
+          plainText: "Campaign for multiple recipients",
+        },
         recipients: [contact1.id, contact2.id],
         template: template.id,
       };
@@ -106,7 +118,11 @@ describe("Campaigns Endpoint Contract Tests", () => {
 
       const campaignPayload = {
         subject: "All Recipients Campaign",
-        body: "Campaign for all contacts",
+        body: {
+          data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+          html: "<p>Campaign for all contacts</p>",
+          plainText: "Campaign for all contacts",
+        },
         recipients: ["all"],
         template: template.id,
       };
@@ -132,7 +148,11 @@ describe("Campaigns Endpoint Contract Tests", () => {
 
       const campaignPayload = {
         subject: "Email Address Campaign",
-        body: "Campaign with email addresses",
+        body: {
+          data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+          html: "<p>Campaign with email addresses</p>",
+          plainText: "Campaign with email addresses",
+        },
         recipients: ["newcontact@example.com"],
         template: template.id,
       };
@@ -165,7 +185,11 @@ describe("Campaigns Endpoint Contract Tests", () => {
 
       const campaignPayload = {
         subject: "A".repeat(71),
-        body: "Campaign body",
+        body: {
+          data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+          html: "<p>Campaign body</p>",
+          plainText: "Campaign body",
+        },
         recipients: [contact.id],
         template: template.id,
       };
@@ -189,7 +213,11 @@ describe("Campaigns Endpoint Contract Tests", () => {
 
       const campaignPayload = {
         subject: "Unauthorized Campaign",
-        body: "Campaign body",
+        body: {
+          data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+          html: "<p>Campaign body</p>",
+          plainText: "Campaign body",
+        },
         recipients: [contact.id],
         template: template.id,
       };
@@ -216,7 +244,11 @@ describe("Campaigns Endpoint Contract Tests", () => {
       const campaign = await campaignPersistence.create({
         project: project.id,
         subject: "Get Campaign Test",
-        body: "Test campaign body",
+        body: {
+          data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+          html: "<p>Test campaign body</p>",
+          plainText: "Test campaign body",
+        },
         recipients: [contact.id],
         template: template.id,
         status: "DRAFT",
@@ -235,7 +267,11 @@ describe("Campaigns Endpoint Contract Tests", () => {
       expect(data).toMatchObject({
         id: campaign.id,
         subject: "Get Campaign Test",
-        body: "Test campaign body",
+        body: {
+          data: expect.any(String),
+          html: "<p>Test campaign body</p>",
+          plainText: "Test campaign body",
+        },
         recipients: [contact.id],
         template: template.id,
         status: "DRAFT",
@@ -283,7 +319,11 @@ describe("Campaigns Endpoint Contract Tests", () => {
       await campaignPersistence.create({
         project: project.id,
         subject: "Campaign 1",
-        body: "Body 1",
+        body: {
+          data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+          html: "<p>Body 1</p>",
+          plainText: "Body 1",
+        },
         recipients: [contact.id],
         template: template.id,
         status: "DRAFT",
@@ -291,7 +331,11 @@ describe("Campaigns Endpoint Contract Tests", () => {
       await campaignPersistence.create({
         project: project.id,
         subject: "Campaign 2",
-        body: "Body 2",
+        body: {
+          data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+          html: "<p>Body 2</p>",
+          plainText: "Body 2",
+        },
         recipients: [contact.id],
         template: template.id,
         status: "DRAFT",
@@ -326,7 +370,11 @@ describe("Campaigns Endpoint Contract Tests", () => {
         await campaignPersistence.create({
           project: project.id,
           subject: `Campaign ${i}`,
-          body: `Body ${i}`,
+          body: {
+            data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+            html: `<p>Body ${i}</p>`,
+            plainText: `Body ${i}`,
+          },
           recipients: [contact.id],
           template: template.id,
           status: "DRAFT",
@@ -385,7 +433,11 @@ describe("Campaigns Endpoint Contract Tests", () => {
       const campaign1 = await campaignPersistence.create({
         project: project.id,
         subject: "All Campaign 1",
-        body: "Body 1",
+        body: {
+          data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+          html: "<p>Body 1</p>",
+          plainText: "Body 1",
+        },
         recipients: [contact.id],
         template: template.id,
         status: "DRAFT",
@@ -393,7 +445,11 @@ describe("Campaigns Endpoint Contract Tests", () => {
       const campaign2 = await campaignPersistence.create({
         project: project.id,
         subject: "All Campaign 2",
-        body: "Body 2",
+        body: {
+          data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+          html: "<p>Body 2</p>",
+          plainText: "Body 2",
+        },
         recipients: [contact.id],
         template: template.id,
         status: "DELIVERED",
@@ -438,7 +494,11 @@ describe("Campaigns Endpoint Contract Tests", () => {
       const campaign = await campaignPersistence.create({
         project: project.id,
         subject: "Original Subject",
-        body: "Original Body",
+        body: {
+          data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+          html: "<p>Original Body</p>",
+          plainText: "Original Body",
+        },
         recipients: [contact.id],
         template: template.id,
         status: "DRAFT",
@@ -447,7 +507,11 @@ describe("Campaigns Endpoint Contract Tests", () => {
       const updatePayload = {
         id: campaign.id,
         subject: "Updated Subject",
-        body: "Updated Body",
+        body: {
+          data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+          html: "<p>Updated Body</p>",
+          plainText: "Updated Body",
+        },
         recipients: [contact.id],
         template: template.id,
         status: "DRAFT",
@@ -468,7 +532,11 @@ describe("Campaigns Endpoint Contract Tests", () => {
       expect(data).toMatchObject({
         id: campaign.id,
         subject: "Updated Subject",
-        body: "Updated Body",
+        body: {
+          data: expect.any(String),
+          html: "<p>Updated Body</p>",
+          plainText: "Updated Body",
+        },
         recipients: [contact.id],
         template: template.id,
         project: project.id,
@@ -485,7 +553,11 @@ describe("Campaigns Endpoint Contract Tests", () => {
       const campaign = await campaignPersistence.create({
         project: project.id,
         subject: "Update Recipients Test",
-        body: "Test Body",
+        body: {
+          data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+          html: "<p>Test Body</p>",
+          plainText: "Test Body",
+        },
         recipients: [contact1.id],
         template: template.id,
         status: "DRAFT",
@@ -494,7 +566,11 @@ describe("Campaigns Endpoint Contract Tests", () => {
       const updatePayload = {
         id: campaign.id,
         subject: "Update Recipients Test",
-        body: "Test Body",
+        body: {
+          data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+          html: "<p>Test Body</p>",
+          plainText: "Test Body",
+        },
         recipients: [contact1.id, contact2.id],
         template: template.id,
         status: "DRAFT",
@@ -526,7 +602,11 @@ describe("Campaigns Endpoint Contract Tests", () => {
       const campaign = await campaignPersistence.create({
         project: project.id,
         subject: "Test Subject",
-        body: "Test Body",
+        body: {
+          data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+          html: "<p>Test Body</p>",
+          plainText: "Test Body",
+        },
         recipients: [contact.id],
         template: template.id,
         status: "DRAFT",
@@ -535,7 +615,11 @@ describe("Campaigns Endpoint Contract Tests", () => {
       const updatePayload = {
         id: "different-id",
         subject: "Updated Subject",
-        body: "Updated Body",
+        body: {
+          data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+          html: "<p>Updated Body</p>",
+          plainText: "Updated Body",
+        },
         recipients: [contact.id],
         template: template.id,
         status: "DRAFT",
@@ -564,7 +648,11 @@ describe("Campaigns Endpoint Contract Tests", () => {
       const updatePayload = {
         id: "non-existent-id",
         subject: "Updated Subject",
-        body: "Updated Body",
+        body: {
+          data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+          html: "<p>Updated Body</p>",
+          plainText: "Updated Body",
+        },
         recipients: [contact.id],
         template: template.id,
         status: "DRAFT",
@@ -590,7 +678,11 @@ describe("Campaigns Endpoint Contract Tests", () => {
       const updatePayload = {
         id: "some-id",
         subject: "Updated Subject",
-        body: "Updated Body",
+        body: {
+          data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+          html: "<p>Updated Body</p>",
+          plainText: "Updated Body",
+        },
         recipients: [contact.id],
         template: template.id,
         status: "DRAFT",
@@ -618,7 +710,11 @@ describe("Campaigns Endpoint Contract Tests", () => {
       const campaign = await campaignPersistence.create({
         project: project.id,
         subject: "Campaign to Delete",
-        body: "Test Body",
+        body: {
+          data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+          html: "<p>Test Body</p>",
+          plainText: "Test Body",
+        },
         recipients: [contact.id],
         template: template.id,
         status: "DRAFT",
@@ -659,7 +755,11 @@ describe("Campaigns Endpoint Contract Tests", () => {
       const campaign = await campaignPersistence.create({
         project: project.id,
         subject: "Test Campaign",
-        body: JSON.stringify({ blocks: [] }),
+        body: {
+          data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+          html: "<p>Test campaign body</p>",
+          plainText: "Test campaign body",
+        },
         recipients: [contact.id],
         template: template.id,
         status: "DRAFT",
@@ -695,7 +795,11 @@ describe("Campaigns Endpoint Contract Tests", () => {
       const campaign = await campaignPersistence.create({
         project: project.id,
         subject: "Live Campaign",
-        body: JSON.stringify({ blocks: [] }),
+        body: {
+          data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+          html: "<p>Live campaign body</p>",
+          plainText: "Live campaign body",
+        },
         recipients: [contact.id],
         template: template.id,
         status: "DRAFT",
@@ -738,7 +842,11 @@ describe("Campaigns Endpoint Contract Tests", () => {
       const campaign = await campaignPersistence.create({
         project: project.id,
         subject: "Delayed Campaign",
-        body: JSON.stringify({ blocks: [] }),
+        body: {
+          data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+          html: "<p>Delayed campaign body</p>",
+          plainText: "Delayed campaign body",
+        },
         recipients: [contact.id],
         template: template.id,
         status: "DRAFT",
@@ -775,7 +883,11 @@ describe("Campaigns Endpoint Contract Tests", () => {
       const campaign = await campaignPersistence.create({
         project: project.id,
         subject: "Multi-Recipient Campaign",
-        body: JSON.stringify({ blocks: [] }),
+        body: {
+          data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+          html: "<p>Multi-recipient campaign body</p>",
+          plainText: "Multi-recipient campaign body",
+        },
         recipients: contacts.map((c) => c.id),
         template: template.id,
         status: "DRAFT",
@@ -813,7 +925,11 @@ describe("Campaigns Endpoint Contract Tests", () => {
       const campaign = await campaignPersistence.create({
         project: project.id,
         subject: "Empty Recipients Campaign",
-        body: JSON.stringify({ blocks: [] }),
+        body: {
+          data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+          html: "<p>Empty recipients campaign body</p>",
+          plainText: "Empty recipients campaign body",
+        },
         recipients: [],
         template: template.id,
         status: "DRAFT",
@@ -897,7 +1013,11 @@ describe("Campaigns Endpoint Contract Tests", () => {
 
       const campaignPayload = {
         subject: "Secret Key Campaign",
-        body: "Campaign created with secret key",
+        body: {
+          data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+          html: "<p>Campaign created with secret key</p>",
+          plainText: "Campaign created with secret key",
+        },
         recipients: [contact.id],
         template: template.id,
       };
@@ -921,7 +1041,11 @@ describe("Campaigns Endpoint Contract Tests", () => {
 
       const campaignPayload = {
         subject: "Invalid Secret Campaign",
-        body: "Campaign body",
+        body: {
+          data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+          html: "<p>Campaign body</p>",
+          plainText: "Campaign body",
+        },
         recipients: [contact.id],
         template: template.id,
       };
@@ -947,7 +1071,11 @@ describe("Campaigns Endpoint Contract Tests", () => {
 
       const campaignPayload = {
         subject: "Campaign with Template",
-        body: JSON.stringify({ blocks: [] }),
+        body: {
+          data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+          html: "<p>Campaign with template body</p>",
+          plainText: "Campaign with template body",
+        },
         recipients: [contact.id],
         template: template.id,
       };
@@ -967,7 +1095,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
       expect(data).toMatchObject({
         id: expect.any(String),
         subject: "Campaign with Template",
-        body: JSON.stringify({ blocks: [] }),
+        body: expect.any(Object),
         template: template.id,
         recipients: [contact.id],
         status: "DRAFT",
@@ -981,7 +1109,11 @@ describe("Campaigns Endpoint Contract Tests", () => {
 
       const campaignPayload = {
         subject: "Campaign without Template",
-        body: JSON.stringify({ blocks: [] }),
+        body: {
+          data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+          html: "<p>Campaign without template body</p>",
+          plainText: "Campaign without template body",
+        },
         recipients: [contact.id],
         // No template field
       };

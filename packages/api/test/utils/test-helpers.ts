@@ -49,10 +49,27 @@ export const createTestSetup = async () => {
  */
 export const createTestTemplate = async (projectId: string) => {
   const templatePersistence = new TemplatePersistence(projectId);
+  const editorJsData = JSON.stringify({
+    time: Date.now(),
+    blocks: [
+      {
+        id: "test-block",
+        type: "paragraph",
+        data: {
+          text: "Header {{body}} Footer",
+        },
+      },
+    ],
+    version: "2.28.0",
+  });
   return await templatePersistence.create({
     project: projectId,
     subject: "Test Email Subject",
-    body: '<mjml><mj-body><mj-section><mj-column><mj-text>Header</mj-text>{{body}}<mj-text>Footer</mj-text></mj-column></mj-section></mj-body></mjml>',
+    body: {
+      data: editorJsData,
+      html: "<p>Header</p>{{body}}<p>Footer</p>",
+      plainText: "Header {{body}} Footer",
+    },
     templateType: "MARKETING",
   });
 };

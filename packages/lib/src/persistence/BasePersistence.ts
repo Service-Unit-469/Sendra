@@ -241,7 +241,17 @@ export abstract class BasePersistence<T extends BaseItem> {
     const command = new QueryCommand(config);
     const result = await this.docClient.send(command);
 
-    const items = result.Items?.map((item) => unmarshall(item) as T).map((i) => this.schema.parse(i)) ?? [];
+    const items =
+      result.Items?.map((item) => unmarshall(item) as T)
+        .map((i) => this.schema.safeParse(i))
+        .map((i) => {
+          if (!i.success) {
+            this.logger.warn({ err: i.error }, "Invalid item retrieved");
+          }
+          return i;
+        })
+        .filter((i) => i.success)
+        .map((i) => i.data) ?? [];
 
     this.logger.debug({ items: items.length, hasMore: !!result.LastEvaluatedKey }, "Found items");
     return {
@@ -334,7 +344,17 @@ export abstract class BasePersistence<T extends BaseItem> {
     } as QueryCommandInput);
     const result = await this.docClient.send(command);
 
-    const items = result.Items?.map((item) => unmarshall(item) as T).map((i) => this.schema.parse(i)) ?? [];
+    const items =
+      result.Items?.map((item) => unmarshall(item) as T)
+        .map((i) => this.schema.safeParse(i))
+        .map((i) => {
+          if (!i.success) {
+            this.logger.warn({ err: i.error }, "Invalid item retrieved in list");
+          }
+          return i;
+        })
+        .filter((i) => i.success)
+        .map((i) => i.data) ?? [];
 
     this.logger.debug({ count: items.length, hasMore: !!result.LastEvaluatedKey }, "Listed items");
     return {
@@ -370,17 +390,18 @@ export abstract class BasePersistence<T extends BaseItem> {
   @logMethodReturningPromise("BasePersistence")
   async put(item: T): Promise<T> {
     this.logger.debug({ item }, "Putting item");
+    const parsedItem = this.schema.parse(item);
     const command = new PutCommand({
       TableName: this.tableName,
       Item: this.projectItem({
-        ...item,
+        ...parsedItem,
         type: this.type,
         updatedAt: new Date().toISOString(),
       }),
       ConditionExpression: "attribute_exists(id)",
     });
     await this.docClient.send(command);
-    return this.schema.parse(item);
+    return parsedItem;
   }
 }
 

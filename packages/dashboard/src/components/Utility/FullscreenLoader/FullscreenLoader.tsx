@@ -6,15 +6,13 @@ import { Suspense, useMemo } from "react";
 
 const LOADING_MESSAGES = [
   "Warming up the email engines...",
-  "Counting your subscribers...",
-  "Polishing your campaigns...",
-  "Checking for typos in your templates...",
-  "Making sure your emails don't end up in spam...",
-  "Syncing your contact lists...",
-  "Calculating open rates...",
+  "Counting subscribers...",
+  "Polishing campaigns...",
+  "Checking for typos...",
+  "Syncing contact lists...",
   "Teaching the servers to read your mind...",
   "Convincing pixels to load faster...",
-  "Herding your email subscribers...",
+  "Herding email subscribers...",
   "Caffeinating the database...",
 ];
 

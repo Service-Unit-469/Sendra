@@ -29,7 +29,11 @@ describe("Templates Endpoint Contract Tests", () => {
 
       const templatePayload = {
         subject: "Welcome Email",
-        body: "Welcome to our service!",
+        body: {
+          data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+          html: "<p>Welcome to our service!</p>",
+          plainText: "Welcome to our service!",
+        },
         templateType: "TRANSACTIONAL" as const,
       };
 
@@ -48,7 +52,11 @@ describe("Templates Endpoint Contract Tests", () => {
       expect(data).toMatchObject({
         id: expect.any(String),
         subject: "Welcome Email",
-        body: "Welcome to our service!",
+        body: {
+          data: expect.any(String),
+          html: "<p>Welcome to our service!</p>",
+          plainText: "Welcome to our service!",
+        },
         templateType: "TRANSACTIONAL",
         project: project.id,
         createdAt: expect.any(String),
@@ -73,7 +81,11 @@ describe("Templates Endpoint Contract Tests", () => {
 
       const templatePayload = {
         subject: "Custom Email Template",
-        body: "Template body",
+        body: {
+          data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+          html: "<p>Template body</p>",
+          plainText: "Template body",
+        },
         templateType: "TRANSACTIONAL" as const,
         email: "custom@verified-domain.com",
       };
@@ -101,7 +113,11 @@ describe("Templates Endpoint Contract Tests", () => {
 
       const templatePayload = {
         subject: "Newsletter",
-        body: "Check out our latest updates!",
+        body: {
+          data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+          html: "<p>Check out our latest updates!</p>",
+          plainText: "Check out our latest updates!",
+        },
         templateType: "MARKETING" as const,
       };
 
@@ -125,7 +141,11 @@ describe("Templates Endpoint Contract Tests", () => {
 
       const templatePayload = {
         subject: "",
-        body: "Body content",
+        body: {
+          data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+          html: "<p>Body content</p>",
+          plainText: "Body content",
+        },
         templateType: "TRANSACTIONAL" as const,
       };
 
@@ -141,12 +161,16 @@ describe("Templates Endpoint Contract Tests", () => {
       expect(response.status).toBe(400);
     });
 
-    test("should return 400 when body is empty", async () => {
+    test("should allow empty body content", async () => {
       const { project, token } = await createTestSetup();
 
       const templatePayload = {
         subject: "Test Subject",
-        body: "",
+        body: {
+          data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+          html: "",
+          plainText: "",
+        },
         templateType: "TRANSACTIONAL" as const,
       };
 
@@ -159,7 +183,7 @@ describe("Templates Endpoint Contract Tests", () => {
         body: JSON.stringify(templatePayload),
       });
 
-      expect(response.status).toBe(400);
+      expect(response.status).toBe(201);
     });
 
     test("should return 403 when custom email is provided without verified domain", async () => {
@@ -167,7 +191,11 @@ describe("Templates Endpoint Contract Tests", () => {
 
       const templatePayload = {
         subject: "Custom Email Template",
-        body: "Template body",
+        body: {
+          data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+          html: "<p>Template body</p>",
+          plainText: "Template body",
+        },
         templateType: "TRANSACTIONAL" as const,
         email: "custom@unverified-domain.com",
       };
@@ -204,7 +232,11 @@ describe("Templates Endpoint Contract Tests", () => {
 
       const templatePayload = {
         subject: "Mismatched Domain Template",
-        body: "Template body",
+        body: {
+          data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+          html: "<p>Template body</p>",
+          plainText: "Template body",
+        },
         templateType: "TRANSACTIONAL" as const,
         email: "custom@different-domain.com",
       };
@@ -237,7 +269,11 @@ describe("Templates Endpoint Contract Tests", () => {
 
       const templatePayload = {
         subject: "Secret Key Template",
-        body: "Created with secret key",
+        body: {
+          data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+          html: "<p>Created with secret key</p>",
+          plainText: "Created with secret key",
+        },
         templateType: "TRANSACTIONAL" as const,
       };
 
@@ -258,7 +294,11 @@ describe("Templates Endpoint Contract Tests", () => {
 
       const templatePayload = {
         subject: "Unauthorized Template",
-        body: "Body",
+        body: {
+          data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+          html: "<p>Body</p>",
+          plainText: "Body",
+        },
         templateType: "TRANSACTIONAL" as const,
       };
 
@@ -279,7 +319,11 @@ describe("Templates Endpoint Contract Tests", () => {
 
       const templatePayload = {
         subject: "Template",
-        body: "Body",
+        body: {
+          data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+          html: "<p>Body</p>",
+          plainText: "Body",
+        },
         templateType: "TRANSACTIONAL" as const,
       };
 
@@ -337,7 +381,7 @@ describe("Templates Endpoint Contract Tests", () => {
       expect(data.items[0]).toMatchObject({
         id: expect.any(String),
         subject: expect.any(String),
-        body: expect.any(String),
+        body: expect.any(Object),
         templateType: expect.any(String),
         project: project.id,
         createdAt: expect.any(String),
@@ -668,7 +712,11 @@ describe("Templates Endpoint Contract Tests", () => {
       const updatePayload = {
         id: template.id,
         subject: "Updated Subject",
-        body: "Updated {{body}} content",
+        body: {
+          data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+          html: "<p>Updated {{body}} content</p>",
+          plainText: "Updated {{body}} content",
+        },
         templateType: "MARKETING" as const,
       };
 
@@ -690,7 +738,11 @@ describe("Templates Endpoint Contract Tests", () => {
       expect(data).toMatchObject({
         id: template.id,
         subject: "Updated Subject",
-        body: "Updated body content",
+        body: {
+          data: expect.any(String),
+          html: "<p>Updated {{body}} content</p>",
+          plainText: "Updated {{body}} content",
+        },
         templateType: "MARKETING",
       });
     });
@@ -722,7 +774,7 @@ describe("Templates Endpoint Contract Tests", () => {
 
       const data = await response.json();
       expect(data.subject).toBe("Only Subject Updated");
-      expect(data.body).toBe(template.body);
+      expect(data.body).toEqual(template.body);
     });
 
     test("should update custom email when domain is verified", async () => {
@@ -775,7 +827,11 @@ describe("Templates Endpoint Contract Tests", () => {
       const updatePayload = {
         id: "different-id",
         subject: "Updated Subject",
-        body: "Updated body",
+        body: {
+          data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+          html: "<p>Updated body</p>",
+          plainText: "Updated body",
+        },
         templateType: template.templateType,
       };
 
@@ -803,7 +859,11 @@ describe("Templates Endpoint Contract Tests", () => {
       const updatePayload = {
         id: "non-existent-id",
         subject: "Updated Subject",
-        body: "Updated {{body}}",
+        body: {
+          data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+          html: "<p>Updated {{body}}</p>",
+          plainText: "Updated {{body}}",
+        },
         templateType: "TRANSACTIONAL" as const,
       };
 
@@ -906,7 +966,11 @@ describe("Templates Endpoint Contract Tests", () => {
       const updatePayload = {
         id: template.id,
         subject: "Updated Subject",
-        body: "Updated body",
+        body: {
+          data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+          html: "<p>Updated body</p>",
+          plainText: "Updated body",
+        },
         templateType: template.templateType,
       };
 
@@ -932,7 +996,11 @@ describe("Templates Endpoint Contract Tests", () => {
       const updatePayload = {
         id: template.id,
         subject: "Updated Subject",
-        body: "Updated body",
+        body: {
+          data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+          html: "<p>Updated body</p>",
+          plainText: "Updated body",
+        },
         templateType: template.templateType,
       };
 

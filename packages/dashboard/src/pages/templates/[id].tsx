@@ -2,44 +2,27 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { TemplateUpdate } from "@sendra/shared";
 import { TemplateSchemas } from "@sendra/shared";
-import { AnimatePresence, motion } from "framer-motion";
+import { BlackButton } from "dashboard/src/components/Buttons/BlackButton";
+import { MenuButton } from "dashboard/src/components/Buttons/MenuButton";
+import { Options } from "dashboard/src/components/Overlay/Options";
 import { Copy, Save, Trash } from "lucide-react";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { ErrorAlert } from "../../components/Alert/ErrorAlert";
-import { MenuButton } from "../../components/Buttons/MenuButton";
-import Card from "../../components/Card/Card";
-import Dropdown from "../../components/Input/Dropdown/Dropdown";
-import Input from "../../components/Input/Input/Input";
-import { MJMLEditor } from "../../components/MJMLEditor";
+import { EmailEditor } from "../../components/EmailEditor";
 import FullscreenLoader from "../../components/Utility/FullscreenLoader/FullscreenLoader";
-import Tooltip from "../../components/Utility/Tooltip/Tooltip";
 import { Dashboard } from "../../layouts";
-import { useActiveProject, useActiveProjectIdentity } from "../../lib/hooks/projects";
-import { useTemplate, useTemplates } from "../../lib/hooks/templates";
+import { useActiveProject } from "../../lib/hooks/projects";
+import { type TemplateFormValues, useTemplate, useTemplateFields, useTemplates } from "../../lib/hooks/templates";
 import { network } from "../../lib/network";
 
-/**
- *
- */
 export default function Index() {
   const router = useRouter();
   const project = useActiveProject();
   const { mutate } = useTemplates();
-  const { data: projectIdentity } = useActiveProjectIdentity();
   const { data: template } = useTemplate(router.query.id as string);
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    watch,
-    setValue,
-    reset,
-    setError,
-    clearErrors,
-  } = useForm({
+  const { watch, setValue, reset, setError, clearErrors } = useForm({
     resolver: zodResolver(TemplateSchemas.update),
     defaultValues: {
       body: undefined,
@@ -69,11 +52,13 @@ export default function Index() {
     });
   }, [watch, project, setError, clearErrors]);
 
+  const fields = useTemplateFields();
+
   if (!router.isReady) {
     return <FullscreenLoader />;
   }
 
-  if (!project || !template || (watch("body") as string | undefined) === undefined) {
+  if (!project || !template || (watch("body") as object | undefined) === undefined) {
     return <FullscreenLoader />;
   }
 
@@ -153,105 +138,58 @@ export default function Index() {
   };
 
   return (
-    <Dashboard>
-      <Card
-        title="Update your template"
-        options={
+    <Dashboard wideLayout={true}>
+      <EmailEditor
+        initialData={JSON.parse(template.body.data)}
+        fields={fields}
+        onChange={(value) => {
+          setValue("body", {
+            ...value,
+            data: JSON.stringify(value.data),
+          });
+          const props = (value.data.root?.props ?? {}) as TemplateFormValues;
+          setValue("subject", props.title ?? "");
+          setValue("email", props.email ?? "");
+          setValue("from", props.from ?? "");
+          setValue("templateType", props.templateType ?? "MARKETING");
+        }}
+        actions={() => (
           <>
-            <MenuButton onClick={duplicate}>
-              <Copy size={18} />
-              Duplicate
-            </MenuButton>
-            <MenuButton onClick={remove}>
-              <Trash size={18} />
-              Delete
-            </MenuButton>
-          </>
-        }
-      >
-        <form onSubmit={handleSubmit(update)} className="space-y-6 sm:space-y-0 sm:grid sm:gap-6 sm:grid-cols-6">
-          <Input className={"sm:col-span-4"} label={"Subject"} placeholder={`Welcome to ${project.name}!`} register={register("subject")} error={errors.subject} />
-
-          <div className={"sm:col-span-2"}>
-            <label htmlFor={"type"} className="flex items-center text-sm font-medium text-neutral-700">
-              Type
-              <Tooltip
-                content={
-                  <>
-                    <p className={"mb-2 text-base font-semibold"}>What type of email is this?</p>
-                    <ul className={"list-inside"}>
-                      <li className={"mb-6"}>
-                        <span className={"font-semibold"}>Marketing</span>
-                        <br />
-                        Promotional emails with a hosted unsubscribe link
-                        <br />
-                        <span className={"text-neutral-400"}>(e.g. welcome emails, promotions)</span>
-                      </li>
-                      <li>
-                        <span className={"font-semibold"}>Transactional</span>
-                        <br />
-                        Mission critical emails <br />
-                        <span className={"text-neutral-400"}> (e.g. email verification, password reset)</span>
-                      </li>
-                    </ul>
-                  </>
-                }
-              />
-            </label>
-            <Dropdown
-              onChange={(t) => setValue("templateType", t as "MARKETING" | "TRANSACTIONAL")}
-              values={[
-                { name: "Marketing", value: "MARKETING" },
-                { name: "Transactional", value: "TRANSACTIONAL" },
-              ]}
-              selectedValue={watch("templateType") ?? ""}
-            />
-            <ErrorAlert message={errors.templateType?.message} />
-          </div>
-
-          {projectIdentity?.identity?.verified && <Input className={"sm:col-span-3"} label={"Sender Email"} placeholder={`${project.email}`} register={register("email")} error={errors.email} />}
-
-          {projectIdentity?.identity?.verified && (
-            <Input className={"sm:col-span-3"} label={"Sender Name"} placeholder={`${project.from ?? project.name}`} register={register("from")} error={errors.from} />
-          )}
-
-          <div className={"sm:col-span-6"}>
-            <MJMLEditor initialValue={template.body} onChange={(value) => setValue("body", value)} />
-
-            <AnimatePresence>
-              {errors.body?.message && (
-                <motion.p initial={{ height: 0 }} animate={{ height: "auto" }} exit={{ height: 0 }} className="mt-1 text-xs text-red-500">
-                  {errors.body.message}
-                </motion.p>
-              )}
-            </AnimatePresence>
-          </div>
-
-          <div className={"flex justify-end gap-3 sm:col-span-6"}>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.9 }}
-              onClick={(e) => {
-                e.preventDefault();
-                return router.push("/templates");
-              }}
-              className={
-                "flex w-fit justify-center rounded-sm border border-neutral-300 bg-white px-6 py-2 text-base font-medium text-neutral-700 focus:outline-hidden focus:ring-2 focus:ring-neutral-800 focus:ring-offset-2 sm:mt-0 sm:w-auto sm:text-sm"
+            <BlackButton
+              onClick={() =>
+                update({
+                  subject: watch("subject"),
+                  email: watch("email"),
+                  from: watch("from"),
+                  body: {
+                    data: JSON.stringify(watch("body").data),
+                    html: watch("body").html,
+                    plainText: watch("body").plainText,
+                  },
+                  templateType: watch("templateType") as "MARKETING" | "TRANSACTIONAL",
+                })
               }
-            >
-              Cancel
-            </motion.button>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.9 }}
-              className={"flex items-center gap-x-2 rounded-sm bg-neutral-800 px-8 py-2 text-center text-sm font-medium text-white"}
             >
               <Save strokeWidth={1.5} size={18} />
               Save
-            </motion.button>
-          </div>
-        </form>
-      </Card>
+            </BlackButton>
+            <Options
+              options={
+                <>
+                  <MenuButton onClick={(e) => duplicate(e)}>
+                    <Copy strokeWidth={1.5} size={18} />
+                    Duplicate
+                  </MenuButton>
+                  <MenuButton onClick={(e) => remove(e)}>
+                    <Trash strokeWidth={1.5} size={18} />
+                    Delete
+                  </MenuButton>
+                </>
+              }
+            />
+          </>
+        )}
+      />
     </Dashboard>
   );
 }

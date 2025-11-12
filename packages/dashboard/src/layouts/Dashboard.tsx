@@ -9,7 +9,7 @@ import Redirect from "../components/Utility/Redirect/Redirect";
 import { useActiveProject, useProjects } from "../lib/hooks/projects";
 import { useUser } from "../lib/hooks/users";
 
-export const Dashboard = (props: { children: React.ReactNode }) => {
+export const Dashboard = (props: { children: React.ReactNode; wideLayout?: boolean }) => {
   const router = useRouter();
   const activeProject = useActiveProject();
   const { data: projects } = useProjects();
@@ -27,7 +27,7 @@ export const Dashboard = (props: { children: React.ReactNode }) => {
 
   return (
     <div className="flex h-screen overflow-hidden bg-neutral-50">
-      <Sidebar mobileOpen={mobileSidebarOpen} onSidebarVisibilityChange={() => setMobileSidebarOpen(!mobileSidebarOpen)} />
+      <Sidebar mobileOpen={mobileSidebarOpen} onSidebarVisibilityChange={() => setMobileSidebarOpen(!mobileSidebarOpen)} wideLayout={props.wideLayout ?? false} />
       <div className="flex w-0 flex-1 flex-col overflow-hidden">
         <div className="pl-1 pt-1 sm:pl-3 sm:pt-3 md:hidden">
           <button
@@ -48,7 +48,7 @@ export const Dashboard = (props: { children: React.ReactNode }) => {
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.2, ease: "easeInOut" }}
-                  className="mx-auto h-full max-w-7xl space-y-6 px-4 py-5 sm:px-6 md:px-8"
+                  className={`h-full ${props.wideLayout ? "mx-auto max-w-full" : "mx-auto max-w-7xl space-y-6 px-4 py-5 sm:px-6 md:px-8"}`}
                 >
                   {props.children}
                 </motion.div>

@@ -1,21 +1,19 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { Data, DefaultComponents } from "@measured/puck";
 import type { TemplateCreate } from "@sendra/shared";
-import { defaultTemplate, TemplateSchemas } from "@sendra/shared";
-import { AnimatePresence, motion } from "framer-motion";
-import { Plus } from "lucide-react";
+import { TemplateSchemas } from "@sendra/shared";
+import { BlackButton } from "dashboard/src/components/Buttons/BlackButton";
+import { EmailEditor } from "dashboard/src/components/EmailEditor";
+import { Save } from "lucide-react";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import Card from "../../components/Card/Card";
-import Dropdown from "../../components/Input/Dropdown/Dropdown";
-import Input from "../../components/Input/Input/Input";
-import { MJMLEditor } from "../../components/MJMLEditor";
+import { initialEmailData } from "../../components/EmailEditor/config";
 import FullscreenLoader from "../../components/Utility/FullscreenLoader/FullscreenLoader";
-import Tooltip from "../../components/Utility/Tooltip/Tooltip";
 import { Dashboard } from "../../layouts";
 import { useActiveProject, useActiveProjectIdentity } from "../../lib/hooks/projects";
-import { useTemplates } from "../../lib/hooks/templates";
+import { type TemplateFormValues, useTemplateFields, useTemplates } from "../../lib/hooks/templates";
 import { network } from "../../lib/network";
 
 /**
@@ -27,23 +25,35 @@ export default function Index() {
   const project = useActiveProject();
   const { mutate } = useTemplates();
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    watch,
-    setValue,
-    setError,
-    clearErrors,
-  } = useForm({
+  const { watch, setValue, setError, clearErrors } = useForm({
     resolver: zodResolver(TemplateSchemas.create),
     defaultValues: {
       templateType: "MARKETING",
       subject: "",
-      body: defaultTemplate,
+      body: {
+        data: JSON.stringify({}),
+        html: "",
+        plainText: "",
+      },
     },
   });
   const { data: projectIdentity } = useActiveProjectIdentity();
+
+  const fields = useTemplateFields();
+
+  const initialData: Data = useMemo(() => {
+    if (!projectIdentity || !project) {
+      return { root: {}, content: [] };
+    }
+    const data: Data<DefaultComponents, TemplateFormValues> = { ...initialEmailData };
+    data.root.props = {
+      ...data.root.props,
+      email: projectIdentity.identity?.verified ? project.email : undefined,
+      from: projectIdentity.identity?.verified ? project.from : undefined,
+      templateType: "MARKETING",
+    };
+    return data;
+  }, [projectIdentity, project]);
 
   useEffect(() => {
     watch((value, { name }) => {
@@ -60,7 +70,7 @@ export default function Index() {
     });
   }, [watch, project, setError, clearErrors]);
 
-  if (!project) {
+  if (!project || !projectIdentity) {
     return <FullscreenLoader />;
   }
 
@@ -78,102 +88,45 @@ export default function Index() {
   };
 
   return (
-    <Dashboard>
-      <Card title={"Create a new template"} description={"Reusable blueprints of your emails"}>
-        <form onSubmit={handleSubmit(create)} className="space-y-6 sm:space-y-0 sm:grid sm:gap-6 sm:grid-cols-6">
-          <Input className={"sm:col-span-4"} label={"Subject"} placeholder={`Welcome to ${project.name}!`} register={register("subject")} error={errors.subject} />
-
-          <div className={"sm:col-span-2"}>
-            <label htmlFor={"type"} className="flex items-center text-sm font-medium text-neutral-700">
-              Type
-              <Tooltip
-                content={
-                  <>
-                    <p className={"mb-2 text-base font-semibold"}>What type of email is this?</p>
-                    <ul className={"list-inside"}>
-                      <li className={"mb-6"}>
-                        <span className={"font-semibold"}>Marketing</span>
-                        <br />
-                        Promotional emails with a Plunk-hosted unsubscribe link
-                        <br />
-                        <span className={"text-neutral-400"}>(e.g. welcome emails, promotions)</span>
-                      </li>
-                      <li>
-                        <span className={"font-semibold"}>Transactional</span>
-                        <br />
-                        Mission critical emails <br />
-                        <span className={"text-neutral-400"}> (e.g. email verification, password reset)</span>
-                      </li>
-                    </ul>
-                  </>
-                }
-              />
-            </label>
-            <Dropdown
-              onChange={(t) => setValue("templateType", t as "MARKETING" | "TRANSACTIONAL")}
-              values={[
-                { name: "Marketing", value: "MARKETING" },
-                { name: "Transactional", value: "TRANSACTIONAL" },
-              ]}
-              selectedValue={watch("templateType") ?? ""}
-            />
-            <AnimatePresence>
-              {errors.templateType?.message && (
-                <motion.p initial={{ height: 0 }} animate={{ height: "auto" }} exit={{ height: 0 }} className="mt-1 text-xs text-red-500">
-                  {errors.templateType.message}
-                </motion.p>
-              )}
-            </AnimatePresence>
-          </div>
-
-          {projectIdentity?.identity?.verified && <Input className={"sm:col-span-3"} label={"Sender Email"} placeholder={`${project.email}`} register={register("email")} error={errors.email} />}
-
-          {projectIdentity?.identity?.verified && (
-            <Input className={"sm:col-span-3"} label={"Sender Name"} placeholder={`${project.from ?? project.name}`} register={register("from")} error={errors.from} />
-          )}
-
-          <div className={"sm:col-span-6"}>
-            <MJMLEditor
-              initialValue={defaultTemplate}
-              onChange={(value) => {
-                setValue("body", value);
-              }}
-            />
-            <AnimatePresence>
-              {errors.body?.message && (
-                <motion.p initial={{ height: 0 }} animate={{ height: "auto" }} exit={{ height: 0 }} className="mt-1 text-xs text-red-500">
-                  {errors.body.message}
-                </motion.p>
-              )}
-            </AnimatePresence>
-          </div>
-
-          <div className={"flex justify-end gap-3 sm:col-span-6"}>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.9 }}
-              onClick={(e) => {
-                e.preventDefault();
-                return router.push("/templates");
-              }}
-              className={
-                "flex w-fit justify-center rounded-sm border border-neutral-300 bg-white px-6 py-2 text-base font-medium text-neutral-700 focus:outline-hidden focus:ring-2 focus:ring-neutral-800 focus:ring-offset-2 sm:mt-0 sm:w-auto sm:text-sm"
+    <Dashboard wideLayout={true}>
+      <EmailEditor
+        initialData={initialData}
+        fields={fields}
+        onChange={(value) => {
+          setValue("body", {
+            data: JSON.stringify(value.data),
+            html: value.html,
+            plainText: value.plainText,
+          });
+          const props = (value.data.root?.props ?? {}) as TemplateFormValues;
+          setValue("subject", props.title ?? "");
+          setValue("email", props.email ?? "");
+          setValue("from", props.from ?? "");
+          setValue("templateType", props.templateType ?? "MARKETING");
+        }}
+        actions={() => (
+          <>
+            <BlackButton
+              onClick={() =>
+                create({
+                  templateType: watch("templateType") as "MARKETING" | "TRANSACTIONAL",
+                  subject: watch("subject"),
+                  email: watch("email"),
+                  from: watch("from"),
+                  body: {
+                    data: JSON.stringify(watch("body").data),
+                    html: watch("body").html,
+                    plainText: watch("body").plainText,
+                  },
+                })
               }
             >
-              Cancel
-            </motion.button>
-
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.9 }}
-              className={"flex items-center gap-x-0.5 rounded-sm bg-neutral-800 px-8 py-2 text-center text-sm font-medium text-white"}
-            >
-              <Plus size={18} />
+              <Save strokeWidth={1.5} size={18} />
               Create
-            </motion.button>
-          </div>
-        </form>
-      </Card>
+            </BlackButton>
+          </>
+        )}
+      />
     </Dashboard>
   );
 }

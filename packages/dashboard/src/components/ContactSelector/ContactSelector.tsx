@@ -1,7 +1,6 @@
 import type { Contact } from "@sendra/shared";
-import { Ring } from "@uiball/loaders";
 import { AnimatePresence, motion } from "framer-motion";
-import { Search, Users2, XIcon } from "lucide-react";
+import { LoaderCircle, Search, Users2, XIcon } from "lucide-react";
 import { useState } from "react";
 import MultiselectDropdown from "../Input/MultiselectDropdown/MultiselectDropdown";
 import ContactFilterForm from "./ContactFilterForm";
@@ -106,7 +105,7 @@ export default function ContactSelector({
       )}
       {!contacts && !disabled && (
         <div className={"flex items-center gap-6 rounded-sm border border-neutral-300 px-8 py-3 sm:col-span-6"}>
-          <Ring size={20} />
+          <LoaderCircle size={20} className="animate-spin" />
           <div>
             <h1 className={"text-lg font-semibold text-neutral-800"}>Hang on!</h1>
             <p className={"text-sm text-neutral-600"}>We're still loading your contacts. This might take up to a minute.</p>

@@ -1,3 +1,3 @@
-export * from "./default-template";
+export * from "./constants";
 export * from "./schemas";
 export * from "./types";

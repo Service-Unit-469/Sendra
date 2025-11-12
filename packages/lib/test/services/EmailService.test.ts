@@ -19,6 +19,7 @@ vi.mock("../../src/services/AppConfig", () => ({
 	getEmailConfig: vi.fn(() => ({
 		appUrl: "example.com",
 		emailConfigurationSetName: "test-config-set",
+		defaultEmail: "noreply@example.com",
 	})),
 	getLogConfig: vi.fn(() => ({
 		level: "info",
@@ -75,10 +76,11 @@ describe("EmailService", () => {
 
 			const callArgs = mockSendRawEmail.mock.calls[0][0];
 			const rawMessage = new TextDecoder().decode(callArgs.RawMessage.Data);
-			expect(rawMessage).toContain("Reply-To: reply@example.com");
+			// Check that Reply-To header exists with the reply email (format may vary due to encoding)
+			expect(rawMessage).toMatch(/Reply-To:.*reply@example\.com/);
 		});
 
-		it("should use from email as reply-to when not provided", async () => {
+		it("should not include reply-to header when not provided", async () => {
 			mockSendRawEmail.mockResolvedValue({ MessageId: "test-message-id-123" });
 
 			await EmailService.send({
@@ -95,7 +97,8 @@ describe("EmailService", () => {
 
 			const callArgs = mockSendRawEmail.mock.calls[0][0];
 			const rawMessage = new TextDecoder().decode(callArgs.RawMessage.Data);
-			expect(rawMessage).toContain("Reply-To: sender@example.com");
+			// Should not have Reply-To header when not provided
+			expect(rawMessage).not.toMatch(/^Reply-To:/m);
 		});
 
 		it("should include custom headers when provided", async () => {
@@ -170,6 +173,28 @@ describe("EmailService", () => {
 			expect(rawMessage).toContain("Content-Type: application/pdf");
 		});
 
+		it("should include plain text content when provided", async () => {
+			mockSendRawEmail.mockResolvedValue({ MessageId: "test-message-id-123" });
+
+			await EmailService.send({
+				from: {
+					name: "Test Sender",
+					email: "sender@example.com",
+				},
+				to: ["recipient@example.com"],
+				content: {
+					subject: "Test Subject",
+					html: "<p>Test content</p>",
+					plainText: "Test content",
+				},
+			});
+
+			const callArgs = mockSendRawEmail.mock.calls[0][0];
+			const rawMessage = new TextDecoder().decode(callArgs.RawMessage.Data);
+			expect(rawMessage).toContain("text/plain");
+			expect(rawMessage).toContain("Test content");
+		});
+
 		it("should throw error when send fails", async () => {
 			mockSendRawEmail.mockResolvedValue({});
 
@@ -206,6 +231,27 @@ describe("EmailService", () => {
 			const callArgs = mockSendRawEmail.mock.calls[0][0];
 			const rawMessage = new TextDecoder().decode(callArgs.RawMessage.Data);
 			expect(rawMessage).toContain("List-Unsubscribe:");
+			expect(rawMessage).toContain("https://example.com/subscription/?email=");
+		});
+
+		it("should set correct source and configuration", async () => {
+			mockSendRawEmail.mockResolvedValue({ MessageId: "test-message-id-123" });
+
+			await EmailService.send({
+				from: {
+					name: "Test Sender",
+					email: "sender@example.com",
+				},
+				to: ["recipient@example.com"],
+				content: {
+					subject: "Test Subject",
+					html: "<p>Test content</p>",
+				},
+			});
+
+			const callArgs = mockSendRawEmail.mock.calls[0][0];
+			expect(callArgs.Source).toBe("Test Sender <sender@example.com>");
+			expect(callArgs.ConfigurationSetName).toBe("test-config-set");
 		});
 	});
 
@@ -236,7 +282,10 @@ describe("EmailService", () => {
 			id: "email-123",
 			sendType: "TRANSACTIONAL",
 			subject: "Test Subject",
-			body: "<p>Test body</p>",
+			body: {
+				html: "<p>Test body</p>",
+				plainText: "Test body",
+			},
 			createdAt: "1000",
 			updatedAt: "1000",
 			project: mockProject.id,
@@ -249,18 +298,8 @@ describe("EmailService", () => {
 			name: "Welcome Email",
 		};
 
-		it("should compile a simple MJML template", () => {
-			const body = `
-<mjml>
-  <mj-body>
-    <mj-section>
-      <mj-column>
-        <mj-text>Hello World</mj-text>
-      </mj-column>
-    </mj-section>
-  </mj-body>
-</mjml>
-			`.trim();
+		it("should compile a simple body without variables", () => {
+			const body = "<p>Hello World</p>";
 
 			const result = EmailService.compileBody(body, {
 				contact: mockContact,
@@ -269,22 +308,11 @@ describe("EmailService", () => {
 				action: mockAction,
 			});
 
-			expect(result).toContain("Hello World");
-			expect(result).toContain("<!doctype html>");
+			expect(result).toBe("<p>Hello World</p>");
 		});
 
-		it("should replace contact data in template", () => {
-			const body = `
-<mjml>
-  <mj-body>
-    <mj-section>
-      <mj-column>
-        <mj-text>Hello {{contact.data.firstName}}!</mj-text>
-      </mj-column>
-    </mj-section>
-  </mj-body>
-</mjml>
-			`.trim();
+		it("should replace contact data in body", () => {
+			const body = "<p>Hello {{contact.data.firstName}}!</p>";
 
 			const result = EmailService.compileBody(body, {
 				contact: mockContact,
@@ -293,21 +321,11 @@ describe("EmailService", () => {
 				action: mockAction,
 			});
 
-			expect(result).toContain("Hello John!");
+			expect(result).toBe("<p>Hello John!</p>");
 		});
 
-		it("should replace project data in template", () => {
-			const body = `
-<mjml>
-  <mj-body>
-    <mj-section>
-      <mj-column>
-        <mj-text>Project: {{project.name}}</mj-text>
-      </mj-column>
-    </mj-section>
-  </mj-body>
-</mjml>
-			`.trim();
+		it("should replace project data in body", () => {
+			const body = "<p>Project: {{project.name}}</p>";
 
 			const result = EmailService.compileBody(body, {
 				contact: mockContact,
@@ -316,21 +334,11 @@ describe("EmailService", () => {
 				action: mockAction,
 			});
 
-			expect(result).toContain("Project: Test Project");
+			expect(result).toBe("<p>Project: Test Project</p>");
 		});
 
 		it("should use default helper for undefined values", () => {
-			const body = `
-<mjml>
-  <mj-body>
-    <mj-section>
-      <mj-column>
-        <mj-text>Name: {{default contact.data.middleName "N/A"}}</mj-text>
-      </mj-column>
-    </mj-section>
-  </mj-body>
-</mjml>
-			`.trim();
+			const body = "<p>Name: {{default contact.data.middleName \"N/A\"}}</p>";
 
 			const result = EmailService.compileBody(body, {
 				contact: mockContact,
@@ -339,34 +347,11 @@ describe("EmailService", () => {
 				action: mockAction,
 			});
 
-			expect(result).toContain("Name: N/A");
+			expect(result).toBe("<p>Name: N/A</p>");
 		});
 
-		it("should throw error for invalid MJML", () => {
-			const body = "<mjml><invalid-tag>Bad MJML</invalid-tag></mjml>";
-
-			expect(() =>
-				EmailService.compileBody(body, {
-					contact: mockContact,
-					project: mockProject,
-					email: mockEmail,
-					action: mockAction,
-				}),
-			).toThrow();
-		});
-
-		it("should include action name in template", () => {
-			const body = `
-<mjml>
-  <mj-body>
-    <mj-section>
-      <mj-column>
-        <mj-text>Action: {{action.name}}</mj-text>
-      </mj-column>
-    </mj-section>
-  </mj-body>
-</mjml>
-			`.trim();
+		it("should use first value when available with default helper", () => {
+			const body = "<p>Name: {{default contact.data.firstName \"N/A\"}}</p>";
 
 			const result = EmailService.compileBody(body, {
 				contact: mockContact,
@@ -375,23 +360,11 @@ describe("EmailService", () => {
 				action: mockAction,
 			});
 
-			expect(result).toContain("Action: Welcome Email");
+			expect(result).toBe("<p>Name: John</p>");
 		});
 
-		it("should include APP_URI in template", () => {
-			const body = `
-<mjml>
-  <mj-body>
-    <mj-section>
-      <mj-column>
-        <mj-text>
-          <a href="https://{{APP_URI}}">Link</a>
-        </mj-text>
-      </mj-column>
-    </mj-section>
-  </mj-body>
-</mjml>
-			`.trim();
+		it("should include action name in body", () => {
+			const body = "<p>Action: {{action.name}}</p>";
 
 			const result = EmailService.compileBody(body, {
 				contact: mockContact,
@@ -400,7 +373,57 @@ describe("EmailService", () => {
 				action: mockAction,
 			});
 
-			expect(result).toContain("https://example.com");
+			expect(result).toBe("<p>Action: Welcome Email</p>");
+		});
+
+		it("should include APP_URI in body", () => {
+			const body = "<p><a href=\"https://{{APP_URI}}\">Link</a></p>";
+
+			const result = EmailService.compileBody(body, {
+				contact: mockContact,
+				project: mockProject,
+				email: mockEmail,
+				action: mockAction,
+			});
+
+			expect(result).toBe("<p><a href=\"https://example.com\">Link</a></p>");
+		});
+
+		it("should handle multiple variable replacements", () => {
+			const body = "<p>Hello {{contact.data.firstName}} {{contact.data.lastName}} from {{project.name}}!</p>";
+
+			const result = EmailService.compileBody(body, {
+				contact: mockContact,
+				project: mockProject,
+				email: mockEmail,
+				action: mockAction,
+			});
+
+			expect(result).toBe("<p>Hello John Doe from Test Project!</p>");
+		});
+
+		it("should handle nested object access", () => {
+			const contactWithNested = {
+				...mockContact,
+				data: {
+					...mockContact.data,
+					address: {
+						city: "New York",
+						state: "NY",
+					},
+				},
+			};
+
+			const body = "<p>City: {{contact.data.address.city}}, State: {{contact.data.address.state}}</p>";
+
+			const result = EmailService.compileBody(body, {
+				contact: contactWithNested,
+				project: mockProject,
+				email: mockEmail,
+				action: mockAction,
+			});
+
+			expect(result).toBe("<p>City: New York, State: NY</p>");
 		});
 	});
 
@@ -431,7 +454,7 @@ describe("EmailService", () => {
 			name: "Welcome Email",
 		};
 
-		it("should compile a simple subject", () => {
+		it("should compile a simple subject without variables", () => {
 			const subject = "Welcome to our service!";
 
 			const result = EmailService.compileSubject(subject, {
@@ -490,6 +513,29 @@ describe("EmailService", () => {
 
 			expect(result).toBe("[Welcome Email] Important message");
 		});
+
+		it("should handle multiple variable replacements", () => {
+			const subject = "{{contact.data.firstName}} {{contact.data.lastName}} - {{project.name}}";
+
+			const result = EmailService.compileSubject(subject, {
+				contact: mockContact,
+				project: mockProject,
+				action: mockAction,
+			});
+
+			expect(result).toBe("John Doe - Test Project");
+		});
+
+		it("should handle empty string for undefined variables", () => {
+			const subject = "Hello {{contact.data.middleName}}!";
+
+			const result = EmailService.compileSubject(subject, {
+				contact: mockContact,
+				project: mockProject,
+				action: mockAction,
+			});
+
+			expect(result).toBe("Hello !");
+		});
 	});
 });
-

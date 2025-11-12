@@ -190,7 +190,7 @@ export default function Index() {
                                   <span className="font-semibold text-neutral-700 block mb-1">Body</span>
                                   <div
                                     // biome-ignore lint/security/noDangerouslySetInnerHtml: Content is sanitized with DOMPurify
-                                    dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(email.body) }}
+                                    dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(email.body.html) }}
                                     className="rounded-sm bg-white p-3 text-neutral-800 whitespace-pre-line max-h-64 overflow-y-auto"
                                   />
                                 </div>

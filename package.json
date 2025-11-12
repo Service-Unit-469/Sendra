@@ -19,7 +19,7 @@
   },
   "scripts": {
     "build": "npm run build --workspaces",
-    "build:deps": "npm run build --w=packages/test && npm run build --w=packages/shared && npm run build --w=packages/templating && npm run build --w=packages/lib",
+    "build:deps": "npm run build --w=packages/test && npm run build --w=packages/shared && npm run build --w=packages/lib",
     "clean": "npm run clean --workspaces",
     "deploy": "sst deploy",
     "dev": "npm run build:deps && sst dev",
@@ -33,7 +33,6 @@
   "workspaces": [
     "packages/test",
     "packages/shared",
-    "packages/templating",
     "packages/lib",
     "packages/api",
     "packages/subscribers",

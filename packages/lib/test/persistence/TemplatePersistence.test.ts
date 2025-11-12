@@ -36,7 +36,11 @@ describe("TemplatePersistence", () => {
         id: "test-id",
         project: TEST_PROJECT_ID,
         subject: "Test Subject",
-        body: "Test Body",
+        body: {
+          data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+          html: "<p>Test Body</p>",
+          plainText: "Test Body",
+        },
         templateType: "MARKETING" as Template["templateType"],
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
@@ -55,7 +59,11 @@ describe("TemplatePersistence", () => {
       const templateData = {
         project: TEST_PROJECT_ID,
         subject: "Welcome Email",
-        body: "<h1>Welcome!</h1><p>Thanks for signing up.</p>",
+        body: {
+          data: JSON.stringify({ time: Date.now(), blocks: [{ type: "paragraph", data: { text: "Welcome!" } }], version: "2.28.0" }),
+          html: "<h1>Welcome!</h1><p>Thanks for signing up.</p>",
+          plainText: "Welcome! Thanks for signing up.",
+        },
         templateType: "MARKETING" as Template["templateType"],
       };
 
@@ -71,7 +79,11 @@ describe("TemplatePersistence", () => {
       const templateData = {
         project: TEST_PROJECT_ID,
         subject: "Password Reset",
-        body: "<p>Click here to reset your password</p>",
+        body: {
+          data: JSON.stringify({ time: Date.now(), blocks: [{ type: "paragraph", data: { text: "Click here to reset" } }], version: "2.28.0" }),
+          html: "<p>Click here to reset your password</p>",
+          plainText: "Click here to reset your password",
+        },
         templateType: "TRANSACTIONAL" as Template["templateType"],
       };
 
@@ -82,10 +94,7 @@ describe("TemplatePersistence", () => {
     });
 
     it("should handle templates with complex HTML", async () => {
-      const templateData = {
-        project: TEST_PROJECT_ID,
-        subject: "Newsletter {{month}}",
-        body: `
+      const complexHTML = `
           <!DOCTYPE html>
           <html>
             <head>
@@ -103,14 +112,22 @@ describe("TemplatePersistence", () => {
               </div>
             </body>
           </html>
-        `,
+        `;
+      const templateData = {
+        project: TEST_PROJECT_ID,
+        subject: "Newsletter {{month}}",
+        body: {
+          data: JSON.stringify({ time: Date.now(), blocks: [{ type: "paragraph", data: { text: "Newsletter content" } }], version: "2.28.0" }),
+          html: complexHTML,
+          plainText: "{{title}} {{content}}",
+        },
         templateType: "MARKETING" as Template["templateType"],
       };
 
       const created = await persistence.create(templateData);
       const retrieved = await persistence.get(created.id);
 
-      expect(retrieved?.body).toBe(templateData.body);
+      expect(retrieved?.body).toEqual(templateData.body);
       expect(retrieved?.subject).toBe(templateData.subject);
     });
   });
@@ -121,14 +138,22 @@ describe("TemplatePersistence", () => {
       await persistence.create({
         project: TEST_PROJECT_ID,
         subject: "Template 1",
-        body: "Body 1",
+        body: {
+          data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+          html: "<p>Body 1</p>",
+          plainText: "Body 1",
+        },
         templateType: "MARKETING",
       });
 
       await persistence.create({
         project: TEST_PROJECT_ID,
         subject: "Template 2",
-        body: "Body 2",
+        body: {
+          data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+          html: "<p>Body 2</p>",
+          plainText: "Body 2",
+        },
         templateType: "MARKETING",
       });
 
@@ -144,7 +169,11 @@ describe("TemplatePersistence", () => {
       await persistence2.create({
         project: "another-project",
         subject: "Other Project Template",
-        body: "Other Body",
+        body: {
+          data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+          html: "<p>Other Body</p>",
+          plainText: "Other Body",
+        },
         templateType: "MARKETING",
       });
 
@@ -159,18 +188,27 @@ describe("TemplatePersistence", () => {
       const template = await persistence.create({
         project: TEST_PROJECT_ID,
         subject: "Original Subject",
-        body: "Original Body",
+        body: {
+          data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+          html: "<p>Original Body</p>",
+          plainText: "Original Body",
+        },
         templateType: "MARKETING",
       });
 
+      const updatedBody = {
+        data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+        html: "<p>Updated Body</p>",
+        plainText: "Updated Body",
+      };
       const updated = await persistence.put({
         ...template,
         subject: "Updated Subject",
-        body: "Updated Body",
+        body: updatedBody,
       });
 
       expect(updated.subject).toBe("Updated Subject");
-      expect(updated.body).toBe("Updated Body");
+      expect(updated.body).toEqual(updatedBody);
       expect(updated.id).toBe(template.id);
     });
   });
@@ -180,7 +218,11 @@ describe("TemplatePersistence", () => {
       const template = await persistence.create({
         project: TEST_PROJECT_ID,
         subject: "To Delete",
-        body: "Delete Me",
+        body: {
+          data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+          html: "<p>Delete Me</p>",
+          plainText: "Delete Me",
+        },
         templateType: "MARKETING",
       });
 
@@ -198,7 +240,11 @@ describe("TemplatePersistence", () => {
           id: "embed-test-1",
           project: TEST_PROJECT_ID,
           subject: "Embed Test",
-          body: "Body",
+          body: {
+            data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+            html: "<p>Body</p>",
+            plainText: "Body",
+          },
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
           templateType: "MARKETING",
@@ -215,7 +261,11 @@ describe("TemplatePersistence", () => {
       const template = await persistence.create({
         project: TEST_PROJECT_ID,
         subject: "Template with Actions",
-        body: "Test Body",
+        body: {
+          data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+          html: "<p>Test Body</p>",
+          plainText: "Test Body",
+        },
         templateType: "MARKETING",
       });
 
@@ -260,7 +310,11 @@ describe("TemplatePersistence", () => {
           id: "embed-error-test",
           project: TEST_PROJECT_ID,
           subject: "Error Test",
-          body: "Body",
+          body: {
+            data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+            html: "<p>Body</p>",
+            plainText: "Body",
+          },
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
           templateType: "MARKETING",

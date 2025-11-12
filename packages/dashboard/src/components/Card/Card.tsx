@@ -1,6 +1,5 @@
-import { AnimatePresence, motion } from "framer-motion";
-import { EllipsisVertical } from "lucide-react";
 import React, { type MutableRefObject, useEffect, useState } from "react";
+import { Options } from "../Overlay/Options";
 
 export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   title?: string;
@@ -49,42 +48,7 @@ export default function Card({ title, description, children, className, actions,
           <div className={"flex flex-1 gap-x-2.5 md:justify-end"}>{actions}</div>
         </div>
 
-        {options && (
-          <div className="relative ml-3 inline-block text-left" ref={ref}>
-            <div>
-              <button
-                type="button"
-                onClick={() => setOptionsOpen(!optionsOpen)}
-                className="flex items-center rounded-full text-neutral-500 transition hover:text-neutral-800"
-                id="menu-button"
-                aria-expanded="true"
-                aria-haspopup="true"
-              >
-                <span className="sr-only">Open options</span>
-
-                <EllipsisVertical size={18} />
-              </button>
-            </div>
-
-            <AnimatePresence>
-              {optionsOpen && (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  transition={{ duration: 0.1 }}
-                  className="absolute right-0 z-50 mt-2 w-56 origin-top-right rounded-md bg-white p-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-hidden"
-                  role="menu"
-                  aria-orientation="vertical"
-                  aria-labelledby="menu-button"
-                  tabIndex={-1}
-                >
-                  {options}
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        )}
+        {options && <Options options={options} />}
       </div>
 
       <div className={"py-4"}>{children}</div>

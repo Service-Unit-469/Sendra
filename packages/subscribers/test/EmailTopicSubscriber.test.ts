@@ -354,7 +354,10 @@ describe("EmailTopicSubscriber", () => {
 				contact: contactId,
 				messageId,
 				subject: "Test Email",
-				body: "<p>Test body</p>",
+				body: {
+					html: "<p>Test body</p>",
+					plainText: "Test body",
+				},
 				email: "test@example.com",
 				status: "SENT",
 				sendType: "MARKETING",

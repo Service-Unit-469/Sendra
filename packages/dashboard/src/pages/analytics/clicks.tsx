@@ -1,4 +1,4 @@
-import { Ring } from "@uiball/loaders";
+import { LoaderCircle } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import Card from "../../components/Card/Card";
 import AnalyticsTabs from "../../components/Navigation/AnalyticsTabs/AnalyticsTabs";
@@ -80,7 +80,7 @@ export default function Index() {
             </ResponsiveContainer>
           ) : (
             <div className={"flex h-[300px] items-center justify-center"}>
-              <Ring size={32} color={"#a3a3a3"} />
+              <LoaderCircle size={32} className="animate-spin" />
             </div>
           )}
         </Card>

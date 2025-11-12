@@ -1,6 +1,5 @@
-import { Ring } from "@uiball/loaders";
 import dayjs from "dayjs";
-import { ArrowDown, ArrowUp } from "lucide-react";
+import { ArrowDown, ArrowUp, LoaderCircle } from "lucide-react";
 import { useState } from "react";
 import { Area, AreaChart, CartesianGrid, Cell, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import Card from "../../components/Card/Card";
@@ -94,7 +93,7 @@ export default function Index() {
             </div>
           ) : (
             <div className={"flex h-[55px] items-center justify-center"}>
-              <Ring size={32} color={"#a3a3a3"} />
+              <LoaderCircle size={32} className="animate-spin" />
             </div>
           )}
         </Card>
@@ -129,7 +128,7 @@ export default function Index() {
             </div>
           ) : (
             <div className={"flex h-[55px] items-center justify-center"}>
-              <Ring size={32} color={"#a3a3a3"} />
+              <LoaderCircle size={32} className="animate-spin" />
             </div>
           )}
         </Card>
@@ -218,7 +217,7 @@ export default function Index() {
             </ResponsiveContainer>
           ) : (
             <div className={"flex h-[300px] items-center justify-center"}>
-              <Ring size={32} color={"#a3a3a3"} />
+              <LoaderCircle size={32} className="animate-spin" />
             </div>
           )}
         </Card>
@@ -293,7 +292,7 @@ export default function Index() {
             </ResponsiveContainer>
           ) : (
             <div className={"flex h-[200px] items-center justify-center"}>
-              <Ring size={32} color={"#a3a3a3"} />
+              <LoaderCircle size={32} className="animate-spin" />
             </div>
           )}
         </Card>
@@ -364,7 +363,7 @@ export default function Index() {
             </ResponsiveContainer>
           ) : (
             <div className={"flex h-[200px] items-center justify-center"}>
-              <Ring size={32} color={"#a3a3a3"} />
+              <LoaderCircle size={32} className="animate-spin" />
             </div>
           )}
         </Card>

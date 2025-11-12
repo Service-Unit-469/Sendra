@@ -261,7 +261,10 @@ describe("Events Endpoint Contract Tests", () => {
       const emailPayload = {
         to: ["recipient@example.com"],
         subject: "Test Email Subject",
-        body: "<p>Test email body content</p>",
+        body: {
+          html: "<p>Test email body content</p>",
+          plainText: "Test email body content",
+        },
         subscribed: true,
       };
 
@@ -310,7 +313,10 @@ describe("Events Endpoint Contract Tests", () => {
       const emailPayload = {
         to: ["recipient1@example.com", "recipient2@example.com", "recipient3@example.com"],
         subject: "Multi-recipient Email",
-        body: "<p>Email for multiple recipients</p>",
+        body: {
+          html: "<p>Email for multiple recipients</p>",
+          plainText: "Email for multiple recipients",
+        },
         subscribed: true,
       };
 
@@ -350,7 +356,10 @@ describe("Events Endpoint Contract Tests", () => {
       const emailPayload = {
         to: [newEmail],
         subject: "Test Subject",
-        body: "<p>Test body</p>",
+        body: {
+          html: "<p>Test body</p>",
+          plainText: "Test body",
+        },
         subscribed: false,
       };
 
@@ -402,7 +411,10 @@ describe("Events Endpoint Contract Tests", () => {
       const emailPayload = {
         to: ["existing@example.com"],
         subject: "Test Subject",
-        body: "<p>Test body</p>",
+        body: {
+          html: "<p>Test body</p>",
+          plainText: "Test body",
+        },
         subscribed: true,
       };
 
@@ -442,7 +454,10 @@ describe("Events Endpoint Contract Tests", () => {
       const emailPayload = {
         to: ["recipient@example.com"],
         subject: "Test Subject",
-        body: "<p>Test body</p>",
+        body: {
+          html: "<p>Test body</p>",
+          plainText: "Test body",
+        },
         from: "custom@example.com",
         name: "Custom Name",
         subscribed: true,
@@ -480,7 +495,10 @@ describe("Events Endpoint Contract Tests", () => {
       const emailPayload = {
         to: ["recipient@example.com"],
         subject: "Test Subject",
-        body: "<p>Test body</p>",
+        body: {
+          html: "<p>Test body</p>",
+          plainText: "Test body",
+        },
         reply: "reply@example.com",
         subscribed: true,
       };
@@ -517,7 +535,10 @@ describe("Events Endpoint Contract Tests", () => {
       const emailPayload = {
         to: ["recipient@example.com"],
         subject: "Test Subject",
-        body: "<p>Test body</p>",
+        body: {
+          html: "<p>Test body</p>",
+          plainText: "Test body",
+        },
         headers: {
           "X-Custom-Header": "custom-value",
         },
@@ -556,11 +577,14 @@ describe("Events Endpoint Contract Tests", () => {
       const emailPayload = {
         to: ["recipient@example.com"],
         subject: "Test Subject",
-        body: "<p>Test body</p>",
+        body: {
+          html: "<p>Test body</p>",
+          plainText: "Test body",
+        },
         attachments: [
           {
             filename: "test.pdf",
-            content: "base64content",
+            content: Buffer.from("test content").toString("base64"),
             contentType: "application/pdf",
           },
         ],
@@ -587,7 +611,10 @@ describe("Events Endpoint Contract Tests", () => {
       const emailPayload = {
         to: ["recipient@example.com"],
         subject: "Test Subject",
-        body: "<p>Test body</p>",
+        body: {
+          html: "<p>Test body</p>",
+          plainText: "Test body",
+        },
         subscribed: true,
       };
 
@@ -625,7 +652,10 @@ describe("Events Endpoint Contract Tests", () => {
       const emailPayload = {
         to: ["recipient@example.com"],
         subject: "Test Subject",
-        body: "<p>Test body</p>",
+        body: {
+          html: "<p>Test body</p>",
+          plainText: "Test body",
+        },
         from: "different@otherdomain.com",
         subscribed: true,
       };
@@ -664,7 +694,10 @@ describe("Events Endpoint Contract Tests", () => {
       const invalidPayload = {
         // Missing required 'to' field
         subject: "Test Subject",
-        body: "<p>Test body</p>",
+        body: {
+          html: "<p>Test body</p>",
+          plainText: "Test body",
+        },
       };
 
       const publicToken = AuthService.createProjectToken(updatedProject.public, "public", updatedProject.id);
@@ -687,7 +720,10 @@ describe("Events Endpoint Contract Tests", () => {
       const emailPayload = {
         to: ["recipient@example.com"],
         subject: "Test Subject",
-        body: "<p>Test body</p>",
+        body: {
+          html: "<p>Test body</p>",
+          plainText: "Test body",
+        },
         subscribed: true,
       };
 
@@ -708,7 +744,10 @@ describe("Events Endpoint Contract Tests", () => {
       const emailPayload = {
         to: ["recipient@example.com"],
         subject: "Test Subject",
-        body: "<p>Test body</p>",
+        body: {
+          html: "<p>Test body</p>",
+          plainText: "Test body",
+        },
         subscribed: true,
       };
 
@@ -744,7 +783,10 @@ describe("Events Endpoint Contract Tests", () => {
       const emailPayload = {
         to: ["recipient@example.com"],
         subject: "Test Subject",
-        body: "<p>Test body</p>",
+        body: {
+          html: "<p>Test body</p>",
+          plainText: "Test body",
+        },
         subscribed: true,
       };
 
