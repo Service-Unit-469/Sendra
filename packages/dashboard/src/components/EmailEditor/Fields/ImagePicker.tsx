@@ -1,6 +1,5 @@
 import type { CustomField } from "@measured/puck";
 import type { Asset } from "@sendra/shared";
-import Image from "next/image";
 import { useState } from "react";
 import { useAssets } from "../../../lib/hooks/assets";
 
@@ -66,7 +65,8 @@ const ImagePicker: React.FC<ImagePickerProps> = ({ value, onChange, name, id, la
               aria-label={`Select ${asset.name}`}
             >
               {isImage ? (
-                <Image src={asset.url} alt={asset.name} className="w-full h-full object-cover rounded" />
+                // biome-ignore lint/performance/noImgElement: no need to use next/image
+                <img src={asset.url} alt={asset.name} className="w-full h-full object-cover rounded" />
               ) : (
                 <div className="w-full h-full flex flex-col items-center justify-center p-2 bg-neutral-50">
                   <svg className="w-8 h-8 text-neutral-400 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -78,13 +78,6 @@ const ImagePicker: React.FC<ImagePickerProps> = ({ value, onChange, name, id, la
                     />
                   </svg>
                   <span className="text-xs text-neutral-600 truncate w-full text-center">{asset.name.split(".").pop()?.toUpperCase()}</span>
-                </div>
-              )}
-              {isSelected && (
-                <div className="absolute top-1 right-1 bg-neutral-900 rounded-full p-1">
-                  <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
                 </div>
               )}
             </button>
@@ -137,7 +130,8 @@ const ImagePicker: React.FC<ImagePickerProps> = ({ value, onChange, name, id, la
           />
           {manualUrl?.startsWith("http") && (
             <div className="mt-2">
-              <Image
+              {/* biome-ignore lint/performance/noImgElement: no need to use next/image */}
+              <img
                 src={manualUrl}
                 alt="Preview"
                 className="w-full max-h-32 object-contain rounded border border-neutral-200"

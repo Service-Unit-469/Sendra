@@ -2,7 +2,6 @@ import type { Asset } from "@sendra/shared";
 import dayjs from "dayjs";
 import { motion } from "framer-motion";
 import { FileImage, FileText, Plus, Trash2, Upload } from "lucide-react";
-import Image from "next/image";
 import { useCallback, useState } from "react";
 import { toast } from "sonner";
 import Badge from "../../components/Badge/Badge";
@@ -104,7 +103,8 @@ export default function Index() {
                     <div className="flex w-full items-start justify-between space-x-4 p-6">
                       {isImage ? (
                         <div className="h-20 w-20 flex-shrink-0 overflow-hidden rounded-sm border border-neutral-200">
-                          <Image src={asset.url} alt={asset.name} className="h-full w-full object-cover" width={80} height={80} />
+                          {/* biome-ignore lint/performance/noImgElement: no need to use next/image */}
+                          <img src={asset.url} alt={asset.name} className="h-full w-full object-cover" width={80} height={80} />
                         </div>
                       ) : (
                         <span className="inline-flex flex-shrink-0 rounded-sm bg-neutral-100 p-3 text-neutral-800 ring-4 ring-white">
