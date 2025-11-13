@@ -15,8 +15,10 @@ const logger = rootLogger.child({
 export const registerProjectIdentityRoutes = (app: AppType) => {
   app.openapi(
     createRoute({
+      tags: ["Project", "Identity"],
+      operationId: "get-project-identity",
       method: "get",
-      path: "/projects/:projectId/identity",
+      path: "/projects/{projectId}/identity",
       request: {
         params: z.object({
           projectId: z.string(),
@@ -85,8 +87,10 @@ export const registerProjectIdentityRoutes = (app: AppType) => {
 
   app.openapi(
     createRoute({
+      tags: ["Project", "Identity"],
+      operationId: "verify-project-identity",
       method: "post",
-      path: "/projects/:projectId/identity",
+      path: "/projects/{projectId}/identity",
       request: {
         params: z.object({
           projectId: z.string(),
@@ -158,8 +162,10 @@ export const registerProjectIdentityRoutes = (app: AppType) => {
 
   app.openapi(
     createRoute({
+      tags: ["Project", "Identity"],
+      operationId: "reset-project-identity",
       method: "delete",
-      path: "/projects/:projectId/identity",
+      path: "/projects/{projectId}/identity",
       request: {
         params: z.object({
           projectId: z.string(),
@@ -203,8 +209,10 @@ export const registerProjectIdentityRoutes = (app: AppType) => {
 
   app.openapi(
     createRoute({
+      tags: ["Project", "Identity"],
+      operationId: "update-project-identity",
       method: "put",
-      path: "/projects/:projectId/identity",
+      path: "/projects/{projectId}/identity",
       request: {
         params: z.object({
           projectId: z.string(),

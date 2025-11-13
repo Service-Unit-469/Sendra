@@ -1,0 +1,8 @@
+title: Sendra Documentation
+description: Documentation for Sendra - The Open-Source, Serverless Email Platform
+theme: just-the-docs
+
+aux_links:
+  Home: /
+  API Spec: /api-spec.html
+  GitHub: https://github.com/Service-Unit-469/Sendra

@@ -3,7 +3,7 @@ import { AssetService } from "@sendra/lib";
 import { AssetSchema, AssetSchemas, UtilitySchemas } from "@sendra/shared";
 import type { AppType } from "../../app";
 import { getProblemResponseSchema } from "../../exceptions/responses";
-import { isAuthenticatedProjectMember } from "../../middleware/auth";
+import { BearerAuth, isAuthenticatedProjectMember } from "../../middleware/auth";
 
 export const registerAssetsRoutes = (app: AppType) => {
   const assetService = new AssetService();
@@ -12,11 +12,11 @@ export const registerAssetsRoutes = (app: AppType) => {
   app.openapi(
     {
       operationId: "listAssets",
-      security: [{ bearer: [] }],
       tags: ["Assets"],
       method: "get",
-      path: "/projects/:projectId/assets",
+      path: "/projects/{projectId}/assets",
       middleware: [isAuthenticatedProjectMember],
+      ...BearerAuth,
       request: {
         params: UtilitySchemas.projectId,
       },
@@ -42,11 +42,11 @@ export const registerAssetsRoutes = (app: AppType) => {
   app.openapi(
     {
       operationId: "getAsset",
-      security: [{ bearer: [] }],
       tags: ["Assets"],
       method: "get",
-      path: "/projects/:projectId/assets/:id",
+      path: "/projects/{projectId}/assets/{id}",
       middleware: [isAuthenticatedProjectMember],
+      ...BearerAuth,
       request: {
         params: UtilitySchemas.projectAndId,
       },
@@ -75,11 +75,11 @@ export const registerAssetsRoutes = (app: AppType) => {
   app.openapi(
     {
       operationId: "deleteAsset",
-      security: [{ bearer: [] }],
       tags: ["Assets"],
       method: "delete",
-      path: "/projects/:projectId/assets/:id",
+      path: "/projects/{projectId}/assets/{id}",
       middleware: [isAuthenticatedProjectMember],
+      ...BearerAuth,
       request: {
         params: UtilitySchemas.projectAndId,
       },
@@ -103,11 +103,11 @@ export const registerAssetsRoutes = (app: AppType) => {
   app.openapi(
     {
       operationId: "generateAssetUploadUrl",
-      security: [{ bearer: [] }],
       tags: ["Assets"],
       method: "post",
-      path: "/projects/:projectId/assets/upload-url",
+      path: "/projects/{projectId}/assets/upload-url",
       middleware: [isAuthenticatedProjectMember],
+      ...BearerAuth,
       request: {
         params: UtilitySchemas.projectId,
         body: {
@@ -152,16 +152,16 @@ export const registerAssetsRoutes = (app: AppType) => {
   app.openapi(
     {
       operationId: "getAssetDownloadUrl",
-      security: [{ bearer: [] }],
       tags: ["Assets"],
       method: "get",
-      path: "/projects/:projectId/assets/:id/download-url",
+      path: "/projects/{projectId}/assets/{id}/download-url",
       middleware: [isAuthenticatedProjectMember],
+      ...BearerAuth,
       request: {
         params: UtilitySchemas.projectAndId,
-      },
-      query: {
-        expiresIn: z.string().optional(),
+        query: z.object({
+          expiresIn: z.string().optional(),
+        }),
       },
       responses: {
         200: {
@@ -197,11 +197,11 @@ export const registerAssetsRoutes = (app: AppType) => {
   app.openapi(
     {
       operationId: "listAssetsByType",
-      security: [{ bearer: [] }],
       tags: ["Assets"],
       method: "get",
-      path: "/projects/:projectId/assets/by-type/:assetType",
+      path: "/projects/{projectId}/assets/by-type/{assetType}",
       middleware: [isAuthenticatedProjectMember],
+      ...BearerAuth,
       request: {
         params: UtilitySchemas.projectId.extend({
           assetType: z.enum(["IMAGE", "ATTACHMENT"]),

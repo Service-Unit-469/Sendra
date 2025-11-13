@@ -14,6 +14,7 @@ const logger = rootLogger.child({
 export const registerMembershipsRoutes = (app: AppType) => {
   app.openapi(
     createRoute({
+      operationId: "invite-member",
       method: "post",
       path: "/memberships/invite",
       request: {
@@ -89,6 +90,7 @@ export const registerMembershipsRoutes = (app: AppType) => {
 
   app.openapi(
     createRoute({
+      operationId: "kick-member",
       method: "post",
       path: "/memberships/kick",
       request: {
@@ -154,6 +156,7 @@ export const registerMembershipsRoutes = (app: AppType) => {
 
   app.openapi(
     createRoute({
+      operationId: "leave-project",
       method: "post",
       path: "/memberships/leave",
       request: {

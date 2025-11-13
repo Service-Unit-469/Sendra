@@ -8,6 +8,7 @@
     "node_modules",
     "dist",
     "test",
+    "scripts",
     "vitest.config.ts",
     "tsconfig.test.json"
   ]

@@ -29,7 +29,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
     await stopDynamoDB();
   });
 
-  describe("POST /projects/:projectId/campaigns", () => {
+  describe("POST /projects/{projectId}/campaigns", () => {
     test("should successfully create a new campaign", async () => {
       const { project, token } = await createTestSetup();
       const contact = await createTestContact(project.id);
@@ -234,7 +234,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
     });
   });
 
-  describe("GET /projects/:projectId/campaigns/:campaignId", () => {
+  describe("GET /projects/{projectId}/campaigns/:campaignId", () => {
     test("should successfully get a campaign by id", async () => {
       const { project, token } = await createTestSetup();
       const contact = await createTestContact(project.id);
@@ -307,7 +307,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
     });
   });
 
-  describe("GET /projects/:projectId/campaigns", () => {
+  describe("GET /projects/{projectId}/campaigns", () => {
     test("should list campaigns with pagination", async () => {
       const { project, token } = await createTestSetup();
       const contact = await createTestContact(project.id);
@@ -421,7 +421,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
     });
   });
 
-  describe("GET /projects/:projectId/campaigns/all", () => {
+  describe("GET /projects/{projectId}/campaigns/all", () => {
     test("should list all campaigns without pagination", async () => {
       const { project, token } = await createTestSetup();
       const contact = await createTestContact(project.id);
@@ -484,7 +484,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
     });
   });
 
-  describe("PUT /projects/:projectId/campaigns/:campaignId", () => {
+  describe("PUT /projects/{projectId}/campaigns/:campaignId", () => {
     test("should successfully update a campaign", async () => {
       const { project, token } = await createTestSetup();
       const contact = await createTestContact(project.id);
@@ -700,7 +700,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
     });
   });
 
-  describe("DELETE /projects/:projectId/campaigns/:campaignId", () => {
+  describe("DELETE /projects/{projectId}/campaigns/:campaignId", () => {
     test("should successfully delete a campaign", async () => {
       const { project, token } = await createTestSetup();
       const contact = await createTestContact(project.id);
@@ -745,7 +745,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
     });
   });
 
-  describe("POST /projects/:projectId/campaigns/:campaignId/send", () => {
+  describe("POST /projects/{projectId}/campaigns/:campaignId/send", () => {
     test("should successfully send a test campaign (live=false)", async () => {
       const { project, token, user } = await createTestSetup();
       const contact = await createTestContact(project.id);

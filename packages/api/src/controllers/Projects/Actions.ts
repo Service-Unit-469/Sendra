@@ -54,9 +54,10 @@ export const registerActionsRoutes = (app: AppType) => {
 
   app.openapi(
     createRoute({
-      id: "get-related-actions",
+      tags: ["Action"],
+      operationId: "get-related-actions",
       method: "get",
-      path: "/projects/:projectId/actions/:actionId/related",
+      path: "/projects/{projectId}/actions/{actionId}/related",
       request: {
         params: z.object({
           projectId: z.string(),

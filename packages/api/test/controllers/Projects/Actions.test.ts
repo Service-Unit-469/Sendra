@@ -21,7 +21,7 @@ describe("Actions Endpoint Contract Tests", () => {
     await stopDynamoDB();
   });
 
-  describe("POST /projects/:projectId/actions", () => {
+  describe("POST /projects/{projectId}/actions", () => {
     test("should successfully create a new action", async () => {
       const { project, token } = await createTestSetup();
       const template = await createTestTemplate(project.id);
@@ -254,7 +254,7 @@ describe("Actions Endpoint Contract Tests", () => {
     });
   });
 
-  describe("GET /projects/:projectId/actions/:actionId", () => {
+  describe("GET /projects/{projectId}/actions/:actionId", () => {
     test("should successfully get an action by id", async () => {
       const { project, token } = await createTestSetup();
       const template = await createTestTemplate(project.id);
@@ -321,7 +321,7 @@ describe("Actions Endpoint Contract Tests", () => {
     });
   });
 
-  describe("GET /projects/:projectId/actions", () => {
+  describe("GET /projects/{projectId}/actions", () => {
     test("should list actions with pagination", async () => {
       const { project, token } = await createTestSetup();
       const template = await createTestTemplate(project.id);
@@ -494,7 +494,7 @@ describe("Actions Endpoint Contract Tests", () => {
     });
   });
 
-  describe("GET /projects/:projectId/actions/all", () => {
+  describe("GET /projects/{projectId}/actions/all", () => {
     test("should list all actions without pagination", async () => {
       const { project, token } = await createTestSetup();
       const template = await createTestTemplate(project.id);
@@ -552,7 +552,7 @@ describe("Actions Endpoint Contract Tests", () => {
     });
   });
 
-  describe("PUT /projects/:projectId/actions/:actionId", () => {
+  describe("PUT /projects/{projectId}/actions/:actionId", () => {
     test("should successfully update an action", async () => {
       const { project, token } = await createTestSetup();
       const template = await createTestTemplate(project.id);
@@ -786,7 +786,7 @@ describe("Actions Endpoint Contract Tests", () => {
     });
   });
 
-  describe("DELETE /projects/:projectId/actions/:actionId", () => {
+  describe("DELETE /projects/{projectId}/actions/:actionId", () => {
     test("should successfully delete an action", async () => {
       const { project, token } = await createTestSetup();
       const template = await createTestTemplate(project.id);
@@ -829,7 +829,7 @@ describe("Actions Endpoint Contract Tests", () => {
     });
   });
 
-  describe("GET /projects/:projectId/actions/:actionId/related", () => {
+  describe("GET /projects/{projectId}/actions/:actionId/related", () => {
     test("should get related actions for an action", async () => {
       const { project, token } = await createTestSetup();
       const template = await createTestTemplate(project.id);

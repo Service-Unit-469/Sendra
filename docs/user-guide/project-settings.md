@@ -1,4 +1,8 @@
-[Docs](../index.md) > [User Guide](../user-guide.md) > Project Settings
+---
+title: Project Settings
+parent: User Guide
+layout: page
+---
 
 ## Project Settings
 

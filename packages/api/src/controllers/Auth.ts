@@ -8,6 +8,7 @@ export const registerAuthRoutes = (app: AppType) => {
   // login
   app.openapi(
     createRoute({
+      operationId: "login",
       method: "post",
       path: "/auth/login",
       request: {
@@ -55,6 +56,7 @@ export const registerAuthRoutes = (app: AppType) => {
 
   app.openapi(
     createRoute({
+      operationId: "signup",
       method: "post",
       path: "/auth/signup",
       request: {
@@ -90,6 +92,7 @@ export const registerAuthRoutes = (app: AppType) => {
 
   app.openapi(
     createRoute({
+      operationId: "request-reset",
       method: "post",
       path: "/auth/request-reset",
       request: {
@@ -127,6 +130,7 @@ export const registerAuthRoutes = (app: AppType) => {
 
   app.openapi(
     createRoute({
+      operationId: "reset",
       method: "post",
       path: "/auth/reset",
       request: {
@@ -163,6 +167,7 @@ export const registerAuthRoutes = (app: AppType) => {
 
   app.openapi(
     createRoute({
+      operationId: "verify",
       method: "post",
       path: "/auth/verify",
       request: {

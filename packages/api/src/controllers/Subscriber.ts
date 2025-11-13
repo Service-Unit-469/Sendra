@@ -18,6 +18,8 @@ async function toSubscriptions(contacts: Contact[]) {
 export const registerSubscriberRoutes = (app: AppType) => {
   app.openapi(
     createRoute({
+      tags: ["Subscriber"],
+      operationId: "get-subscriber",
       method: "get",
       path: "/subscriber",
       request: {
@@ -55,6 +57,8 @@ export const registerSubscriberRoutes = (app: AppType) => {
 
   app.openapi(
     createRoute({
+      tags: ["Subscriber"],
+      operationId: "update-subscriber",
       method: "post",
       path: "/subscriber",
       request: {

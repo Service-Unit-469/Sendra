@@ -4,6 +4,7 @@ import type { AppType } from "../app";
 export const registerHealthRoutes = (app: AppType) => {
   app.openapi(
     createRoute({
+      operationId: "health",
       method: "get",
       path: "/health",
       responses: {

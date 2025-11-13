@@ -1,4 +1,8 @@
-[Docs](../index.md) > [User Guide](../user-guide.md) > Quick Emails
+---
+title: Quick Emails
+parent: User Guide
+layout: page
+---
 
 ## Quick Emails
 

@@ -1,4 +1,8 @@
-[Docs](../index.md) > [User Guide](../user-guide.md) > Analytics
+---
+title: Analytics
+parent: User Guide
+layout: page
+---
 
 ## Analytics
 

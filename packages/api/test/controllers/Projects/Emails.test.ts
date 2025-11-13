@@ -38,7 +38,7 @@ describe("Emails Endpoint Contract Tests", () => {
     });
   };
 
-  describe("GET /projects/:projectId/emails", () => {
+  describe("GET /projects/{projectId}/emails", () => {
     test("should list emails with pagination", async () => {
       const { project, token } = await createTestSetup();
       const contact = await createTestContact(project.id);
@@ -238,7 +238,7 @@ describe("Emails Endpoint Contract Tests", () => {
     });
   });
 
-  describe("GET /projects/:projectId/emails/all", () => {
+  describe("GET /projects/{projectId}/emails/all", () => {
     test("should list all emails without pagination", async () => {
       const { project, token } = await createTestSetup();
       const contact = await createTestContact(project.id);
@@ -329,7 +329,7 @@ describe("Emails Endpoint Contract Tests", () => {
     });
   });
 
-  describe("GET /projects/:projectId/emails/:emailId", () => {
+  describe("GET /projects/{projectId}/emails/:emailId", () => {
     test("should retrieve a specific email by ID", async () => {
       const { project, token } = await createTestSetup();
       const contact = await createTestContact(project.id);

@@ -21,7 +21,7 @@ describe("Contacts Endpoint Contract Tests", () => {
     await stopDynamoDB();
   });
 
-  describe("POST /projects/:projectId/contacts", () => {
+  describe("POST /projects/{projectId}/contacts", () => {
     test("should successfully create a new contact", async () => {
       const { project, token } = await createTestSetup();
 
@@ -202,7 +202,7 @@ describe("Contacts Endpoint Contract Tests", () => {
     });
   });
 
-  describe("GET /projects/:projectId/contacts/:contactId", () => {
+  describe("GET /projects/{projectId}/contacts/{contactId}", () => {
     test("should successfully get a contact by id", async () => {
       const { project, token } = await createTestSetup();
       const contact = await createTestContact(project.id);
@@ -374,7 +374,7 @@ describe("Contacts Endpoint Contract Tests", () => {
     });
   });
 
-  describe("GET /projects/:projectId/contacts", () => {
+  describe("GET /projects/{projectId}/contacts", () => {
     test("should list contacts with pagination", async () => {
       const { project, token } = await createTestSetup();
 
@@ -518,7 +518,7 @@ describe("Contacts Endpoint Contract Tests", () => {
     });
   });
 
-  describe("GET /projects/:projectId/contacts/all", () => {
+  describe("GET /projects/{projectId}/contacts/all", () => {
     test("should list all contacts without pagination", async () => {
       const { project, token } = await createTestSetup();
 
@@ -572,7 +572,7 @@ describe("Contacts Endpoint Contract Tests", () => {
     });
   });
 
-  describe("PUT /projects/:projectId/contacts/:contactId", () => {
+  describe("PUT /projects/{projectId}/contacts/{contactId}", () => {
     test("should successfully update a contact", async () => {
       const { project, token } = await createTestSetup();
       const contact = await createTestContact(project.id);
@@ -751,7 +751,7 @@ describe("Contacts Endpoint Contract Tests", () => {
     });
   });
 
-  describe("DELETE /projects/:projectId/contacts/:contactId", () => {
+  describe("DELETE /projects/{projectId}/contacts/{contactId}", () => {
     test("should successfully delete a contact", async () => {
       const { project, token } = await createTestSetup();
       const contact = await createTestContact(project.id);
@@ -819,7 +819,7 @@ describe("Contacts Endpoint Contract Tests", () => {
     });
   });
 
-  describe("POST /projects/:projectId/contacts/:contactId/subscribe", () => {
+  describe("POST /projects/{projectId}/contacts/{contactId}/subscribe", () => {
     test("should successfully subscribe a contact", async () => {
       const { project, token } = await createTestSetup();
       const contactPersistence = new ContactPersistence(project.id);
@@ -910,7 +910,7 @@ describe("Contacts Endpoint Contract Tests", () => {
     });
   });
 
-  describe("POST /projects/:projectId/contacts/:contactId/unsubscribe", () => {
+  describe("POST /projects/{projectId}/contacts/{contactId}/unsubscribe", () => {
     test("should successfully unsubscribe a contact", async () => {
       const { project, token } = await createTestSetup();
       const contact = await createTestContact(project.id); // Created as subscribed

@@ -1,4 +1,7 @@
-[Documentation](./index.md) > User Guide
+---
+title: User Guide
+layout: page
+---
 
 #  User Guide
 
@@ -11,14 +14,14 @@ This guide covers how to use the Sendra dashboard to manage your email infrastru
 
 ## Topic Pages
 
-- [Actions & Events](./user-guide/actions-events.md)
-- [Analytics](./user-guide/analytics.md)
-- [Assets](./user-guide/assets.md)
-- [Campaigns](./user-guide/campaigns.md)
-- [Contacts & Groups](./user-guide/contacts-groups.md)
-- [Project Settings](./user-guide/project-settings.md)
-- [Quick Emails](./user-guide/quick-emails.md)
-- [Templates](./user-guide/templates.md)
+- [Actions & Events](./user-guide/actions-events.html)
+- [Analytics](./user-guide/analytics.html)
+- [Assets](./user-guide/assets.html)
+- [Campaigns](./user-guide/campaigns.html)
+- [Contacts & Groups](./user-guide/contacts-groups.html)
+- [Project Settings](./user-guide/project-settings.html)
+- [Quick Emails](./user-guide/quick-emails.html)
+- [Templates](./user-guide/templates.html)
 
 ## Getting Started
 
@@ -100,14 +103,14 @@ If you forget your password:
 ### Support Resources
 
 - **Documentation**: This guide and other docs
-- **API Documentation**: [API Guide](./api.md)
-- **Entity Reference**: [Entities Guide](./entities.md)
-- **Setup Guide**: [Setup Guide](./setup.md)
+- **API Documentation**: [API Guide](./api.html)
+- **Entity Reference**: [Entities Guide](./entities.html)
+- **Setup Guide**: [Setup Guide](./setup.html)
 
 ### Community Support
 
 - **GitHub Issues**: [Report bugs](https://github.com/Service-Unit-469/Sendra/issues)
-- **Contributing**: See [CONTRIBUTING.md](../CONTRIBUTING.md)
+- **Contributing**: See [CONTRIBUTING.html](../CONTRIBUTING.html)
 
 ### AWS SES Support
 

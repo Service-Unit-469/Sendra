@@ -1,4 +1,8 @@
-[Docs](../index.md) > [User Guide](../user-guide.md) > Templates
+---
+title: Templates
+parent: User Guide
+layout: page
+---
 
 ## Templates
 

@@ -1,4 +1,7 @@
-[Docs](./index.md) > Entities
+---
+title: Entities
+layout: page
+---
 
 # Sendra Entities
 
@@ -351,7 +354,7 @@ User ←→ Membership ←→ Project
 
 ## Next Steps
 
-- Learn how to use these entities via the [API Documentation](./api.md)
-- See how to manage them in the [User Guide](./user-guide.md)
-- Review [Deployment Setup](./setup.md) for infrastructure details
+- Learn how to use these entities via the [API Documentation](./api.html)
+- See how to manage them in the [User Guide](./user-guide.html)
+- Review [Deployment Setup](./setup.html) for infrastructure details
 

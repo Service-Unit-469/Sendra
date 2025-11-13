@@ -4,14 +4,16 @@
 	"main": "dist/index.js",
 	"private": true,
 	"scripts": {
-		"build": "tsc",
+		"build": "tsc && npm run openapi:export && npm run openapi:validate",
 		"lint": "biome check src",
 		"lint:fix": "biome check --write src",
 		"lint:fix:unsafe": "biome check --write src --unsafe",
 		"typecheck": "tsc --noEmit",
 		"clean": "rimraf dist",
 		"test": "vitest run",
-		"test:watch": "vitest"
+		"test:watch": "vitest",
+		"openapi:export": "tsx scripts/export-openapi.ts",
+		"openapi:validate": "npx -p @seriousme/openapi-schema-validator validate-api ../../docs/openapi.json"
 	},
 	"devDependencies": {
 		"@sendra/test": "*",
@@ -20,6 +22,7 @@
 		"mock-aws-s3": "^4.0.2",
 		"nock": "^14.0.10",
 		"ts-node-dev": "^2.0.0",
+		"tsx": "^4.19.2",
 		"typescript": "^5.5.3"
 	},
 	"dependencies": {

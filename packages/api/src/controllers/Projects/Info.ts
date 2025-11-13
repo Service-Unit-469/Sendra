@@ -9,8 +9,10 @@ import { BearerAuth, isAuthenticatedProjectMemberOrSecretKey } from "../../middl
 export const registerProjectInfoRoutes = (app: AppType) => {
   app.openapi(
     createRoute({
+      tags: ["Project"],
+      operationId: "get-project-analytics",
       method: "get",
-      path: "/projects/:projectId/analytics",
+      path: "/projects/{projectId}/analytics",
       request: {
         params: z.object({
           projectId: z.string(),
@@ -44,9 +46,7 @@ export const registerProjectInfoRoutes = (app: AppType) => {
                   complaintPrev: z.number(),
                   openedPrev: z.number(),
                 }),
-              }),
-              clicks: z.object({
-                actions: z.array(
+                clicks: z.array(
                   z.object({
                     link: z.string(),
                     name: z.string(),
@@ -162,8 +162,10 @@ export const registerProjectInfoRoutes = (app: AppType) => {
 
   app.openapi(
     createRoute({
+      tags: ["Project"],
+      operationId: "get-project-feed",
       method: "get",
-      path: "/projects/:projectId/feed",
+      path: "/projects/{projectId}/feed",
       request: {
         params: z.object({
           projectId: z.string(),
@@ -311,8 +313,10 @@ export const registerProjectInfoRoutes = (app: AppType) => {
 
   app.openapi(
     createRoute({
+      tags: ["Project"],
+      operationId: "get-project-usage",
       method: "get",
-      path: "/projects/:projectId/usage",
+      path: "/projects/{projectId}/usage",
       request: {
         params: z.object({
           projectId: z.string(),

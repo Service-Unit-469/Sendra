@@ -1,3 +1,8 @@
+---
+title: Setup
+layout: page
+---
+
 # Deploying Sendra
 
 This guide covers everything you need to deploy Sendra to your AWS account.
@@ -368,13 +373,13 @@ To update an existing deployment:
 
 ## Next Steps
 
-- Read the [Entities Guide](./entities.md) to understand Sendra's data model
-- Check the [API Documentation](./api.md) to integrate with your applications
-- Review the [User Guide](./user-guide.md) to learn how to use the dashboard
+- Read the [Entities Guide](./entities.html) to understand Sendra's data model
+- Check the [API Documentation](./api.html) to integrate with your applications
+- Review the [User Guide](./user-guide.html) to learn how to use the dashboard
 
 ## Getting Help
 
 - **GitHub Issues**: [Report bugs or request features](https://github.com/Service-Unit-469/Sendra/issues)
 - **Discussions**: Ask questions in GitHub Discussions
-- **Contributing**: See [CONTRIBUTING.md](../CONTRIBUTING.md)
+- **Contributing**: See [CONTRIBUTING.html](../CONTRIBUTING.html)
 

@@ -1,4 +1,9 @@
-[Docs](../index.md) > [User Guide](../user-guide.md) > Campaigns
+---
+title: Campaigns
+parent: User Guide
+layout: page
+---
+
 
 ## Campaigns
 

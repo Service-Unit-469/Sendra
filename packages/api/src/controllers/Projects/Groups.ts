@@ -20,9 +20,10 @@ export const registerGroupsRoutes = (app: AppType) => {
 
   app.openapi(
     createRoute({
-      id: "get-group-contacts",
+      tags: ["Group", "Contact"],
+      operationId: "get-group-contacts",
       method: "get",
-      path: "/projects/:projectId/groups/:groupId/contacts",
+      path: "/projects/{projectId}/groups/{groupId}/contacts",
       request: {
         params: z.object({
           projectId: z.string(),
@@ -48,7 +49,7 @@ export const registerGroupsRoutes = (app: AppType) => {
       middleware: [isAuthenticatedProjectMemberOrSecretKey],
     }),
     async (c) => {
-      const { projectId, groupId } = c.req.param();
+      const { projectId, groupId } = c.req.valid("param");
       const groupPersistence = new GroupPersistence(projectId);
       const contacts = await groupPersistence.getContacts(groupId);
       return c.json({ contacts }, 200);

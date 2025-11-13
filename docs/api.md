@@ -1,4 +1,7 @@
-[Docs](./index.md) > API
+---
+title: API
+layout: page
+---
 
 # Sendra API Documentation
 
@@ -21,9 +24,10 @@ The Sendra API is a RESTful API that allows you to programmatically manage your 
 The API is fully documented with OpenAPI 3.0 specification. You can access the API documentation at:
 
 ```
-https://your-api-url.amazonaws.com/doc
+https://your-api/doc
 ```
 
+In addition, the latest API spec is located here: [./api-spec.html](./api-spec.html)
 
 ## API Patterns
 
@@ -222,13 +226,13 @@ curl -X POST https://your-api-url.amazonaws.com/{{project.id}}/track \
 
 ## Next Steps
 
-- Learn about the [Entities](./entities.md) that power the API
-- Review the [User Guide](./user-guide.md) for app usage
-- Check the [Deployment Guide](./setup.md) for infrastructure setup
+- Learn about the [Entities](./entities.html) that power the API
+- Review the [User Guide](./user-guide.html) for app usage
+- Check the [Deployment Guide](./setup.html) for infrastructure setup
 
 ## Support
 
 - **GitHub Issues**: [Report bugs or request features](https://github.com/Service-Unit-469/Sendra/issues)
 - **Discussions**: Ask questions in GitHub Discussions
-- **Contributing**: See [CONTRIBUTING.md](../CONTRIBUTING.md)
+- **Contributing**: See [CONTRIBUTING.html](../CONTRIBUTING.html)
 

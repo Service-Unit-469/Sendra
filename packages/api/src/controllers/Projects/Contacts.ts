@@ -37,9 +37,10 @@ export const registerContactsRoutes = (app: AppType) => {
 
   app.openapi(
     createRoute({
-      id: "subscribe-contact",
+      tags: ["Contact"],
+      operationId: "subscribe-contact",
       method: "post",
-      path: "/projects/:projectId/contacts/:contactId/subscribe",
+      path: "/projects/{projectId}/contacts/{contactId}/subscribe",
       request: {
         params: z.object({
           projectId: z.string(),
@@ -83,9 +84,10 @@ export const registerContactsRoutes = (app: AppType) => {
 
   app.openapi(
     createRoute({
-      id: "unsubscribe-contact",
+      tags: ["Contact"],
+      operationId: "unsubscribe-contact",
       method: "post",
-      path: "/projects/:projectId/contacts/:contactId/unsubscribe",
+      path: "/projects/{projectId}/contacts/{contactId}/unsubscribe",
       request: {
         params: z.object({
           projectId: z.string(),
