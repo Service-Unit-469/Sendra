@@ -133,12 +133,10 @@ APP_URL=https://yourdomain.com
 
 # Optional Environment Variables
 
-# JWT Configuration
-# A secret key for signing JWT tokens (generate a strong random string)
 AUTH_ISSUER=sendra
-AUTH_TTL_SECRET="24 h"        # 24 hours in seconds
-AUTH_TTL_PUBLIC="30 d"      # 30 days in seconds
-AUTH_TTL_USER="30 day"        # 30 days in seconds
+AUTH_TTL_SECRET="24 h"        # 24 hours 
+AUTH_TTL_PUBLIC="30 d"      # 30 days 
+AUTH_TTL_USER="30 d"        # 30 days 
 
 # Logging configuration
 LOG_LEVEL=info               # Options: trace, debug, info, warn, error, fatal
