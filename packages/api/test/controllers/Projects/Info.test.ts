@@ -25,7 +25,7 @@ describe("Info Endpoint Contract Tests", () => {
     await stopDynamoDB();
   });
 
-  describe("GET /projects/:projectId/analytics", () => {
+  describe("GET /projects/{projectId}/analytics", () => {
     test("should return analytics for week period with no data", async () => {
       const { project, token } = await createTestSetup();
 
@@ -401,7 +401,7 @@ describe("Info Endpoint Contract Tests", () => {
     });
   });
 
-  describe("GET /projects/:projectId/feed", () => {
+  describe("GET /projects/{projectId}/feed", () => {
     test("should return empty feed for new project", async () => {
       const { project, token } = await createTestSetup();
 
@@ -675,7 +675,7 @@ describe("Info Endpoint Contract Tests", () => {
     });
   });
 
-  describe("GET /projects/:projectId/usage", () => {
+  describe("GET /projects/{projectId}/usage", () => {
     test("should return zero usage for new project", async () => {
       const { project, token } = await createTestSetup();
 

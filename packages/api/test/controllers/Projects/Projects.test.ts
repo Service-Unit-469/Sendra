@@ -127,7 +127,7 @@ describe("Projects Endpoint Contract Tests", () => {
     });
   });
 
-  describe("GET /projects/:projectId", () => {
+  describe("GET /projects/{projectId}", () => {
     test("should successfully get a project by ID", async () => {
       const { project, token } = await createTestSetup();
 
@@ -216,7 +216,7 @@ describe("Projects Endpoint Contract Tests", () => {
     });
   });
 
-  describe("GET /projects/:projectId/members", () => {
+  describe("GET /projects/{projectId}/members", () => {
     test("should successfully get project members", async () => {
       const { project, token, user } = await createTestSetup();
 
@@ -482,7 +482,7 @@ describe("Projects Endpoint Contract Tests", () => {
     });
   });
 
-  describe("PUT /projects/:projectId", () => {
+  describe("PUT /projects/{projectId}", () => {
     test("should successfully update a project", async () => {
       const { project, token } = await createTestSetup();
 
@@ -715,7 +715,7 @@ describe("Projects Endpoint Contract Tests", () => {
     });
   });
 
-  describe("DELETE /projects/:projectId", () => {
+  describe("DELETE /projects/{projectId}", () => {
     test("should successfully delete a project", async () => {
       const { project, token } = await createTestSetup();
 

@@ -10,6 +10,8 @@ import { BearerAuth, isAuthenticatedProjectAdmin, isAuthenticatedProjectMember, 
 export const registerProjectCrudRoutes = (app: AppType) => {
   app.openapi(
     createRoute({
+      tags: ["Project"],
+      operationId: "get-projects",
       method: "get",
       path: "/projects",
       request: {},
@@ -42,8 +44,10 @@ export const registerProjectCrudRoutes = (app: AppType) => {
 
   app.openapi(
     createRoute({
+      tags: ["Project"],
+      operationId: "get-project-by-id",
       method: "get",
-      path: "/projects/:projectId",
+      path: "/projects/{projectId}",
       request: {
         params: z.object({
           projectId: z.string(),
@@ -80,8 +84,10 @@ export const registerProjectCrudRoutes = (app: AppType) => {
 
   app.openapi(
     createRoute({
+      tags: ["Project"],
+      operationId: "get-project-members",
       method: "get",
-      path: "/projects/:projectId/members",
+      path: "/projects/{projectId}/members",
       request: {
         params: z.object({
           projectId: z.string(),
@@ -103,7 +109,9 @@ export const registerProjectCrudRoutes = (app: AppType) => {
         404: getProblemResponseSchema(404),
         403: getProblemResponseSchema(403),
       },
+      ...BearerAuth,
       middleware: [isAuthenticatedProjectMember],
+      hide: true,
     }),
     async (c) => {
       const { projectId } = c.req.param();
@@ -118,6 +126,8 @@ export const registerProjectCrudRoutes = (app: AppType) => {
 
   app.openapi(
     createRoute({
+      tags: ["Project"],
+      operationId: "create-project",
       method: "post",
       path: "/projects",
       request: {
@@ -178,8 +188,10 @@ export const registerProjectCrudRoutes = (app: AppType) => {
 
   app.openapi(
     createRoute({
+      tags: ["Project"],
+      operationId: "update-project",
       method: "put",
-      path: "/projects/:projectId",
+      path: "/projects/{projectId}",
       request: {
         params: z.object({
           projectId: z.string(),
@@ -227,8 +239,10 @@ export const registerProjectCrudRoutes = (app: AppType) => {
 
   app.openapi(
     createRoute({
+      tags: ["Project"],
+      operationId: "delete-project",
       method: "delete",
-      path: "/projects/:projectId",
+      path: "/projects/{projectId}",
       responses: {
         200: {
           description: "Delete a project",

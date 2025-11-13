@@ -96,8 +96,10 @@ export const registerCampaignsRoutes = (app: AppType) => {
 
   app.openapi(
     createRoute({
+      tags: ["Campaign"],
+      operationId: "send-campaign",
       method: "post",
-      path: "/projects/:projectId/campaigns/:campaignId/send",
+      path: "/projects/{projectId}/campaigns/{campaignId}/send",
       request: {
         params: z.object({
           projectId: z.string(),

@@ -62,7 +62,7 @@ describe("Identity Endpoint Contract Tests", () => {
     vi.clearAllMocks();
   });
 
-  describe("GET /projects/:projectId/identity", () => {
+  describe("GET /projects/{projectId}/identity", () => {
     test("should return NotStarted status when project has no identity", async () => {
       const { project, token } = await createTestSetup();
 
@@ -247,7 +247,7 @@ describe("Identity Endpoint Contract Tests", () => {
     });
   });
 
-  describe("POST /projects/:projectId/identity", () => {
+  describe("POST /projects/{projectId}/identity", () => {
     test("should verify email identity successfully", async () => {
       const { project, token } = await createTestSetup();
       const uniqueEmail = `test-${Date.now()}@unique-${Date.now()}.com`;
@@ -553,7 +553,7 @@ describe("Identity Endpoint Contract Tests", () => {
     });
   });
 
-  describe("DELETE /projects/:projectId/identity", () => {
+  describe("DELETE /projects/{projectId}/identity", () => {
     test("should delete project identity successfully", async () => {
       const { project, token } = await createTestSetup();
 
@@ -621,7 +621,7 @@ describe("Identity Endpoint Contract Tests", () => {
     });
   });
 
-  describe("PUT /projects/:projectId/identity", () => {
+  describe("PUT /projects/{projectId}/identity", () => {
     test("should update project sending information successfully", async () => {
       const { project, token } = await createTestSetup();
 

@@ -1,4 +1,8 @@
-[Docs](../index.md) > [User Guide](../user-guide.md) > Contacts & Groups
+---
+title: Contacts and Groups
+parent: User Guide
+layout: page
+---
 
 ## Contacts
 

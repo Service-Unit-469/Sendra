@@ -23,7 +23,7 @@ describe("Templates Endpoint Contract Tests", () => {
     await stopDynamoDB();
   });
 
-  describe("POST /projects/:projectId/templates", () => {
+  describe("POST /projects/{projectId}/templates", () => {
     test("should successfully create a new template", async () => {
       const { project, token } = await createTestSetup();
 
@@ -340,7 +340,7 @@ describe("Templates Endpoint Contract Tests", () => {
     });
   });
 
-  describe("GET /projects/:projectId/templates", () => {
+  describe("GET /projects/{projectId}/templates", () => {
     test("should return empty list when no templates exist", async () => {
       const { project, token } = await createTestSetup();
 
@@ -512,7 +512,7 @@ describe("Templates Endpoint Contract Tests", () => {
     });
   });
 
-  describe("GET /projects/:projectId/templates/all", () => {
+  describe("GET /projects/{projectId}/templates/all", () => {
     test("should return all templates without pagination", async () => {
       const { project, token } = await createTestSetup();
       await createTestTemplate(project.id);
@@ -587,7 +587,7 @@ describe("Templates Endpoint Contract Tests", () => {
     });
   });
 
-  describe("GET /projects/:projectId/templates/:templateId", () => {
+  describe("GET /projects/{projectId}/templates/:templateId", () => {
     test("should successfully get a template by ID", async () => {
       const { project, token } = await createTestSetup();
       const template = await createTestTemplate(project.id);
@@ -704,7 +704,7 @@ describe("Templates Endpoint Contract Tests", () => {
     });
   });
 
-  describe("PUT /projects/:projectId/templates/:templateId", () => {
+  describe("PUT /projects/{projectId}/templates/:templateId", () => {
     test("should successfully update a template", async () => {
       const { project, token } = await createTestSetup();
       const template = await createTestTemplate(project.id);
@@ -1020,7 +1020,7 @@ describe("Templates Endpoint Contract Tests", () => {
     });
   });
 
-  describe("DELETE /projects/:projectId/templates/:templateId", () => {
+  describe("DELETE /projects/{projectId}/templates/:templateId", () => {
     test("should successfully delete a template", async () => {
       const { project, token } = await createTestSetup();
       const template = await createTestTemplate(project.id);

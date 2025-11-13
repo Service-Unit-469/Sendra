@@ -30,7 +30,7 @@ describe("Groups Endpoint Contract Tests", () => {
     });
   };
 
-  describe("POST /projects/:projectId/groups", () => {
+  describe("POST /projects/{projectId}/groups", () => {
     test("should successfully create a new group", async () => {
       const { project, token } = await createTestSetup();
 
@@ -151,7 +151,7 @@ describe("Groups Endpoint Contract Tests", () => {
     });
   });
 
-  describe("GET /projects/:projectId/groups", () => {
+  describe("GET /projects/{projectId}/groups", () => {
     test("should list groups with pagination", async () => {
       const { project, token } = await createTestSetup();
 
@@ -212,7 +212,7 @@ describe("Groups Endpoint Contract Tests", () => {
     });
   });
 
-  describe("GET /projects/:projectId/groups/all", () => {
+  describe("GET /projects/{projectId}/groups/all", () => {
     test("should list all groups without pagination", async () => {
       const { project, token } = await createTestSetup();
 
@@ -260,7 +260,7 @@ describe("Groups Endpoint Contract Tests", () => {
     });
   });
 
-  describe("GET /projects/:projectId/groups/:groupId", () => {
+  describe("GET /projects/{projectId}/groups/:groupId", () => {
     test("should retrieve a specific group by ID", async () => {
       const { project, token } = await createTestSetup();
       const group = await createTestGroup(project.id);
@@ -321,7 +321,7 @@ describe("Groups Endpoint Contract Tests", () => {
     });
   });
 
-  describe("PUT /projects/:projectId/groups/:groupId", () => {
+  describe("PUT /projects/{projectId}/groups/:groupId", () => {
     test("should successfully update a group", async () => {
       const { project, token } = await createTestSetup();
       const group = await createTestGroup(project.id);
@@ -463,7 +463,7 @@ describe("Groups Endpoint Contract Tests", () => {
     });
   });
 
-  describe("DELETE /projects/:projectId/groups/:groupId", () => {
+  describe("DELETE /projects/{projectId}/groups/:groupId", () => {
     test("should successfully delete a group", async () => {
       const { project, token } = await createTestSetup();
       const group = await createTestGroup(project.id);
@@ -501,7 +501,7 @@ describe("Groups Endpoint Contract Tests", () => {
     });
   });
 
-  describe("GET /projects/:projectId/groups/:groupId/contacts", () => {
+  describe("GET /projects/{projectId}/groups/{groupId}contacts", () => {
     test("should retrieve all contacts in a group", async () => {
       const { project, token } = await createTestSetup();
       

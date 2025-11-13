@@ -9,6 +9,7 @@ import { isAuthenticatedUser } from "../middleware/auth";
 export function registerUserRoutes(app: AppType) {
   app.openapi(
     createRoute({
+      operationId: "get-user",
       method: "get",
       path: "/@me",
       request: {},
@@ -24,8 +25,8 @@ export function registerUserRoutes(app: AppType) {
         401: getProblemResponseSchema(401),
       },
       middleware: [isAuthenticatedUser],
+      hide: true,
     }),
-
     async (c) => {
       const auth = c.get("auth");
 

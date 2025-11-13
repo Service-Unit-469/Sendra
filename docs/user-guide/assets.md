@@ -1,4 +1,9 @@
-[Docs](../index.md) > [User Guide](../user-guide.md) > Assets
+---
+title: Assets
+parent: User Guide
+layout: page
+---
+
 
 ## Assets
 
@@ -63,7 +68,7 @@ In addition, you can also reference external assets via their full URL.
 ---
 
 **Next Steps:**
-- Learn about using assets in [Templates](./templates.md)
-- Check the [API Documentation](../api.md#assets) for programmatic access
-- See [Quick Emails](./quick-emails.md) for using images in simple campaigns
+- Learn about using assets in [Templates](./templates.html)
+- Check the [API Documentation](../api.html#assets) for programmatic access
+- See [Quick Emails](./quick-emails.html) for using images in simple campaigns
 

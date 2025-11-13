@@ -14,7 +14,7 @@ describe("Keys Endpoint Contract Tests", () => {
     await stopDynamoDB();
   });
 
-  describe("GET /projects/:projectId/keys", () => {
+  describe("GET /projects/{projectId}/keys", () => {
     test("should return project API keys", async () => {
       const { project, token } = await createTestSetup();
 
@@ -154,7 +154,7 @@ describe("Keys Endpoint Contract Tests", () => {
     });
   });
 
-  describe("POST /projects/:projectId/keys", () => {
+  describe("POST /projects/{projectId}/keys", () => {
     test("should regenerate project API keys", async () => {
       const { project, token } = await createTestSetup();
 

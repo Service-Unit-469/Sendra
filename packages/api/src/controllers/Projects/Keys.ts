@@ -15,8 +15,10 @@ const keysResponse = z.object({
 export const registerProjectKeysRoutes = (app: AppType) => {
   app.openapi(
     createRoute({
+      tags: ["Projects", "Keys"],
+      operationId: "regenerate-project-keys",
       method: "post",
-      path: "/projects/:projectId/keys",
+      path: "/projects/{projectId}/keys",
       request: {
         params: z.object({
           projectId: z.string(),
@@ -69,8 +71,10 @@ export const registerProjectKeysRoutes = (app: AppType) => {
 
   app.openapi(
     createRoute({
+      tags: ["Projects", "Keys"],
+      operationId: "get-project-keys",
       method: "get",
-      path: "/projects/:projectId/keys",
+      path: "/projects/{projectId}/keys",
       request: {
         params: z.object({
           projectId: z.string(),

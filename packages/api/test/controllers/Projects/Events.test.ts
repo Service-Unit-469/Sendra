@@ -31,7 +31,7 @@ describe("Events Endpoint Contract Tests", () => {
     await stopDynamoDB();
   });
 
-  describe("GET /projects/:projectId/event-types/all", () => {
+  describe("GET /projects/{projectId}/event-types/all", () => {
     test("should successfully list all event types including OOTB events", async () => {
       const { project, token } = await createTestSetup();
 
@@ -153,7 +153,7 @@ describe("Events Endpoint Contract Tests", () => {
     });
   });
 
-  describe("GET /projects/:projectId/events", () => {
+  describe("GET /projects/{projectId}/events", () => {
     test("should successfully list all events", async () => {
       const { project, token } = await createTestSetup();
       const contact = await createTestContact(project.id);
@@ -239,7 +239,7 @@ describe("Events Endpoint Contract Tests", () => {
     });
   });
 
-  describe("POST /projects/:projectId/send", () => {
+  describe("POST /projects/{projectId}/send", () => {
     test("should successfully send a transactional email", async () => {
       const { project, token } = await createTestSetup();
       
@@ -816,7 +816,7 @@ describe("Events Endpoint Contract Tests", () => {
     });
   });
 
-  describe("POST /projects/:projectId/track", () => {
+  describe("POST /projects/{projectId}/track", () => {
     test("should successfully track a new event", async () => {
       const { project, token } = await createTestSetup();
 

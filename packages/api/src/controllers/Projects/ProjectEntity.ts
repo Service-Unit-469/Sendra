@@ -29,9 +29,10 @@ export const registerProjectEntityReadRoutes = <T extends BaseItem>(
 ) => {
   app.openapi(
     createRoute({
-      id: `list-${config.entityPath}`,
+      tags: [config.entityName],
+      operationId: `list-${config.entityPath}`,
       method: "get",
-      path: `/projects/:projectId/${config.entityPath}`,
+      path: `/projects/{projectId}/${config.entityPath}`,
       request: {
         params: z.object({
           projectId: z.string(),
@@ -113,9 +114,10 @@ export const registerProjectEntityReadRoutes = <T extends BaseItem>(
 
   app.openapi(
     createRoute({
-      id: `list-all-${config.entityPath}`,
+      tags: [config.entityName],
+      operationId: `list-all-${config.entityPath}`,
       method: "get",
-      path: `/projects/:projectId/${config.entityPath}/all`,
+      path: `/projects/{projectId}/${config.entityPath}/all`,
       request: {
         params: z.object({
           projectId: z.string(),
@@ -167,9 +169,10 @@ export const registerProjectEntityReadRoutes = <T extends BaseItem>(
 
   app.openapi(
     createRoute({
-      id: `get-${config.entityPath}-by-id`,
+      tags: [config.entityName],
+      operationId: `get-${config.entityPath}-by-id`,
       method: "get",
-      path: `/projects/:projectId/${config.entityPath}/:entityId`,
+      path: `/projects/{projectId}/${config.entityPath}/{entityId}`,
       request: {
         params: z.object({
           projectId: z.string(),
@@ -219,10 +222,14 @@ export const registerProjectEntityCrudRoutes = <T extends BaseItem>(app: AppType
 
   app.openapi(
     createRoute({
-      id: `create-${config.entityPath}`,
+      tags: [config.entityName],
+      operationId: `create-${config.entityPath}`,
       method: "post",
-      path: `/projects/:projectId/${config.entityPath}`,
+      path: `/projects/{projectId}/${config.entityPath}`,
       request: {
+        params: z.object({
+          projectId: z.string(),
+        }),
         body: {
           content: {
             "application/json": {
@@ -268,9 +275,10 @@ export const registerProjectEntityCrudRoutes = <T extends BaseItem>(app: AppType
 
   app.openapi(
     createRoute({
-      id: `update-${config.entityPath}-by-id`,
+      tags: [config.entityName],
+      operationId: `update-${config.entityPath}-by-id`,
       method: "put",
-      path: `/projects/:projectId/${config.entityPath}/:entityId`,
+      path: `/projects/{projectId}/${config.entityPath}/{entityId}`,
       request: {
         params: z.object({
           projectId: z.string(),
@@ -330,9 +338,10 @@ export const registerProjectEntityCrudRoutes = <T extends BaseItem>(app: AppType
 
   app.openapi(
     createRoute({
-      id: `delete-${config.entityPath}-by-id`,
+      tags: [config.entityName],
+      operationId: `delete-${config.entityPath}-by-id`,
       method: "delete",
-      path: `/projects/:projectId/${config.entityPath}/:entityId`,
+      path: `/projects/{projectId}/${config.entityPath}/{entityId}`,
       request: {
         params: z.object({
           projectId: z.string(),

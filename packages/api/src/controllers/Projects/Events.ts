@@ -14,9 +14,10 @@ const logger = rootLogger.child({
 export const registerEventsRoutes = (app: AppType) => {
   app.openapi(
     createRoute({
-      id: "list-all-event-types",
+      tags: ["Event"],
+      operationId: "list-all-event-types",
       method: "get",
-      path: "/projects/:projectId/event-types/all",
+      path: "/projects/{projectId}/event-types/all",
       request: {
         params: z.object({
           projectId: z.string(),
@@ -83,9 +84,10 @@ export const registerEventsRoutes = (app: AppType) => {
 
   app.openapi(
     createRoute({
-      id: "list-events",
+      tags: ["Event"],
+      operationId: "list-events",
       method: "get",
-      path: "/projects/:projectId/events",
+      path: "/projects/{projectId}/events",
       request: {
         params: z.object({
           projectId: z.string(),
@@ -109,10 +111,14 @@ export const registerEventsRoutes = (app: AppType) => {
 
   app.openapi(
     createRoute({
-      id: "send-email",
+      tags: ["Event", "Email"],
+      operationId: "send-email",
       method: "post",
-      path: "/projects/:projectId/send",
+      path: "/projects/{projectId}/send",
       request: {
+        params: z.object({
+          projectId: z.string(),
+        }),
         body: {
           content: {
             "application/json": {
@@ -257,9 +263,10 @@ export const registerEventsRoutes = (app: AppType) => {
 
   app.openapi(
     createRoute({
-      id: "track-event",
+      tags: ["Event"],
+      operationId: "track-event",
       method: "post",
-      path: "/projects/:projectId/track",
+      path: "/projects/{projectId}/track",
       request: {
         body: {
           content: {

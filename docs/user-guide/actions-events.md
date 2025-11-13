@@ -1,4 +1,8 @@
-[Docs](../index.md) > [User Guide](../user-guide.md) > Actions & Events
+---
+title: Actions and Events
+parent: User Guide
+layout: page
+---
 
 ## Actions 
 
@@ -159,7 +163,7 @@ POST /projects/:projectId/track
 }
 ```
 
-See the [API Documentation](../api.md) for complete details.
+See the [API Documentation](../api.html) for complete details.
 
 ### Transient Event Data
 
