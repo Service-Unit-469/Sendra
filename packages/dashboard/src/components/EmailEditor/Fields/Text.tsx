@@ -1,5 +1,4 @@
 import type { ComponentConfig } from "@measured/puck";
-import { Text as ReactEmailText } from "@react-email/components";
 import DomPurify from "dompurify";
 import { PaddingPickerRender, toStyle } from "./PaddingPicker";
 import { RichTextEditorRender } from "./RichTextEditor";
@@ -28,7 +27,7 @@ export const Text: ComponentConfig<TextProps> = {
   },
   render: ({ text, padding }) => (
     <div style={{ padding: toStyle(padding) }}>
-      <ReactEmailText
+      <div
         style={{
           lineHeight: "1.6",
         }}
