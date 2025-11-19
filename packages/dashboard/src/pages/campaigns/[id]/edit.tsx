@@ -7,6 +7,7 @@ import { Save } from "lucide-react";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { BlackButton } from "../../../components/Buttons/BlackButton";
 import { EmailEditor } from "../../../components/EmailEditor";
 import QuickEmailEditor from "../../../components/EmailEditor/QuickEmailEditor";
@@ -28,9 +29,9 @@ export default function Index() {
   const { data: template } = useTemplate(campaign?.template ?? "");
   const [quickBodyContent, setQuickBodyContent] = useState<string>("");
 
-  const { setValue, watch } = useForm({
-    resolver: zodResolver(CampaignSchemas.update.omit({ id: true })),
-    defaultValues: { recipients: [], body: undefined },
+  const { setValue, watch, reset } = useForm({
+    resolver: zodResolver(CampaignSchemas.update.omit({ id: true, status: true, template: true, groups: true, recipients: true })),
+    defaultValues: { body: undefined },
   });
 
   // Extract quick email content from campaign body if it's a quick email
@@ -45,7 +46,10 @@ export default function Index() {
         console.error("Failed to parse campaign body data", error);
       }
     }
-  }, [campaign, template]);
+    if (campaign) {
+      reset(campaign);
+    }
+  }, [campaign, template, reset]);
 
   const fields = useMemo(() => {
     if (!projectIdentity) {
@@ -102,7 +106,7 @@ export default function Index() {
   }, [projectIdentity]);
 
   const saveCampaign = useCallback(
-    async (data: Omit<CampaignUpdate, "id">) => {
+    async (data: Omit<CampaignUpdate, "id" | "template" | "status" | "recipients" | "groups">) => {
       if (data.email?.trim() === "") {
         delete data.email;
       }
@@ -110,15 +114,29 @@ export default function Index() {
         return;
       }
 
-      await network.fetch(`/projects/${project.id}/campaigns/${campaign.id}`, {
-        method: "PUT",
-        body: {
-          id: campaign.id,
-          ...data,
+      toast.promise(
+        () =>
+          network.fetch(`/projects/${project.id}/campaigns/${campaign.id}`, {
+            method: "PUT",
+            body: {
+              id: campaign.id,
+              ...data,
+              recipients: campaign.recipients,
+              template: campaign.template,
+              status: campaign.status,
+              groups: campaign.groups,
+            },
+          }),
+        {
+          loading: "Saving your campaign",
+          success: () => {
+            campaignMutate();
+            router.push(`/campaigns/${campaign.id}`);
+            return "Saved your campaign";
+          },
+          error: "Could not save your campaign!",
         },
-      });
-      campaignMutate();
-      router.push(`/campaigns/${campaign.id}`);
+      );
     },
     [project, campaign, campaignMutate, router],
   );
@@ -147,18 +165,14 @@ export default function Index() {
               <BlackButton
                 onClick={() =>
                   saveCampaign({
-                    subject: watch("subject") ?? campaign.subject,
-                    email: watch("email") ?? campaign.email,
-                    from: watch("from") ?? campaign.from,
+                    subject: watch("subject") ?? "",
+                    email: watch("email") ?? undefined,
+                    from: watch("from") ?? undefined,
                     body: {
-                      data: watch("body")?.data ?? campaign.body.data,
-                      html: watch("body")?.html ?? campaign.body.html,
-                      plainText: watch("body")?.plainText ?? campaign.body.plainText,
+                      data: watch("body")?.data ?? "",
+                      html: watch("body")?.html ?? "",
+                      plainText: watch("body")?.plainText ?? undefined,
                     },
-                    recipients: watch("recipients") ?? campaign.recipients,
-                    template: campaign.template,
-                    status: campaign.status,
-                    groups: watch("groups") ?? campaign.groups,
                   })
                 }
               >
@@ -193,10 +207,6 @@ export default function Index() {
                     html: watch("body")?.html ?? "",
                     plainText: watch("body")?.plainText ?? undefined,
                   },
-                  recipients: watch("recipients") ?? [],
-                  template: watch("template") ?? undefined,
-                  status: (watch("status") as "DRAFT" | "DELIVERED") ?? "DRAFT",
-                  groups: watch("groups") ?? [],
                 })
               }
             >
