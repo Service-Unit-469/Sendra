@@ -113,7 +113,7 @@ export const RichTextEditorField: React.FC<RichTextEditorFieldProps> = ({ value 
     onUpdate: ({ editor }) => {
       const html = editor.getHTML();
       if (html === "<p></p>" || html === "") {
-        onChange('');
+        onChange("");
       } else {
         onChange(html);
       }
@@ -249,7 +249,12 @@ export const RichTextEditorField: React.FC<RichTextEditorFieldProps> = ({ value 
               <div className="w-px h-6 bg-zinc-300 mx-1" />
 
               <div className="flex gap-1">
-                <button type="button" onClick={() => setTextAlign("left")} className={`p-2 rounded hover:bg-zinc-200 ${editor.isActive({ textAlign: "left" }) ? "bg-zinc-300" : ""}`} title="Align Left">
+                <button
+                  type="button"
+                  onClick={() => setTextAlign("left")}
+                  className={`p-2 rounded hover:bg-zinc-200 ${editor.isActive({ textAlign: "left" }) ? "bg-zinc-300" : ""}`}
+                  title="Align Left"
+                >
                   <AlignLeft size={16} />
                 </button>
                 <button
@@ -260,10 +265,20 @@ export const RichTextEditorField: React.FC<RichTextEditorFieldProps> = ({ value 
                 >
                   <AlignCenter size={16} />
                 </button>
-                <button type="button" onClick={() => setTextAlign("right")} className={`p-2 rounded hover:bg-zinc-200 ${editor.isActive({ textAlign: "right" }) ? "bg-zinc-300" : ""}`} title="Align Right">
+                <button
+                  type="button"
+                  onClick={() => setTextAlign("right")}
+                  className={`p-2 rounded hover:bg-zinc-200 ${editor.isActive({ textAlign: "right" }) ? "bg-zinc-300" : ""}`}
+                  title="Align Right"
+                >
                   <AlignRight size={16} />
                 </button>
-                <button type="button" onClick={() => setTextAlign("justify")} className={`p-2 rounded hover:bg-zinc-200 ${editor.isActive({ textAlign: "justify" }) ? "bg-zinc-300" : ""}`} title="Justify">
+                <button
+                  type="button"
+                  onClick={() => setTextAlign("justify")}
+                  className={`p-2 rounded hover:bg-zinc-200 ${editor.isActive({ textAlign: "justify" }) ? "bg-zinc-300" : ""}`}
+                  title="Justify"
+                >
                   <AlignJustify size={16} />
                 </button>
               </div>
@@ -366,7 +381,6 @@ export const RichTextEditorField: React.FC<RichTextEditorFieldProps> = ({ value 
       </div>
 
       <input type="hidden" id={id} name={name} value={value} />
-
     </div>
   );
 };

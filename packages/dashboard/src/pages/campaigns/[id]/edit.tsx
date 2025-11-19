@@ -7,6 +7,7 @@ import { Save } from "lucide-react";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { BlackButton } from "../../../components/Buttons/BlackButton";
 import { EmailEditor } from "../../../components/EmailEditor";
 import QuickEmailEditor from "../../../components/EmailEditor/QuickEmailEditor";
@@ -16,7 +17,6 @@ import { useCampaign } from "../../../lib/hooks/campaigns";
 import { useActiveProject, useActiveProjectIdentity } from "../../../lib/hooks/projects";
 import { useTemplate } from "../../../lib/hooks/templates";
 import { network } from "../../../lib/network";
-import { toast } from "sonner";
 
 /**
  *
@@ -49,7 +49,7 @@ export default function Index() {
     if (campaign) {
       reset(campaign);
     }
-  }, [campaign, template]);
+  }, [campaign, template, reset]);
 
   const fields = useMemo(() => {
     if (!projectIdentity) {
@@ -114,25 +114,29 @@ export default function Index() {
         return;
       }
 
-      toast.promise(() => network.fetch(`/projects/${project.id}/campaigns/${campaign.id}`, {
-        method: "PUT",
-        body: {
-          id: campaign.id,
-          ...data,
-          recipients: campaign.recipients,
-          template: campaign.template,
-          status: campaign.status,
-          groups: campaign.groups,
+      toast.promise(
+        () =>
+          network.fetch(`/projects/${project.id}/campaigns/${campaign.id}`, {
+            method: "PUT",
+            body: {
+              id: campaign.id,
+              ...data,
+              recipients: campaign.recipients,
+              template: campaign.template,
+              status: campaign.status,
+              groups: campaign.groups,
+            },
+          }),
+        {
+          loading: "Saving your campaign",
+          success: () => {
+            campaignMutate();
+            router.push(`/campaigns/${campaign.id}`);
+            return "Saved your campaign";
+          },
+          error: "Could not save your campaign!",
         },
-      }), {
-        loading: "Saving your campaign",
-        success: () => {
-          campaignMutate();
-          router.push(`/campaigns/${campaign.id}`);
-          return "Saved your campaign";
-        },
-        error: "Could not save your campaign!",
-      });
+      );
     },
     [project, campaign, campaignMutate, router],
   );
