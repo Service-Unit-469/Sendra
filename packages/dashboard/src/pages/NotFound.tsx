@@ -1,8 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
-import SendraLogo from "../icons/SendraLogo";
 
 /**
- *
+ * Simple not found page
  */
 export default function NotFound() {
   const location = useLocation();
