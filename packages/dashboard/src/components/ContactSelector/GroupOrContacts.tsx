@@ -1,6 +1,6 @@
-import { useAllContacts } from "dashboard/src/lib/hooks/contacts";
-import { useAllGroups } from "dashboard/src/lib/hooks/groups";
 import { useCallback, useState } from "react";
+import { useAllContacts } from "../../lib/hooks/contacts";
+import { useAllGroups } from "../../lib/hooks/groups";
 import Dropdown from "../Input/Dropdown/Dropdown";
 import MultiselectDropdown from "../Input/MultiselectDropdown/MultiselectDropdown";
 import Skeleton from "../Skeleton/Skeleton";

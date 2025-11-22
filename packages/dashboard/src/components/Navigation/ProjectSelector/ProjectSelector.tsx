@@ -1,10 +1,10 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useAtom } from "jotai";
 import { Check } from "lucide-react";
-import { useRouter } from "next/router";
 import React, { type MutableRefObject, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { DropdownIndicator } from "../../../icons/DropdownIndicator";
-import { atomActiveProject } from "../../../lib/atoms/project";
+import { atomActiveProjectId } from "../../../lib/atoms/project";
 import { useActiveProject, useProjects } from "../../../lib/hooks/projects";
 
 export interface ProjectSelectorProps {
@@ -13,10 +13,10 @@ export interface ProjectSelectorProps {
 }
 
 const ProjectSelector = React.forwardRef<HTMLDivElement, ProjectSelectorProps>(({ open, onToggle }: ProjectSelectorProps, ref) => {
-  const router = useRouter();
+  const navigate = useNavigate();
   const { data: projects } = useProjects();
   const activeProject = useActiveProject();
-  const [, setActiveProjectId] = useAtom(atomActiveProject);
+  const [, setActiveProjectId] = useAtom(atomActiveProjectId);
 
   useEffect(() => {
     const mutableRef = ref as MutableRefObject<HTMLDivElement | null>;
@@ -36,7 +36,7 @@ const ProjectSelector = React.forwardRef<HTMLDivElement, ProjectSelectorProps>((
   const onChange = (project: string) => {
     localStorage.setItem("project", project);
     setActiveProjectId(project);
-    window.location.href = "/";
+    navigate("/", { replace: true });
   };
 
   return (
@@ -99,9 +99,7 @@ const ProjectSelector = React.forwardRef<HTMLDivElement, ProjectSelectorProps>((
                   <hr className={"my-0.5"} />
                   <li
                     className="relative flex cursor-default select-none items-center rounded-md py-2.5 pl-2.5 text-neutral-800 transition ease-in-out hover:bg-neutral-100"
-                    onClick={async () => {
-                      await router.push("/new");
-                    }}
+                    onClick={() => navigate("/new")}
                   >
                     <span className="flex items-center truncate font-normal">Create new project</span>
                   </li>

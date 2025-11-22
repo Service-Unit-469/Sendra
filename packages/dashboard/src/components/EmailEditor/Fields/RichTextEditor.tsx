@@ -1,5 +1,3 @@
-"use client";
-
 import type { CustomField } from "@measured/puck";
 import { Color } from "@tiptap/extension-color";
 import Link from "@tiptap/extension-link";
@@ -8,9 +6,9 @@ import { TextStyle } from "@tiptap/extension-text-style";
 import Underline from "@tiptap/extension-underline";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import { useActiveProject } from "dashboard/src/lib/hooks/projects";
 import { AlignCenter, AlignJustify, AlignLeft, AlignRight, Bold, Italic, Link2, Link2Off, List, ListOrderedIcon, PaintBucket, RemoveFormatting } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { useActiveProject } from "../../../lib/hooks/projects";
 
 // Hook to handle clicks outside an element
 function useClickOutside(ref: React.RefObject<HTMLElement>, handler: () => void) {
@@ -240,7 +238,6 @@ export const RichTextEditorField: React.FC<RichTextEditorFieldProps> = ({ value 
 
           <div className="w-px h-6 bg-zinc-300 mx-1" />
 
-          {/* Color */}
           <div className="relative" ref={colorPickerRef}>
             <button type="button" onClick={() => setShowColorPicker(!showColorPicker)} className="p-2 rounded hover:bg-zinc-200 flex items-center gap-1" title="Text Color">
               <PaintBucket size={16} />
@@ -300,65 +297,14 @@ export const RichTextEditorField: React.FC<RichTextEditorFieldProps> = ({ value 
             <RemoveFormatting size={16} />
           </button>
         </div>
-
-        {/* Editor Content */}
         <EditorContent editor={editor} />
       </div>
 
       <input type="hidden" id={id} name={name} value={value} />
-
-      <style jsx global>{`
-        .rich-text-editor-wrapper .ProseMirror {
-          min-height: 150px;
-          max-height: 400px;
-          overflow-y: auto;
-          padding: 12px;
-          font-size: 14px;
-          line-height: 1.6;
-        }
-
-        .rich-text-editor-wrapper .ProseMirror:focus {
-          outline: none;
-        }
-
-        .rich-text-editor-wrapper .ProseMirror p.is-editor-empty:first-child::before {
-          content: attr(data-placeholder);
-          float: left;
-          color: #a1a1aa;
-          pointer-events: none;
-          height: 0;
-        }
-
-        .rich-text-editor-wrapper .ProseMirror a {
-          color: #2563eb;
-          text-decoration: underline;
-        }
-
-        .rich-text-editor-wrapper .ProseMirror ul,
-        .rich-text-editor-wrapper .ProseMirror ol {
-          padding-left: 1.5rem;
-          margin: 0.5rem 0;
-        }
-
-        .rich-text-editor-wrapper .ProseMirror ul {
-          list-style-type: disc;
-        }
-
-        .rich-text-editor-wrapper .ProseMirror ol {
-          list-style-type: decimal;
-        }
-
-        .rich-text-editor-wrapper .ProseMirror li {
-          margin: 0.25rem 0;
-        }
-      `}</style>
     </div>
   );
 };
 
-/**
- * Required variant that ensures a non-empty value
- */
 export const RichTextEditorRender: CustomField<string>["render"] = ({ value, onChange, name, id, field: { label } }) => (
   <RichTextEditorField value={value} onChange={(v) => onChange(v || "")} name={name} id={id} label={label} />
 );

@@ -1,23 +1,25 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Menu } from "lucide-react";
-import { useRouter } from "next/router";
 import type React from "react";
 import { useState } from "react";
+import { useLocation } from "react-router-dom";
 import Sidebar from "../components/Navigation/Sidebar/Sidebar";
 import FullscreenLoader from "../components/Utility/FullscreenLoader/FullscreenLoader";
 import Redirect from "../components/Utility/Redirect/Redirect";
-import { useActiveProject, useProjects } from "../lib/hooks/projects";
-import { useUser } from "../lib/hooks/users";
+import { useProjects } from "../lib/hooks/projects";
+import { useLoginStatus } from "../lib/hooks/users";
 
-export const Dashboard = (props: { children: React.ReactNode; wideLayout?: boolean }) => {
-  const router = useRouter();
-  const activeProject = useActiveProject();
+const WIDE_LAYOUT_ROUTES = [/\/dashboard\/campaigns\/.*\/edit/, /\/dashboard\/templates\/.*/];
+
+export const Dashboard = (props: { children: React.ReactNode }) => {
   const { data: projects } = useProjects();
-  const { data: user } = useUser();
+  const loginStatus = useLoginStatus();
+  const location = useLocation();
+  const wideLayout = WIDE_LAYOUT_ROUTES.some((route) => route.test(location.pathname));
 
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
-  if (!projects || !user || !activeProject) {
+  if (!projects || loginStatus !== "logged-in") {
     return <FullscreenLoader />;
   }
 
@@ -27,7 +29,7 @@ export const Dashboard = (props: { children: React.ReactNode; wideLayout?: boole
 
   return (
     <div className="flex h-screen overflow-hidden bg-neutral-50">
-      <Sidebar mobileOpen={mobileSidebarOpen} onSidebarVisibilityChange={() => setMobileSidebarOpen(!mobileSidebarOpen)} wideLayout={props.wideLayout ?? false} />
+      <Sidebar mobileOpen={mobileSidebarOpen} onSidebarVisibilityChange={() => setMobileSidebarOpen(!mobileSidebarOpen)} wideLayout={wideLayout} />
       <div className="flex w-0 flex-1 flex-col overflow-hidden">
         <div className="pl-1 pt-1 sm:pl-3 sm:pt-3 md:hidden">
           <button
@@ -43,12 +45,12 @@ export const Dashboard = (props: { children: React.ReactNode; wideLayout?: boole
             <div className="relative mx-auto min-h-screen">
               <AnimatePresence>
                 <motion.div
-                  key={router.pathname}
+                  key={location.pathname}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.2, ease: "easeInOut" }}
-                  className={`h-full ${props.wideLayout ? "mx-auto max-w-full" : "mx-auto max-w-7xl space-y-6 px-4 py-5 sm:px-6 md:px-8"}`}
+                  className={`h-full ${wideLayout ? "mx-auto max-w-full" : "mx-auto max-w-7xl space-y-6 px-4 py-5 sm:px-6 md:px-8"}`}
                 >
                   {props.children}
                 </motion.div>

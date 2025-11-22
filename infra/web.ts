@@ -1,8 +1,14 @@
 import { api } from "./api";
 
-export const dashboard = new sst.aws.Nextjs("Dashboard", {
+export const dashboard = new sst.aws.StaticSite("Dashboard", {
   path: "packages/dashboard",
+  build: {
+    command: "npm run build",
+    output: "dist",
+  },
+  
   environment: {
-    NEXT_PUBLIC_API_URI: api.url,
+    VITE_AWS_REGION: "us-east-2",
+    VITE_API_URI: api.url,
   },
 });

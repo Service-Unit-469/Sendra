@@ -1,14 +1,14 @@
 import type { Action, Email, Event } from "@sendra/shared";
 import useSWR from "swr";
-import { useActiveProject } from "./projects";
+import { useCurrentProject } from "./projects";
 
 /**
  *
  * @param id
  */
 export function useAction(id: string) {
-  const activeProject = useActiveProject();
-  return useSWR<Action>(activeProject ? `/projects/${activeProject.id}/actions/${id}` : null);
+  const currentProject = useCurrentProject();
+  return useSWR<Action>(`/projects/${currentProject.id}/actions/${id}`);
 }
 
 /**
@@ -16,15 +16,15 @@ export function useAction(id: string) {
  * @param id
  */
 export function useRelatedActions(id: string) {
-  const activeProject = useActiveProject();
-  return useSWR<Action[]>(activeProject ? `/projects/${activeProject.id}/actions/${id}/related` : null);
+  const currentProject = useCurrentProject();
+  return useSWR<Action[]>(`/projects/${currentProject.id}/actions/${id}/related`);
 }
 
 /**
  *
  */
 export function useActions() {
-  const activeProject = useActiveProject();
+  const currentProject = useCurrentProject();
 
   return useSWR<
     (Action & {
@@ -33,5 +33,5 @@ export function useActions() {
         emails: Email[];
       };
     })[]
-  >(activeProject ? `/projects/${activeProject.id}/actions/all?embed=events&embed=emails` : null);
+  >(`/projects/${currentProject.id}/actions/all?embed=events&embed=emails`);
 }

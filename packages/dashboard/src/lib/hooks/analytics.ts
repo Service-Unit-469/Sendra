@@ -1,12 +1,8 @@
 import useSWR from "swr";
-import { useActiveProject } from "./projects";
+import { useCurrentProject } from "./projects";
 
-/**
-
- * @param period
- */
 export function useAnalytics(period?: "week" | "month" | "year") {
-  const activeProject = useActiveProject();
+  const project = useCurrentProject();
 
   return useSWR<{
     contacts: {
@@ -28,5 +24,5 @@ export function useAnalytics(period?: "week" | "month" | "year") {
       complaintPrev: number;
     };
     clicks: { link: string; name: string; count: number }[];
-  }>(activeProject ? `/projects/${activeProject.id}/analytics?period=${period ?? "week"}` : null);
+  }>(`/projects/${project.id}/analytics?period=${period ?? "week"}`);
 }

@@ -1,4 +1,4 @@
-import { useRouter } from "next/router";
+import { useLocation } from "react-router-dom";
 import Tabs from "../Tabs/Tabs";
 
 /**
@@ -7,11 +7,11 @@ import Tabs from "../Tabs/Tabs";
  * @param root0.onMethodChange
  */
 export default function AnalyticsTabs() {
-  const router = useRouter();
+  const location = useLocation();
 
   const links = [
-    { to: "/analytics", text: "Overview", active: router.route === "/analytics" },
-    { to: "/analytics/clicks", text: "Clicks", active: router.route === "/analytics/clicks" },
+    { to: "/dashboard/analytics", text: "Overview", active: location.pathname === "/dashboard/analytics" },
+    { to: "/dashboard/analytics/clicks", text: "Clicks", active: location.pathname === "/dashboard/analytics/clicks" },
   ];
 
   return <Tabs links={links} />;

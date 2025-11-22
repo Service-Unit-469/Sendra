@@ -1,9 +1,8 @@
 import type { Subscriber, SubscriberUpdate } from "@sendra/shared";
 import { motion } from "framer-motion";
 import { LoaderCircle } from "lucide-react";
-import Head from "next/head";
-import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import Toggle from "../../components/Input/Toggle/Toggle";
 import FullscreenLoader from "../../components/Utility/FullscreenLoader/FullscreenLoader";
@@ -14,9 +13,10 @@ import { network } from "../../lib/network";
  *
  */
 export default function Index() {
-  const router = useRouter();
+  const [searchParams] = useSearchParams();
+  const email = searchParams.get("email") ?? "";
 
-  const { data: subscriber, error, mutate } = useSubscriber(router.query.email as string);
+  const { data: subscriber, error, mutate } = useSubscriber(email);
   const [submitted, setSubmitted] = useState(false);
   const [subscriptions, setSubscriptions] = useState<Subscriber["subscriptions"]>([]);
 
@@ -26,9 +26,9 @@ export default function Index() {
     }
   }, [subscriber]);
 
-  if (!router.isReady) {
-    return <FullscreenLoader />;
-  }
+  useEffect(() => {
+    document.title = "Manage your subscription preferences";
+  }, []);
 
   if (!subscriber && !error) {
     return <FullscreenLoader />;
@@ -63,47 +63,42 @@ export default function Index() {
   };
 
   return (
-    <>
-      <Head>
-        <title>Manage your subscription preferences</title>
-      </Head>
-      <div className={"flex h-screen w-full flex-col items-center justify-center bg-neutral-50"}>
-        <div className={"w-3/4 rounded-sm border border-neutral-200 bg-white p-12 shadow-xs md:w-2/4 xl:w-2/6"}>
-          {error && (
-            <div className={"text-center text-sm text-neutral-500"}>
-              <p>No subscriber found</p>
+    <div className={"flex h-screen w-full flex-col items-center justify-center bg-neutral-50"}>
+      <div className={"w-3/4 rounded-sm border border-neutral-200 bg-white p-12 shadow-xs md:w-2/4 xl:w-2/6"}>
+        {error && (
+          <div className={"text-center text-sm text-neutral-500"}>
+            <p>No subscriber found</p>
+          </div>
+        )}
+        {subscriber && (
+          <>
+            <h1 className={"text-center text-2xl font-bold leading-tight text-neutral-800"}>Your Subscriptions</h1>
+            <div className={"my-8 text-center text-sm text-neutral-500 flex flex-col gap-y-2"}>
+              {subscriptions.map((subscription) => (
+                <div key={subscription.id}>
+                  <Toggle
+                    toggled={subscription.subscribed}
+                    onToggle={() => setSubscriptions(subscriptions.map((s) => (s.id === subscription.id ? { ...s, subscribed: !s.subscribed } : s)))}
+                    title={subscription.name}
+                    description={`You will ${subscription.subscribed ? "receive" : "not receive"} emails from ${subscription.name}`}
+                    disabled={submitted}
+                  />
+                </div>
+              ))}
             </div>
-          )}
-          {subscriber && (
-            <>
-              <h1 className={"text-center text-2xl font-bold leading-tight text-neutral-800"}>Your Subscriptions</h1>
-              <div className={"my-8 text-center text-sm text-neutral-500 flex flex-col gap-y-2"}>
-                {subscriptions.map((subscription) => (
-                  <div key={subscription.id}>
-                    <Toggle
-                      toggled={subscription.subscribed}
-                      onToggle={() => setSubscriptions(subscriptions.map((s) => (s.id === subscription.id ? { ...s, subscribed: !s.subscribed } : s)))}
-                      title={subscription.name}
-                      description={`You will ${subscription.subscribed ? "receive" : "not receive"} emails from ${subscription.name}`}
-                      disabled={submitted}
-                    />
-                  </div>
-                ))}
-              </div>
-              <div className="relative mt-2 w-full">
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.9 }}
-                  onClick={update}
-                  className={"mt-5 flex w-full items-center justify-center rounded-sm bg-neutral-800 py-2.5 text-sm font-medium text-white"}
-                >
-                  {submitted ? <LoaderCircle className="animate-spin" size={18} /> : "Update Subscriptions"}
-                </motion.button>
-              </div>
-            </>
-          )}
-        </div>
+            <div className="relative mt-2 w-full">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={update}
+                className={"mt-5 flex w-full items-center justify-center rounded-sm bg-neutral-800 py-2.5 text-sm font-medium text-white"}
+              >
+                {submitted ? <LoaderCircle className="animate-spin" size={18} /> : "Update Subscriptions"}
+              </motion.button>
+            </div>
+          </>
+        )}
       </div>
-    </>
+    </div>
   );
 }

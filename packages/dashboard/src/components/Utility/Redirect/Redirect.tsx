@@ -1,5 +1,5 @@
-import { useRouter } from "next/router";
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 export interface RedirectProps {
   to: string;
@@ -10,11 +10,11 @@ export interface RedirectProps {
  * @param root0.to
  */
 export default function Redirect({ to }: RedirectProps) {
-  const router = useRouter();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    void router.push(to);
-  }, [to, router.push]);
+    navigate(to, { replace: true });
+  }, [to, navigate]);
 
   return null;
 }

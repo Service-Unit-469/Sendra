@@ -1,17 +1,17 @@
-import { useRouter } from "next/router";
+import { useLocation } from "react-router-dom";
 import Tabs from "../Tabs/Tabs";
 
 /**
  *
  */
 export default function SettingTabs() {
-  const router = useRouter();
+  const location = useLocation();
 
   const links = [
-    { to: "/settings/project", text: "Project Settings", active: router.route === "/settings/project" },
-    { to: "/settings/api", text: "API Access", active: router.route === "/settings/api" },
-    { to: "/settings/identity", text: "Verified Identity", active: router.route === "/settings/identity" },
-    { to: "/settings/members", text: "Members", active: router.route === "/settings/members" },
+    { to: "/dashboard/settings/project", text: "Project Settings", active: location.pathname === "/dashboard/settings/project" },
+    { to: "/dashboard/settings/api", text: "API Access", active: location.pathname === "/dashboard/settings/api" },
+    { to: "/dashboard/settings/identity", text: "Verified Identity", active: location.pathname === "/dashboard/settings/identity" },
+    { to: "/dashboard/settings/members", text: "Members", active: location.pathname === "/dashboard/settings/members" },
   ];
 
   return <Tabs links={links} />;

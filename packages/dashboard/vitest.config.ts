@@ -3,13 +3,20 @@ import path from "node:path";
 import { defineConfig } from "vitest/config";
 
 export default defineConfig({
-	plugins: [react()],
+	plugins: [
+		react({
+			jsxRuntime: "automatic",
+		}),
+	],
 	test: {
 		globals: true,
 		environment: "jsdom",
 		include: ["test/**/*.test.{ts,tsx}"],
 		exclude: ["e2e/**", "node_modules/**"],
 		setupFiles: ["test/setup.tsx"],
+		deps: {
+			moduleDirectories: ["node_modules"],
+		},
 		coverage: {
 			enabled: true,
 			provider: "v8",
@@ -33,13 +40,22 @@ export default defineConfig({
 		css: true,
 	},
 	resolve: {
+		dedupe: ["react", "react-dom"],
 		alias: {
 			"@": path.resolve(__dirname, "./src"),
 			"@/components": path.resolve(__dirname, "./src/components"),
 			"@/lib": path.resolve(__dirname, "./src/lib"),
 			"@/pages": path.resolve(__dirname, "./src/pages"),
 			"@/layouts": path.resolve(__dirname, "./src/layouts"),
+			// Ensure React resolves correctly - React is hoisted to root in monorepo
+			react: path.resolve(__dirname, "../../node_modules/react"),
+			"react-dom": path.resolve(__dirname, "../../node_modules/react-dom"),
+			"react/jsx-dev-runtime": path.resolve(__dirname, "../../node_modules/react/jsx-dev-runtime.js"),
+			"react/jsx-runtime": path.resolve(__dirname, "../../node_modules/react/jsx-runtime.js"),
 		},
+	},
+	optimizeDeps: {
+		include: ["react", "react-dom", "react-router-dom"],
 	},
 });
 

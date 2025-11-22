@@ -7,8 +7,9 @@
       "esnext"
     ],
     "noEmit": true,
-    "jsx": "preserve",
-    "incremental": true
+    "jsx": "react-jsx",
+    "incremental": true,
+    "types": ["vite/client"]
   },
   "exclude": [
     "node_modules",
@@ -18,7 +19,7 @@
   ],
   "include": [
     "src",
-    "next-env.d.ts",
+    "src/vite-env.d.ts",
     "custom.d.ts"
   ]
 }

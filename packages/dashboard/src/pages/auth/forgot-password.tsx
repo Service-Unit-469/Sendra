@@ -3,23 +3,20 @@ import type { UserGet, UserRequestReset } from "@sendra/shared";
 import { UserSchemas } from "@sendra/shared";
 import { AnimatePresence, motion } from "framer-motion";
 import { CheckCircle, LoaderCircle } from "lucide-react";
-import Link from "next/link";
-import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { Link, useSearchParams } from "react-router-dom";
 import FullscreenLoader from "../../components/Utility/FullscreenLoader/FullscreenLoader";
 import Redirect from "../../components/Utility/Redirect/Redirect";
 import SendraLogo from "../../icons/SendraLogo";
-import { useUser } from "../../lib/hooks/users";
+import { useFetchUser } from "../../lib/hooks/users";
 import { network } from "../../lib/network";
 
 /**
  *
  */
 export default function Index() {
-  const router = useRouter();
-
-  const { data: user, error } = useUser();
+  const { data: user, error } = useFetchUser();
 
   const [state, setState] = useState<"idle" | "loading" | "success" | "error">("idle");
 
@@ -34,13 +31,16 @@ export default function Index() {
     resolver: zodResolver(UserSchemas.requestReset),
   });
 
-  useEffect(() => {
-    if (router.query.email) {
-      setValue("email", router.query.email as string);
-    }
-  }, [router.query, setValue]);
+  const [searchParams] = useSearchParams();
 
-  if (!router.isReady || (!user && !error)) {
+  useEffect(() => {
+    const email = searchParams.get("email");
+    if (email) {
+      setValue("email", email);
+    }
+  }, [searchParams, setValue]);
+
+  if (!user && !error) {
     return <FullscreenLoader />;
   }
 
@@ -71,7 +71,7 @@ export default function Index() {
           <CheckCircle className="h-10 w-10 text-green-500" />
           <h2 className="mt-4 text-2xl font-bold text-neutral-800">Password reset requested</h2>
           <p className="mt-2 text-sm text-neutral-600">Please check your email for a verification link</p>
-          <Link href={"/auth/login"} className={"text-sm text-neutral-500 underline transition ease-in-out hover:text-neutral-600"}>
+          <Link to={"/auth/login"} className={"text-sm text-neutral-500 underline transition ease-in-out hover:text-neutral-600"}>
             Back to login
           </Link>
         </div>
@@ -82,7 +82,7 @@ export default function Index() {
             <SendraLogo height="100px" width="50%" />
             <h2 className="mt-6 text-3xl font-extrabold text-neutral-800">Forgot your password?</h2>
             <div>
-              <Link href={"/auth/login"} className={"text-sm text-neutral-500 underline transition ease-in-out hover:text-neutral-600"}>
+              <Link to={"/auth/login"} className={"text-sm text-neutral-500 underline transition ease-in-out hover:text-neutral-600"}>
                 back to login
               </Link>
             </div>

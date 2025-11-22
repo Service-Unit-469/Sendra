@@ -1,9 +1,9 @@
 import type { Fields } from "@measured/puck";
 import type { Action, Template, TemplateCreate } from "@sendra/shared";
-import { ColorPickerRender } from "dashboard/src/components/EmailEditor/Fields";
 import { useMemo } from "react";
 import useSWR from "swr";
-import { useActiveProject, useActiveProjectIdentity } from "./projects";
+import { ColorPickerRender } from "../../components/EmailEditor/Fields";
+import { useCurrentProject, useCurrentProjectIdentity } from "./projects";
 
 export type TemplateWithActions = Template & {
   _embed: { actions: Action[] };
@@ -15,23 +15,23 @@ export type TemplateWithActions = Template & {
  * @param id
  */
 export function useTemplate(id: string) {
-  const activeProject = useActiveProject();
-  return useSWR<TemplateWithActions>(activeProject ? `/projects/${activeProject.id}/templates/${id}?embed=actions` : null);
+  const currentProject = useCurrentProject();
+  return useSWR<TemplateWithActions>(`/projects/${currentProject.id}/templates/${id}?embed=actions`);
 }
 
 /**
  *
  */
 export function useTemplates() {
-  const activeProject = useActiveProject();
+  const currentProject = useCurrentProject();
 
-  return useSWR<TemplateWithActions[]>(activeProject ? `/projects/${activeProject.id}/templates/all?embed=actions` : null);
+  return useSWR<TemplateWithActions[]>(`/projects/${currentProject.id}/templates/all?embed=actions`);
 }
 
 export type TemplateFormValues = Partial<Omit<TemplateCreate, "body" | "subject" | "quickEmail">> & { title?: string; quickEmail: string };
 
 export function useTemplateFields(): Fields {
-  const { data: projectIdentity } = useActiveProjectIdentity();
+  const { data: projectIdentity } = useCurrentProjectIdentity();
   return useMemo(() => {
     if (!projectIdentity) {
       return {};

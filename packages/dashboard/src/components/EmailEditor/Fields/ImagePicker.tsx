@@ -65,7 +65,6 @@ const ImagePicker: React.FC<ImagePickerProps> = ({ value, onChange, name, id, la
               aria-label={`Select ${asset.name}`}
             >
               {isImage ? (
-                // biome-ignore lint/performance/noImgElement: no need to use next/image
                 <img src={asset.url} alt={asset.name} className="w-full h-full object-cover rounded" />
               ) : (
                 <div className="w-full h-full flex flex-col items-center justify-center p-2 bg-neutral-50">
@@ -130,7 +129,6 @@ const ImagePicker: React.FC<ImagePickerProps> = ({ value, onChange, name, id, la
           />
           {manualUrl?.startsWith("http") && (
             <div className="mt-2">
-              {/* biome-ignore lint/performance/noImgElement: no need to use next/image */}
               <img
                 src={manualUrl}
                 alt="Preview"

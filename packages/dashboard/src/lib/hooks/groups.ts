@@ -1,13 +1,13 @@
 import type { Group } from "@sendra/shared";
 import useSWR from "swr";
-import { useActiveProject } from "./projects";
+import { useCurrentProject } from "./projects";
 
 export function useAllGroups() {
-  const activeProject = useActiveProject();
-  return useSWR<Group[]>(activeProject?.id ? `/projects/${activeProject.id}/groups/all` : null);
+  const currentProject = useCurrentProject();
+  return useSWR<Group[]>(`/projects/${currentProject.id}/groups/all`);
 }
 
 export const useGroup = (groupId: string) => {
-  const activeProject = useActiveProject();
-  return useSWR<Group>(activeProject?.id ? `/projects/${activeProject.id}/groups/${groupId}` : null);
+  const currentProject = useCurrentProject();
+  return useSWR<Group>(`/projects/${currentProject.id}/groups/${groupId}`);
 };
