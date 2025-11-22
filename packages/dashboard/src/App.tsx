@@ -17,7 +17,7 @@ import { NO_AUTH_ROUTES } from "./lib/constants";
 import { useFetchUser } from "./lib/hooks/users";
 import { network } from "./lib/network";
 import NotFound from "./pages/NotFound";
-import { Dashboard, ForgotPassword, Login, Logout, NewProject, ResetPassword, Signup, Verify } from "./routes";
+import { Dashboard, ForgotPassword, Login, Logout, NewProject, ResetPassword, Signup, Subscription, Verify } from "./routes";
 
 dayjs.extend(relativeTime);
 dayjs.extend(utc);
@@ -75,6 +75,8 @@ function AppContent() {
           <Route path="/auth/forgot-password" element={<ForgotPassword />} />
           <Route path="/auth/reset" element={<ResetPassword />} />
           <Route path="/auth/verify" element={<Verify />} />
+
+          <Route path="/subscription" element={<Subscription />} />
 
           <Route path="*" element={<NotFound />} />
         </Routes>

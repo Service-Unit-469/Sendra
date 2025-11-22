@@ -1,4 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
+import SendraLogo from "../icons/SendraLogo";
 
 /**
  *
@@ -8,8 +9,8 @@ export default function NotFound() {
   const pathname = location.pathname;
 
   return (
-    <div className="flex min-h-screen">
-      <div className="mx-auto w-full">
+    <div className="flex min-h-screen items-center justify-center">
+      <div className="mx-auto w-full max-w-md text-center">
         <div>
           <h2 className="mt-6 text-3xl font-extrabold text-neutral-800">Not Found</h2>
           <p className={"text-sm text-neutral-500"}>The page you are looking for does not exist.</p>

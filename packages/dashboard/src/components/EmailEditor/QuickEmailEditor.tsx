@@ -11,7 +11,7 @@ export interface QuickEmailEditorProps {
 }
 
 export default function QuickEmailEditor({ templateHtml, templatePlainText, initialContent = "", onChange, actions }: QuickEmailEditorProps) {
-  const [content, setContent] = useState<string>(initialContent);
+  const [content, setContent] = useState<string>("");
   const [preview, setPreview] = useState<string>("");
 
   useEffect(() => {
@@ -28,6 +28,10 @@ export default function QuickEmailEditor({ templateHtml, templatePlainText, init
       plainText: mergedPlainText || toPlainText(mergedHtml),
     });
   }, [content, templateHtml, templatePlainText, onChange]);
+
+  useEffect(() => {
+    setContent(initialContent || "");
+  }, [initialContent]);
 
   return (
     <div className="flex h-full flex-col gap-6">
