@@ -6,6 +6,7 @@ import { Save } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "sonner";
 import { BlackButton } from "../../../components/Buttons/BlackButton";
 import { EmailEditor } from "../../../components/EmailEditor";
 import { ColorPickerRender } from "../../../components/EmailEditor/Fields";
@@ -28,9 +29,9 @@ export default function EditCampaignPage() {
   const [quickBodyContent, setQuickBodyContent] = useState<string>("");
   const navigate = useNavigate();
 
-  const { setValue, watch } = useForm({
-    resolver: zodResolver(CampaignSchemas.update.omit({ id: true })),
-    defaultValues: { recipients: [], body: undefined },
+  const { setValue, watch, reset } = useForm({
+    resolver: zodResolver(CampaignSchemas.update.omit({ id: true, status: true, template: true, groups: true, recipients: true })),
+    defaultValues: { body: undefined },
   });
 
   // Extract quick email content from campaign body if it's a quick email
@@ -45,7 +46,10 @@ export default function EditCampaignPage() {
         console.error("Failed to parse campaign body data", error);
       }
     }
-  }, [campaign, template]);
+    if (campaign) {
+      reset(campaign);
+    }
+  }, [campaign, template, reset]);
 
   const fields = useMemo(() => {
     if (!projectIdentity) {
@@ -102,7 +106,7 @@ export default function EditCampaignPage() {
   }, [projectIdentity]);
 
   const saveCampaign = useCallback(
-    async (data: Omit<CampaignUpdate, "id">) => {
+    async (data: Omit<CampaignUpdate, "id" | "template" | "status" | "recipients" | "groups">) => {
       if (data.email?.trim() === "") {
         delete data.email;
       }
@@ -110,15 +114,29 @@ export default function EditCampaignPage() {
         return;
       }
 
-      await network.fetch(`/projects/${project.id}/campaigns/${campaign.id}`, {
-        method: "PUT",
-        body: {
-          id: campaign.id,
-          ...data,
+      toast.promise(
+        () =>
+          network.fetch(`/projects/${project.id}/campaigns/${campaign.id}`, {
+            method: "PUT",
+            body: {
+              id: campaign.id,
+              ...data,
+              recipients: campaign.recipients,
+              template: campaign.template,
+              status: campaign.status,
+              groups: campaign.groups,
+            },
+          }),
+        {
+          loading: "Saving your campaign",
+          success: () => {
+            campaignMutate();
+            navigate(`/dashboard/campaigns/${campaign.id}`);
+            return "Saved your campaign";
+          },
+          error: "Could not save your campaign!",
         },
-      });
-      campaignMutate();
-      navigate(`/dashboard/campaigns/${campaign.id}`);
+      );
     },
     [project, campaign, campaignMutate, navigate],
   );
@@ -146,18 +164,14 @@ export default function EditCampaignPage() {
             <BlackButton
               onClick={() =>
                 saveCampaign({
-                  subject: watch("subject") ?? campaign.subject,
-                  email: watch("email") ?? campaign.email,
-                  from: watch("from") ?? campaign.from,
+                  subject: watch("subject") ?? "",
+                  email: watch("email") ?? undefined,
+                  from: watch("from") ?? undefined,
                   body: {
-                    data: watch("body")?.data ?? campaign.body.data,
-                    html: watch("body")?.html ?? campaign.body.html,
-                    plainText: watch("body")?.plainText ?? campaign.body.plainText,
+                    data: watch("body")?.data ?? "",
+                    html: watch("body")?.html ?? "",
+                    plainText: watch("body")?.plainText ?? undefined,
                   },
-                  recipients: watch("recipients") ?? campaign.recipients,
-                  template: campaign.template,
-                  status: campaign.status,
-                  groups: watch("groups") ?? campaign.groups,
                 })
               }
             >
@@ -176,24 +190,27 @@ export default function EditCampaignPage() {
   // Render regular Email Editor for non-quick email templates
   return (
     <EmailEditor
+      initialData={JSON.parse(campaign.body.data)}
+      onChange={(value) => {
+        setValue("body", {
+          ...value,
+          data: JSON.stringify(value.data),
+        });
+      }}
       fields={fields}
       actions={() => (
         <>
           <BlackButton
             onClick={() =>
               saveCampaign({
-                subject: watch("subject") ?? "",
-                email: watch("email") ?? undefined,
-                from: watch("from") ?? undefined,
+                subject: watch("subject") ?? campaign.subject,
+                email: watch("email") ?? campaign.email,
+                from: watch("from") ?? campaign.from,
                 body: {
-                  data: watch("body")?.data ?? "",
-                  html: watch("body")?.html ?? "",
-                  plainText: watch("body")?.plainText ?? undefined,
+                  data: watch("body")?.data ?? campaign.body.data,
+                  html: watch("body")?.html ?? campaign.body.html,
+                  plainText: watch("body")?.plainText ?? campaign.body.plainText,
                 },
-                recipients: watch("recipients") ?? [],
-                template: watch("template") ?? undefined,
-                status: (watch("status") as "DRAFT" | "DELIVERED") ?? "DRAFT",
-                groups: watch("groups") ?? [],
               })
             }
           >
@@ -205,17 +222,6 @@ export default function EditCampaignPage() {
           </button>
         </>
       )}
-      initialData={JSON.parse(campaign.body.data)}
-      onChange={(value) => {
-        setValue("body", {
-          ...value,
-          data: JSON.stringify(value.data),
-        });
-        const props = (value.data.root?.props ?? {}) as { title?: string; email?: string; from?: string };
-        setValue("subject", props.title ?? "");
-        setValue("email", props.email ?? undefined);
-        setValue("from", props.from ?? undefined);
-      }}
     />
   );
 }
