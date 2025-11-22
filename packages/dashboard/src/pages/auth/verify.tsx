@@ -1,25 +1,22 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { UserGet, UserVerify } from "@sendra/shared";
 import { UserSchemas } from "@sendra/shared";
-import SendraLogo from "dashboard/src/icons/SendraLogo";
 import { AnimatePresence, motion } from "framer-motion";
 import { CheckCircle, LoaderCircle } from "lucide-react";
-import Link from "next/link";
-import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { Link, useSearchParams } from "react-router-dom";
 import FullscreenLoader from "../../components/Utility/FullscreenLoader/FullscreenLoader";
 import Redirect from "../../components/Utility/Redirect/Redirect";
-import { useUser } from "../../lib/hooks/users";
+import SendraLogo from "../../icons/SendraLogo";
+import { useFetchUser } from "../../lib/hooks/users";
 import { network } from "../../lib/network";
 
 /**
  *
  */
 export default function Index() {
-  const router = useRouter();
-
-  const { data: user, error } = useUser();
+  const { data: user, error } = useFetchUser();
 
   const [state, setState] = useState<"idle" | "loading" | "success" | "error">("idle");
 
@@ -34,20 +31,24 @@ export default function Index() {
     resolver: zodResolver(UserSchemas.verify),
   });
 
+  const [searchParams] = useSearchParams();
+
   useEffect(() => {
-    if (router.query.email) {
-      setValue("email", router.query.email as string);
+    const email = searchParams.get("email");
+    const code = searchParams.get("code");
+    if (email) {
+      setValue("email", email);
     }
-    if (router.query.code) {
-      setValue("code", router.query.code as string);
+    if (code) {
+      setValue("code", code);
     }
-  }, [router.query, setValue]);
+  }, [searchParams, setValue]);
 
   if (user && !error) {
     return <Redirect to={"/"} />;
   }
 
-  if (!router.isReady || (!user && !error)) {
+  if (!user && !error) {
     return <FullscreenLoader />;
   }
 
@@ -74,7 +75,7 @@ export default function Index() {
           <CheckCircle className="h-10 w-10 text-green-500" />
           <h2 className="mt-4 text-2xl font-bold text-neutral-800">Account verified!</h2>
           <p className="mt-2 text-sm text-neutral-600">You can now login to your account</p>
-          <Link href={"/auth/login"} className={"text-sm text-neutral-500 underline transition ease-in-out hover:text-neutral-600"}>
+          <Link to={"/auth/login"} className={"text-sm text-neutral-500 underline transition ease-in-out hover:text-neutral-600"}>
             Back to login
           </Link>
         </div>

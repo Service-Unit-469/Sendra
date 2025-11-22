@@ -6,7 +6,7 @@ import { useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { useAllContacts } from "../../lib/hooks/contacts";
-import { useActiveProject } from "../../lib/hooks/projects";
+import { useCurrentProject } from "../../lib/hooks/projects";
 import { network } from "../../lib/network";
 import ContactSelector from "../ContactSelector/ContactSelector";
 import Input from "../Input/Input/Input";
@@ -21,7 +21,7 @@ export type GroupFormProps = {
 };
 
 export function GroupForm({ groupId, onSuccess, initialData, submitButtonText = "Save", className = "" }: GroupFormProps) {
-  const project = useActiveProject();
+  const project = useCurrentProject();
 
   const { data: contacts } = useAllContacts();
 

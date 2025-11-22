@@ -1,20 +1,17 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { type UserGet, type UserReset, UserSchemas } from "@sendra/shared";
-import SendraLogo from "dashboard/src/icons/SendraLogo";
 import { AnimatePresence, motion } from "framer-motion";
 import { CheckCircle, Eye, EyeOff, LoaderCircle } from "lucide-react";
-import Link from "next/link";
-import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import FullscreenLoader from "../../components/Utility/FullscreenLoader/FullscreenLoader";
+import { Link, useSearchParams } from "react-router-dom";
+import SendraLogo from "../../icons/SendraLogo";
 import { network } from "../../lib/network";
 
 /**
  *
  */
 export default function Index() {
-  const router = useRouter();
   const [state, setState] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [hidePassword, setHidePassword] = useState(true);
 
@@ -28,18 +25,18 @@ export default function Index() {
     resolver: zodResolver(UserSchemas.reset),
   });
 
-  useEffect(() => {
-    if (router.query.email) {
-      setValue("email", router.query.email as string);
-    }
-    if (router.query.code) {
-      setValue("code", router.query.code as string);
-    }
-  }, [router.query, setValue]);
+  const [searchParams] = useSearchParams();
 
-  if (!router.isReady) {
-    return <FullscreenLoader />;
-  }
+  useEffect(() => {
+    const email = searchParams.get("email");
+    const code = searchParams.get("code");
+    if (email) {
+      setValue("email", email);
+    }
+    if (code) {
+      setValue("code", code);
+    }
+  }, [searchParams, setValue]);
 
   const resetPassword = async (data: UserReset) => {
     setState("loading");
@@ -63,7 +60,7 @@ export default function Index() {
           <CheckCircle className="h-10 w-10 text-green-500" />
           <h2 className="mt-4 text-2xl font-bold text-neutral-800">Password reset</h2>
           <p className="mt-2 text-sm text-neutral-600">You can now login to your account</p>
-          <Link href={"/auth/login"} className={"text-sm text-neutral-500 underline transition ease-in-out hover:text-neutral-600"}>
+          <Link to={"/auth/login"} className={"text-sm text-neutral-500 underline transition ease-in-out hover:text-neutral-600"}>
             Back to login
           </Link>
         </div>

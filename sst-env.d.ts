@@ -15,7 +15,7 @@ declare module "sst" {
       "type": "sst.aws.Bucket"
     }
     "Dashboard": {
-      "type": "sst.aws.Nextjs"
+      "type": "sst.aws.StaticSite"
       "url": string
     }
     "DelayedTaskStateMachine": {

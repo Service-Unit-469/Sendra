@@ -1,16 +1,11 @@
 import type { Asset } from "@sendra/shared";
 import useSWR, { mutate } from "swr";
 import { network } from "../network";
-import { useActiveProject } from "./projects";
+import { useCurrentProject } from "./projects";
 
 export const useAssets = () => {
-  const activeProject = useActiveProject();
-  return useSWR<Asset[]>(["assets"], async () => {
-    if (!activeProject) {
-      return [];
-    }
-    return network.fetch<Asset[], void>(`/projects/${activeProject.id}/assets`);
-  });
+  const currentProject = useCurrentProject();
+  return useSWR<Asset[]>(`/projects/${currentProject.id}/assets`);
 };
 
 export const uploadAsset = async (projectId: string, file: File): Promise<Asset> => {

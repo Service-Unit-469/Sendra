@@ -1,6 +1,6 @@
 import type { Event } from "@sendra/shared";
 import useSWR from "swr";
-import { useActiveProject } from "./projects";
+import { useCurrentProject } from "./projects";
 
 export type EventType = {
   name: string;
@@ -13,13 +13,13 @@ export type EventType = {
  *
  */
 export function useEventTypes() {
-  const activeProject = useActiveProject();
+  const currentProject = useCurrentProject();
 
-  return useSWR<{ eventTypes: { name: string }[] }>(activeProject ? `/projects/${activeProject.id}/event-types/all` : null);
+  return useSWR<{ eventTypes: { name: string }[] }>(`/projects/${currentProject.id}/event-types/all`);
 }
 
 export function useEventTypesWithEvents() {
-  const activeProject = useActiveProject();
+  const currentProject = useCurrentProject();
 
-  return useSWR<{ eventTypes: EventType[] }>(activeProject ? `/projects/${activeProject.id}/event-types/all?embed=events` : null);
+  return useSWR<{ eventTypes: EventType[] }>(`/projects/${currentProject.id}/event-types/all?embed=events`);
 }

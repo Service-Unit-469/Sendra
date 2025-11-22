@@ -2,23 +2,22 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { type UserCredentials, UserSchemas } from "@sendra/shared";
 import { AnimatePresence, motion } from "framer-motion";
 import { Eye, EyeOff, LoaderCircle } from "lucide-react";
-import Link from "next/link";
-import { useRouter } from "next/router";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { Link, useNavigate } from "react-router-dom";
 import FullscreenLoader from "../../components/Utility/FullscreenLoader/FullscreenLoader";
 import Redirect from "../../components/Utility/Redirect/Redirect";
 import SendraLogo from "../../icons/SendraLogo";
 import { API_URI, TOKEN_KEY } from "../../lib/constants";
-import { useUser } from "../../lib/hooks/users";
+import { useFetchUser } from "../../lib/hooks/users";
 
 /**
  *
  */
 export default function Index() {
-  const router = useRouter();
+  const navigate = useNavigate();
 
-  const { data: user, error, mutate } = useUser();
+  const { data: user, error, mutate } = useFetchUser();
 
   const [submitted, setSubmitted] = useState(false);
   const [hidePassword, setHidePassword] = useState(true);
@@ -34,7 +33,7 @@ export default function Index() {
   });
 
   if (user && !error) {
-    return <Redirect to={"/"} />;
+    return <Redirect to="/dashboard" />;
   }
 
   if (!user && !error) {
@@ -54,7 +53,8 @@ export default function Index() {
       if (response.status === 403) {
         const body = await response.json();
         if (body.resetUrl) {
-          return router.push(body.resetUrl);
+          navigate(body.resetUrl);
+          return;
         }
         setError("email", { message: body.detail ?? "login failed" });
         setSubmitted(false);
@@ -69,7 +69,7 @@ export default function Index() {
       const body = await response.json();
       localStorage.setItem(TOKEN_KEY, body.token);
       await mutate(body);
-      await router.push("/");
+      navigate("/dashboard");
     } catch {
       setError("email", { message: "login failed" });
       setSubmitted(false);
@@ -135,11 +135,7 @@ export default function Index() {
                 )}
               </AnimatePresence>
               <div className={"w-full text-center"}>
-                <Link
-                  href={`/auth/forgot-password?email=${encodeURIComponent(watch("email") ?? "")}`}
-                  passHref
-                  className={"text-sm text-neutral-500 underline transition ease-in-out hover:text-neutral-500"}
-                >
+                <Link to={`/auth/forgot-password?email=${encodeURIComponent(watch("email") ?? "")}`} className={"text-sm text-neutral-500 underline transition ease-in-out hover:text-neutral-500"}>
                   Forgot your password?
                 </Link>
               </div>
@@ -165,7 +161,7 @@ export default function Index() {
           </form>
         </div>
         <div className={"w-full text-center"}>
-          <Link href={"/auth/signup"} passHref className={"text-sm text-neutral-500 underline transition ease-in-out hover:text-neutral-500"}>
+          <Link to="/auth/signup" className={"text-sm text-neutral-500 underline transition ease-in-out hover:text-neutral-500"}>
             Want to create an account instead?
           </Link>
         </div>

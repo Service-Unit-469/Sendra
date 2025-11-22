@@ -1,0 +1,106 @@
+import "../styles/index.css";
+
+import dayjs from "dayjs";
+import advancedFormat from "dayjs/plugin/advancedFormat";
+import duration from "dayjs/plugin/duration";
+import relativeTime from "dayjs/plugin/relativeTime";
+import utc from "dayjs/plugin/utc";
+import { Provider as JotaiProvider } from "jotai";
+import NProgress from "nprogress";
+import "nprogress/nprogress.css";
+import { Suspense, useEffect } from "react";
+import { BrowserRouter, Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import { Toaster } from "sonner";
+import { SWRConfig } from "swr";
+import FullscreenLoader from "./components/Utility/FullscreenLoader/FullscreenLoader";
+import { NO_AUTH_ROUTES } from "./lib/constants";
+import { useFetchUser } from "./lib/hooks/users";
+import { network } from "./lib/network";
+import NotFound from "./pages/NotFound";
+import { Dashboard, ForgotPassword, Login, Logout, NewProject, ResetPassword, Signup, Subscription, Verify } from "./routes";
+
+dayjs.extend(relativeTime);
+dayjs.extend(utc);
+dayjs.extend(advancedFormat);
+dayjs.extend(duration);
+
+/**
+ * Component to handle route change progress and auth checks
+ */
+function AppContent() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { data: user, error } = useFetchUser();
+
+  // Handle route change progress
+  useEffect(() => {
+    NProgress.start();
+    const timer = setTimeout(() => {
+      NProgress.done();
+    }, 100);
+
+    return () => {
+      clearTimeout(timer);
+      NProgress.done();
+    };
+  }, []);
+
+  // Handle auth redirects
+  useEffect(() => {
+    if (error && !NO_AUTH_ROUTES.includes(location.pathname)) {
+      navigate("/auth/login", { replace: true });
+    }
+  }, [error, location.pathname, navigate]);
+
+  if (error && !NO_AUTH_ROUTES.includes(location.pathname)) {
+    return null; // Navigation handled in useEffect
+  }
+
+  if (!user && !NO_AUTH_ROUTES.includes(location.pathname)) {
+    return <FullscreenLoader />;
+  }
+
+  return (
+    <>
+      <Toaster position="bottom-right" />
+      <Suspense fallback={<FullscreenLoader />}>
+        <Routes>
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/dashboard/*" element={<Dashboard />} />
+          <Route path="/new" element={<NewProject />} />
+
+          <Route path="/auth/login" element={<Login />} />
+          <Route path="/auth/signup" element={<Signup />} />
+          <Route path="/auth/logout" element={<Logout />} />
+          <Route path="/auth/forgot-password" element={<ForgotPassword />} />
+          <Route path="/auth/reset" element={<ResetPassword />} />
+          <Route path="/auth/verify" element={<Verify />} />
+
+          <Route path="/subscription" element={<Subscription />} />
+
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Suspense>
+    </>
+  );
+}
+
+/**
+ * Main app root component that houses all providers
+ */
+export default function App() {
+  return (
+    <SWRConfig
+      value={{
+        fetcher: network.fetch,
+        revalidateOnFocus: true,
+      }}
+    >
+      <JotaiProvider>
+        <BrowserRouter>
+          <AppContent />
+        </BrowserRouter>
+      </JotaiProvider>
+    </SWRConfig>
+  );
+}

@@ -4,27 +4,26 @@ import { ProjectSchemas } from "@sendra/shared";
 import { AnimatePresence, motion } from "framer-motion";
 import { useAtom } from "jotai";
 import { LoaderCircle, Rocket } from "lucide-react";
-import Link from "next/link";
-import { useRouter } from "next/router";
 import { useState } from "react";
 import { useForm, useFormState } from "react-hook-form";
+import { Link, useNavigate } from "react-router-dom";
 import FullscreenLoader from "../components/Utility/FullscreenLoader/FullscreenLoader";
 import Redirect from "../components/Utility/Redirect/Redirect";
 import SendraLogo from "../icons/SendraLogo";
-import { atomActiveProject } from "../lib/atoms/project";
+import { atomActiveProjectId } from "../lib/atoms/project";
 import { useProjects } from "../lib/hooks/projects";
-import { useUser } from "../lib/hooks/users";
+import { useLoginStatus } from "../lib/hooks/users";
 import { network } from "../lib/network";
 
 /**
- *
+ * Page to create a new project.
  */
-export default function Index() {
-  const router = useRouter();
+export default function NewProject() {
+  const navigate = useNavigate();
 
-  const [, setActiveProjectId] = useAtom(atomActiveProject);
+  const [, setActiveProjectId] = useAtom(atomActiveProjectId);
 
-  const { data: user, error } = useUser();
+  const loginStatus = useLoginStatus();
   const { data: projects, mutate } = useProjects();
 
   const [submitted, setSubmitted] = useState(false);
@@ -43,11 +42,11 @@ export default function Index() {
     control,
   });
 
-  if (error) {
-    return <Redirect to={"auth/login"} />;
+  if (loginStatus === "logged-out") {
+    return <Redirect to="auth/login" />;
   }
 
-  if (!user || !projects) {
+  if (!projects) {
     return <FullscreenLoader />;
   }
 
@@ -66,7 +65,8 @@ export default function Index() {
       await mutate([...projects, result]);
       localStorage.setItem("project", result.id);
       setActiveProjectId(result.id);
-      return router.push("/");
+      navigate("/dashboard");
+      return;
     } catch (e) {
       setError("name", { message: (e as Error).message });
       setSubmitted(false);
@@ -155,7 +155,7 @@ export default function Index() {
 
               {projects.length > 0 ? (
                 <div className={"w-full"}>
-                  <Link href={"/"} className={"mt-2 block text-center text-sm text-neutral-400 underline transition ease-in-out hover:text-neutral-600"}>
+                  <Link to="/" className={"mt-2 block text-center text-sm text-neutral-400 underline transition ease-in-out hover:text-neutral-600"}>
                     Back to the dashboard
                   </Link>
                 </div>

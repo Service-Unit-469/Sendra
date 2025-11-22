@@ -1,20 +1,20 @@
 import type { Campaign, Email } from "@sendra/shared";
 import useSWR from "swr";
-import { useActiveProject } from "./projects";
+import { useCurrentProject } from "./projects";
 
 /**
  *
  * @param id
  */
 export function useCampaign(id: string) {
-  const activeProject = useActiveProject();
-  return useSWR<Campaign>(activeProject ? `/projects/${activeProject.id}/campaigns/${id}` : null);
+  const currentProject = useCurrentProject();
+  return useSWR<Campaign>(`/projects/${currentProject.id}/campaigns/${id}`);
 }
 
 /**
  *
  */
 export function useCampaignsWithEmails() {
-  const activeProject = useActiveProject();
-  return useSWR<(Campaign & { _embed: { emails: Email[] } })[]>(activeProject ? `/projects/${activeProject.id}/campaigns/all?embed=emails` : null);
+  const currentProject = useCurrentProject();
+  return useSWR<(Campaign & { _embed: { emails: Email[] } })[]>(`/projects/${currentProject.id}/campaigns/all?embed=emails`);
 }

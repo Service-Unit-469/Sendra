@@ -2,51 +2,9 @@ import "@testing-library/jest-dom/vitest";
 import { cleanup } from "@testing-library/react";
 import { afterAll, afterEach, beforeAll, vi } from "vitest";
 import { server } from "./mocks/server";
-import React from "react";
 
-// Mock Next.js router
-vi.mock("next/router", () => ({
-	useRouter: vi.fn(() => ({
-		pathname: "/",
-		route: "/",
-		query: {},
-		asPath: "/",
-		push: vi.fn(),
-		replace: vi.fn(),
-		reload: vi.fn(),
-		back: vi.fn(),
-		forward: vi.fn(),
-		prefetch: vi.fn(),
-		beforePopState: vi.fn(),
-		events: {
-			on: vi.fn(),
-			off: vi.fn(),
-			emit: vi.fn(),
-		},
-		isFallback: false,
-		isLocaleDomain: false,
-		isReady: true,
-		isPreview: false,
-	})),
-}));
-
-// Mock Next.js Image component
-vi.mock("next/image", () => ({
-	default: (props: any) => {
-		// eslint-disable-next-line jsx-a11y/alt-text
-		return <img {...props} />;
-	},
-}));
-
-// Mock Next.js Head component
-vi.mock("next/head", () => ({
-	default: ({ children }: { children: React.ReactNode }) => {
-		return <>{children}</>;
-	},
-}));
-
-// Mock sessionStorage
-const sessionStorageMock = (() => {
+// Mock localStorage
+const localStorageMock = (() => {
 	let store: Record<string, string> = {};
 
 	return {
@@ -63,14 +21,14 @@ const sessionStorageMock = (() => {
 	};
 })();
 
-Object.defineProperty(window, "sessionStorage", {
-	value: sessionStorageMock,
+Object.defineProperty(window, "localStorage", {
+	value: localStorageMock,
 });
 
 // Mock matchMedia
 Object.defineProperty(window, "matchMedia", {
 	writable: true,
-	value: vi.fn().mockImplementation((query) => ({
+	value: vi.fn().mockImplementation((query: string) => ({
 		matches: false,
 		media: query,
 		onchange: null,
@@ -104,7 +62,7 @@ beforeAll(() => {
 afterEach(() => {
 	cleanup();
 	server.resetHandlers();
-	sessionStorageMock.clear();
+	localStorageMock.clear();
 });
 
 // Clean up after all tests
@@ -112,7 +70,12 @@ afterAll(() => {
 	server.close();
 });
 
-// Mock environment variables
-process.env.NEXT_PUBLIC_API_URI = "http://localhost:4000";
-process.env.NEXT_PUBLIC_AWS_REGION = "us-east-1";
+// Mock Vite environment variables
+Object.defineProperty(import.meta, "env", {
+	value: {
+		VITE_API_URI: "http://localhost:4000",
+		VITE_AWS_REGION: "us-east-1",
+	},
+	writable: true,
+});
 

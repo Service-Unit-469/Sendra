@@ -1,28 +1,15 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronLeft, ChevronRight, FileImage, Home, LayoutTemplate, LineChart, LogOut, Send, Settings, TerminalSquare, User, Users2, Workflow, X } from "lucide-react";
-import Link from "next/link";
-import { useRouter } from "next/router";
 import React, { type ReactElement, useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import SendraLogo from "../../../icons/SendraLogo";
 import ProjectSelector from "../ProjectSelector/ProjectSelector";
 
-interface SidebarLinkType {
+type SidebarLinkType = {
   to: string;
   text: string;
-  disabled: boolean;
-  highlight?: boolean;
-  position: "top" | "bottom";
   icon: ReactElement;
-}
-
-interface SidebarLinkProps {
-  active?: boolean;
-  to: string;
-  text: string;
-  disabled?: boolean;
-  highlight?: boolean;
-  svgPath: React.ReactElement;
-}
+};
 
 export interface SidebarProps {
   mobileOpen: boolean;
@@ -32,114 +19,75 @@ export interface SidebarProps {
 
 const links: SidebarLinkType[] = [
   {
-    to: "/",
+    to: "/dashboard",
     text: "Dashboard",
-    disabled: false,
-    position: "top",
     icon: <Home />,
   },
   {
-    to: "/contacts",
+    to: "/dashboard/contacts",
     text: "Contacts",
-    disabled: false,
-    position: "top",
     icon: <User />,
   },
   {
-    to: "/analytics",
+    to: "/dashboard/analytics",
     text: "Analytics",
-    disabled: false,
-    position: "top",
     icon: <LineChart />,
   },
   {
-    to: "/settings/project",
+    to: "/dashboard/settings/project",
     text: "Project Settings",
-    disabled: false,
-    position: "top",
     icon: <Settings />,
   },
   {
-    to: "/events",
+    to: "/dashboard/events",
     text: "Events",
-    disabled: false,
-    position: "top",
     icon: <TerminalSquare />,
   },
   {
-    to: "/templates",
+    to: "/dashboard/templates",
     text: "Templates",
-    disabled: false,
-    position: "top",
     icon: <LayoutTemplate />,
   },
   {
-    to: "/assets",
+    to: "/dashboard/assets",
     text: "Assets",
-    disabled: false,
-    position: "top",
     icon: <FileImage />,
   },
   {
-    to: "/actions",
+    to: "/dashboard/actions",
     text: "Actions",
-    disabled: false,
-    position: "top",
     icon: <Workflow />,
   },
   {
-    to: "/campaigns",
+    to: "/dashboard/campaigns",
     text: "Campaigns",
-    disabled: false,
-    position: "top",
     icon: <Send />,
   },
   {
-    to: "/groups",
+    to: "/dashboard/groups",
     text: "Contact Groups",
-    disabled: false,
-    position: "top",
     icon: <Users2 />,
   },
 ];
 
 /**
- * @param root0
- * @param root0.active
- * @param root0.to
- * @param root0.text
- * @param root0.disabled
- * @param root0.svgPath
- * @param root0.highlight
+ * A link in the sidebar
  */
-function SidebarLink({ active, to, text, disabled, highlight, svgPath }: SidebarLinkProps) {
-  if (to.startsWith("http")) {
-    return (
-      <button
-        key={to}
-        onClick={() => window.open(to, "_blank")?.focus()}
-        className={`${
-          active ? "cursor-default bg-neutral-100 text-neutral-700" : disabled ? "text-neutral-200" : "cursor-pointer text-neutral-400 hover:bg-neutral-50 hover:text-neutral-700"
-        } flex items-center gap-x-3 rounded p-2 text-sm font-medium transition ease-in-out`}
-      >
-        <div className="flex h-5 w-5 items-center justify-center">{svgPath}</div>
-        {text}
-        {highlight && <div className="ml-auto rounded-sm bg-blue-100 px-2 py-0.5 text-xs text-blue-800">New</div>}
-      </button>
-    );
-  }
+function SidebarLink({ to, text, icon }: SidebarLinkType) {
+  const location = useLocation();
+
+  const active = location.pathname === to || (to !== "/dashboard" && location.pathname.startsWith(to));
 
   return (
     <Link
       key={to}
-      href={to}
+      to={to}
       className={`${
-        active ? "cursor-default bg-neutral-100 text-neutral-700" : disabled ? "text-neutral-200" : "cursor-pointer text-neutral-400 hover:bg-neutral-50 hover:text-neutral-700"
+        active ? "cursor-default bg-neutral-100 text-neutral-700" : "cursor-pointer text-neutral-400 hover:bg-neutral-50 hover:text-neutral-700"
       } flex items-center gap-x-3 rounded p-2 text-sm font-medium transition ease-in-out`}
     >
-      <div className="flex h-5 w-5 items-center justify-center">{svgPath}</div>
+      <div className="flex h-5 w-5 items-center justify-center">{icon}</div>
       {text}
-      {highlight && <div className="ml-auto rounded-sm bg-blue-100 px-2 py-0.5 text-xs text-blue-800">New</div>}
     </Link>
   );
 }
@@ -150,7 +98,6 @@ function SidebarLink({ active, to, text, disabled, highlight, svgPath }: Sidebar
  * @param root0.onSidebarVisibilityChange
  */
 export default function Sidebar({ mobileOpen, onSidebarVisibilityChange, wideLayout }: SidebarProps) {
-  const router = useRouter();
   const projectSelectorRef = React.createRef<HTMLDivElement>();
   const [projectSelectorOpen, setProjectSelectorOpen] = useState(false);
   const [expanded, setExpanded] = useState(false);
@@ -184,7 +131,7 @@ export default function Sidebar({ mobileOpen, onSidebarVisibilityChange, wideLay
 
               <div className="h-0 flex-1 overflow-y-auto pb-4 pt-5">
                 <div className="flex shrink-0 items-center px-4">
-                  <Link href={"/"} passHref>
+                  <Link to="/dashboard">
                     <SendraLogo width="100%" height="90px" />
                   </Link>
                 </div>
@@ -194,30 +141,9 @@ export default function Sidebar({ mobileOpen, onSidebarVisibilityChange, wideLay
                 </div>
 
                 <nav className="mt-5 space-y-1 px-2">
-                  {links
-                    .filter((l) => l.position === "top")
-                    .map((link) => {
-                      return (
-                        <SidebarLink
-                          key={`mobile-top-${link.to}`}
-                          active={link.to === "/" ? router.pathname === link.to : router.pathname.split("/")[1].includes(link.to.split("/")[1])}
-                          to={link.to}
-                          text={link.text}
-                          disabled={link.disabled}
-                          svgPath={link.icon}
-                        />
-                      );
-                    })}
-                </nav>
-              </div>
-
-              <div className="flex-0 mb-4 space-y-1 bg-white px-2">
-                <nav>
-                  {links
-                    .filter((l) => l.position === "bottom")
-                    .map((link, _index) => {
-                      return <SidebarLink key={`mobile-bottom-${link.to}`} active={router.pathname === link.to} to={link.to} text={link.text} disabled={link.disabled} svgPath={link.icon} />;
-                    })}
+                  {links.map((link) => {
+                    return <SidebarLink key={`mobile-top-${link.to}`} to={link.to} text={link.text} icon={link.icon} />;
+                  })}
                 </nav>
               </div>
             </div>
@@ -254,7 +180,7 @@ export default function Sidebar({ mobileOpen, onSidebarVisibilityChange, wideLay
               <div className="flex h-0 flex-1 flex-col border-r border-neutral-100 bg-white px-6">
                 <div className="flex flex-1 flex-col overflow-y-auto pb-4 pt-5">
                   <div className="flex shrink-0 items-center justify-center px-4">
-                    <Link href={"/"} passHref>
+                    <Link to={"/dashboard"}>
                       <SendraLogo width="100%" />
                     </Link>
                   </div>
@@ -264,62 +190,34 @@ export default function Sidebar({ mobileOpen, onSidebarVisibilityChange, wideLay
                   </div>
 
                   <nav className="mt-5 flex-1 space-y-1 px-2">
-                    {links
-                      .filter((l) => l.position === "top")
-                      .map((link, _index) => {
-                        if (link.to === "/events") {
-                          return (
-                            <div className={"pt-3"}>
-                              <p className={"pb-1 text-sm font-semibold text-neutral-500"}>Automations</p>
-                              <SidebarLink
-                                key={`desktop-top-${link.to}`}
-                                active={router.pathname.split("/")[1].includes(link.to.split("/")[1])}
-                                to={link.to}
-                                text={link.text}
-                                disabled={link.disabled}
-                                svgPath={link.icon}
-                                highlight={link.highlight}
-                              />
-                            </div>
-                          );
-                        }
-
-                        if (link.to === "/campaigns") {
-                          return (
-                            <div className={"pt-3"}>
-                              <p className={"pb-1 text-sm font-semibold text-neutral-500"}>Campaigns</p>
-                              <SidebarLink
-                                key={`desktop-top-${link.to}`}
-                                active={router.pathname.split("/")[1].includes(link.to.split("/")[1])}
-                                to={link.to}
-                                text={link.text}
-                                disabled={link.disabled}
-                                svgPath={link.icon}
-                                highlight={link.highlight}
-                              />
-                            </div>
-                          );
-                        }
-
+                    {links.map((link, _index) => {
+                      if (link.to === "/events") {
                         return (
-                          <SidebarLink
-                            key={`desktop-top-${link.to}`}
-                            active={link.to === "/" ? router.pathname === link.to : router.pathname.split("/")[1].includes(link.to.split("/")[1])}
-                            to={link.to}
-                            text={link.text}
-                            disabled={link.disabled}
-                            svgPath={link.icon}
-                            highlight={link.highlight}
-                          />
+                          <div className={"pt-3"}>
+                            <p className={"pb-1 text-sm font-semibold text-neutral-500"}>Automations</p>
+                            <SidebarLink key={`desktop-top-${link.to}`} to={link.to} text={link.text} icon={link.icon} />
+                          </div>
                         );
-                      })}
+                      }
+
+                      if (link.to === "/campaigns") {
+                        return (
+                          <div className={"pt-3"}>
+                            <p className={"pb-1 text-sm font-semibold text-neutral-500"}>Campaigns</p>
+                            <SidebarLink key={`desktop-top-${link.to}`} to={link.to} text={link.text} icon={link.icon} />
+                          </div>
+                        );
+                      }
+
+                      return <SidebarLink key={`desktop-top-${link.to}`} to={link.to} text={link.text} icon={link.icon} />;
+                    })}
                   </nav>
                 </div>
 
                 <div className="flex-0 mb-4 w-full space-y-1 bg-white px-2">
                   <Link
-                    href={"/auth/logout"}
-                    className={"flex cursor-pointer items-center gap-x-3 rounded-sm p-2 text-sm font-medium text-neutral-400 transition ease-in-out hover:bg-neutral-50 hover:text-neutral-700"}
+                    to="/auth/logout"
+                    className="flex cursor-pointer items-center gap-x-3 rounded-sm p-2 text-sm font-medium text-neutral-400 transition ease-in-out hover:bg-neutral-50 hover:text-neutral-700"
                   >
                     <div className="flex h-5 w-5 items-center justify-center">
                       <LogOut />

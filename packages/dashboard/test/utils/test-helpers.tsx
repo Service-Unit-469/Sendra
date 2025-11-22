@@ -1,39 +1,55 @@
-import { render, type RenderOptions } from "@testing-library/react";
+import { render as rtlRender, type RenderOptions } from "@testing-library/react";
 import { type ReactElement, type ReactNode } from "react";
+import { MemoryRouter } from "react-router-dom";
+import { Provider as JotaiProvider } from "jotai";
 import { SWRConfig } from "swr";
+import { network } from "../../src/lib/network";
+import { vi, beforeEach, afterEach } from "vitest";
 
 /**
  * Custom render function that wraps components with necessary providers
+ * Includes React Router, Jotai, and SWR providers
  */
-export function renderWithProviders(ui: ReactElement, options?: Omit<RenderOptions, "wrapper">) {
+export function renderWithProviders(
+	ui: ReactElement,
+	options?: Omit<RenderOptions, "wrapper"> & {
+		initialEntries?: string[];
+	},
+) {
+	const { initialEntries = ["/"], ...renderOptions } = options || {};
+
 	function Wrapper({ children }: { children: ReactNode }) {
 		return (
 			<SWRConfig
 				value={{
+					fetcher: network.fetch,
 					dedupingInterval: 0,
 					provider: () => new Map(),
+					revalidateOnFocus: false,
 				}}
 			>
-				{children}
+				<JotaiProvider>
+					<MemoryRouter initialEntries={initialEntries}>{children}</MemoryRouter>
+				</JotaiProvider>
 			</SWRConfig>
 		);
 	}
 
-	return render(ui, { wrapper: Wrapper, ...options });
+	return rtlRender(ui, { wrapper: Wrapper, ...renderOptions });
 }
 
 /**
- * Mock sessionStorage token for authenticated requests
+ * Mock localStorage token for authenticated requests
  */
 export function mockAuthToken(token = "mock-jwt-token") {
-	sessionStorage.setItem("sendra.token", token);
+	localStorage.setItem("sendra.token", token);
 }
 
 /**
- * Clear authentication token from sessionStorage
+ * Clear authentication token from localStorage
  */
 export function clearAuthToken() {
-	sessionStorage.removeItem("sendra.token");
+	localStorage.removeItem("sendra.token");
 }
 
 /**
@@ -157,7 +173,15 @@ export function createMockUser(overrides: Record<string, any> = {}) {
 	};
 }
 
+// Default render function that uses renderWithProviders
+export function render(ui: ReactElement, options?: Omit<RenderOptions, "wrapper"> & { initialEntries?: string[] }) {
+	return renderWithProviders(ui, options);
+}
+
 // Re-export everything from @testing-library/react for convenience
 export * from "@testing-library/react";
 export { default as userEvent } from "@testing-library/user-event";
+
+// Re-export render as the default for convenience
+export { render as default };
 

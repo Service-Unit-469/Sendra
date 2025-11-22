@@ -1,5 +1,3 @@
-"use client";
-
 import type { CustomField } from "@measured/puck";
 import { Color } from "@tiptap/extension-color";
 import Link from "@tiptap/extension-link";
@@ -8,9 +6,9 @@ import { TextStyle } from "@tiptap/extension-text-style";
 import Underline from "@tiptap/extension-underline";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import { useActiveProject } from "dashboard/src/lib/hooks/projects";
 import { AlignCenter, AlignJustify, AlignLeft, AlignRight, Bold, Code, Italic, Link2, Link2Off, List, ListOrderedIcon, PaintBucket, RemoveFormatting } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { useCurrentProject } from "../../../lib/hooks/projects";
 
 // Hook to handle clicks outside an element
 function useClickOutside(ref: React.RefObject<HTMLElement>, handler: () => void) {
@@ -79,8 +77,8 @@ export const RichTextEditorField: React.FC<RichTextEditorFieldProps> = ({ value 
   const [showSourceCode, setShowSourceCode] = useState(false);
   const [sourceCode, setSourceCode] = useState(value || "");
 
-  useClickOutside(colorPickerRef, () => setShowColorPicker(false));
-  const activeProject = useActiveProject();
+  useClickOutside(colorPickerRef as React.RefObject<HTMLElement>, () => setShowColorPicker(false));
+  const activeProject = useCurrentProject();
 
   const editor = useEditor({
     immediatelyRender: false,
@@ -385,9 +383,6 @@ export const RichTextEditorField: React.FC<RichTextEditorFieldProps> = ({ value 
   );
 };
 
-/**
- * Required variant that ensures a non-empty value
- */
 export const RichTextEditorRender: CustomField<string>["render"] = ({ value, onChange, name, id, field: { label } }) => (
   <RichTextEditorField value={value} onChange={(v) => onChange(v || "")} name={name} id={id} label={label} />
 );

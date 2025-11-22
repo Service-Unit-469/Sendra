@@ -1,5 +1,4 @@
-import Link from "next/link";
-import { useRouter } from "next/router";
+import { Link, useNavigate } from "react-router-dom";
 
 export interface TabProps {
   links: {
@@ -14,7 +13,7 @@ export interface TabProps {
  * @param root0.links
  */
 export default function Tabs({ links }: TabProps) {
-  const router = useRouter();
+  const navigate = useNavigate();
   return (
     <div>
       <div className="sm:hidden">
@@ -25,7 +24,7 @@ export default function Tabs({ links }: TabProps) {
           id="tabs"
           name="tabs"
           className="focus:ring-mirage-500 focus:border-mirage-500 block w-full rounded-sm border-neutral-300 py-2 pl-3 pr-10 text-base focus:outline-hidden sm:text-sm"
-          onChange={(e) => router.push(e.target.value)}
+          onChange={(e) => navigate(e.target.value)}
         >
           {links.map((link) => (
             <option key={link.to} value={link.to} selected={link.active}>
@@ -40,7 +39,7 @@ export default function Tabs({ links }: TabProps) {
             {links.map((link) => (
               <Link
                 key={link.to}
-                href={link.to}
+                to={link.to}
                 className={`${
                   link.active ? "border-mirage-500 text-mirage-600" : "text-neutral-500 hover:border-neutral-300 hover:text-neutral-700"
                 } whitespace-nowrap border-b-2 border-transparent px-1 py-4 text-sm font-medium transition`}

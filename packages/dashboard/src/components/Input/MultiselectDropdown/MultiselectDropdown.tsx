@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Check } from "lucide-react";
-import React, { type MutableRefObject, useEffect, useState } from "react";
-import { FixedSizeList as List } from "react-window";
+import React, { type MutableRefObject, type ReactElement, useEffect, useState } from "react";
+import { List, type RowComponentProps } from "react-window";
 import { DropdownIndicator } from "../../../icons/DropdownIndicator";
 
 export interface MultiselectDropdownProps {
@@ -16,19 +16,19 @@ export interface MultiselectDropdownProps {
   className?: string;
 }
 
-interface RowProps {
-  index: number;
-  style: React.CSSProperties;
-  data: {
-    filteredValues: readonly { name: string; value: string; tag?: string }[];
-    selectedValues: readonly string[];
-    onChange: (value: string[]) => void;
-    setSelectedValues: (value: readonly string[]) => void;
-  };
-}
-
-const Row = ({ index, style, data }: RowProps) => {
-  const { filteredValues, selectedValues, onChange, setSelectedValues } = data;
+const Row = ({
+  index,
+  style,
+  filteredValues,
+  selectedValues,
+  onChange,
+  setSelectedValues,
+}: RowComponentProps<{
+  filteredValues: readonly { name: string; value: string; tag?: string }[];
+  selectedValues: readonly string[];
+  onChange: (value: string[]) => void;
+  setSelectedValues: (value: readonly string[]) => void;
+}>): ReactElement => {
   const value = filteredValues[index];
   return (
     <li
@@ -55,7 +55,7 @@ const Row = ({ index, style, data }: RowProps) => {
   );
 };
 
-export default function MultiselectDropdown({ onChange, values, selectedValues: PropsselectedValues, className, disabled = false }: MultiselectDropdownProps) {
+export default function MultiselectDropdown({ onChange, values, selectedValues: initialSelectedValues, className, disabled = false }: MultiselectDropdownProps) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [selectedValues, setSelectedValues] = useState<readonly string[]>([]);
@@ -63,10 +63,10 @@ export default function MultiselectDropdown({ onChange, values, selectedValues: 
   const ref = React.createRef<HTMLDivElement>();
 
   useEffect(() => {
-    if (PropsselectedValues) {
-      setSelectedValues(PropsselectedValues);
+    if (initialSelectedValues) {
+      setSelectedValues(initialSelectedValues);
     }
-  }, [PropsselectedValues]);
+  }, [initialSelectedValues]);
 
   useEffect(() => {
     const mutableRef = ref as MutableRefObject<HTMLDivElement | null>;
@@ -84,13 +84,6 @@ export default function MultiselectDropdown({ onChange, values, selectedValues: 
   }, [ref, open]);
 
   const filteredValues = values.filter((value) => value.name.toLowerCase().includes(query.toLowerCase()));
-
-  const itemData = {
-    filteredValues,
-    selectedValues,
-    onChange,
-    setSelectedValues,
-  };
 
   return (
     <div ref={ref} className={className ?? ""}>
@@ -138,9 +131,7 @@ export default function MultiselectDropdown({ onChange, values, selectedValues: 
               {filteredValues.length === 0 ? (
                 <li className="relative cursor-default select-none py-2 pl-3 pr-9 text-neutral-800">No results found</li>
               ) : (
-                <List height={500} itemCount={filteredValues.length} itemSize={40} width={"100%"} itemData={itemData}>
-                  {Row}
-                </List>
+                <List rowCount={filteredValues.length} rowHeight={40} rowComponent={Row} rowProps={{ filteredValues, selectedValues, onChange, setSelectedValues }} />
               )}
             </motion.div>
           )}
