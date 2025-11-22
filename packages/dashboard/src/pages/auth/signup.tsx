@@ -9,14 +9,14 @@ import { Link, useSearchParams } from "react-router-dom";
 import FullscreenLoader from "../../components/Utility/FullscreenLoader/FullscreenLoader";
 import Redirect from "../../components/Utility/Redirect/Redirect";
 import SendraLogo from "../../icons/SendraLogo";
-import { useUser } from "../../lib/hooks/users";
+import { useFetchUser } from "../../lib/hooks/users";
 import { network } from "../../lib/network";
 
 /**
  *
  */
 export default function Index() {
-  const { data: user, error } = useUser();
+  const { data: user, error } = useFetchUser();
 
   const [state, setState] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [hidePassword, setHidePassword] = useState(true);
