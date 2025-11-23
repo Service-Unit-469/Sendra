@@ -131,14 +131,13 @@ export default function EditCampaignPage() {
           loading: "Saving your campaign",
           success: () => {
             campaignMutate();
-            navigate(`/dashboard/campaigns/${campaign.id}`);
             return "Saved your campaign";
           },
           error: "Could not save your campaign!",
         },
       );
     },
-    [project, campaign, campaignMutate, navigate],
+    [project, campaign, campaignMutate],
   );
 
   if (!campaign || !template) {

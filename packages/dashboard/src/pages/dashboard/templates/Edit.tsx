@@ -3,7 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import type { TemplateUpdate } from "@sendra/shared";
 import { TemplateSchemas } from "@sendra/shared";
 import { Copy, Save, Trash } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
@@ -54,7 +54,19 @@ export default function EditTemplatePage() {
 
   const fields = useTemplateFields();
 
-  if (!template || (watch("body") as object | undefined) === undefined) {
+  // Memoize initialData to prevent editor reset on template refetch
+  const initialData = useMemo(() => {
+    if (!template?.body?.data) {
+      return undefined;
+    }
+    try {
+      return JSON.parse(template.body.data);
+    } catch {
+      return undefined;
+    }
+  }, [template?.body?.data]);
+
+  if (!template || (watch("body") as object | undefined) === undefined || !initialData) {
     return <FullscreenLoader />;
   }
 
@@ -135,7 +147,7 @@ export default function EditTemplatePage() {
 
   return (
     <EmailEditor
-      initialData={JSON.parse(template.body.data)}
+      initialData={initialData}
       fields={fields}
       onChange={(value) => {
         setValue("body", {
