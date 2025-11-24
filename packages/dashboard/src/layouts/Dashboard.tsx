@@ -9,7 +9,7 @@ import Redirect from "../components/Utility/Redirect/Redirect";
 import { useProjects } from "../lib/hooks/projects";
 import { useLoginStatus } from "../lib/hooks/users";
 
-const WIDE_LAYOUT_ROUTES = [/\/dashboard\/campaigns\/.*\/edit/, /\/dashboard\/templates\/.*/];
+const WIDE_LAYOUT_ROUTES = [/\/campaigns\/.*\/edit/, /\/templates\/.*/];
 
 export const Dashboard = (props: { children: React.ReactNode }) => {
   const { data: projects } = useProjects();

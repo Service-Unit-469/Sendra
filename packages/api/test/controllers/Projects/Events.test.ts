@@ -35,7 +35,7 @@ describe("Events Endpoint Contract Tests", () => {
     test("should successfully list all event types including OOTB events", async () => {
       const { project, token } = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}/event-types/all`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/event-types/all`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -61,7 +61,7 @@ describe("Events Endpoint Contract Tests", () => {
       const contact = await createTestContact(project.id);
       await createTestEvent(project.id, contact.id);
 
-      const response = await app.request(`/projects/${project.id}/event-types/all?embed=events`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/event-types/all?embed=events`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -86,7 +86,7 @@ describe("Events Endpoint Contract Tests", () => {
         eventTypes: [],
       });
 
-      const response = await app.request(`/projects/${updatedProject.id}/event-types/all`, {
+      const response = await app.request(`/api/v1/projects/${updatedProject.id}/event-types/all`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -118,7 +118,7 @@ describe("Events Endpoint Contract Tests", () => {
     test("should return 401 when no authentication token provided", async () => {
       const { project } = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}/event-types/all`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/event-types/all`, {
         method: "GET",
       });
 
@@ -128,7 +128,7 @@ describe("Events Endpoint Contract Tests", () => {
     test("should return 401 with invalid token", async () => {
       const { project } = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}/event-types/all`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/event-types/all`, {
         method: "GET",
         headers: {
           Authorization: "Bearer invalid-token",
@@ -142,7 +142,7 @@ describe("Events Endpoint Contract Tests", () => {
       const { project } = await createTestSetup();
       const secretToken = AuthService.createProjectToken(project.secret, "secret", project.id);
 
-      const response = await app.request(`/projects/${project.id}/event-types/all`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/event-types/all`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${secretToken}`,
@@ -159,7 +159,7 @@ describe("Events Endpoint Contract Tests", () => {
       const contact = await createTestContact(project.id);
       await createTestEvent(project.id, contact.id);
 
-      const response = await app.request(`/projects/${project.id}/events`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/events`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -180,7 +180,7 @@ describe("Events Endpoint Contract Tests", () => {
     test("should return empty array when no events exist", async () => {
       const { project, token } = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}/events`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/events`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -201,7 +201,7 @@ describe("Events Endpoint Contract Tests", () => {
       await createTestEvent(project.id, contact1.id);
       await createTestEvent(project.id, contact2.id);
 
-      const response = await app.request(`/projects/${project.id}/events`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/events`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -217,7 +217,7 @@ describe("Events Endpoint Contract Tests", () => {
     test("should return 401 when no authentication token provided", async () => {
       const { project } = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}/events`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/events`, {
         method: "GET",
       });
 
@@ -228,7 +228,7 @@ describe("Events Endpoint Contract Tests", () => {
       const { project } = await createTestSetup();
       const secretToken = AuthService.createProjectToken(project.secret, "secret", project.id);
 
-      const response = await app.request(`/projects/${project.id}/events`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/events`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${secretToken}`,
@@ -268,7 +268,7 @@ describe("Events Endpoint Contract Tests", () => {
         subscribed: true,
       };
 
-      const response = await app.request(`/projects/${updatedProject.id}/send`, {
+      const response = await app.request(`/api/v1/projects/${updatedProject.id}/send`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${publicToken}`,
@@ -322,7 +322,7 @@ describe("Events Endpoint Contract Tests", () => {
 
       const publicToken = AuthService.createProjectToken(updatedProject.public, "public", updatedProject.id);
 
-      const response = await app.request(`/projects/${updatedProject.id}/send`, {
+      const response = await app.request(`/api/v1/projects/${updatedProject.id}/send`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${publicToken}`,
@@ -365,7 +365,7 @@ describe("Events Endpoint Contract Tests", () => {
 
       const publicToken = AuthService.createProjectToken(updatedProject.public, "public", updatedProject.id);
 
-      const response = await app.request(`/projects/${updatedProject.id}/send`, {
+      const response = await app.request(`/api/v1/projects/${updatedProject.id}/send`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${publicToken}`,
@@ -420,7 +420,7 @@ describe("Events Endpoint Contract Tests", () => {
 
       const publicToken = AuthService.createProjectToken(updatedProject.public, "public", updatedProject.id);
 
-      const response = await app.request(`/projects/${updatedProject.id}/send`, {
+      const response = await app.request(`/api/v1/projects/${updatedProject.id}/send`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${publicToken}`,
@@ -465,7 +465,7 @@ describe("Events Endpoint Contract Tests", () => {
 
       const publicToken = AuthService.createProjectToken(updatedProject.public, "public", updatedProject.id);
 
-      const response = await app.request(`/projects/${updatedProject.id}/send`, {
+      const response = await app.request(`/api/v1/projects/${updatedProject.id}/send`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${publicToken}`,
@@ -505,7 +505,7 @@ describe("Events Endpoint Contract Tests", () => {
 
       const publicToken = AuthService.createProjectToken(updatedProject.public, "public", updatedProject.id);
 
-      const response = await app.request(`/projects/${updatedProject.id}/send`, {
+      const response = await app.request(`/api/v1/projects/${updatedProject.id}/send`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${publicToken}`,
@@ -547,7 +547,7 @@ describe("Events Endpoint Contract Tests", () => {
 
       const publicToken = AuthService.createProjectToken(updatedProject.public, "public", updatedProject.id);
 
-      const response = await app.request(`/projects/${updatedProject.id}/send`, {
+      const response = await app.request(`/api/v1/projects/${updatedProject.id}/send`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${publicToken}`,
@@ -593,7 +593,7 @@ describe("Events Endpoint Contract Tests", () => {
 
       const publicToken = AuthService.createProjectToken(updatedProject.public, "public", updatedProject.id);
 
-      const response = await app.request(`/projects/${updatedProject.id}/send`, {
+      const response = await app.request(`/api/v1/projects/${updatedProject.id}/send`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${publicToken}`,
@@ -620,7 +620,7 @@ describe("Events Endpoint Contract Tests", () => {
 
       const publicToken = AuthService.createProjectToken(project.public, "public", project.id);
 
-      const response = await app.request(`/projects/${project.id}/send`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/send`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${publicToken}`,
@@ -662,7 +662,7 @@ describe("Events Endpoint Contract Tests", () => {
 
       const publicToken = AuthService.createProjectToken(updatedProject.public, "public", updatedProject.id);
 
-      const response = await app.request(`/projects/${updatedProject.id}/send`, {
+      const response = await app.request(`/api/v1/projects/${updatedProject.id}/send`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${publicToken}`,
@@ -702,7 +702,7 @@ describe("Events Endpoint Contract Tests", () => {
 
       const publicToken = AuthService.createProjectToken(updatedProject.public, "public", updatedProject.id);
 
-      const response = await app.request(`/projects/${updatedProject.id}/send`, {
+      const response = await app.request(`/api/v1/projects/${updatedProject.id}/send`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${publicToken}`,
@@ -727,7 +727,7 @@ describe("Events Endpoint Contract Tests", () => {
         subscribed: true,
       };
 
-      const response = await app.request(`/projects/${project.id}/send`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/send`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -792,7 +792,7 @@ describe("Events Endpoint Contract Tests", () => {
 
       const publicToken = AuthService.createProjectToken(updatedProject.public, "public", updatedProject.id);
 
-      const response = await app.request(`/projects/${updatedProject.id}/send`, {
+      const response = await app.request(`/api/v1/projects/${updatedProject.id}/send`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${publicToken}`,
@@ -828,7 +828,7 @@ describe("Events Endpoint Contract Tests", () => {
 
       const publicToken = AuthService.createProjectToken(project.public, "public", project.id);
 
-      const response = await app.request(`/projects/${project.id}/track`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/track`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${publicToken}`,
@@ -861,7 +861,7 @@ describe("Events Endpoint Contract Tests", () => {
 
       const publicToken = AuthService.createProjectToken(project.public, "public", project.id);
 
-      const response = await app.request(`/projects/${project.id}/track`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/track`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${publicToken}`,
@@ -899,7 +899,7 @@ describe("Events Endpoint Contract Tests", () => {
 
       const publicToken = AuthService.createProjectToken(project.public, "public", project.id);
 
-      const response = await app.request(`/projects/${project.id}/track`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/track`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${publicToken}`,
@@ -936,7 +936,7 @@ describe("Events Endpoint Contract Tests", () => {
 
       const publicToken = AuthService.createProjectToken(project.public, "public", project.id);
 
-      const response = await app.request(`/projects/${project.id}/track`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/track`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${publicToken}`,
@@ -980,7 +980,7 @@ describe("Events Endpoint Contract Tests", () => {
 
       const publicToken = AuthService.createProjectToken(project.public, "public", project.id);
 
-      const response = await app.request(`/projects/${project.id}/track`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/track`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${publicToken}`,
@@ -1020,7 +1020,7 @@ describe("Events Endpoint Contract Tests", () => {
 
       const publicToken = AuthService.createProjectToken(project.public, "public", project.id);
 
-      const response = await app.request(`/projects/${project.id}/track`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/track`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${publicToken}`,
@@ -1058,7 +1058,7 @@ describe("Events Endpoint Contract Tests", () => {
 
       const publicToken = AuthService.createProjectToken(project.public, "public", project.id);
 
-      const response = await app.request(`/projects/${project.id}/track`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/track`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${publicToken}`,
@@ -1092,7 +1092,7 @@ describe("Events Endpoint Contract Tests", () => {
 
       const publicToken = AuthService.createProjectToken(project.public, "public", project.id);
 
-      const response = await app.request(`/projects/${project.id}/track`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/track`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${publicToken}`,
@@ -1118,7 +1118,7 @@ describe("Events Endpoint Contract Tests", () => {
         email: "tracker@example.com",
       };
 
-      await app.request(`/projects/${project.id}/track`, {
+      await app.request(`/api/v1/projects/${project.id}/track`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${project.public}`,
@@ -1127,7 +1127,7 @@ describe("Events Endpoint Contract Tests", () => {
         body: JSON.stringify(eventPayload),
       });
 
-      await app.request(`/projects/${project.id}/track`, {
+      await app.request(`/api/v1/projects/${project.id}/track`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${project.public}`,
@@ -1153,7 +1153,7 @@ describe("Events Endpoint Contract Tests", () => {
 
       const publicToken = AuthService.createProjectToken(project.public, "public", project.id);
 
-      const response = await app.request(`/projects/${project.id}/track`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/track`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${publicToken}`,
@@ -1176,7 +1176,7 @@ describe("Events Endpoint Contract Tests", () => {
 
       const publicToken = AuthService.createProjectToken(project.public, "public", project.id);
 
-      const response = await app.request(`/projects/${project.id}/track`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/track`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${publicToken}`,
@@ -1205,7 +1205,7 @@ describe("Events Endpoint Contract Tests", () => {
 
       const publicToken = AuthService.createProjectToken(project.public, "public", project.id);
 
-      const response = await app.request(`/projects/${project.id}/track`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/track`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${publicToken}`,
@@ -1234,7 +1234,7 @@ describe("Events Endpoint Contract Tests", () => {
 
       const publicToken = AuthService.createProjectToken(project.public, "public", project.id);
 
-      const response = await app.request(`/projects/${project.id}/track`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/track`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${publicToken}`,
@@ -1256,7 +1256,7 @@ describe("Events Endpoint Contract Tests", () => {
 
       const publicToken = AuthService.createProjectToken(project.public, "public", project.id);
 
-      const response = await app.request(`/projects/${project.id}/track`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/track`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${publicToken}`,
@@ -1296,7 +1296,7 @@ describe("Events Endpoint Contract Tests", () => {
         email: "user@example.com",
       };
 
-      const response = await app.request(`/projects/${project.id}/track`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/track`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -1315,7 +1315,7 @@ describe("Events Endpoint Contract Tests", () => {
         email: "user@example.com",
       };
 
-      const response = await app.request(`/projects/${project.id}/track`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/track`, {
         method: "POST",
         headers: {
           Authorization: "Bearer invalid-token",
@@ -1340,7 +1340,7 @@ describe("Events Endpoint Contract Tests", () => {
 
       const publicToken = AuthService.createProjectToken(project.public, "public", project.id);
 
-      const response = await app.request(`/projects/${project.id}/track`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/track`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${publicToken}`,
@@ -1374,7 +1374,7 @@ describe("Events Endpoint Contract Tests", () => {
 
       const publicToken = AuthService.createProjectToken(project.public, "public", project.id);
 
-      const response = await app.request(`/projects/${project.id}/track`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/track`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${publicToken}`,
@@ -1407,7 +1407,7 @@ describe("Events Endpoint Contract Tests", () => {
 
       const publicToken = AuthService.createProjectToken(project.public, "public", project.id);
 
-      const response = await app.request(`/projects/${project.id}/track`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/track`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${publicToken}`,

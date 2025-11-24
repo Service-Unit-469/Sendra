@@ -77,7 +77,7 @@ export default function Index() {
                     "Last Updated": dayjs().to(u.updatedAt).toString(),
                     Subscribed: u.subscribed,
                     Edit: (
-                      <Link to={`/dashboard/contacts/${u.id}`} className="transition hover:text-neutral-800" aria-label="Edit contact">
+                      <Link to={`/contacts/${u.id}`} className="transition hover:text-neutral-800" aria-label="Edit contact">
                         <Edit2 size={18} />
                       </Link>
                     ),

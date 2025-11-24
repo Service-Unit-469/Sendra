@@ -51,7 +51,7 @@ describe("Subscriber Endpoint Contract Tests", () => {
 
       // Make request
       const response = await app.request(
-        `/subscriber?email=${encodeURIComponent(testEmail)}`,
+        `/api/v1/subscriber?email=${encodeURIComponent(testEmail)}`,
         {
           method: "GET",
         }
@@ -83,7 +83,7 @@ describe("Subscriber Endpoint Contract Tests", () => {
 
     test("should return 404 when email does not exist", async () => {
       const response = await app.request(
-        "/subscriber?email=nonexistent@example.com",
+        "/api/v1/subscriber?email=nonexistent@example.com",
         {
           method: "GET",
         }
@@ -99,7 +99,7 @@ describe("Subscriber Endpoint Contract Tests", () => {
     });
 
     test("should return 400 when email parameter is missing", async () => {
-      const response = await app.request("/subscriber", {
+      const response = await app.request("/api/v1/subscriber", {
         method: "GET",
       });
 
@@ -107,7 +107,7 @@ describe("Subscriber Endpoint Contract Tests", () => {
     });
 
     test("should return 400 when email parameter is invalid", async () => {
-      const response = await app.request("/subscriber?email=invalid-email", {
+      const response = await app.request("/api/v1/subscriber?email=invalid-email", {
         method: "GET",
       });
 
@@ -167,7 +167,7 @@ describe("Subscriber Endpoint Contract Tests", () => {
         ],
       };
 
-      const response = await app.request("/subscriber", {
+      const response = await app.request("/api/v1/subscriber", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -238,7 +238,7 @@ describe("Subscriber Endpoint Contract Tests", () => {
         ],
       };
 
-      const response = await app.request("/subscriber", {
+      const response = await app.request("/api/v1/subscriber", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -289,7 +289,7 @@ describe("Subscriber Endpoint Contract Tests", () => {
         ],
       };
 
-      const response = await app.request("/subscriber", {
+      const response = await app.request("/api/v1/subscriber", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -308,7 +308,7 @@ describe("Subscriber Endpoint Contract Tests", () => {
     });
 
     test("should return 400 when request body is invalid", async () => {
-      const response = await app.request("/subscriber", {
+      const response = await app.request("/api/v1/subscriber", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -354,7 +354,7 @@ describe("Subscriber Endpoint Contract Tests", () => {
         ],
       };
 
-      const response = await app.request("/subscriber", {
+      const response = await app.request("/api/v1/subscriber", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -30,7 +30,7 @@ describe("Info Endpoint Contract Tests", () => {
       const { project, token } = await createTestSetup();
 
       const response = await app.request(
-        `/projects/${project.id}/analytics?period=week`,
+        `/api/v1/projects/${project.id}/analytics?period=week`,
         {
           method: "GET",
           headers: {
@@ -68,7 +68,7 @@ describe("Info Endpoint Contract Tests", () => {
       const { project, token } = await createTestSetup();
 
       const response = await app.request(
-        `/projects/${project.id}/analytics?period=month`,
+        `/api/v1/projects/${project.id}/analytics?period=month`,
         {
           method: "GET",
           headers: {
@@ -87,7 +87,7 @@ describe("Info Endpoint Contract Tests", () => {
       const { project, token } = await createTestSetup();
 
       const response = await app.request(
-        `/projects/${project.id}/analytics?period=year`,
+        `/api/v1/projects/${project.id}/analytics?period=year`,
         {
           method: "GET",
           headers: {
@@ -119,7 +119,7 @@ describe("Info Endpoint Contract Tests", () => {
       });
 
       const response = await app.request(
-        `/projects/${project.id}/analytics?period=week`,
+        `/api/v1/projects/${project.id}/analytics?period=week`,
         {
           method: "GET",
           headers: {
@@ -199,7 +199,7 @@ describe("Info Endpoint Contract Tests", () => {
       });
 
       const response = await app.request(
-        `/projects/${project.id}/analytics?period=week`,
+        `/api/v1/projects/${project.id}/analytics?period=week`,
         {
           method: "GET",
           headers: {
@@ -273,7 +273,7 @@ describe("Info Endpoint Contract Tests", () => {
       });
 
       const response = await app.request(
-        `/projects/${project.id}/analytics?period=week`,
+        `/api/v1/projects/${project.id}/analytics?period=week`,
         {
           method: "GET",
           headers: {
@@ -307,7 +307,7 @@ describe("Info Endpoint Contract Tests", () => {
       await createTestContact(project.id);
 
       const response = await app.request(
-        `/projects/${project.id}/analytics?period=month`,
+        `/api/v1/projects/${project.id}/analytics?period=month`,
         {
           method: "GET",
           headers: {
@@ -329,7 +329,7 @@ describe("Info Endpoint Contract Tests", () => {
       await createTestContact(project.id);
 
       const response = await app.request(
-        `/projects/${project.id}/analytics?period=year`,
+        `/api/v1/projects/${project.id}/analytics?period=year`,
         {
           method: "GET",
           headers: {
@@ -350,7 +350,7 @@ describe("Info Endpoint Contract Tests", () => {
       const { project } = await createTestSetup();
 
       const response = await app.request(
-        `/projects/${project.id}/analytics?period=week`,
+        `/api/v1/projects/${project.id}/analytics?period=week`,
         {
           method: "GET",
         },
@@ -364,7 +364,7 @@ describe("Info Endpoint Contract Tests", () => {
       const otherUserSetup = await createTestSetup();
 
       const response = await app.request(
-        `/projects/${project.id}/analytics?period=week`,
+        `/api/v1/projects/${project.id}/analytics?period=week`,
         {
           method: "GET",
           headers: {
@@ -384,7 +384,7 @@ describe("Info Endpoint Contract Tests", () => {
       await createTestContact(project.id);
 
       const response = await app.request(
-        `/projects/${project.id}/analytics?period=week`,
+        `/api/v1/projects/${project.id}/analytics?period=week`,
         {
           method: "GET",
           headers: {
@@ -405,7 +405,7 @@ describe("Info Endpoint Contract Tests", () => {
     test("should return empty feed for new project", async () => {
       const { project, token } = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}/feed`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/feed`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -436,7 +436,7 @@ describe("Info Endpoint Contract Tests", () => {
         eventType: "user.login",
       });
 
-      const response = await app.request(`/projects/${project.id}/feed`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/feed`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -483,7 +483,7 @@ describe("Info Endpoint Contract Tests", () => {
         sendType: "TRANSACTIONAL",
       });
 
-      const response = await app.request(`/projects/${project.id}/feed`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/feed`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -536,7 +536,7 @@ describe("Info Endpoint Contract Tests", () => {
         eventType: "user.signup",
       });
 
-      const response = await app.request(`/projects/${project.id}/feed`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/feed`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -582,7 +582,7 @@ describe("Info Endpoint Contract Tests", () => {
         relationType: "ACTION",
       });
 
-      const response = await app.request(`/projects/${project.id}/feed`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/feed`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -636,7 +636,7 @@ describe("Info Endpoint Contract Tests", () => {
         });
       }
 
-      const response = await app.request(`/projects/${project.id}/feed`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/feed`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -653,7 +653,7 @@ describe("Info Endpoint Contract Tests", () => {
     test("should return 401 when not authenticated", async () => {
       const { project } = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}/feed`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/feed`, {
         method: "GET",
       });
 
@@ -664,7 +664,7 @@ describe("Info Endpoint Contract Tests", () => {
       const { project } = await createTestSetup();
       const otherUserSetup = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}/feed`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/feed`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${otherUserSetup.token}`,
@@ -679,7 +679,7 @@ describe("Info Endpoint Contract Tests", () => {
     test("should return zero usage for new project", async () => {
       const { project, token } = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}/usage`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/usage`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -731,7 +731,7 @@ describe("Info Endpoint Contract Tests", () => {
         sendType: "TRANSACTIONAL",
       });
 
-      const response = await app.request(`/projects/${project.id}/usage`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/usage`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -798,7 +798,7 @@ describe("Info Endpoint Contract Tests", () => {
         sourceType: "ACTION",
       });
 
-      const response = await app.request(`/projects/${project.id}/usage`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/usage`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -868,7 +868,7 @@ describe("Info Endpoint Contract Tests", () => {
         sourceType: "CAMPAIGN",
       });
 
-      const response = await app.request(`/projects/${project.id}/usage`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/usage`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -949,7 +949,7 @@ describe("Info Endpoint Contract Tests", () => {
         sourceType: "CAMPAIGN",
       });
 
-      const response = await app.request(`/projects/${project.id}/usage`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/usage`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -988,7 +988,7 @@ describe("Info Endpoint Contract Tests", () => {
       // For the old email test, we'll just verify current month filtering works
       // DynamoDB doesn't support updating createdAt in test environment
 
-      const response = await app.request(`/projects/${project.id}/usage`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/usage`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -1007,7 +1007,7 @@ describe("Info Endpoint Contract Tests", () => {
     test("should return 401 when not authenticated", async () => {
       const { project } = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}/usage`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/usage`, {
         method: "GET",
       });
 
@@ -1018,7 +1018,7 @@ describe("Info Endpoint Contract Tests", () => {
       const { project } = await createTestSetup();
       const otherUserSetup = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}/usage`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/usage`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${otherUserSetup.token}`,
@@ -1049,7 +1049,7 @@ describe("Info Endpoint Contract Tests", () => {
 
       const secretToken = AuthService.createProjectToken(project.secret, "secret", project.id);
 
-      const response = await app.request(`/projects/${project.id}/usage`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/usage`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${secretToken}`,

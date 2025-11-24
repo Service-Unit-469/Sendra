@@ -36,11 +36,12 @@
     "packages/lib",
     "packages/api",
     "packages/subscribers",
-    "packages/dashboard"
+    "packages/dashboard",
+    "packages/subscription"
   ],
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.922.0",
-    "sst": "^3.17.21",
+    "sst": "^3.17.23",
     "tailwindcss": "^4.1.16",
     "tar": "^7.5.2"
   },

@@ -109,7 +109,7 @@ export default function MembersPage() {
       .then(async (res) => {
         await projectMutate(res.memberships);
         localStorage.removeItem("project");
-        navigate("/dashboard");
+        navigate("");
         window.location.reload();
       });
   };

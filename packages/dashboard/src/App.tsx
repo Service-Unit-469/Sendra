@@ -9,15 +9,14 @@ import { Provider as JotaiProvider } from "jotai";
 import NProgress from "nprogress";
 import "nprogress/nprogress.css";
 import { Suspense, useEffect } from "react";
-import { BrowserRouter, Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import { HashRouter, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { Toaster } from "sonner";
 import { SWRConfig } from "swr";
 import FullscreenLoader from "./components/Utility/FullscreenLoader/FullscreenLoader";
 import { NO_AUTH_ROUTES } from "./lib/constants";
 import { useFetchUser } from "./lib/hooks/users";
 import { network } from "./lib/network";
-import NotFound from "./pages/NotFound";
-import { Dashboard, ForgotPassword, Login, Logout, NewProject, ResetPassword, Signup, Subscription, Verify } from "./routes";
+import { Dashboard, ForgotPassword, Login, Logout, NewProject, ResetPassword, Signup, Verify } from "./routes";
 
 dayjs.extend(relativeTime);
 dayjs.extend(utc);
@@ -65,8 +64,6 @@ function AppContent() {
       <Toaster position="bottom-right" />
       <Suspense fallback={<FullscreenLoader />}>
         <Routes>
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
-          <Route path="/dashboard/*" element={<Dashboard />} />
           <Route path="/new" element={<NewProject />} />
 
           <Route path="/auth/login" element={<Login />} />
@@ -76,9 +73,7 @@ function AppContent() {
           <Route path="/auth/reset" element={<ResetPassword />} />
           <Route path="/auth/verify" element={<Verify />} />
 
-          <Route path="/subscription" element={<Subscription />} />
-
-          <Route path="*" element={<NotFound />} />
+          <Route path="/*" element={<Dashboard />} />
         </Routes>
       </Suspense>
     </>
@@ -97,9 +92,9 @@ export default function App() {
       }}
     >
       <JotaiProvider>
-        <BrowserRouter>
+        <HashRouter>
           <AppContent />
-        </BrowserRouter>
+        </HashRouter>
       </JotaiProvider>
     </SWRConfig>
   );

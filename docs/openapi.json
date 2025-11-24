@@ -25,7 +25,7 @@
     }
   },
   "paths": {
-    "/projects/{projectId}": {
+    "/api/v1/projects/{projectId}": {
       "get": {
         "tags": [
           "Project"
@@ -263,7 +263,7 @@
         }
       }
     },
-    "/projects/{projectId}/analytics": {
+    "/api/v1/projects/{projectId}/analytics": {
       "get": {
         "tags": [
           "Project"
@@ -413,7 +413,7 @@
         }
       }
     },
-    "/projects/{projectId}/feed": {
+    "/api/v1/projects/{projectId}/feed": {
       "get": {
         "tags": [
           "Project"
@@ -694,7 +694,7 @@
         }
       }
     },
-    "/projects/{projectId}/usage": {
+    "/api/v1/projects/{projectId}/usage": {
       "get": {
         "tags": [
           "Project"
@@ -893,7 +893,7 @@
         }
       }
     },
-    "/projects/{projectId}/actions": {
+    "/api/v1/projects/{projectId}/actions": {
       "get": {
         "tags": [
           "Action"
@@ -1775,7 +1775,7 @@
         }
       }
     },
-    "/projects/{projectId}/actions/all": {
+    "/api/v1/projects/{projectId}/actions/all": {
       "get": {
         "tags": [
           "Action"
@@ -2201,7 +2201,7 @@
         }
       }
     },
-    "/projects/{projectId}/actions/{entityId}": {
+    "/api/v1/projects/{projectId}/actions/{entityId}": {
       "get": {
         "tags": [
           "Action"
@@ -3227,7 +3227,7 @@
         }
       }
     },
-    "/projects/{projectId}/actions/{actionId}/related": {
+    "/api/v1/projects/{projectId}/actions/{actionId}/related": {
       "get": {
         "tags": [
           "Action"
@@ -3474,7 +3474,7 @@
         }
       }
     },
-    "/projects/{projectId}/assets": {
+    "/api/v1/projects/{projectId}/assets": {
       "get": {
         "operationId": "listAssets",
         "tags": [
@@ -3550,7 +3550,7 @@
         }
       }
     },
-    "/projects/{projectId}/assets/{id}": {
+    "/api/v1/projects/{projectId}/assets/{id}": {
       "get": {
         "operationId": "getAsset",
         "tags": [
@@ -3671,7 +3671,7 @@
         }
       }
     },
-    "/projects/{projectId}/assets/upload-url": {
+    "/api/v1/projects/{projectId}/assets/upload-url": {
       "post": {
         "operationId": "generateAssetUploadUrl",
         "tags": [
@@ -3937,7 +3937,7 @@
         }
       }
     },
-    "/projects/{projectId}/assets/{id}/download-url": {
+    "/api/v1/projects/{projectId}/assets/{id}/download-url": {
       "get": {
         "operationId": "getAssetDownloadUrl",
         "tags": [
@@ -4000,7 +4000,7 @@
         }
       }
     },
-    "/projects/{projectId}/assets/by-type/{assetType}": {
+    "/api/v1/projects/{projectId}/assets/by-type/{assetType}": {
       "get": {
         "operationId": "listAssetsByType",
         "tags": [
@@ -4096,7 +4096,7 @@
         }
       }
     },
-    "/projects/{projectId}/campaigns": {
+    "/api/v1/projects/{projectId}/campaigns": {
       "get": {
         "tags": [
           "Campaign"
@@ -4975,7 +4975,7 @@
         }
       }
     },
-    "/projects/{projectId}/campaigns/all": {
+    "/api/v1/projects/{projectId}/campaigns/all": {
       "get": {
         "tags": [
           "Campaign"
@@ -5379,7 +5379,7 @@
         }
       }
     },
-    "/projects/{projectId}/campaigns/{entityId}": {
+    "/api/v1/projects/{projectId}/campaigns/{entityId}": {
       "get": {
         "tags": [
           "Campaign"
@@ -6406,7 +6406,7 @@
         }
       }
     },
-    "/projects/{projectId}/campaigns/{campaignId}/send": {
+    "/api/v1/projects/{projectId}/campaigns/{campaignId}/send": {
       "post": {
         "tags": [
           "Campaign"
@@ -6616,7 +6616,7 @@
         }
       }
     },
-    "/projects/{projectId}/contacts": {
+    "/api/v1/projects/{projectId}/contacts": {
       "get": {
         "tags": [
           "Contact"
@@ -7509,7 +7509,7 @@
         }
       }
     },
-    "/projects/{projectId}/contacts/all": {
+    "/api/v1/projects/{projectId}/contacts/all": {
       "get": {
         "tags": [
           "Contact"
@@ -7938,7 +7938,7 @@
         }
       }
     },
-    "/projects/{projectId}/contacts/{entityId}": {
+    "/api/v1/projects/{projectId}/contacts/{entityId}": {
       "get": {
         "tags": [
           "Contact"
@@ -8976,7 +8976,7 @@
         }
       }
     },
-    "/projects/{projectId}/contacts/{contactId}/subscribe": {
+    "/api/v1/projects/{projectId}/contacts/{contactId}/subscribe": {
       "post": {
         "tags": [
           "Contact"
@@ -9219,7 +9219,7 @@
         }
       }
     },
-    "/projects/{projectId}/contacts/{contactId}/unsubscribe": {
+    "/api/v1/projects/{projectId}/contacts/{contactId}/unsubscribe": {
       "post": {
         "tags": [
           "Contact"
@@ -9462,7 +9462,7 @@
         }
       }
     },
-    "/projects/{projectId}/groups": {
+    "/api/v1/projects/{projectId}/groups": {
       "get": {
         "tags": [
           "Group"
@@ -9958,7 +9958,7 @@
         }
       }
     },
-    "/projects/{projectId}/groups/all": {
+    "/api/v1/projects/{projectId}/groups/all": {
       "get": {
         "tags": [
           "Group"
@@ -10183,7 +10183,7 @@
         }
       }
     },
-    "/projects/{projectId}/groups/{entityId}": {
+    "/api/v1/projects/{projectId}/groups/{entityId}": {
       "get": {
         "tags": [
           "Group"
@@ -10835,7 +10835,7 @@
         }
       }
     },
-    "/projects/{projectId}/groups/{groupId}/contacts": {
+    "/api/v1/projects/{projectId}/groups/{groupId}/contacts": {
       "get": {
         "tags": [
           "Group",
@@ -11090,7 +11090,7 @@
         }
       }
     },
-    "/projects/{projectId}/emails": {
+    "/api/v1/projects/{projectId}/emails": {
       "get": {
         "tags": [
           "Email"
@@ -11412,7 +11412,7 @@
         }
       }
     },
-    "/projects/{projectId}/emails/all": {
+    "/api/v1/projects/{projectId}/emails/all": {
       "get": {
         "tags": [
           "Email"
@@ -11699,7 +11699,7 @@
         }
       }
     },
-    "/projects/{projectId}/emails/{entityId}": {
+    "/api/v1/projects/{projectId}/emails/{entityId}": {
       "get": {
         "tags": [
           "Email"
@@ -11972,7 +11972,7 @@
         }
       }
     },
-    "/projects/{projectId}/event-types/all": {
+    "/api/v1/projects/{projectId}/event-types/all": {
       "get": {
         "tags": [
           "Event"
@@ -12099,7 +12099,7 @@
         }
       }
     },
-    "/projects/{projectId}/events": {
+    "/api/v1/projects/{projectId}/events": {
       "get": {
         "tags": [
           "Event"
@@ -12127,7 +12127,7 @@
         }
       }
     },
-    "/projects/{projectId}/send": {
+    "/api/v1/projects/{projectId}/send": {
       "post": {
         "tags": [
           "Event",
@@ -12249,7 +12249,7 @@
         }
       }
     },
-    "/projects/{projectId}/track": {
+    "/api/v1/projects/{projectId}/track": {
       "post": {
         "tags": [
           "Event"
@@ -12537,7 +12537,7 @@
         }
       }
     },
-    "/projects/{projectId}/templates": {
+    "/api/v1/projects/{projectId}/templates": {
       "get": {
         "tags": [
           "Template"
@@ -13319,7 +13319,7 @@
         }
       }
     },
-    "/projects/{projectId}/templates/all": {
+    "/api/v1/projects/{projectId}/templates/all": {
       "get": {
         "tags": [
           "Template"
@@ -13681,7 +13681,7 @@
         }
       }
     },
-    "/projects/{projectId}/templates/{entityId}": {
+    "/api/v1/projects/{projectId}/templates/{entityId}": {
       "get": {
         "tags": [
           "Template"
@@ -14611,7 +14611,7 @@
         }
       }
     },
-    "/subscriber": {
+    "/api/v1/subscriber": {
       "get": {
         "tags": [
           "Subscriber"

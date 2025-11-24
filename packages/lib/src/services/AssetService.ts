@@ -12,11 +12,13 @@ const logger = rootLogger.child({
 export class AssetService {
   private s3Client: S3Client;
   private bucketName: string;
+  private assetsUrl: string;
 
   constructor() {
     const assetsConfig = getAssetsConfig();
     this.s3Client = new S3Client();
     this.bucketName = assetsConfig.ASSETS_BUCKET_NAME || "";
+    this.assetsUrl = assetsConfig.ASSETS_URL || "";
 
     if (!this.bucketName) {
       throw new Error("ASSETS_BUCKET_NAME environment variable is not set");
@@ -45,7 +47,7 @@ export class AssetService {
     const filename = filenameParts.join("/");
     const name = filename;
     const mimeType = response.ContentType ?? "application/octet-stream";
-    const url = `https://${this.bucketName}.s3.amazonaws.com/${key}`;
+    const url = `${this.assetsUrl}/assets/${key}`;
 
     return {
       id: this.s3KeyToId(key),

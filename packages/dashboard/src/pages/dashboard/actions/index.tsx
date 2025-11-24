@@ -16,7 +16,7 @@ export default function ActionsPage() {
       title="Actions"
       description="Repeatable automations that can be triggered by your applications"
       actions={
-        <Link to="/dashboard/actions/new">
+        <Link to="/actions/new">
           <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.9 }} className={"flex items-center gap-x-1 rounded-sm bg-neutral-800 px-8 py-2 text-center text-sm font-medium text-white"}>
             <Plus strokeWidth={1.5} size={18} />
             New
@@ -128,7 +128,7 @@ export default function ActionsPage() {
                       <div className="-mt-px flex divide-x divide-neutral-200">
                         <div className="flex w-0 flex-1">
                           <Link
-                            to={`/dashboard/actions/${a.id}`}
+                            to={`/actions/${a.id}`}
                             className="relative inline-flex w-0 flex-1 items-center justify-center rounded-bl rounded-br py-4 text-sm font-medium text-neutral-800 transition hover:bg-neutral-50 hover:text-neutral-700"
                           >
                             <Edit3 size={18} />

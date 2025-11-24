@@ -131,7 +131,7 @@ export default function EditCampaignPage() {
           loading: "Saving your campaign",
           success: () => {
             campaignMutate();
-            navigate(`/dashboard/campaigns/${campaign.id}`);
+            navigate(`/campaigns/${campaign.id}`);
             return "Saved your campaign";
           },
           error: "Could not save your campaign!",
@@ -178,7 +178,7 @@ export default function EditCampaignPage() {
               <Save strokeWidth={1.5} size={18} />
               Save
             </BlackButton>
-            <button type="button" className="flex items-center gap-x-2 text-sm text-neutral-500" onClick={() => navigate(`/dashboard/campaigns/${campaign.id}`)}>
+            <button type="button" className="flex items-center gap-x-2 text-sm text-neutral-500" onClick={() => navigate(`/campaigns/${campaign.id}`)}>
               Back
             </button>
           </>
@@ -217,7 +217,7 @@ export default function EditCampaignPage() {
             <Save strokeWidth={1.5} size={18} />
             Save
           </BlackButton>
-          <button type="button" className="flex items-center gap-x-2 text-sm text-neutral-500" onClick={() => navigate(`/dashboard/campaigns/${campaign.id}`)}>
+          <button type="button" className="flex items-center gap-x-2 text-sm text-neutral-500" onClick={() => navigate(`/campaigns/${campaign.id}`)}>
             Back
           </button>
         </>

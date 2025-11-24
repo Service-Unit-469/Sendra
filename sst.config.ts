@@ -1,6 +1,5 @@
 /// <reference path="./.sst/platform/config.d.ts" />
 
-
 export default $config({
   app(input) {
     return {
@@ -12,23 +11,17 @@ export default $config({
         aws: {
           region: "us-east-2",
         },
-      }
+      },
     };
   },
   async run() {
-    
-    const web =  await import("./infra/web");
-    await import("./infra/email-topic");
-    await import("./infra/task-queue");
-    const {api} =  await import("./infra/api");
-    const {dynamo} =  await import("./infra/dynamo");
-    const {assetsBucket} =  await import("./infra/assets");
-    
+    const { router } = await import("./infra/route");
+    const { subscription } = await import("./infra/subscription");
+    const { dashboard } = await import("./infra/dashboard");
     return {
-      api,
-      web,
-      dynamo,
-      assetsBucket,
+      dashboard,
+      router,
+      subscription,
     };
   },
 });

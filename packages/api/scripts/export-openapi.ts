@@ -11,6 +11,7 @@ async function exportOpenAPI() {
   // Set required environment variables for OpenAPI generation
   // These are only needed to initialize the app, not for the actual spec generation
   process.env.ASSETS_BUCKET_NAME = "mock-bucket-for-openapi-generation";
+  process.env.ASSETS_URL = "https://mock-url.example.com";
   process.env.AUTH_ISSUER = "mock-issuer";
   process.env.APP_URL = "https://mock-url.example.com";
   process.env.DEFAULT_EMAIL = "mock@example.com";

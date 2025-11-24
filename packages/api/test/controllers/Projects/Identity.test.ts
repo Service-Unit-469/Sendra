@@ -66,7 +66,7 @@ describe("Identity Endpoint Contract Tests", () => {
     test("should return NotStarted status when project has no identity", async () => {
       const { project, token } = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}/identity`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/identity`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -104,7 +104,7 @@ describe("Identity Endpoint Contract Tests", () => {
         },
       });
 
-      const response = await app.request(`/projects/${project.id}/identity`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/identity`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -148,7 +148,7 @@ describe("Identity Endpoint Contract Tests", () => {
         },
       });
 
-      const response = await app.request(`/projects/${project.id}/identity`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/identity`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -192,7 +192,7 @@ describe("Identity Endpoint Contract Tests", () => {
         },
       });
 
-      const response = await app.request(`/projects/${project.id}/identity`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/identity`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -212,7 +212,7 @@ describe("Identity Endpoint Contract Tests", () => {
     test("should return 401 when not authenticated", async () => {
       const { project } = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}/identity`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/identity`, {
         method: "GET",
       });
 
@@ -236,7 +236,7 @@ describe("Identity Endpoint Contract Tests", () => {
       const { project } = await createTestSetup();
       const otherUserSetup = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}/identity`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/identity`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${otherUserSetup.token}`,
@@ -254,7 +254,7 @@ describe("Identity Endpoint Contract Tests", () => {
 
       mockSes.verifyEmailIdentity.mockResolvedValue({});
 
-      const response = await app.request(`/projects/${project.id}/identity`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/identity`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -293,7 +293,7 @@ describe("Identity Endpoint Contract Tests", () => {
         DkimTokens: ["token1", "token2", "token3"],
       });
 
-      const response = await app.request(`/projects/${project.id}/identity`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/identity`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -336,7 +336,7 @@ describe("Identity Endpoint Contract Tests", () => {
       });
       mockSes.setIdentityMailFromDomain.mockResolvedValue({});
 
-      const response = await app.request(`/projects/${project.id}/identity`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/identity`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -394,7 +394,7 @@ describe("Identity Endpoint Contract Tests", () => {
       // Mock email config to disallow duplicates
       vi.stubEnv("ALLOW_DUPLICATE_PROJECT_IDENTITIES", "false");
 
-      const response = await app.request(`/projects/${project.id}/identity`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/identity`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -427,7 +427,7 @@ describe("Identity Endpoint Contract Tests", () => {
       // Mock email config to disallow duplicates
       vi.stubEnv("ALLOW_DUPLICATE_PROJECT_IDENTITIES", "false");
 
-      const response = await app.request(`/projects/${project.id}/identity`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/identity`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -463,7 +463,7 @@ describe("Identity Endpoint Contract Tests", () => {
 
       mockSes.verifyEmailIdentity.mockResolvedValue({});
 
-      const response = await app.request(`/projects/${project.id}/identity`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/identity`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -484,7 +484,7 @@ describe("Identity Endpoint Contract Tests", () => {
     test("should return 401 when not authenticated", async () => {
       const { project } = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}/identity`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/identity`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -520,7 +520,7 @@ describe("Identity Endpoint Contract Tests", () => {
       const { project } = await createTestSetup();
       const otherUserSetup = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}/identity`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/identity`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${otherUserSetup.token}`,
@@ -538,7 +538,7 @@ describe("Identity Endpoint Contract Tests", () => {
     test("should return 400 when request body is invalid", async () => {
       const { project, token } = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}/identity`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/identity`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -569,7 +569,7 @@ describe("Identity Endpoint Contract Tests", () => {
         email: "test@example.com",
       });
 
-      const response = await app.request(`/projects/${project.id}/identity`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/identity`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -586,7 +586,7 @@ describe("Identity Endpoint Contract Tests", () => {
     test("should return 401 when not authenticated", async () => {
       const { project } = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}/identity`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/identity`, {
         method: "DELETE",
       });
 
@@ -610,7 +610,7 @@ describe("Identity Endpoint Contract Tests", () => {
       const { project } = await createTestSetup();
       const otherUserSetup = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}/identity`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/identity`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${otherUserSetup.token}`,
@@ -625,7 +625,7 @@ describe("Identity Endpoint Contract Tests", () => {
     test("should update project sending information successfully", async () => {
       const { project, token } = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}/identity`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/identity`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -657,7 +657,7 @@ describe("Identity Endpoint Contract Tests", () => {
     test("should update only from field", async () => {
       const { project, token } = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}/identity`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/identity`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -679,7 +679,7 @@ describe("Identity Endpoint Contract Tests", () => {
     test("should return 401 when not authenticated", async () => {
       const { project } = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}/identity`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/identity`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -715,7 +715,7 @@ describe("Identity Endpoint Contract Tests", () => {
       const { project } = await createTestSetup();
       const otherUserSetup = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}/identity`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/identity`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${otherUserSetup.token}`,
@@ -733,7 +733,7 @@ describe("Identity Endpoint Contract Tests", () => {
     test("should return 400 when request body is invalid", async () => {
       const { project, token } = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}/identity`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/identity`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -751,7 +751,7 @@ describe("Identity Endpoint Contract Tests", () => {
     test("should return 400 when email format is invalid", async () => {
       const { project, token } = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}/identity`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/identity`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,

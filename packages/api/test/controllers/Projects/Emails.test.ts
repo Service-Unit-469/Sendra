@@ -49,7 +49,7 @@ describe("Emails Endpoint Contract Tests", () => {
       await createTestEmail(project.id, contact.id);
 
       const response = await app.request(
-        `/projects/${project.id}/emails?limit=2`,
+        `/api/v1/projects/${project.id}/emails?limit=2`,
         {
           method: "GET",
           headers: {
@@ -88,7 +88,7 @@ describe("Emails Endpoint Contract Tests", () => {
       await createTestEmail(project.id, contact.id);
       await createTestEmail(project.id, contact.id);
 
-      const response = await app.request(`/projects/${project.id}/emails`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/emails`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -113,7 +113,7 @@ describe("Emails Endpoint Contract Tests", () => {
 
       // Get first page
       const firstResponse = await app.request(
-        `/projects/${project.id}/emails?limit=2`,
+        `/api/v1/projects/${project.id}/emails?limit=2`,
         {
           method: "GET",
           headers: {
@@ -128,7 +128,7 @@ describe("Emails Endpoint Contract Tests", () => {
       if (firstData.hasMore && firstData.cursor) {
         // Get second page using cursor
         const secondResponse = await app.request(
-          `/projects/${project.id}/emails?limit=2&cursor=${firstData.cursor}`,
+          `/api/v1/projects/${project.id}/emails?limit=2&cursor=${firstData.cursor}`,
           {
             method: "GET",
             headers: {
@@ -157,7 +157,7 @@ describe("Emails Endpoint Contract Tests", () => {
       await createTestEmail(project.id, contact.id); // Different messageId
 
       const response = await app.request(
-        `/projects/${project.id}/emails?filter=messageId&value=${encodeURIComponent(specificMessageId)}`,
+        `/api/v1/projects/${project.id}/emails?filter=messageId&value=${encodeURIComponent(specificMessageId)}`,
         {
           method: "GET",
           headers: {
@@ -180,7 +180,7 @@ describe("Emails Endpoint Contract Tests", () => {
     test("should return empty result when no emails exist", async () => {
       const { project, token } = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}/emails`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/emails`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -199,7 +199,7 @@ describe("Emails Endpoint Contract Tests", () => {
       const { project, token } = await createTestSetup();
 
       const response = await app.request(
-        `/projects/${project.id}/emails?limit=101`,
+        `/api/v1/projects/${project.id}/emails?limit=101`,
         {
           method: "GET",
           headers: {
@@ -217,7 +217,7 @@ describe("Emails Endpoint Contract Tests", () => {
     test("should return 401 when no authentication is provided", async () => {
       const { project } = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}/emails`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/emails`, {
         method: "GET",
       });
 
@@ -247,7 +247,7 @@ describe("Emails Endpoint Contract Tests", () => {
       const email1 = await createTestEmail(project.id, contact.id);
       const email2 = await createTestEmail(project.id, contact.id);
 
-      const response = await app.request(`/projects/${project.id}/emails/all`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/emails/all`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -280,7 +280,7 @@ describe("Emails Endpoint Contract Tests", () => {
       await createTestEmail(project.id, contact.id); // Different messageId
 
       const response = await app.request(
-        `/projects/${project.id}/emails/all?filter=messageId&value=${encodeURIComponent(specificMessageId)}`,
+        `/api/v1/projects/${project.id}/emails/all?filter=messageId&value=${encodeURIComponent(specificMessageId)}`,
         {
           method: "GET",
           headers: {
@@ -304,7 +304,7 @@ describe("Emails Endpoint Contract Tests", () => {
     test("should return empty array when no emails exist", async () => {
       const { project, token } = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}/emails/all`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/emails/all`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -321,7 +321,7 @@ describe("Emails Endpoint Contract Tests", () => {
     test("should return 401 when no authentication is provided", async () => {
       const { project } = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}/emails/all`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/emails/all`, {
         method: "GET",
       });
 
@@ -336,7 +336,7 @@ describe("Emails Endpoint Contract Tests", () => {
       const email = await createTestEmail(project.id, contact.id);
 
       const response = await app.request(
-        `/projects/${project.id}/emails/${email.id}`,
+        `/api/v1/projects/${project.id}/emails/${email.id}`,
         {
           method: "GET",
           headers: {
@@ -367,7 +367,7 @@ describe("Emails Endpoint Contract Tests", () => {
       const email = await createTestEmail(project.id, contact.id);
 
       const response = await app.request(
-        `/projects/${project.id}/emails/${email.id}`,
+        `/api/v1/projects/${project.id}/emails/${email.id}`,
         {
           method: "GET",
           headers: {
@@ -396,7 +396,7 @@ describe("Emails Endpoint Contract Tests", () => {
       const { project, token } = await createTestSetup();
 
       const response = await app.request(
-        `/projects/${project.id}/emails/non-existent-id`,
+        `/api/v1/projects/${project.id}/emails/non-existent-id`,
         {
           method: "GET",
           headers: {
@@ -418,7 +418,7 @@ describe("Emails Endpoint Contract Tests", () => {
       const email = await createTestEmail(project.id, contact.id);
 
       const response = await app.request(
-        `/projects/${project.id}/emails/${email.id}`,
+        `/api/v1/projects/${project.id}/emails/${email.id}`,
         {
           method: "GET",
         }
@@ -436,7 +436,7 @@ describe("Emails Endpoint Contract Tests", () => {
 
       const secretToken = AuthService.createProjectToken(project.secret, "secret", project.id);
 
-      const response = await app.request(`/projects/${project.id}/emails`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/emails`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${secretToken}`,
@@ -456,7 +456,7 @@ describe("Emails Endpoint Contract Tests", () => {
 
       const secretToken = AuthService.createProjectToken(project.secret, "secret", project.id);
 
-      const response = await app.request(`/projects/${project.id}/emails/${email.id}`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/emails/${email.id}`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${secretToken}`,
@@ -476,7 +476,7 @@ describe("Emails Endpoint Contract Tests", () => {
 
       const secretToken = AuthService.createProjectToken(project.secret, "secret", project.id);
 
-      const response = await app.request(`/projects/${project.id}/emails/all`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/emails/all`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${secretToken}`,
@@ -498,7 +498,7 @@ describe("Emails Endpoint Contract Tests", () => {
       const secretToken = AuthService.createProjectToken(project.secret, "secret", project.id);
 
       const response = await app.request(
-        `/projects/${project.id}/emails?filter=messageId&value=${encodeURIComponent(messageId)}`,
+        `/api/v1/projects/${project.id}/emails?filter=messageId&value=${encodeURIComponent(messageId)}`,
         {
           method: "GET",
           headers: {
@@ -528,7 +528,7 @@ describe("Emails Endpoint Contract Tests", () => {
 
       const nonMemberToken = AuthService.createUserToken(nonMemberUser.id, nonMemberUser.email);
 
-      const response = await app.request(`/projects/${project.id}/emails`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/emails`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${nonMemberToken}`,
@@ -558,7 +558,7 @@ describe("Emails Endpoint Contract Tests", () => {
         otherProject.id
       );
 
-      const response = await app.request(`/projects/${project.id}/emails`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/emails`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${wrongSecretToken}`,
@@ -606,7 +606,7 @@ describe("Emails Endpoint Contract Tests", () => {
         sendType: "TRANSACTIONAL",
       });
 
-      const response = await app.request(`/projects/${project.id}/emails/all`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/emails/all`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -661,7 +661,7 @@ describe("Emails Endpoint Contract Tests", () => {
         sendType: "MARKETING",
       });
 
-      const response = await app.request(`/projects/${project.id}/emails/all`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/emails/all`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -691,7 +691,7 @@ describe("Emails Endpoint Contract Tests", () => {
       await createTestEmail(project.id, contact.id, specialMessageId);
 
       const response = await app.request(
-        `/projects/${project.id}/emails?filter=messageId&value=${encodeURIComponent(specialMessageId)}`,
+        `/api/v1/projects/${project.id}/emails?filter=messageId&value=${encodeURIComponent(specialMessageId)}`,
         {
           method: "GET",
           headers: {
@@ -732,7 +732,7 @@ describe("Emails Endpoint Contract Tests", () => {
       });
 
       const response = await app.request(
-        `/projects/${project.id}/emails/${email.id}`,
+        `/api/v1/projects/${project.id}/emails/${email.id}`,
         {
           method: "GET",
           headers: {
@@ -754,7 +754,7 @@ describe("Emails Endpoint Contract Tests", () => {
       const { project, token } = await createTestSetup();
 
       const response = await app.request(
-        `/projects/${project.id}/emails?filter=messageId&value=non-existent-message-id`,
+        `/api/v1/projects/${project.id}/emails?filter=messageId&value=non-existent-message-id`,
         {
           method: "GET",
           headers: {

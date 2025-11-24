@@ -13,7 +13,7 @@ describe("Health Endpoint Contract Tests", () => {
 
   describe("GET /health", () => {
     test("should return success status", async () => {
-      const response = await app.request("/health", {
+      const response = await app.request("/api/v1/health", {
         method: "GET",
       });
 

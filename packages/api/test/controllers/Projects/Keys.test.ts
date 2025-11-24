@@ -18,7 +18,7 @@ describe("Keys Endpoint Contract Tests", () => {
     test("should return project API keys", async () => {
       const { project, token } = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}/keys`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/keys`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -41,7 +41,7 @@ describe("Keys Endpoint Contract Tests", () => {
     test("should return keys with correct prefixes", async () => {
       const { project, token } = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}/keys`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/keys`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -66,7 +66,7 @@ describe("Keys Endpoint Contract Tests", () => {
     test("should return 401 when not authenticated", async () => {
       const { project } = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}/keys`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/keys`, {
         method: "GET",
       });
 
@@ -90,7 +90,7 @@ describe("Keys Endpoint Contract Tests", () => {
       const { project } = await createTestSetup();
       const otherUserSetup = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}/keys`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/keys`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${otherUserSetup.token}`,
@@ -103,7 +103,7 @@ describe("Keys Endpoint Contract Tests", () => {
     test("should work with valid Bearer token", async () => {
       const { project, token } = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}/keys`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/keys`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -123,7 +123,7 @@ describe("Keys Endpoint Contract Tests", () => {
         project.id,
       );
 
-      const response = await app.request(`/projects/${project.id}/keys`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/keys`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${secretToken}`,
@@ -143,7 +143,7 @@ describe("Keys Endpoint Contract Tests", () => {
         project.id,
       );
 
-      const response = await app.request(`/projects/${project.id}/keys`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/keys`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${publicToken}`,
@@ -159,7 +159,7 @@ describe("Keys Endpoint Contract Tests", () => {
       const { project, token } = await createTestSetup();
 
       // Get original keys
-      const originalResponse = await app.request(`/projects/${project.id}/keys`, {
+      const originalResponse = await app.request(`/api/v1/projects/${project.id}/keys`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -168,7 +168,7 @@ describe("Keys Endpoint Contract Tests", () => {
       const originalKeys = await originalResponse.json();
 
       // Regenerate keys
-      const response = await app.request(`/projects/${project.id}/keys`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/keys`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -189,7 +189,7 @@ describe("Keys Endpoint Contract Tests", () => {
     test("should return valid JWT tokens after regeneration", async () => {
       const { project, token } = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}/keys`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/keys`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -213,7 +213,7 @@ describe("Keys Endpoint Contract Tests", () => {
       const { project, token } = await createTestSetup();
 
       // Regenerate keys
-      const response = await app.request(`/projects/${project.id}/keys`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/keys`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -224,7 +224,7 @@ describe("Keys Endpoint Contract Tests", () => {
       const newKeys = await response.json();
 
       // Verify keys are persisted by fetching them again
-      const verifyResponse = await app.request(`/projects/${project.id}/keys`, {
+      const verifyResponse = await app.request(`/api/v1/projects/${project.id}/keys`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -243,7 +243,7 @@ describe("Keys Endpoint Contract Tests", () => {
       const { project, token } = await createTestSetup();
 
       // Get original keys
-      const originalResponse = await app.request(`/projects/${project.id}/keys`, {
+      const originalResponse = await app.request(`/api/v1/projects/${project.id}/keys`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -256,7 +256,7 @@ describe("Keys Endpoint Contract Tests", () => {
       const originalPublicKey = project.public;
 
       // Regenerate keys
-      await app.request(`/projects/${project.id}/keys`, {
+      await app.request(`/api/v1/projects/${project.id}/keys`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -279,7 +279,7 @@ describe("Keys Endpoint Contract Tests", () => {
     test("should return 401 when not authenticated", async () => {
       const { project } = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}/keys`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/keys`, {
         method: "POST",
       });
 
@@ -303,7 +303,7 @@ describe("Keys Endpoint Contract Tests", () => {
       const { project } = await createTestSetup();
       const otherUserSetup = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}/keys`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/keys`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${otherUserSetup.token}`,
@@ -317,7 +317,7 @@ describe("Keys Endpoint Contract Tests", () => {
       const { project, token } = await createTestSetup();
 
       // First regeneration
-      const firstResponse = await app.request(`/projects/${project.id}/keys`, {
+      const firstResponse = await app.request(`/api/v1/projects/${project.id}/keys`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -327,7 +327,7 @@ describe("Keys Endpoint Contract Tests", () => {
       const firstKeys = await firstResponse.json();
 
       // Second regeneration
-      const secondResponse = await app.request(`/projects/${project.id}/keys`, {
+      const secondResponse = await app.request(`/api/v1/projects/${project.id}/keys`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -350,7 +350,7 @@ describe("Keys Endpoint Contract Tests", () => {
     test("should work with valid Bearer token", async () => {
       const { project, token } = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}/keys`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/keys`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -370,7 +370,7 @@ describe("Keys Endpoint Contract Tests", () => {
         project.id,
       );
 
-      const response = await app.request(`/projects/${project.id}/keys`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/keys`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${secretToken}`,
@@ -390,7 +390,7 @@ describe("Keys Endpoint Contract Tests", () => {
         project.id,
       );
 
-      const response = await app.request(`/projects/${project.id}/keys`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/keys`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${publicToken}`,
@@ -410,7 +410,7 @@ describe("Keys Endpoint Contract Tests", () => {
         project.id,
       );
 
-      const secretResponse = await app.request(`/projects/${project.id}/keys`, {
+      const secretResponse = await app.request(`/api/v1/projects/${project.id}/keys`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${secretToken}`,
@@ -426,7 +426,7 @@ describe("Keys Endpoint Contract Tests", () => {
         project.id,
       );
 
-      const publicResponse = await app.request(`/projects/${project.id}/keys`, {
+      const publicResponse = await app.request(`/api/v1/projects/${project.id}/keys`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${publicToken}`,

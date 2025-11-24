@@ -28,7 +28,7 @@ export default function EditGroupPage() {
       },
     );
 
-    navigate("/dashboard/groups");
+    navigate("/groups");
   };
   if (!group) {
     return <FullscreenLoader />;

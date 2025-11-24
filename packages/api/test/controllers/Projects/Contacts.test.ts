@@ -31,7 +31,7 @@ describe("Contacts Endpoint Contract Tests", () => {
         data: { firstName: "John", lastName: "Doe" },
       };
 
-      const response = await app.request(`/projects/${project.id}/contacts`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/contacts`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -63,7 +63,7 @@ describe("Contacts Endpoint Contract Tests", () => {
         data: {},
       };
 
-      const response = await app.request(`/projects/${project.id}/contacts`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/contacts`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -98,7 +98,7 @@ describe("Contacts Endpoint Contract Tests", () => {
         },
       };
 
-      const response = await app.request(`/projects/${project.id}/contacts`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/contacts`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -125,7 +125,7 @@ describe("Contacts Endpoint Contract Tests", () => {
         data: {},
       };
 
-      const response = await app.request(`/projects/${project.id}/contacts`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/contacts`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -149,7 +149,7 @@ describe("Contacts Endpoint Contract Tests", () => {
         data: {},
       };
 
-      const response = await app.request(`/projects/${project.id}/contacts`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/contacts`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -169,7 +169,7 @@ describe("Contacts Endpoint Contract Tests", () => {
         data: {},
       };
 
-      const response = await app.request(`/projects/${project.id}/contacts`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/contacts`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -190,7 +190,7 @@ describe("Contacts Endpoint Contract Tests", () => {
         data: {},
       };
 
-      const response = await app.request(`/projects/${project.id}/contacts`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/contacts`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -207,7 +207,7 @@ describe("Contacts Endpoint Contract Tests", () => {
       const { project, token } = await createTestSetup();
       const contact = await createTestContact(project.id);
 
-      const response = await app.request(`/projects/${project.id}/contacts/${contact.id}`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/contacts/${contact.id}`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -247,7 +247,7 @@ describe("Contacts Endpoint Contract Tests", () => {
       });
 
       const response = await app.request(
-        `/projects/${project.id}/contacts/${contact.id}?embed=emails`,
+        `/api/v1/projects/${project.id}/contacts/${contact.id}?embed=emails`,
         {
           method: "GET",
           headers: {
@@ -270,7 +270,7 @@ describe("Contacts Endpoint Contract Tests", () => {
       await createTestEvent(project.id, contact.id);
 
       const response = await app.request(
-        `/projects/${project.id}/contacts/${contact.id}?embed=events`,
+        `/api/v1/projects/${project.id}/contacts/${contact.id}?embed=events`,
         {
           method: "GET",
           headers: {
@@ -308,7 +308,7 @@ describe("Contacts Endpoint Contract Tests", () => {
       });
 
       const response = await app.request(
-        `/projects/${project.id}/contacts/${contact.id}?embed=emails&embed=events`,
+        `/api/v1/projects/${project.id}/contacts/${contact.id}?embed=emails&embed=events`,
         {
           method: "GET",
           headers: {
@@ -334,7 +334,7 @@ describe("Contacts Endpoint Contract Tests", () => {
   
 
         const response = await app.request(
-          `/projects/${project.id}/contacts/${contact.id}?embed=projects`,
+          `/api/v1/projects/${project.id}/contacts/${contact.id}?embed=projects`,
           {
             method: "GET",
             headers: {
@@ -349,7 +349,7 @@ describe("Contacts Endpoint Contract Tests", () => {
     test("should return 404 when contact does not exist", async () => {
       const { project, token } = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}/contacts/non-existent-id`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/contacts/non-existent-id`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -366,7 +366,7 @@ describe("Contacts Endpoint Contract Tests", () => {
     test("should return 401 when no authentication is provided", async () => {
       const { project } = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}/contacts/some-id`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/contacts/some-id`, {
         method: "GET",
       });
 
@@ -383,7 +383,7 @@ describe("Contacts Endpoint Contract Tests", () => {
       await createTestContact(project.id);
       await createTestContact(project.id);
 
-      const response = await app.request(`/projects/${project.id}/contacts`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/contacts`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -408,7 +408,7 @@ describe("Contacts Endpoint Contract Tests", () => {
         await createTestContact(project.id);
       }
 
-      const response = await app.request(`/projects/${project.id}/contacts?limit=2`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/contacts?limit=2`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -431,7 +431,7 @@ describe("Contacts Endpoint Contract Tests", () => {
       }
 
       // Get first page
-      const firstResponse = await app.request(`/projects/${project.id}/contacts?limit=2`, {
+      const firstResponse = await app.request(`/api/v1/projects/${project.id}/contacts?limit=2`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -445,7 +445,7 @@ describe("Contacts Endpoint Contract Tests", () => {
       // Get second page if cursor is provided
       if (firstData.cursor) {
         const secondResponse = await app.request(
-          `/projects/${project.id}/contacts?limit=2&cursor=${firstData.cursor}`,
+          `/api/v1/projects/${project.id}/contacts?limit=2&cursor=${firstData.cursor}`,
           {
             method: "GET",
             headers: {
@@ -474,7 +474,7 @@ describe("Contacts Endpoint Contract Tests", () => {
       await createTestContact(project.id); // Another contact
 
       const response = await app.request(
-        `/projects/${project.id}/contacts?email=${encodeURIComponent(targetEmail)}`,
+        `/api/v1/projects/${project.id}/contacts?email=${encodeURIComponent(targetEmail)}`,
         {
           method: "GET",
           headers: {
@@ -494,7 +494,7 @@ describe("Contacts Endpoint Contract Tests", () => {
     test("should return 400 when limit exceeds maximum", async () => {
       const { project, token } = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}/contacts?limit=101`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/contacts?limit=101`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -510,7 +510,7 @@ describe("Contacts Endpoint Contract Tests", () => {
     test("should return 401 when no authentication is provided", async () => {
       const { project } = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}/contacts`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/contacts`, {
         method: "GET",
       });
 
@@ -526,7 +526,7 @@ describe("Contacts Endpoint Contract Tests", () => {
       const contact2 = await createTestContact(project.id);
       const contact3 = await createTestContact(project.id);
 
-      const response = await app.request(`/projects/${project.id}/contacts/all`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/contacts/all`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -548,7 +548,7 @@ describe("Contacts Endpoint Contract Tests", () => {
     test("should return empty array when no contacts exist", async () => {
       const { project, token } = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}/contacts/all`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/contacts/all`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -564,7 +564,7 @@ describe("Contacts Endpoint Contract Tests", () => {
     test("should return 401 when no authentication is provided", async () => {
       const { project } = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}/contacts/all`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/contacts/all`, {
         method: "GET",
       });
 
@@ -584,7 +584,7 @@ describe("Contacts Endpoint Contract Tests", () => {
         data: { firstName: "Updated", lastName: "Name" },
       };
 
-      const response = await app.request(`/projects/${project.id}/contacts/${contact.id}`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/contacts/${contact.id}`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -616,7 +616,7 @@ describe("Contacts Endpoint Contract Tests", () => {
         data: { newField: "new value", another: 123 },
       };
 
-      const response = await app.request(`/projects/${project.id}/contacts/${contact.id}`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/contacts/${contact.id}`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -642,7 +642,7 @@ describe("Contacts Endpoint Contract Tests", () => {
         data: contact.data,
       };
 
-      const response = await app.request(`/projects/${project.id}/contacts/${contact.id}`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/contacts/${contact.id}`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -668,7 +668,7 @@ describe("Contacts Endpoint Contract Tests", () => {
         data: contact.data,
       };
 
-      const response = await app.request(`/projects/${project.id}/contacts/${contact.id}`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/contacts/${contact.id}`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -694,7 +694,7 @@ describe("Contacts Endpoint Contract Tests", () => {
         data: contact.data,
       };
 
-      const response = await app.request(`/projects/${project.id}/contacts/${contact.id}`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/contacts/${contact.id}`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -716,7 +716,7 @@ describe("Contacts Endpoint Contract Tests", () => {
         data: {},
       };
 
-      const response = await app.request(`/projects/${project.id}/contacts/non-existent-id`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/contacts/non-existent-id`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -739,7 +739,7 @@ describe("Contacts Endpoint Contract Tests", () => {
         data: {},
       };
 
-      const response = await app.request(`/projects/${project.id}/contacts/${contact.id}`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/contacts/${contact.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -756,7 +756,7 @@ describe("Contacts Endpoint Contract Tests", () => {
       const { project, token } = await createTestSetup();
       const contact = await createTestContact(project.id);
 
-      const response = await app.request(`/projects/${project.id}/contacts/${contact.id}`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/contacts/${contact.id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -792,7 +792,7 @@ describe("Contacts Endpoint Contract Tests", () => {
         sendType: "MARKETING",
       });
 
-      const response = await app.request(`/projects/${project.id}/contacts/${contact.id}`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/contacts/${contact.id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -811,7 +811,7 @@ describe("Contacts Endpoint Contract Tests", () => {
       const { project } = await createTestSetup();
       const contact = await createTestContact(project.id);
 
-      const response = await app.request(`/projects/${project.id}/contacts/${contact.id}`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/contacts/${contact.id}`, {
         method: "DELETE",
       });
 
@@ -831,7 +831,7 @@ describe("Contacts Endpoint Contract Tests", () => {
       });
 
       const response = await app.request(
-        `/projects/${project.id}/contacts/${contact.id}/subscribe`,
+        `/api/v1/projects/${project.id}/contacts/${contact.id}/subscribe`,
         {
           method: "POST",
           headers: {
@@ -860,7 +860,7 @@ describe("Contacts Endpoint Contract Tests", () => {
       const contact = await createTestContact(project.id); // Already subscribed
 
       const response = await app.request(
-        `/projects/${project.id}/contacts/${contact.id}/subscribe`,
+        `/api/v1/projects/${project.id}/contacts/${contact.id}/subscribe`,
         {
           method: "POST",
           headers: {
@@ -879,7 +879,7 @@ describe("Contacts Endpoint Contract Tests", () => {
       const { project, token } = await createTestSetup();
 
       const response = await app.request(
-        `/projects/${project.id}/contacts/non-existent-id/subscribe`,
+        `/api/v1/projects/${project.id}/contacts/non-existent-id/subscribe`,
         {
           method: "POST",
           headers: {
@@ -900,7 +900,7 @@ describe("Contacts Endpoint Contract Tests", () => {
       const contact = await createTestContact(project.id);
 
       const response = await app.request(
-        `/projects/${project.id}/contacts/${contact.id}/subscribe`,
+        `/api/v1/projects/${project.id}/contacts/${contact.id}/subscribe`,
         {
           method: "POST",
         }
@@ -916,7 +916,7 @@ describe("Contacts Endpoint Contract Tests", () => {
       const contact = await createTestContact(project.id); // Created as subscribed
 
       const response = await app.request(
-        `/projects/${project.id}/contacts/${contact.id}/unsubscribe`,
+        `/api/v1/projects/${project.id}/contacts/${contact.id}/unsubscribe`,
         {
           method: "POST",
           headers: {
@@ -952,7 +952,7 @@ describe("Contacts Endpoint Contract Tests", () => {
       });
 
       const response = await app.request(
-        `/projects/${project.id}/contacts/${contact.id}/unsubscribe`,
+        `/api/v1/projects/${project.id}/contacts/${contact.id}/unsubscribe`,
         {
           method: "POST",
           headers: {
@@ -971,7 +971,7 @@ describe("Contacts Endpoint Contract Tests", () => {
       const { project, token } = await createTestSetup();
 
       const response = await app.request(
-        `/projects/${project.id}/contacts/non-existent-id/unsubscribe`,
+        `/api/v1/projects/${project.id}/contacts/non-existent-id/unsubscribe`,
         {
           method: "POST",
           headers: {
@@ -992,7 +992,7 @@ describe("Contacts Endpoint Contract Tests", () => {
       const contact = await createTestContact(project.id);
 
       const response = await app.request(
-        `/projects/${project.id}/contacts/${contact.id}/unsubscribe`,
+        `/api/v1/projects/${project.id}/contacts/${contact.id}/unsubscribe`,
         {
           method: "POST",
         }
@@ -1014,7 +1014,7 @@ describe("Contacts Endpoint Contract Tests", () => {
         data: {},
       };
 
-      const response = await app.request(`/projects/${project.id}/contacts`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/contacts`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${secretToken}`,
@@ -1032,7 +1032,7 @@ describe("Contacts Endpoint Contract Tests", () => {
 
       const secretToken = AuthService.createProjectToken(project.secret, "secret", project.id);
 
-      const response = await app.request(`/projects/${project.id}/contacts/${contact.id}`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/contacts/${contact.id}`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${secretToken}`,
@@ -1055,7 +1055,7 @@ describe("Contacts Endpoint Contract Tests", () => {
       const secretToken = AuthService.createProjectToken(project.secret, "secret", project.id);
 
       const response = await app.request(
-        `/projects/${project.id}/contacts/${contact.id}/subscribe`,
+        `/api/v1/projects/${project.id}/contacts/${contact.id}/subscribe`,
         {
           method: "POST",
           headers: {
@@ -1074,7 +1074,7 @@ describe("Contacts Endpoint Contract Tests", () => {
       const secretToken = AuthService.createProjectToken(project.secret, "secret", project.id);
 
       const response = await app.request(
-        `/projects/${project.id}/contacts/${contact.id}/unsubscribe`,
+        `/api/v1/projects/${project.id}/contacts/${contact.id}/unsubscribe`,
         {
           method: "POST",
           headers: {
@@ -1095,7 +1095,7 @@ describe("Contacts Endpoint Contract Tests", () => {
         data: {},
       };
 
-      const response = await app.request(`/projects/${project.id}/contacts`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/contacts`, {
         method: "POST",
         headers: {
           Authorization: "Bearer invalid-secret-key",

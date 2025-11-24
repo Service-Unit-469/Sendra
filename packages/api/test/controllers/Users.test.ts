@@ -27,7 +27,7 @@ describe("Users Endpoint Contract Tests", () => {
       const token = AuthService.createUserToken(testUser.id, testUser.email);
 
       // Make request with authentication
-      const response = await app.request("/@me", {
+      const response = await app.request("/api/v1/@me", {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -55,7 +55,7 @@ describe("Users Endpoint Contract Tests", () => {
     });
 
     test("should return 401 when no authentication is provided", async () => {
-      const response = await app.request("/@me", {
+      const response = await app.request("/api/v1/@me", {
         method: "GET",
       });
 
@@ -63,7 +63,7 @@ describe("Users Endpoint Contract Tests", () => {
     });
 
     test("should return 401 when invalid token is provided", async () => {
-      const response = await app.request("/@me", {
+      const response = await app.request("/api/v1/@me", {
         method: "GET",
         headers: {
           Authorization: "Bearer invalid-token",
@@ -81,7 +81,7 @@ describe("Users Endpoint Contract Tests", () => {
         "nonexistent@example.com"
       );
 
-      const response = await app.request("/@me", {
+      const response = await app.request("/api/v1/@me", {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,

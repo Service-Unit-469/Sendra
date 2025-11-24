@@ -46,7 +46,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
         template: template.id,
       };
 
-      const response = await app.request(`/projects/${project.id}/campaigns`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/campaigns`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -92,7 +92,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
         template: template.id,
       };
 
-      const response = await app.request(`/projects/${project.id}/campaigns`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/campaigns`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -127,7 +127,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
         template: template.id,
       };
 
-      const response = await app.request(`/projects/${project.id}/campaigns`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/campaigns`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -157,7 +157,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
         template: template.id,
       };
 
-      const response = await app.request(`/projects/${project.id}/campaigns`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/campaigns`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -194,7 +194,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
         template: template.id,
       };
 
-      const response = await app.request(`/projects/${project.id}/campaigns`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/campaigns`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -222,7 +222,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
         template: template.id,
       };
 
-      const response = await app.request(`/projects/${project.id}/campaigns`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/campaigns`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -254,7 +254,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
         status: "DRAFT",
       });
 
-      const response = await app.request(`/projects/${project.id}/campaigns/${campaign.id}`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/campaigns/${campaign.id}`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -282,7 +282,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
     test("should return 404 when campaign does not exist", async () => {
       const { project, token } = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}/campaigns/non-existent-id`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/campaigns/non-existent-id`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -299,7 +299,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
     test("should return 401 when no authentication is provided", async () => {
       const { project } = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}/campaigns/some-id`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/campaigns/some-id`, {
         method: "GET",
       });
 
@@ -341,7 +341,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
         status: "DRAFT",
       });
 
-      const response = await app.request(`/projects/${project.id}/campaigns`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/campaigns`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -381,7 +381,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
         });
       }
 
-      const response = await app.request(`/projects/${project.id}/campaigns?limit=2`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/campaigns?limit=2`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -397,7 +397,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
     test("should return 400 when limit exceeds maximum", async () => {
       const { project, token } = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}/campaigns?limit=101`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/campaigns?limit=101`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -413,7 +413,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
     test("should return 401 when no authentication is provided", async () => {
       const { project } = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}/campaigns`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/campaigns`, {
         method: "GET",
       });
 
@@ -455,7 +455,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
         status: "DELIVERED",
       });
 
-      const response = await app.request(`/projects/${project.id}/campaigns/all`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/campaigns/all`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -476,7 +476,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
     test("should return 401 when no authentication is provided", async () => {
       const { project } = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}/campaigns/all`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/campaigns/all`, {
         method: "GET",
       });
 
@@ -517,7 +517,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
         status: "DRAFT",
       };
 
-      const response = await app.request(`/projects/${project.id}/campaigns/${campaign.id}`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/campaigns/${campaign.id}`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -576,7 +576,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
         status: "DRAFT",
       };
 
-      const response = await app.request(`/projects/${project.id}/campaigns/${campaign.id}`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/campaigns/${campaign.id}`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -625,7 +625,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
         status: "DRAFT",
       };
 
-      const response = await app.request(`/projects/${project.id}/campaigns/${campaign.id}`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/campaigns/${campaign.id}`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -658,7 +658,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
         status: "DRAFT",
       };
 
-      const response = await app.request(`/projects/${project.id}/campaigns/non-existent-id`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/campaigns/non-existent-id`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -688,7 +688,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
         status: "DRAFT",
       };
 
-      const response = await app.request(`/projects/${project.id}/campaigns/some-id`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/campaigns/some-id`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -720,7 +720,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
         status: "DRAFT",
       });
 
-      const response = await app.request(`/projects/${project.id}/campaigns/${campaign.id}`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/campaigns/${campaign.id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -737,7 +737,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
     test("should return 401 when no authentication is provided", async () => {
       const { project } = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}/campaigns/some-id`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/campaigns/some-id`, {
         method: "DELETE",
       });
 
@@ -771,7 +771,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
         delay: 0,
       };
 
-      const response = await app.request(`/projects/${project.id}/campaigns/${campaign.id}/send`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/campaigns/${campaign.id}/send`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -811,7 +811,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
         delay: 0,
       };
 
-      const response = await app.request(`/projects/${project.id}/campaigns/${campaign.id}/send`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/campaigns/${campaign.id}/send`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -858,7 +858,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
         delay: 5,
       };
 
-      const response = await app.request(`/projects/${project.id}/campaigns/${campaign.id}/send`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/campaigns/${campaign.id}/send`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -899,7 +899,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
         delay: 1,
       };
 
-      const response = await app.request(`/projects/${project.id}/campaigns/${campaign.id}/send`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/campaigns/${campaign.id}/send`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -941,7 +941,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
         delay: 0,
       };
 
-      const response = await app.request(`/projects/${project.id}/campaigns/${campaign.id}/send`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/campaigns/${campaign.id}/send`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -965,7 +965,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
         delay: 0,
       };
 
-      const response = await app.request(`/projects/${project.id}/campaigns/non-existent-id/send`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/campaigns/non-existent-id/send`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -990,7 +990,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
         delay: 0,
       };
 
-      const response = await app.request(`/projects/${project.id}/campaigns/some-id/send`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/campaigns/some-id/send`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -1022,7 +1022,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
         template: template.id,
       };
 
-      const response = await app.request(`/projects/${project.id}/campaigns`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/campaigns`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${secretToken}`,
@@ -1050,7 +1050,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
         template: template.id,
       };
 
-      const response = await app.request(`/projects/${project.id}/campaigns`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/campaigns`, {
         method: "POST",
         headers: {
           Authorization: "Bearer invalid-secret-key",
@@ -1080,7 +1080,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
         template: template.id,
       };
 
-      const response = await app.request(`/projects/${project.id}/campaigns`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/campaigns`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -1118,7 +1118,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
         // No template field
       };
 
-      const response = await app.request(`/projects/${project.id}/campaigns`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/campaigns`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,

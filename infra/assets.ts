@@ -1,17 +1,12 @@
+import { router } from "./route";
+
 export const assetsBucket = new sst.aws.Bucket("AssetsBucket", {
-  public: true,
-  transform: {
-    bucket: {
-      lifecycleRules: [
-        {
-          enabled: true,
-          expirations: [
-            { days: 90 },
-          ],
-          prefix: "temp/",
-        },
-      ],
-    },
-  },
+  access: "cloudfront",
 });
 
+router.routeBucket("/assets", assetsBucket, {
+  rewrite: {
+    regex: "^/assets/(.*)$",
+    to: "/$1"
+  }
+});

@@ -32,7 +32,7 @@ describe("Auth Endpoint Contract Tests", () => {
       const testEmail = "newuser@example.com";
       const testPassword = "password123";
 
-      const response = await app.request("/auth/signup", {
+      const response = await app.request("/api/v1/auth/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -87,7 +87,7 @@ describe("Auth Endpoint Contract Tests", () => {
         enabled: false,
       });
 
-      const response = await app.request("/auth/signup", {
+      const response = await app.request("/api/v1/auth/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -102,7 +102,7 @@ describe("Auth Endpoint Contract Tests", () => {
     });
 
     test("should return 400 when password is too short", async () => {
-      const response = await app.request("/auth/signup", {
+      const response = await app.request("/api/v1/auth/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -117,7 +117,7 @@ describe("Auth Endpoint Contract Tests", () => {
     });
 
     test("should return 400 when email is invalid", async () => {
-      const response = await app.request("/auth/signup", {
+      const response = await app.request("/api/v1/auth/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -132,7 +132,7 @@ describe("Auth Endpoint Contract Tests", () => {
     });
 
     test("should return 400 when email or password is missing", async () => {
-      const response = await app.request("/auth/signup", {
+      const response = await app.request("/api/v1/auth/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -159,7 +159,7 @@ describe("Auth Endpoint Contract Tests", () => {
         enabled: true,
       });
 
-      const response = await app.request("/auth/login", {
+      const response = await app.request("/api/v1/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -183,7 +183,7 @@ describe("Auth Endpoint Contract Tests", () => {
     });
 
     test("should return 401 when user does not exist", async () => {
-      const response = await app.request("/auth/login", {
+      const response = await app.request("/api/v1/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -209,7 +209,7 @@ describe("Auth Endpoint Contract Tests", () => {
         enabled: true,
       });
 
-      const response = await app.request("/auth/login", {
+      const response = await app.request("/api/v1/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -235,7 +235,7 @@ describe("Auth Endpoint Contract Tests", () => {
         enabled: false,
       });
 
-      const response = await app.request("/auth/login", {
+      const response = await app.request("/api/v1/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -259,7 +259,7 @@ describe("Auth Endpoint Contract Tests", () => {
         enabled: true,
       });
 
-      const response = await app.request("/auth/login", {
+      const response = await app.request("/api/v1/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -274,7 +274,7 @@ describe("Auth Endpoint Contract Tests", () => {
     });
 
     test("should return 400 when email or password is missing", async () => {
-      const response = await app.request("/auth/login", {
+      const response = await app.request("/api/v1/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -303,7 +303,7 @@ describe("Auth Endpoint Contract Tests", () => {
         code,
       });
 
-      const response = await app.request("/auth/verify", {
+      const response = await app.request("/api/v1/auth/verify", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -345,7 +345,7 @@ describe("Auth Endpoint Contract Tests", () => {
         code: "valid-code",
       });
 
-      const response = await app.request("/auth/verify", {
+      const response = await app.request("/api/v1/auth/verify", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -362,7 +362,7 @@ describe("Auth Endpoint Contract Tests", () => {
     test("should return 404 when user does not exist", async () => {
       const code = AuthService["createCode"]("nonexistent@example.com");
 
-      const response = await app.request("/auth/verify", {
+      const response = await app.request("/api/v1/auth/verify", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -389,7 +389,7 @@ describe("Auth Endpoint Contract Tests", () => {
         code,
       });
 
-      const response = await app.request("/auth/verify", {
+      const response = await app.request("/api/v1/auth/verify", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -415,7 +415,7 @@ describe("Auth Endpoint Contract Tests", () => {
         enabled: true,
       });
 
-      const response = await app.request("/auth/request-reset", {
+      const response = await app.request("/api/v1/auth/request-reset", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -450,7 +450,7 @@ describe("Auth Endpoint Contract Tests", () => {
     });
 
     test("should return success even when user does not exist (security)", async () => {
-      const response = await app.request("/auth/request-reset", {
+      const response = await app.request("/api/v1/auth/request-reset", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -470,7 +470,7 @@ describe("Auth Endpoint Contract Tests", () => {
     });
 
     test("should return 400 when email is missing", async () => {
-      const response = await app.request("/auth/request-reset", {
+      const response = await app.request("/api/v1/auth/request-reset", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -498,7 +498,7 @@ describe("Auth Endpoint Contract Tests", () => {
         code,
       });
 
-      const response = await app.request("/auth/reset", {
+      const response = await app.request("/api/v1/auth/reset", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -530,7 +530,7 @@ describe("Auth Endpoint Contract Tests", () => {
       expect(updatedUser?.code).toBeUndefined();
 
       // Try to login with new password
-      const loginResponse = await app.request("/auth/login", {
+      const loginResponse = await app.request("/api/v1/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -555,7 +555,7 @@ describe("Auth Endpoint Contract Tests", () => {
         code: "valid-code",
       });
 
-      const response = await app.request("/auth/reset", {
+      const response = await app.request("/api/v1/auth/reset", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -573,7 +573,7 @@ describe("Auth Endpoint Contract Tests", () => {
     test("should return 404 when user does not exist", async () => {
       const code = AuthService["createCode"]("nonexistent@example.com");
 
-      const response = await app.request("/auth/reset", {
+      const response = await app.request("/api/v1/auth/reset", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -600,7 +600,7 @@ describe("Auth Endpoint Contract Tests", () => {
         code,
       });
 
-      const response = await app.request("/auth/reset", {
+      const response = await app.request("/api/v1/auth/reset", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -628,7 +628,7 @@ describe("Auth Endpoint Contract Tests", () => {
         code,
       });
 
-      const response = await app.request("/auth/reset", {
+      const response = await app.request("/api/v1/auth/reset", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

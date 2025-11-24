@@ -19,52 +19,52 @@ export interface SidebarProps {
 
 const links: SidebarLinkType[] = [
   {
-    to: "/dashboard",
+    to: "/",
     text: "Dashboard",
     icon: <Home />,
   },
   {
-    to: "/dashboard/contacts",
+    to: "/contacts",
     text: "Contacts",
     icon: <User />,
   },
   {
-    to: "/dashboard/analytics",
+    to: "/analytics",
     text: "Analytics",
     icon: <LineChart />,
   },
   {
-    to: "/dashboard/settings/project",
+    to: "/settings/project",
     text: "Project Settings",
     icon: <Settings />,
   },
   {
-    to: "/dashboard/events",
+    to: "/events",
     text: "Events",
     icon: <TerminalSquare />,
   },
   {
-    to: "/dashboard/templates",
+    to: "/templates",
     text: "Templates",
     icon: <LayoutTemplate />,
   },
   {
-    to: "/dashboard/assets",
+    to: "/assets",
     text: "Assets",
     icon: <FileImage />,
   },
   {
-    to: "/dashboard/actions",
+    to: "/actions",
     text: "Actions",
     icon: <Workflow />,
   },
   {
-    to: "/dashboard/campaigns",
+    to: "/campaigns",
     text: "Campaigns",
     icon: <Send />,
   },
   {
-    to: "/dashboard/groups",
+    to: "/groups",
     text: "Contact Groups",
     icon: <Users2 />,
   },
@@ -76,7 +76,7 @@ const links: SidebarLinkType[] = [
 function SidebarLink({ to, text, icon }: SidebarLinkType) {
   const location = useLocation();
 
-  const active = location.pathname === to || (to !== "/dashboard" && location.pathname.startsWith(to));
+  const active = location.pathname === to || (to !== "/" && location.pathname.startsWith(to));
 
   return (
     <Link
@@ -131,7 +131,7 @@ export default function Sidebar({ mobileOpen, onSidebarVisibilityChange, wideLay
 
               <div className="h-0 flex-1 overflow-y-auto pb-4 pt-5">
                 <div className="flex shrink-0 items-center px-4">
-                  <Link to="/dashboard">
+                  <Link to="/">
                     <SendraLogo width="100%" height="90px" />
                   </Link>
                 </div>
@@ -180,7 +180,7 @@ export default function Sidebar({ mobileOpen, onSidebarVisibilityChange, wideLay
               <div className="flex h-0 flex-1 flex-col border-r border-neutral-100 bg-white px-6">
                 <div className="flex flex-1 flex-col overflow-y-auto pb-4 pt-5">
                   <div className="flex shrink-0 items-center justify-center px-4">
-                    <Link to={"/dashboard"}>
+                    <Link to={""}>
                       <SendraLogo width="100%" />
                     </Link>
                   </div>

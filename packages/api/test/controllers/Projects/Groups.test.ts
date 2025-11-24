@@ -39,7 +39,7 @@ describe("Groups Endpoint Contract Tests", () => {
         contacts: [],
       };
 
-      const response = await app.request(`/projects/${project.id}/groups`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/groups`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -73,7 +73,7 @@ describe("Groups Endpoint Contract Tests", () => {
         contacts: [contact1.id, contact2.id],
       };
 
-      const response = await app.request(`/projects/${project.id}/groups`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/groups`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -99,7 +99,7 @@ describe("Groups Endpoint Contract Tests", () => {
         contacts: [],
       };
 
-      const response = await app.request(`/projects/${project.id}/groups`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/groups`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -119,7 +119,7 @@ describe("Groups Endpoint Contract Tests", () => {
         contacts: [],
       };
 
-      const response = await app.request(`/projects/${project.id}/groups`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/groups`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -161,7 +161,7 @@ describe("Groups Endpoint Contract Tests", () => {
       await createTestGroup(project.id);
 
       const response = await app.request(
-        `/projects/${project.id}/groups?limit=2`,
+        `/api/v1/projects/${project.id}/groups?limit=2`,
         {
           method: "GET",
           headers: {
@@ -187,7 +187,7 @@ describe("Groups Endpoint Contract Tests", () => {
       await createTestGroup(project.id);
       await createTestGroup(project.id);
 
-      const response = await app.request(`/projects/${project.id}/groups`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/groups`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -204,7 +204,7 @@ describe("Groups Endpoint Contract Tests", () => {
     test("should return 401 when no authentication is provided", async () => {
       const { project } = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}/groups`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/groups`, {
         method: "GET",
       });
 
@@ -220,7 +220,7 @@ describe("Groups Endpoint Contract Tests", () => {
       const group1 = await createTestGroup(project.id);
       const group2 = await createTestGroup(project.id);
 
-      const response = await app.request(`/projects/${project.id}/groups/all`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/groups/all`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -245,7 +245,7 @@ describe("Groups Endpoint Contract Tests", () => {
     test("should return empty array when no groups exist", async () => {
       const { project, token } = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}/groups/all`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/groups/all`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -266,7 +266,7 @@ describe("Groups Endpoint Contract Tests", () => {
       const group = await createTestGroup(project.id);
 
       const response = await app.request(
-        `/projects/${project.id}/groups/${group.id}`,
+        `/api/v1/projects/${project.id}/groups/${group.id}`,
         {
           method: "GET",
           headers: {
@@ -290,7 +290,7 @@ describe("Groups Endpoint Contract Tests", () => {
       const { project, token } = await createTestSetup();
 
       const response = await app.request(
-        `/projects/${project.id}/groups/non-existent-id`,
+        `/api/v1/projects/${project.id}/groups/non-existent-id`,
         {
           method: "GET",
           headers: {
@@ -311,7 +311,7 @@ describe("Groups Endpoint Contract Tests", () => {
       const group = await createTestGroup(project.id);
 
       const response = await app.request(
-        `/projects/${project.id}/groups/${group.id}`,
+        `/api/v1/projects/${project.id}/groups/${group.id}`,
         {
           method: "GET",
         }
@@ -333,7 +333,7 @@ describe("Groups Endpoint Contract Tests", () => {
       };
 
       const response = await app.request(
-        `/projects/${project.id}/groups/${group.id}`,
+        `/api/v1/projects/${project.id}/groups/${group.id}`,
         {
           method: "PUT",
           headers: {
@@ -368,7 +368,7 @@ describe("Groups Endpoint Contract Tests", () => {
       };
 
       const response = await app.request(
-        `/projects/${project.id}/groups/${group.id}`,
+        `/api/v1/projects/${project.id}/groups/${group.id}`,
         {
           method: "PUT",
           headers: {
@@ -397,7 +397,7 @@ describe("Groups Endpoint Contract Tests", () => {
       };
 
       const response = await app.request(
-        `/projects/${project.id}/groups/${group.id}`,
+        `/api/v1/projects/${project.id}/groups/${group.id}`,
         {
           method: "PUT",
           headers: {
@@ -424,7 +424,7 @@ describe("Groups Endpoint Contract Tests", () => {
       };
 
       const response = await app.request(
-        `/projects/${project.id}/groups/non-existent-id`,
+        `/api/v1/projects/${project.id}/groups/non-existent-id`,
         {
           method: "PUT",
           headers: {
@@ -449,7 +449,7 @@ describe("Groups Endpoint Contract Tests", () => {
       };
 
       const response = await app.request(
-        `/projects/${project.id}/groups/${group.id}`,
+        `/api/v1/projects/${project.id}/groups/${group.id}`,
         {
           method: "PUT",
           headers: {
@@ -469,7 +469,7 @@ describe("Groups Endpoint Contract Tests", () => {
       const group = await createTestGroup(project.id);
 
       const response = await app.request(
-        `/projects/${project.id}/groups/${group.id}`,
+        `/api/v1/projects/${project.id}/groups/${group.id}`,
         {
           method: "DELETE",
           headers: {
@@ -491,7 +491,7 @@ describe("Groups Endpoint Contract Tests", () => {
       const group = await createTestGroup(project.id);
 
       const response = await app.request(
-        `/projects/${project.id}/groups/${group.id}`,
+        `/api/v1/projects/${project.id}/groups/${group.id}`,
         {
           method: "DELETE",
         }
@@ -518,7 +518,7 @@ describe("Groups Endpoint Contract Tests", () => {
       });
 
       const response = await app.request(
-        `/projects/${project.id}/groups/${group.id}/contacts`,
+        `/api/v1/projects/${project.id}/groups/${group.id}/contacts`,
         {
           method: "GET",
           headers: {
@@ -554,7 +554,7 @@ describe("Groups Endpoint Contract Tests", () => {
       const group = await createTestGroup(project.id);
 
       const response = await app.request(
-        `/projects/${project.id}/groups/${group.id}/contacts`,
+        `/api/v1/projects/${project.id}/groups/${group.id}/contacts`,
         {
           method: "GET",
           headers: {
@@ -574,7 +574,7 @@ describe("Groups Endpoint Contract Tests", () => {
       const { project, token } = await createTestSetup();
 
       const response = await app.request(
-        `/projects/${project.id}/groups/non-existent-id/contacts`,
+        `/api/v1/projects/${project.id}/groups/non-existent-id/contacts`,
         {
           method: "GET",
           headers: {
@@ -591,7 +591,7 @@ describe("Groups Endpoint Contract Tests", () => {
       const group = await createTestGroup(project.id);
 
       const response = await app.request(
-        `/projects/${project.id}/groups/${group.id}/contacts`,
+        `/api/v1/projects/${project.id}/groups/${group.id}/contacts`,
         {
           method: "GET",
         }
@@ -612,7 +612,7 @@ describe("Groups Endpoint Contract Tests", () => {
         contacts: [],
       };
 
-      const response = await app.request(`/projects/${project.id}/groups`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/groups`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${secretToken}`,
@@ -633,7 +633,7 @@ describe("Groups Endpoint Contract Tests", () => {
 
       const secretToken = AuthService.createProjectToken(project.secret, "secret", project.id);
 
-      const response = await app.request(`/projects/${project.id}/groups/${group.id}`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/groups/${group.id}`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${secretToken}`,
@@ -660,7 +660,7 @@ describe("Groups Endpoint Contract Tests", () => {
       const secretToken = AuthService.createProjectToken(project.secret, "secret", project.id);
 
       const response = await app.request(
-        `/projects/${project.id}/groups/${group.id}/contacts`,
+        `/api/v1/projects/${project.id}/groups/${group.id}/contacts`,
         {
           method: "GET",
           headers: {
@@ -689,7 +689,7 @@ describe("Groups Endpoint Contract Tests", () => {
       };
 
       const response = await app.request(
-        `/projects/${project.id}/groups/${group.id}`,
+        `/api/v1/projects/${project.id}/groups/${group.id}`,
         {
           method: "PUT",
           headers: {
@@ -713,7 +713,7 @@ describe("Groups Endpoint Contract Tests", () => {
       const secretToken = AuthService.createProjectToken(project.secret, "secret", project.id);
 
       const response = await app.request(
-        `/projects/${project.id}/groups/${group.id}`,
+        `/api/v1/projects/${project.id}/groups/${group.id}`,
         {
           method: "DELETE",
           headers: {
@@ -740,7 +740,7 @@ describe("Groups Endpoint Contract Tests", () => {
 
       const nonMemberToken = AuthService.createUserToken(nonMemberUser.id, nonMemberUser.email);
 
-      const response = await app.request(`/projects/${project.id}/groups`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/groups`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${nonMemberToken}`,
@@ -770,7 +770,7 @@ describe("Groups Endpoint Contract Tests", () => {
         otherProject.id
       );
 
-      const response = await app.request(`/projects/${project.id}/groups`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/groups`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${wrongSecretToken}`,
@@ -798,7 +798,7 @@ describe("Groups Endpoint Contract Tests", () => {
         contacts: contactIds,
       };
 
-      const response = await app.request(`/projects/${project.id}/groups`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/groups`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -832,7 +832,7 @@ describe("Groups Endpoint Contract Tests", () => {
       };
 
       const response = await app.request(
-        `/projects/${project.id}/groups/${group.id}`,
+        `/api/v1/projects/${project.id}/groups/${group.id}`,
         {
           method: "PUT",
           headers: {

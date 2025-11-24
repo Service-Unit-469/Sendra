@@ -73,7 +73,7 @@ export default function ProjectPage() {
         })
         .then(async () => {
           localStorage.removeItem("project");
-          navigate("/dashboard");
+          navigate("");
           window.location.reload();
         }),
       {

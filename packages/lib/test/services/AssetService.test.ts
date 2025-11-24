@@ -29,6 +29,7 @@ vi.mock("@aws-sdk/s3-request-presigner", () => ({
 vi.mock("../../src/services/AppConfig", () => ({
 	getAssetsConfig: vi.fn(() => ({
 		ASSETS_BUCKET_NAME: "test-bucket",
+		ASSETS_URL: "https://test-bucket.s3.amazonaws.com",
 	})),
 	getLogConfig: vi.fn(() => ({
 		level: "info",
@@ -56,6 +57,7 @@ describe("AssetService", () => {
 			const { getAssetsConfig } = await import("../../src/services/AppConfig");
 			vi.mocked(getAssetsConfig).mockReturnValueOnce({
 				ASSETS_BUCKET_NAME: "",
+				ASSETS_URL: "https://test-bucket.s3.amazonaws.com",
 			});
 
 			expect(() => new AssetService()).toThrow("ASSETS_BUCKET_NAME environment variable is not set");
@@ -189,7 +191,7 @@ describe("AssetService", () => {
 				name: "test-image.png",
 				size: 2048,
 				mimeType: "image/png",
-				url: expect.stringContaining("test-bucket.s3.amazonaws.com"),
+				url: expect.stringContaining("test-image.png"),
 				project: TEST_PROJECT_ID,
 			});
 		});

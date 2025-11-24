@@ -83,7 +83,7 @@ export default function NewTemplatePage() {
       success: () => {
         void mutate();
 
-        navigate("/dashboard/templates");
+        navigate("/templates");
         return "Created new template!";
       },
       error: "Could not create new template!",

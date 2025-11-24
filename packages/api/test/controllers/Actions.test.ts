@@ -117,7 +117,7 @@ describe("Actions Endpoint Contract Tests", () => {
         notevents: [],
       };
 
-      const response = await app.request(`/projects/${project.id}/actions`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/actions`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -158,7 +158,7 @@ describe("Actions Endpoint Contract Tests", () => {
         events: [event1.id, event2.id],
       };
 
-      const response = await app.request(`/projects/${project.id}/actions`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/actions`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -190,7 +190,7 @@ describe("Actions Endpoint Contract Tests", () => {
         events: [event.id],
       };
 
-      const response = await app.request(`/projects/${project.id}/actions`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/actions`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -220,7 +220,7 @@ describe("Actions Endpoint Contract Tests", () => {
         events: [event.id],
       };
 
-      const response = await app.request(`/projects/${project.id}/actions`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/actions`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -244,7 +244,7 @@ describe("Actions Endpoint Contract Tests", () => {
         events: [],
       };
 
-      const response = await app.request(`/projects/${project.id}/actions`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/actions`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -270,7 +270,7 @@ describe("Actions Endpoint Contract Tests", () => {
         events: [event.id],
       };
 
-      const response = await app.request(`/projects/${project.id}/actions`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/actions`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -296,7 +296,7 @@ describe("Actions Endpoint Contract Tests", () => {
         events: [event.id],
       };
 
-      const response = await app.request(`/projects/${project.id}/actions`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/actions`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -322,7 +322,7 @@ describe("Actions Endpoint Contract Tests", () => {
         events: [event.id],
       };
 
-      const response = await app.request(`/projects/${project.id}/actions`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/actions`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -352,7 +352,7 @@ describe("Actions Endpoint Contract Tests", () => {
         notevents: [],
       });
 
-      const response = await app.request(`/projects/${project.id}/actions/${action.id}`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/actions/${action.id}`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -376,7 +376,7 @@ describe("Actions Endpoint Contract Tests", () => {
     test("should return 404 when action does not exist", async () => {
       const { project, token } = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}/actions/non-existent-id`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/actions/non-existent-id`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -393,7 +393,7 @@ describe("Actions Endpoint Contract Tests", () => {
     test("should return 401 when no authentication is provided", async () => {
       const { project } = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}/actions/some-id`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/actions/some-id`, {
         method: "GET",
       });
 
@@ -430,7 +430,7 @@ describe("Actions Endpoint Contract Tests", () => {
         notevents: [],
       });
 
-      const response = await app.request(`/projects/${project.id}/actions`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/actions`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -468,7 +468,7 @@ describe("Actions Endpoint Contract Tests", () => {
         });
       }
 
-      const response = await app.request(`/projects/${project.id}/actions?limit=2`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/actions?limit=2`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -484,7 +484,7 @@ describe("Actions Endpoint Contract Tests", () => {
     test("should return 400 when limit exceeds maximum", async () => {
       const { project, token } = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}/actions?limit=101`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/actions?limit=101`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -501,7 +501,7 @@ describe("Actions Endpoint Contract Tests", () => {
       const { project, token } = await createTestSetup();
 
       // ActionPersistence only supports filtering by "template", not "event"
-      const response = await app.request(`/projects/${project.id}/actions?filter=event&value=some-event-id`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/actions?filter=event&value=some-event-id`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -545,7 +545,7 @@ describe("Actions Endpoint Contract Tests", () => {
         notevents: [],
       });
 
-      const response = await app.request(`/projects/${project.id}/actions?filter=template&value=${template1.id}`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/actions?filter=template&value=${template1.id}`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -566,7 +566,7 @@ describe("Actions Endpoint Contract Tests", () => {
     test("should return 401 when no authentication is provided", async () => {
       const { project } = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}/actions`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/actions`, {
         method: "GET",
       });
 
@@ -603,7 +603,7 @@ describe("Actions Endpoint Contract Tests", () => {
         notevents: [],
       });
 
-      const response = await app.request(`/projects/${project.id}/actions/all`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/actions/all`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -624,7 +624,7 @@ describe("Actions Endpoint Contract Tests", () => {
     test("should return 401 when no authentication is provided", async () => {
       const { project } = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}/actions/all`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/actions/all`, {
         method: "GET",
       });
 
@@ -660,7 +660,7 @@ describe("Actions Endpoint Contract Tests", () => {
         notevents: [],
       };
 
-      const response = await app.request(`/projects/${project.id}/actions/${action.id}`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/actions/${action.id}`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -711,7 +711,7 @@ describe("Actions Endpoint Contract Tests", () => {
         notevents: [],
       };
 
-      const response = await app.request(`/projects/${project.id}/actions/${action.id}`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/actions/${action.id}`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -753,7 +753,7 @@ describe("Actions Endpoint Contract Tests", () => {
         notevents: [],
       };
 
-      const response = await app.request(`/projects/${project.id}/actions/${action.id}`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/actions/${action.id}`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -796,7 +796,7 @@ describe("Actions Endpoint Contract Tests", () => {
         notevents: [],
       };
 
-      const response = await app.request(`/projects/${project.id}/actions/${action.id}`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/actions/${action.id}`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -827,7 +827,7 @@ describe("Actions Endpoint Contract Tests", () => {
         notevents: [],
       };
 
-      const response = await app.request(`/projects/${project.id}/actions/non-existent-id`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/actions/non-existent-id`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -854,7 +854,7 @@ describe("Actions Endpoint Contract Tests", () => {
         events: [event.id],
       };
 
-      const response = await app.request(`/projects/${project.id}/actions/some-id`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/actions/some-id`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -884,7 +884,7 @@ describe("Actions Endpoint Contract Tests", () => {
         notevents: [],
       });
 
-      const response = await app.request(`/projects/${project.id}/actions/${action.id}`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/actions/${action.id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -901,7 +901,7 @@ describe("Actions Endpoint Contract Tests", () => {
     test("should return 401 when no authentication is provided", async () => {
       const { project } = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}/actions/some-id`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/actions/some-id`, {
         method: "DELETE",
       });
 
@@ -940,7 +940,7 @@ describe("Actions Endpoint Contract Tests", () => {
         notevents: [],
       });
 
-      const response = await app.request(`/projects/${project.id}/actions/${mainAction.id}/related`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/actions/${mainAction.id}/related`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -989,7 +989,7 @@ describe("Actions Endpoint Contract Tests", () => {
         notevents: [],
       });
 
-      const response = await app.request(`/projects/${project.id}/actions/${action.id}/related`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/actions/${action.id}/related`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -1009,7 +1009,7 @@ describe("Actions Endpoint Contract Tests", () => {
     test("should return 401 when no authentication is provided", async () => {
       const { project } = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}/actions/some-id/related`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/actions/some-id/related`, {
         method: "GET",
       });
 
@@ -1035,7 +1035,7 @@ describe("Actions Endpoint Contract Tests", () => {
         events: [event.id],
       };
 
-      const response = await app.request(`/projects/${project.id}/actions`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/actions`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${secretToken}`,
@@ -1061,7 +1061,7 @@ describe("Actions Endpoint Contract Tests", () => {
         events: [event.id],
       };
 
-      const response = await app.request(`/projects/${project.id}/actions`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/actions`, {
         method: "POST",
         headers: {
           Authorization: "Bearer invalid-secret-key",

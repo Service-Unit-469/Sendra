@@ -103,7 +103,7 @@ export default function EditTemplatePage() {
       },
     );
 
-    navigate("/dashboard/templates");
+    navigate("/templates");
   };
 
   const remove = async (e: { preventDefault: () => void }) => {
@@ -130,7 +130,7 @@ export default function EditTemplatePage() {
       },
     );
 
-    navigate("/dashboard/templates");
+    navigate("/templates");
   };
 
   return (

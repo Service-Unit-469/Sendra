@@ -5,7 +5,7 @@
 
 declare module "sst" {
   export interface Resource {
-    "Api": {
+    "ApiFn": {
       "name": string
       "type": "sst.aws.Function"
       "url": string
@@ -22,10 +22,6 @@ declare module "sst" {
       "arn": string
       "type": "sst.aws.StepFunctions"
     }
-    "EmailTopic": {
-      "arn": string
-      "type": "sst.aws.SnsTopic"
-    }
     "JwtSecret": {
       "type": "sst.sst.Secret"
       "value": string
@@ -33,6 +29,14 @@ declare module "sst" {
     "SendraDatabase": {
       "name": string
       "type": "sst.aws.Dynamo"
+    }
+    "SendraRouter": {
+      "type": "sst.aws.Router"
+      "url": string
+    }
+    "Subscription": {
+      "type": "sst.aws.StaticSite"
+      "url": string
     }
     "TaskDeadLetterQueue": {
       "type": "sst.aws.Queue"

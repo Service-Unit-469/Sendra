@@ -75,7 +75,7 @@ export default function Index() {
                   "Last Updated": dayjs().to(g.updatedAt).toString(),
                   Members: g.contacts.length,
                   Edit: (
-                    <Link to={`/dashboard/groups/${g.id}`} className="transition hover:text-neutral-800">
+                    <Link to={`/groups/${g.id}`} className="transition hover:text-neutral-800">
                       <Edit2 size={18} />
                     </Link>
                   ),

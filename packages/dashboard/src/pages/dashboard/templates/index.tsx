@@ -19,7 +19,7 @@ export default function Index() {
       title="Templates"
       description="Reusable blueprints of your emails"
       actions={
-        <Link to="/dashboard/templates/new">
+        <Link to="/templates/new">
           <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.9 }} className={"flex items-center gap-x-1 rounded-sm bg-neutral-800 px-8 py-2 text-center text-sm font-medium text-white"}>
             <Plus strokeWidth={1.5} size={18} />
             New
@@ -65,7 +65,7 @@ export default function Index() {
                       <div className="-mt-px flex divide-x divide-neutral-200">
                         <div className="flex w-0 flex-1">
                           <Link
-                            to={`/dashboard/templates/${t.id}`}
+                            to={`/templates/${t.id}`}
                             className="relative -mr-px inline-flex w-0 flex-1 items-center justify-center rounded-bl border border-transparent py-4 text-sm font-medium text-neutral-800 transition hover:bg-neutral-50 hover:text-neutral-700"
                           >
                             <Edit3 size={18} />

@@ -182,7 +182,7 @@ export default function ViewCampaignPage() {
       },
     );
 
-    navigate("/dashboard/campaigns");
+    navigate("/campaigns");
   };
 
   const remove = async (e: { preventDefault: () => void }) => {
@@ -202,7 +202,7 @@ export default function ViewCampaignPage() {
       },
     );
 
-    navigate("/dashboard/campaigns");
+    navigate("/campaigns");
   };
 
   return (
@@ -309,7 +309,7 @@ export default function ViewCampaignPage() {
                   <BlackButton
                     onClick={(e) => {
                       e.preventDefault();
-                      navigate(`/dashboard/campaigns/${campaign.id}/edit`);
+                      navigate(`/campaigns/${campaign.id}/edit`);
                     }}
                   >
                     <Edit size={18} />

@@ -1,4 +1,5 @@
 import { api } from "./api";
+import { router } from "./route";
 
 export const dashboard = new sst.aws.StaticSite("Dashboard", {
   path: "packages/dashboard",
@@ -6,7 +7,10 @@ export const dashboard = new sst.aws.StaticSite("Dashboard", {
     command: "npm run build",
     output: "dist",
   },
-  
+  router: {
+    instance: router,
+    path: '/dashboard'
+  },
   environment: {
     VITE_AWS_REGION: "us-east-2",
     VITE_API_URI: api.url,

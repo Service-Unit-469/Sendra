@@ -56,7 +56,7 @@ describe("Memberships Endpoint Contract Tests", () => {
         role: "ADMIN",
       };
 
-      const response = await app.request("/memberships/invite", {
+      const response = await app.request("/api/v1/memberships/invite", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -135,7 +135,7 @@ describe("Memberships Endpoint Contract Tests", () => {
         role: "MEMBER",
       };
 
-      const response = await app.request("/memberships/invite", {
+      const response = await app.request("/api/v1/memberships/invite", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -213,7 +213,7 @@ describe("Memberships Endpoint Contract Tests", () => {
         role: "MEMBER",
       };
 
-      const response = await app.request("/memberships/invite", {
+      const response = await app.request("/api/v1/memberships/invite", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -248,7 +248,7 @@ describe("Memberships Endpoint Contract Tests", () => {
         role: "MEMBER",
       };
 
-      const response = await app.request("/memberships/invite", {
+      const response = await app.request("/api/v1/memberships/invite", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -271,7 +271,7 @@ describe("Memberships Endpoint Contract Tests", () => {
         role: "MEMBER",
       };
 
-      const response = await app.request("/memberships/invite", {
+      const response = await app.request("/api/v1/memberships/invite", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -293,7 +293,7 @@ describe("Memberships Endpoint Contract Tests", () => {
 
       const token = AuthService.createUserToken(adminUser.id, adminUser.email);
 
-      const response = await app.request("/memberships/invite", {
+      const response = await app.request("/api/v1/memberships/invite", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -357,7 +357,7 @@ describe("Memberships Endpoint Contract Tests", () => {
         email: memberUser.email,
       };
 
-      const response = await app.request("/memberships/kick", {
+      const response = await app.request("/api/v1/memberships/kick", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -415,7 +415,7 @@ describe("Memberships Endpoint Contract Tests", () => {
         email: adminUser.email,
       };
 
-      const response = await app.request("/memberships/kick", {
+      const response = await app.request("/api/v1/memberships/kick", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -437,7 +437,7 @@ describe("Memberships Endpoint Contract Tests", () => {
         email: "user@example.com",
       };
 
-      const response = await app.request("/memberships/kick", {
+      const response = await app.request("/api/v1/memberships/kick", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -459,7 +459,7 @@ describe("Memberships Endpoint Contract Tests", () => {
 
       const token = AuthService.createUserToken(adminUser.id, adminUser.email);
 
-      const response = await app.request("/memberships/kick", {
+      const response = await app.request("/api/v1/memberships/kick", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -510,7 +510,7 @@ describe("Memberships Endpoint Contract Tests", () => {
         email: "nonexistent@example.com",
       };
 
-      const response = await app.request("/memberships/kick", {
+      const response = await app.request("/api/v1/memberships/kick", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -577,7 +577,7 @@ describe("Memberships Endpoint Contract Tests", () => {
         projectId: project1.id,
       };
 
-      const response = await app.request("/memberships/leave", {
+      const response = await app.request("/api/v1/memberships/leave", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -607,7 +607,7 @@ describe("Memberships Endpoint Contract Tests", () => {
         projectId: "some-project-id",
       };
 
-      const response = await app.request("/memberships/leave", {
+      const response = await app.request("/api/v1/memberships/leave", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -629,7 +629,7 @@ describe("Memberships Endpoint Contract Tests", () => {
 
       const token = AuthService.createUserToken(memberUser.id, memberUser.email);
 
-      const response = await app.request("/memberships/leave", {
+      const response = await app.request("/api/v1/memberships/leave", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -670,7 +670,7 @@ describe("Memberships Endpoint Contract Tests", () => {
         projectId: project.id,
       };
 
-      const response = await app.request("/memberships/leave", {
+      const response = await app.request("/api/v1/memberships/leave", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,

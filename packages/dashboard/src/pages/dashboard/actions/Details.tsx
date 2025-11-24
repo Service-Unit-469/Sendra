@@ -130,7 +130,7 @@ export default function ActionDetailPage() {
       error: "Could not delete your action!",
     });
 
-    navigate("/dashboard/actions");
+    navigate("/actions");
   };
 
   return (
@@ -288,7 +288,7 @@ export default function ActionDetailPage() {
               whileTap={{ scale: 0.9 }}
               onClick={(e) => {
                 e.preventDefault();
-                navigate("/dashboard/actions");
+                navigate("/actions");
               }}
               className={
                 "flex w-fit justify-center rounded-sm border border-neutral-300 bg-white px-6 py-2 text-base font-medium text-neutral-800 focus:outline-hidden focus:ring-2 focus:ring-neutral-800 focus:ring-offset-2 sm:mt-0 sm:w-auto sm:text-sm"
@@ -324,7 +324,7 @@ export default function ActionDetailPage() {
               })
               .map((r) => {
                 return (
-                  <Link to={`/dashboard/actions/${r.id}`} key={r.id}>
+                  <Link to={`/actions/${r.id}`} key={r.id}>
                     <div className={"flex items-center gap-6 rounded-sm border border-solid border-neutral-200 bg-white px-8 py-4"}>
                       <div>
                         <span className="inline-flex rounded-sm bg-neutral-100 p-4 text-neutral-800 ring-4 ring-white">

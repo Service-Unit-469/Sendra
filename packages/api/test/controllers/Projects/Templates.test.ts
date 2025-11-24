@@ -37,7 +37,7 @@ describe("Templates Endpoint Contract Tests", () => {
         templateType: "TRANSACTIONAL" as const,
       };
 
-      const response = await app.request(`/projects/${project.id}/templates`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/templates`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -91,7 +91,7 @@ describe("Templates Endpoint Contract Tests", () => {
       };
 
       const response = await app.request(
-        `/projects/${updatedProject.id}/templates`,
+        `/api/v1/projects/${updatedProject.id}/templates`,
         {
           method: "POST",
           headers: {
@@ -121,7 +121,7 @@ describe("Templates Endpoint Contract Tests", () => {
         templateType: "MARKETING" as const,
       };
 
-      const response = await app.request(`/projects/${project.id}/templates`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/templates`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -149,7 +149,7 @@ describe("Templates Endpoint Contract Tests", () => {
         templateType: "TRANSACTIONAL" as const,
       };
 
-      const response = await app.request(`/projects/${project.id}/templates`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/templates`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -174,7 +174,7 @@ describe("Templates Endpoint Contract Tests", () => {
         templateType: "TRANSACTIONAL" as const,
       };
 
-      const response = await app.request(`/projects/${project.id}/templates`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/templates`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -200,7 +200,7 @@ describe("Templates Endpoint Contract Tests", () => {
         email: "custom@unverified-domain.com",
       };
 
-      const response = await app.request(`/projects/${project.id}/templates`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/templates`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -242,7 +242,7 @@ describe("Templates Endpoint Contract Tests", () => {
       };
 
       const response = await app.request(
-        `/projects/${updatedProject.id}/templates`,
+        `/api/v1/projects/${updatedProject.id}/templates`,
         {
           method: "POST",
           headers: {
@@ -277,7 +277,7 @@ describe("Templates Endpoint Contract Tests", () => {
         templateType: "TRANSACTIONAL" as const,
       };
 
-      const response = await app.request(`/projects/${project.id}/templates`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/templates`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${secretToken}`,
@@ -302,7 +302,7 @@ describe("Templates Endpoint Contract Tests", () => {
         templateType: "TRANSACTIONAL" as const,
       };
 
-      const response = await app.request(`/projects/${project.id}/templates`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/templates`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -327,7 +327,7 @@ describe("Templates Endpoint Contract Tests", () => {
         templateType: "TRANSACTIONAL" as const,
       };
 
-      const response = await app.request(`/projects/${project.id}/templates`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/templates`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${otherUserSetup.token}`,
@@ -344,7 +344,7 @@ describe("Templates Endpoint Contract Tests", () => {
     test("should return empty list when no templates exist", async () => {
       const { project, token } = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}/templates`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/templates`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -366,7 +366,7 @@ describe("Templates Endpoint Contract Tests", () => {
       await createTestTemplate(project.id);
       await createTestTemplate(project.id);
 
-      const response = await app.request(`/projects/${project.id}/templates`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/templates`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -396,7 +396,7 @@ describe("Templates Endpoint Contract Tests", () => {
       await createTestTemplate(project.id);
 
       const response = await app.request(
-        `/projects/${project.id}/templates?limit=2`,
+        `/api/v1/projects/${project.id}/templates?limit=2`,
         {
           method: "GET",
           headers: {
@@ -415,7 +415,7 @@ describe("Templates Endpoint Contract Tests", () => {
       const { project, token } = await createTestSetup();
 
       const response = await app.request(
-        `/projects/${project.id}/templates?limit=200`,
+        `/api/v1/projects/${project.id}/templates?limit=200`,
         {
           method: "GET",
           headers: {
@@ -437,7 +437,7 @@ describe("Templates Endpoint Contract Tests", () => {
       await createTestTemplate(project.id);
 
       const firstResponse = await app.request(
-        `/projects/${project.id}/templates?limit=1`,
+        `/api/v1/projects/${project.id}/templates?limit=1`,
         {
           method: "GET",
           headers: {
@@ -453,7 +453,7 @@ describe("Templates Endpoint Contract Tests", () => {
       expect(firstData.cursor).toBeDefined();
 
       const secondResponse = await app.request(
-        `/projects/${project.id}/templates?limit=1&cursor=${firstData.cursor}`,
+        `/api/v1/projects/${project.id}/templates?limit=1&cursor=${firstData.cursor}`,
         {
           method: "GET",
           headers: {
@@ -477,7 +477,7 @@ describe("Templates Endpoint Contract Tests", () => {
         project.id,
       );
 
-      const response = await app.request(`/projects/${project.id}/templates`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/templates`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${secretToken}`,
@@ -490,7 +490,7 @@ describe("Templates Endpoint Contract Tests", () => {
     test("should return 401 when not authenticated", async () => {
       const { project } = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}/templates`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/templates`, {
         method: "GET",
       });
 
@@ -501,7 +501,7 @@ describe("Templates Endpoint Contract Tests", () => {
       const { project } = await createTestSetup();
       const otherUserSetup = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}/templates`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/templates`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${otherUserSetup.token}`,
@@ -520,7 +520,7 @@ describe("Templates Endpoint Contract Tests", () => {
       await createTestTemplate(project.id);
 
       const response = await app.request(
-        `/projects/${project.id}/templates/all`,
+        `/api/v1/projects/${project.id}/templates/all`,
         {
           method: "GET",
           headers: {
@@ -540,7 +540,7 @@ describe("Templates Endpoint Contract Tests", () => {
       const { project, token } = await createTestSetup();
 
       const response = await app.request(
-        `/projects/${project.id}/templates/all`,
+        `/api/v1/projects/${project.id}/templates/all`,
         {
           method: "GET",
           headers: {
@@ -560,7 +560,7 @@ describe("Templates Endpoint Contract Tests", () => {
       const { project } = await createTestSetup();
 
       const response = await app.request(
-        `/projects/${project.id}/templates/all`,
+        `/api/v1/projects/${project.id}/templates/all`,
         {
           method: "GET",
         },
@@ -574,7 +574,7 @@ describe("Templates Endpoint Contract Tests", () => {
       const otherUserSetup = await createTestSetup();
 
       const response = await app.request(
-        `/projects/${project.id}/templates/all`,
+        `/api/v1/projects/${project.id}/templates/all`,
         {
           method: "GET",
           headers: {
@@ -593,7 +593,7 @@ describe("Templates Endpoint Contract Tests", () => {
       const template = await createTestTemplate(project.id);
 
       const response = await app.request(
-        `/projects/${project.id}/templates/${template.id}`,
+        `/api/v1/projects/${project.id}/templates/${template.id}`,
         {
           method: "GET",
           headers: {
@@ -635,7 +635,7 @@ describe("Templates Endpoint Contract Tests", () => {
       });
 
       const response = await app.request(
-        `/projects/${project.id}/templates/${template.id}?embed=actions`,
+        `/api/v1/projects/${project.id}/templates/${template.id}?embed=actions`,
         {
           method: "GET",
           headers: {
@@ -655,7 +655,7 @@ describe("Templates Endpoint Contract Tests", () => {
       const { project, token } = await createTestSetup();
 
       const response = await app.request(
-        `/projects/${project.id}/templates/non-existent-id`,
+        `/api/v1/projects/${project.id}/templates/non-existent-id`,
         {
           method: "GET",
           headers: {
@@ -676,7 +676,7 @@ describe("Templates Endpoint Contract Tests", () => {
       const template = await createTestTemplate(project.id);
 
       const response = await app.request(
-        `/projects/${project.id}/templates/${template.id}`,
+        `/api/v1/projects/${project.id}/templates/${template.id}`,
         {
           method: "GET",
         },
@@ -691,7 +691,7 @@ describe("Templates Endpoint Contract Tests", () => {
       const otherUserSetup = await createTestSetup();
 
       const response = await app.request(
-        `/projects/${project.id}/templates/${template.id}`,
+        `/api/v1/projects/${project.id}/templates/${template.id}`,
         {
           method: "GET",
           headers: {
@@ -721,7 +721,7 @@ describe("Templates Endpoint Contract Tests", () => {
       };
 
       const response = await app.request(
-        `/projects/${project.id}/templates/${template.id}`,
+        `/api/v1/projects/${project.id}/templates/${template.id}`,
         {
           method: "PUT",
           headers: {
@@ -759,7 +759,7 @@ describe("Templates Endpoint Contract Tests", () => {
       };
 
       const response = await app.request(
-        `/projects/${project.id}/templates/${template.id}`,
+        `/api/v1/projects/${project.id}/templates/${template.id}`,
         {
           method: "PUT",
           headers: {
@@ -803,7 +803,7 @@ describe("Templates Endpoint Contract Tests", () => {
       };
 
       const response = await app.request(
-        `/projects/${updatedProject.id}/templates/${template.id}`,
+        `/api/v1/projects/${updatedProject.id}/templates/${template.id}`,
         {
           method: "PUT",
           headers: {
@@ -836,7 +836,7 @@ describe("Templates Endpoint Contract Tests", () => {
       };
 
       const response = await app.request(
-        `/projects/${project.id}/templates/${template.id}`,
+        `/api/v1/projects/${project.id}/templates/${template.id}`,
         {
           method: "PUT",
           headers: {
@@ -868,7 +868,7 @@ describe("Templates Endpoint Contract Tests", () => {
       };
 
       const response = await app.request(
-        `/projects/${project.id}/templates/non-existent-id`,
+        `/api/v1/projects/${project.id}/templates/non-existent-id`,
         {
           method: "PUT",
           headers: {
@@ -899,7 +899,7 @@ describe("Templates Endpoint Contract Tests", () => {
       };
 
       const response = await app.request(
-        `/projects/${project.id}/templates/${template.id}`,
+        `/api/v1/projects/${project.id}/templates/${template.id}`,
         {
           method: "PUT",
           headers: {
@@ -942,7 +942,7 @@ describe("Templates Endpoint Contract Tests", () => {
       };
 
       const response = await app.request(
-        `/projects/${updatedProject.id}/templates/${template.id}`,
+        `/api/v1/projects/${updatedProject.id}/templates/${template.id}`,
         {
           method: "PUT",
           headers: {
@@ -975,7 +975,7 @@ describe("Templates Endpoint Contract Tests", () => {
       };
 
       const response = await app.request(
-        `/projects/${project.id}/templates/${template.id}`,
+        `/api/v1/projects/${project.id}/templates/${template.id}`,
         {
           method: "PUT",
           headers: {
@@ -1005,7 +1005,7 @@ describe("Templates Endpoint Contract Tests", () => {
       };
 
       const response = await app.request(
-        `/projects/${project.id}/templates/${template.id}`,
+        `/api/v1/projects/${project.id}/templates/${template.id}`,
         {
           method: "PUT",
           headers: {
@@ -1026,7 +1026,7 @@ describe("Templates Endpoint Contract Tests", () => {
       const template = await createTestTemplate(project.id);
 
       const response = await app.request(
-        `/projects/${project.id}/templates/${template.id}`,
+        `/api/v1/projects/${project.id}/templates/${template.id}`,
         {
           method: "DELETE",
           headers: {
@@ -1062,7 +1062,7 @@ describe("Templates Endpoint Contract Tests", () => {
       });
 
       const response = await app.request(
-        `/projects/${project.id}/templates/${template.id}`,
+        `/api/v1/projects/${project.id}/templates/${template.id}`,
         {
           method: "DELETE",
           headers: {
@@ -1086,7 +1086,7 @@ describe("Templates Endpoint Contract Tests", () => {
       const { project, token } = await createTestSetup();
 
       const response = await app.request(
-        `/projects/${project.id}/templates/non-existent-id`,
+        `/api/v1/projects/${project.id}/templates/non-existent-id`,
         {
           method: "DELETE",
           headers: {
@@ -1104,7 +1104,7 @@ describe("Templates Endpoint Contract Tests", () => {
       const template = await createTestTemplate(project.id);
 
       const response = await app.request(
-        `/projects/${project.id}/templates/${template.id}`,
+        `/api/v1/projects/${project.id}/templates/${template.id}`,
         {
           method: "DELETE",
         },
@@ -1124,7 +1124,7 @@ describe("Templates Endpoint Contract Tests", () => {
       const otherUserSetup = await createTestSetup();
 
       const response = await app.request(
-        `/projects/${project.id}/templates/${template.id}`,
+        `/api/v1/projects/${project.id}/templates/${template.id}`,
         {
           method: "DELETE",
           headers: {

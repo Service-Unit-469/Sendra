@@ -29,7 +29,7 @@ describe("Projects Endpoint Contract Tests", () => {
 
       const token = AuthService.createUserToken(user.id, user.email);
 
-      const response = await app.request("/projects", {
+      const response = await app.request("/api/v1/projects", {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -46,7 +46,7 @@ describe("Projects Endpoint Contract Tests", () => {
     test("should return user's projects", async () => {
       const { token } = await createTestSetup();
 
-      const response = await app.request("/projects", {
+      const response = await app.request("/api/v1/projects", {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -88,7 +88,7 @@ describe("Projects Endpoint Contract Tests", () => {
         role: "ADMIN",
       });
 
-      const response = await app.request("/projects", {
+      const response = await app.request("/api/v1/projects", {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -102,7 +102,7 @@ describe("Projects Endpoint Contract Tests", () => {
     });
 
     test("should return 401 when not authenticated", async () => {
-      const response = await app.request("/projects", {
+      const response = await app.request("/api/v1/projects", {
         method: "GET",
       });
 
@@ -112,7 +112,7 @@ describe("Projects Endpoint Contract Tests", () => {
     test("should not include secret or public key in response", async () => {
       const { token } = await createTestSetup();
 
-      const response = await app.request("/projects", {
+      const response = await app.request("/api/v1/projects", {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -131,7 +131,7 @@ describe("Projects Endpoint Contract Tests", () => {
     test("should successfully get a project by ID", async () => {
       const { project, token } = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}`, {
+      const response = await app.request(`/api/v1/projects/${project.id}`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -161,7 +161,7 @@ describe("Projects Endpoint Contract Tests", () => {
         project.id,
       );
 
-      const response = await app.request(`/projects/${project.id}`, {
+      const response = await app.request(`/api/v1/projects/${project.id}`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${secretToken}`,
@@ -177,7 +177,7 @@ describe("Projects Endpoint Contract Tests", () => {
     test("should return 404 when project does not exist", async () => {
       const { token } = await createTestSetup();
 
-      const response = await app.request("/projects/non-existent-id", {
+      const response = await app.request("/api/v1/projects/non-existent-id", {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -195,7 +195,7 @@ describe("Projects Endpoint Contract Tests", () => {
       const { project } = await createTestSetup();
       const otherUserSetup = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}`, {
+      const response = await app.request(`/api/v1/projects/${project.id}`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${otherUserSetup.token}`,
@@ -208,7 +208,7 @@ describe("Projects Endpoint Contract Tests", () => {
     test("should return 401 when not authenticated", async () => {
       const { project } = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}`, {
+      const response = await app.request(`/api/v1/projects/${project.id}`, {
         method: "GET",
       });
 
@@ -220,7 +220,7 @@ describe("Projects Endpoint Contract Tests", () => {
     test("should successfully get project members", async () => {
       const { project, token, user } = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}/members`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/members`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -263,7 +263,7 @@ describe("Projects Endpoint Contract Tests", () => {
         role: "MEMBER",
       });
 
-      const response = await app.request(`/projects/${project.id}/members`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/members`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -284,7 +284,7 @@ describe("Projects Endpoint Contract Tests", () => {
       const { project } = await createTestSetup();
       const otherUserSetup = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}/members`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/members`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${otherUserSetup.token}`,
@@ -297,7 +297,7 @@ describe("Projects Endpoint Contract Tests", () => {
     test("should return 401 when not authenticated", async () => {
       const { project } = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}/members`, {
+      const response = await app.request(`/api/v1/projects/${project.id}/members`, {
         method: "GET",
       });
 
@@ -314,7 +314,7 @@ describe("Projects Endpoint Contract Tests", () => {
         url: `https://new-${Date.now()}.example.com`,
       };
 
-      const response = await app.request("/projects", {
+      const response = await app.request("/api/v1/projects", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -347,7 +347,7 @@ describe("Projects Endpoint Contract Tests", () => {
         url: `https://admin-${Date.now()}.example.com`,
       };
 
-      const response = await app.request("/projects", {
+      const response = await app.request("/api/v1/projects", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -382,7 +382,7 @@ describe("Projects Endpoint Contract Tests", () => {
         url: `https://keys-${Date.now()}.example.com`,
       };
 
-      const response = await app.request("/projects", {
+      const response = await app.request("/api/v1/projects", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -413,7 +413,7 @@ describe("Projects Endpoint Contract Tests", () => {
         url: `https://noname-${Date.now()}.example.com`,
       };
 
-      const response = await app.request("/projects", {
+      const response = await app.request("/api/v1/projects", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -433,7 +433,7 @@ describe("Projects Endpoint Contract Tests", () => {
         url: `https://emptyname-${Date.now()}.example.com`,
       };
 
-      const response = await app.request("/projects", {
+      const response = await app.request("/api/v1/projects", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -452,7 +452,7 @@ describe("Projects Endpoint Contract Tests", () => {
         name: `No URL Project ${Date.now()}`,
       };
 
-      const response = await app.request("/projects", {
+      const response = await app.request("/api/v1/projects", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -470,7 +470,7 @@ describe("Projects Endpoint Contract Tests", () => {
         url: `https://unauth-${Date.now()}.example.com`,
       };
 
-      const response = await app.request("/projects", {
+      const response = await app.request("/api/v1/projects", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -492,7 +492,7 @@ describe("Projects Endpoint Contract Tests", () => {
         url: `https://updated-${Date.now()}.example.com`,
       };
 
-      const response = await app.request(`/projects/${project.id}`, {
+      const response = await app.request(`/api/v1/projects/${project.id}`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -521,7 +521,7 @@ describe("Projects Endpoint Contract Tests", () => {
         url: project.url,
       };
 
-      const response = await app.request(`/projects/${project.id}`, {
+      const response = await app.request(`/api/v1/projects/${project.id}`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -546,7 +546,7 @@ describe("Projects Endpoint Contract Tests", () => {
         url: `https://url-only-${Date.now()}.example.com`,
       };
 
-      const response = await app.request(`/projects/${project.id}`, {
+      const response = await app.request(`/api/v1/projects/${project.id}`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -572,7 +572,7 @@ describe("Projects Endpoint Contract Tests", () => {
         colors: ["#FF0000", "#00FF00", "#0000FF"],
       };
 
-      const response = await app.request(`/projects/${project.id}`, {
+      const response = await app.request(`/api/v1/projects/${project.id}`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -595,7 +595,7 @@ describe("Projects Endpoint Contract Tests", () => {
         url: "https://nonexistent.example.com",
       };
 
-      const response = await app.request("/projects/non-existent-id", {
+      const response = await app.request("/api/v1/projects/non-existent-id", {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -641,7 +641,7 @@ describe("Projects Endpoint Contract Tests", () => {
         url: "https://unauth.example.com",
       };
 
-      const response = await app.request(`/projects/${project.id}`, {
+      const response = await app.request(`/api/v1/projects/${project.id}`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${memberToken}`,
@@ -662,7 +662,7 @@ describe("Projects Endpoint Contract Tests", () => {
         url: "https://unauth.example.com",
       };
 
-      const response = await app.request(`/projects/${project.id}`, {
+      const response = await app.request(`/api/v1/projects/${project.id}`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${otherUserSetup.token}`,
@@ -683,7 +683,7 @@ describe("Projects Endpoint Contract Tests", () => {
         url: project.url,
       };
 
-      const response = await app.request(`/projects/${project.id}`, {
+      const response = await app.request(`/api/v1/projects/${project.id}`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -703,7 +703,7 @@ describe("Projects Endpoint Contract Tests", () => {
         url: "https://unauth.example.com",
       };
 
-      const response = await app.request(`/projects/${project.id}`, {
+      const response = await app.request(`/api/v1/projects/${project.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -719,7 +719,7 @@ describe("Projects Endpoint Contract Tests", () => {
     test("should successfully delete a project", async () => {
       const { project, token } = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}`, {
+      const response = await app.request(`/api/v1/projects/${project.id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -734,7 +734,7 @@ describe("Projects Endpoint Contract Tests", () => {
     test("should return 404 when project does not exist", async () => {
       const { token } = await createTestSetup();
 
-      const response = await app.request("/projects/non-existent-id", {
+      const response = await app.request("/api/v1/projects/non-existent-id", {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -772,7 +772,7 @@ describe("Projects Endpoint Contract Tests", () => {
         memberUser.email,
       );
 
-      const response = await app.request(`/projects/${project.id}`, {
+      const response = await app.request(`/api/v1/projects/${project.id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${memberToken}`,
@@ -791,7 +791,7 @@ describe("Projects Endpoint Contract Tests", () => {
       const { project } = await createTestSetup();
       const otherUserSetup = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}`, {
+      const response = await app.request(`/api/v1/projects/${project.id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${otherUserSetup.token}`,
@@ -809,7 +809,7 @@ describe("Projects Endpoint Contract Tests", () => {
     test("should return 401 when not authenticated", async () => {
       const { project } = await createTestSetup();
 
-      const response = await app.request(`/projects/${project.id}`, {
+      const response = await app.request(`/api/v1/projects/${project.id}`, {
         method: "DELETE",
       });
 

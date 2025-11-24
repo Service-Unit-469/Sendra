@@ -81,7 +81,7 @@ export default function ContactDetailPage() {
       },
     );
 
-    navigate("/dashboard/contacts");
+    navigate("/contacts");
   };
 
   return (

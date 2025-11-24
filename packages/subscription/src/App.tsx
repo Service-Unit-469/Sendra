@@ -1,22 +1,17 @@
-import type { Subscriber, SubscriberUpdate } from "@sendra/shared";
+import "../styles/index.css";
+
+import type { Subscriber } from "@sendra/shared";
 import { motion } from "framer-motion";
 import { LoaderCircle } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
-import { toast } from "sonner";
-import Toggle from "../../components/Input/Toggle/Toggle";
-import FullscreenLoader from "../../components/Utility/FullscreenLoader/FullscreenLoader";
-import { useSubscriber } from "../../lib/hooks/subscriber";
-import { network } from "../../lib/network";
+import { Toaster, toast } from "sonner";
+import { useSubscriber } from "./lib/subscriber";
 
 /**
  *
  */
-export default function Index() {
-  const [searchParams] = useSearchParams();
-  const email = searchParams.get("email") ?? "";
-
-  const { data: subscriber, error, mutate } = useSubscriber(email);
+export default function App() {
+  const { subscriber, error, updateSubscriber, isLoading } = useSubscriber();
   const [submitted, setSubmitted] = useState(false);
   const [subscriptions, setSubscriptions] = useState<Subscriber["subscriptions"]>([]);
 
@@ -30,8 +25,12 @@ export default function Index() {
     document.title = "Manage your subscription preferences";
   }, []);
 
-  if (!subscriber && !error) {
-    return <FullscreenLoader />;
+  if (isLoading) {
+    return (
+      <div className="flex h-screen w-full items-center justify-center">
+        <LoaderCircle className="animate-spin" size={24} />
+      </div>
+    );
   }
 
   const update = () => {
@@ -39,35 +38,27 @@ export default function Index() {
       return;
     }
     setSubmitted(true);
-    toast.promise(
-      network.fetch<never, SubscriberUpdate>("/subscriber", {
-        method: "POST",
-        body: {
-          email: subscriber.email,
-          subscriptions: subscriptions,
-        },
-      }),
-      {
-        loading: "Updating your preferences",
-        success: () => {
-          void mutate();
-          setSubmitted(false);
-          return "Updated your preferences";
-        },
-        error: () => {
-          setSubmitted(false);
-          return "Could not update your preferences!";
-        },
+    toast.promise(() => updateSubscriber(subscriptions), {
+      loading: "Updating your preferences",
+      success: () => {
+        setSubmitted(false);
+        return "Updated your preferences";
       },
-    );
+      error: () => {
+        setSubmitted(false);
+        return "Could not update your preferences!";
+      },
+    });
   };
 
   return (
     <div className={"flex h-screen w-full flex-col items-center justify-center bg-neutral-50"}>
+      <Toaster position="bottom-right" />
       <div className={"w-3/4 rounded-sm border border-neutral-200 bg-white p-12 shadow-xs md:w-2/4 xl:w-2/6"}>
         {error && (
           <div className={"text-center text-sm text-neutral-500"}>
-            <p>No subscriber found</p>
+            <p>Unable to load your subscriptions</p>
+            <p>{error.message}</p>
           </div>
         )}
         {subscriber && (
@@ -76,13 +67,20 @@ export default function Index() {
             <div className={"my-8 text-center text-sm text-neutral-500 flex flex-col gap-y-2"}>
               {subscriptions.map((subscription) => (
                 <div key={subscription.id}>
-                  <Toggle
-                    toggled={subscription.subscribed}
-                    onToggle={() => setSubscriptions(subscriptions.map((s) => (s.id === subscription.id ? { ...s, subscribed: !s.subscribed } : s)))}
-                    title={subscription.name}
-                    description={`You will ${subscription.subscribed ? "receive" : "not receive"} emails from ${subscription.name}`}
-                    disabled={submitted}
-                  />
+                  <label htmlFor={subscription.id}>
+                    <span className="text-sm font-medium text-neutral-800">{subscription.name}</span>
+                    <input
+                      className="ml-2 border-neutral-300 text-neutral-600 focus:ring-neutral-800"
+                      id={subscription.id}
+                      type="checkbox"
+                      checked={subscription.subscribed}
+                      onChange={() => setSubscriptions(subscriptions.map((s) => (s.id === subscription.id ? { ...s, subscribed: !s.subscribed } : s)))}
+                    />
+                    <br />
+                    <span className="ml-2 text-sm text-neutral-500">
+                      You will {subscription.subscribed ? "receive" : "not receive"} emails from {subscription.name}
+                    </span>
+                  </label>
                 </div>
               ))}
             </div>

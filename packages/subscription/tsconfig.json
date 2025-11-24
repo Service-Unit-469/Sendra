@@ -1,0 +1,25 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "incremental": true,
+    "types": ["vite/client"]
+  },
+  "exclude": [
+    "node_modules",
+    "dist",
+    "build",
+    ".next"
+  ],
+  "include": [
+    "src",
+    "src/vite-env.d.ts",
+    "custom.d.ts"
+  ]
+}

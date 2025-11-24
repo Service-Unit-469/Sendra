@@ -25,7 +25,10 @@ export default function Index() {
   const handleFileUpload = useCallback(
     async (event: React.ChangeEvent<HTMLInputElement>) => {
       const files = event.target.files;
-      if (!files || files.length === 0) return;
+      if (!files || files.length === 0) {
+        toast.error("No files selected");
+        return;
+      }
 
       setUploading(true);
       try {
@@ -38,7 +41,6 @@ export default function Index() {
         toast.error(`Failed to upload file: ${error instanceof Error ? error.message : "Unknown error"}`);
       } finally {
         setUploading(false);
-        // Reset file input
         event.target.value = "";
       }
     },

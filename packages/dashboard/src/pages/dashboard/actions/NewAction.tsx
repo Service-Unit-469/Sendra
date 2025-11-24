@@ -80,7 +80,7 @@ export default function NewAction() {
       error: "Could not create new action!",
     });
 
-    navigate("/dashboard/actions");
+    navigate("/actions");
   };
 
   return (
@@ -215,7 +215,7 @@ export default function NewAction() {
             whileTap={{ scale: 0.9 }}
             onClick={(e) => {
               e.preventDefault();
-              navigate("/dashboard/actions");
+              navigate("/actions");
             }}
             className={
               "flex w-fit justify-center rounded-sm border border-neutral-300 bg-white px-6 py-2 text-base font-medium text-neutral-700 focus:outline-hidden focus:ring-2 focus:ring-neutral-800 focus:ring-offset-2 sm:mt-0 sm:w-auto sm:text-sm"
