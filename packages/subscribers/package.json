@@ -15,7 +15,7 @@
 	},
 	"devDependencies": {
 		"@sendra/test": "*",
-		"@types/aws-lambda": "^8.10.157",
+		"@types/aws-lambda": "^8.10.159",
 		"ts-node-dev": "^2.0.0",
 		"typescript": "^5.5.3"
 	},
