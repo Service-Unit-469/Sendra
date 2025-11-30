@@ -28,7 +28,7 @@ export default function Home() {
               </div>
               <div className="mt-8">
                 <h3 className="text-lg font-medium">
-                  <Link to="/dashboard/campaigns/new" className="focus:outline-hidden">
+                  <Link to="/campaigns/new" className="focus:outline-hidden">
                     <span className="absolute inset-0" aria-hidden="true" />
                     Send a campaign
                   </Link>
@@ -46,7 +46,7 @@ export default function Home() {
               <div className="mt-8">
                 <Badge type={"danger"}>Important</Badge>
                 <h3 className="mt-3 text-lg font-medium">
-                  <Link to="/dashboard/settings/identity" className="focus:outline-hidden">
+                  <Link to="/settings/identity" className="focus:outline-hidden">
                     <span className="absolute inset-0" aria-hidden="true" />
                     Verify your domain
                   </Link>
@@ -69,7 +69,7 @@ export default function Home() {
           </div>
           <div className="mt-2 flex h-4/6 flex-col justify-end">
             <h3 className="text-lg font-medium">
-              <Link to="/dashboard/analytics" className="focus:outline-hidden">
+              <Link to="/analytics" className="focus:outline-hidden">
                 <span className="absolute inset-0" aria-hidden="true" />
                 Analytics
               </Link>
@@ -116,7 +116,7 @@ export default function Home() {
                     Type: <Badge type={"success"}>Email</Badge>,
                     Time: dayjs().to(dayjs(f.createdAt)),
                     View: f.contact && (
-                      <Link to={`/dashboard/contacts/${f.contact?.id}`}>
+                      <Link to={`/contacts/${f.contact?.id}`}>
                         <Eye size={20} />
                       </Link>
                     ),
@@ -129,7 +129,7 @@ export default function Home() {
                     Type: <Badge type={"info"}>Action</Badge>,
                     Time: dayjs().to(dayjs(f.createdAt)),
                     View: f.contact && (
-                      <Link to={`/dashboard/contacts/${f.contact.id}`}>
+                      <Link to={`/contacts/${f.contact.id}`}>
                         <Eye size={20} />
                       </Link>
                     ),
@@ -142,7 +142,7 @@ export default function Home() {
                     Type: <Badge type={"purple"}>Event</Badge>,
                     Time: dayjs().to(dayjs(f.createdAt)),
                     View: f.contact && (
-                      <Link to={`/dashboard/contacts/${f.contact?.id}`}>
+                      <Link to={`/contacts/${f.contact?.id}`}>
                         <Eye size={20} />
                       </Link>
                     ),

@@ -43,6 +43,7 @@ export default function Index() {
     <Dashboard>
       <Routes>
         <Route index element={<HomePage />} />
+        <Route path="/" element={<HomePage />} />
         <Route path="/actions" element={<ActionsPage />} />
         <Route path="/actions/new" element={<NewAction />} />
         <Route path="/actions/:id" element={<ActionDetailPage />} />

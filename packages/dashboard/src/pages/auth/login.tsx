@@ -33,7 +33,7 @@ export default function Index() {
   });
 
   if (user && !error) {
-    return <Redirect to="/dashboard" />;
+    return <Redirect to="/" />;
   }
 
   if (!user && !error) {
@@ -69,7 +69,7 @@ export default function Index() {
       const body = await response.json();
       localStorage.setItem(TOKEN_KEY, body.token);
       await mutate(body);
-      navigate("/dashboard");
+      navigate("/");
     } catch {
       setError("email", { message: "login failed" });
       setSubmitted(false);
