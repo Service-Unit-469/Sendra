@@ -38,7 +38,7 @@ export default function Index() {
 
   return (
     <>
-      <div className={"mb-6 flex items-center justify-between"}>
+      <div className="mb-6 flex items-center justify-between">
         <AnalyticsTabs />
         <div className={"w-40"}>
           <Dropdown
@@ -53,27 +53,27 @@ export default function Index() {
         </div>
       </div>
 
-      <div className={"grid grid-cols-2 gap-6"}>
+      <div className="grid grid-cols-2 gap-6">
         <Card>
           {analytics ? (
-            <div className={"flex items-center"}>
+            <div className="flex items-center">
               <div>
-                <p className={"font-medium text-neutral-600"}>Bounce Rate</p>
-                <p className={"text-2xl font-semibold text-neutral-800"}>
+                <p className="font-medium text-neutral-600">Bounce Rate</p>
+                <p className="text-2xl font-semibold text-neutral-800">
                   {Number.isNaN((analytics.emails.bounced / analytics.emails.total) * 100) ? 0 : ((analytics.emails.bounced / analytics.emails.total) * 100).toFixed(2)}%
                 </p>
               </div>
-              <div className={"flex flex-1 justify-end"}>
+              <div className="flex flex-1 justify-end">
                 {analytics.emails.bounced / analytics.emails.total > analytics.emails.bouncedPrev / analytics.emails.totalPrev ? (
-                  <span className={"flex items-center gap-1 text-sm font-medium text-neutral-500"}>
+                  <span className="flex items-center gap-1 text-sm font-medium text-neutral-500">
                     {Number.isNaN((analytics.emails.bounced / analytics.emails.total - analytics.emails.bouncedPrev / analytics.emails.totalPrev) * 100)
                       ? 0
                       : ((analytics.emails.bounced / analytics.emails.total - analytics.emails.bouncedPrev / analytics.emails.totalPrev) * 100).toFixed(2)}
                     %
-                    <ArrowUp className={"text-red-400"} size={24} />
+                    <ArrowUp className="text-red-400" size={24} />
                   </span>
                 ) : (
-                  <span className={"flex items-center gap-1 text-sm font-medium text-neutral-500"}>
+                  <span className="flex items-center gap-1 text-sm font-medium text-neutral-500">
                     {Number.isNaN((analytics.emails.bounced / analytics.emails.total - analytics.emails.bouncedPrev / analytics.emails.totalPrev) * 100)
                       ? 0
                       : ((analytics.emails.bounced / analytics.emails.total - analytics.emails.bouncedPrev / analytics.emails.totalPrev) * 100).toFixed(2)}
@@ -84,49 +84,49 @@ export default function Index() {
               </div>
             </div>
           ) : (
-            <div className={"flex h-[55px] items-center justify-center"}>
+            <div className="flex h-[55px] items-center justify-center">
               <LoaderCircle size={32} className="animate-spin" />
             </div>
           )}
         </Card>
         <Card>
           {analytics ? (
-            <div className={"flex items-center"}>
+            <div className="flex items-center">
               <div>
-                <p className={"font-medium text-neutral-600"}>Spam Rate</p>
-                <p className={"text-2xl font-semibold text-neutral-800"}>
+                <p className="font-medium text-neutral-600">Spam Rate</p>
+                <p className="text-2xl font-semibold text-neutral-800">
                   {Number.isNaN((analytics.emails.complaint / analytics.emails.total) * 100) ? 0 : ((analytics.emails.complaint / analytics.emails.total) * 100).toFixed(2)}%
                 </p>
               </div>
-              <div className={"flex flex-1 justify-end"}>
+              <div className="flex flex-1 justify-end">
                 {analytics.emails.complaint / analytics.emails.total > analytics.emails.complaintPrev / analytics.emails.totalPrev ? (
-                  <span className={"flex items-center gap-1 text-sm font-medium text-neutral-500"}>
+                  <span className="flex items-center gap-1 text-sm font-medium text-neutral-500">
                     {Number.isNaN((analytics.emails.complaint / analytics.emails.total - analytics.emails.complaintPrev / analytics.emails.totalPrev) * 100)
                       ? 0
                       : ((analytics.emails.complaint / analytics.emails.total - analytics.emails.complaintPrev / analytics.emails.totalPrev) * 100).toFixed(2)}
                     %
-                    <ArrowUp className={"text-red-400"} size={24} />
+                    <ArrowUp className="text-red-400" size={24} />
                   </span>
                 ) : (
-                  <span className={"flex items-center gap-1 text-sm font-medium text-neutral-500"}>
+                  <span className="flex items-center gap-1 text-sm font-medium text-neutral-500">
                     {Number.isNaN((analytics.emails.complaint / analytics.emails.total - analytics.emails.complaintPrev / analytics.emails.totalPrev) * 100)
                       ? 0
                       : ((analytics.emails.complaint / analytics.emails.total - analytics.emails.complaintPrev / analytics.emails.totalPrev) * 100).toFixed(2)}
                     %
-                    <ArrowDown className={"text-green-400"} size={24} />
+                    <ArrowDown className="text-green-400" size={24} />
                   </span>
                 )}
               </div>
             </div>
           ) : (
-            <div className={"flex h-[55px] items-center justify-center"}>
+            <div className="flex h-[55px] items-center justify-center">
               <LoaderCircle size={32} className="animate-spin" />
             </div>
           )}
         </Card>
-        <Card title={"Contacts"} className={"col-span-2"}>
+        <Card title="Contacts" className="col-span-2">
           {analytics ? (
-            <ResponsiveContainer width={"100%"} height={300}>
+            <ResponsiveContainer width="100%" height={300}>
               <AreaChart
                 width={500}
                 height={300}
@@ -158,7 +158,7 @@ export default function Index() {
                 <YAxis
                   axisLine={false}
                   domain={[0, analytics.contacts.timeseries.length === 0 ? 10 : analytics.contacts.timeseries[analytics.contacts.timeseries.length - 1].count * 1.1]}
-                  fill={"#fff"}
+                  fill="#fff"
                   tickSize={0}
                   width={5}
                   interval={0}
@@ -166,7 +166,7 @@ export default function Index() {
 
                 <XAxis
                   tickSize={0}
-                  stroke={"#fff"}
+                  stroke="#fff"
                   dataKey="day"
                   interval={3}
                   tick={({ x, y, payload }) => {
@@ -176,8 +176,8 @@ export default function Index() {
                           x={0}
                           y={0}
                           dy={16}
-                          fill={"#666"}
-                          textAnchor={"middle"}
+                          fill="#666"
+                          textAnchor="middle"
                           className="text-sm" // Add your custom class name here
                         >
                           {payload.value}
@@ -194,7 +194,7 @@ export default function Index() {
                       const dataPoint = payload[0];
                       return (
                         <div className="rounded-sm border border-neutral-100 bg-white px-5 py-3 shadow-xs">
-                          <p className="font-medium text-neutral-800">{`${label}`}</p>
+                          <p className="font-medium text-neutral-800">{label}</p>
                           <p className="text-neutral-600">{valueFormatter(dataPoint.value as number)}</p>
                         </div>
                       );
@@ -208,12 +208,12 @@ export default function Index() {
               </AreaChart>
             </ResponsiveContainer>
           ) : (
-            <div className={"flex h-[300px] items-center justify-center"}>
+            <div className="flex h-[300px] items-center justify-center">
               <LoaderCircle size={32} className="animate-spin" />
             </div>
           )}
         </Card>
-        <Card title={"Retention Rate"}>
+        <Card title="Retention Rate">
           {analytics ? (
             <ResponsiveContainer width="100%" height={200}>
               <PieChart width={300} height={300}>
@@ -224,7 +224,7 @@ export default function Index() {
                       const dataPoint = payload[0];
                       return (
                         <div className="rounded-sm border border-neutral-100 bg-white px-5 py-3 shadow-xs">
-                          <p className="font-medium text-neutral-800">{`${dataPoint.name}`}</p>
+                          <p className="font-medium text-neutral-800">{dataPoint.name}</p>
                           <p className="text-neutral-600">{valueFormatter(dataPoint.value as number)}</p>
                         </div>
                       );
@@ -248,7 +248,9 @@ export default function Index() {
                   cx="50%"
                   cy="50%"
                   labelLine={false}
-                  label={({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
+                  label={({ cx, cy, midAngle: ma, innerRadius, outerRadius, percent: pe }) => {
+                    const midAngle = ma ?? 0;
+                    const percent = pe ?? 0;
                     const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
                     const x = cx + radius * Math.cos((-midAngle * Math.PI) / 180);
                     const y = cy + radius * Math.sin((-midAngle * Math.PI) / 180);
@@ -283,12 +285,12 @@ export default function Index() {
               </PieChart>
             </ResponsiveContainer>
           ) : (
-            <div className={"flex h-[200px] items-center justify-center"}>
+            <div className="flex h-[200px] items-center justify-center">
               <LoaderCircle size={32} className="animate-spin" />
             </div>
           )}
         </Card>
-        <Card title={"Open rate"}>
+        <Card title="Open rate">
           {analytics ? (
             <ResponsiveContainer width="100%" height={200}>
               <PieChart width={300} height={300}>
@@ -299,7 +301,7 @@ export default function Index() {
                       const dataPoint = payload[0];
                       return (
                         <div className="rounded-sm border border-neutral-100 bg-white px-5 py-3 shadow-xs">
-                          <p className="font-medium text-neutral-800">{`${dataPoint.name}`}</p>
+                          <p className="font-medium text-neutral-800">{dataPoint.name}</p>
                           <p className="text-neutral-600">{valueFormatter(dataPoint.value as number)}</p>
                         </div>
                       );
@@ -321,7 +323,9 @@ export default function Index() {
                   cx="50%"
                   cy="50%"
                   labelLine={false}
-                  label={({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
+                  label={({ cx, cy, midAngle: ma, innerRadius, outerRadius, percent: pe }) => {
+                    const midAngle = ma ?? 0;
+                    const percent = pe ?? 0;
                     const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
                     const x = cx + radius * Math.cos((-midAngle * Math.PI) / 180);
                     const y = cy + radius * Math.sin((-midAngle * Math.PI) / 180);
@@ -354,7 +358,7 @@ export default function Index() {
               </PieChart>
             </ResponsiveContainer>
           ) : (
-            <div className={"flex h-[200px] items-center justify-center"}>
+            <div className="flex h-[200px] items-center justify-center">
               <LoaderCircle size={32} className="animate-spin" />
             </div>
           )}
