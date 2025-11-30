@@ -2,9 +2,11 @@ import type { ContactCreate } from "@sendra/shared";
 import { motion } from "framer-motion";
 import { Save } from "lucide-react";
 import { useState } from "react";
+import { useCurrentProject } from "../../lib/hooks/projects";
 import { ContactMetadataForm } from "../ContactMetadataForm/ContactMetadataForm";
 import Input from "../Input/Input/Input";
 import Toggle from "../Input/Toggle/Toggle";
+import { SchemaDrivenForm } from "./SchemaDrivenForm";
 import { useContactForm } from "./useContactForm";
 
 export type ContactFormProps = {
@@ -19,6 +21,8 @@ export type ContactFormProps = {
 
 export function ContactForm({ projectId, contactId, onSuccess, initialData, showEmailField = true, submitButtonText = "Save", className = "" }: ContactFormProps) {
   const [data, setData] = useState<ContactCreate["data"]>(initialData?.data ?? {});
+  const project = useCurrentProject();
+  const hasSchema = !!(project as { contactDataSchema?: string })?.contactDataSchema;
 
   const { register, handleSubmit, errors, watch, setValue, createContact, updateContact } = useContactForm({
     projectId,
@@ -43,9 +47,13 @@ export function ContactForm({ projectId, contactId, onSuccess, initialData, show
         </div>
       )}
 
-      <div className={"col-span-2"}>
-        <ContactMetadataForm initialData={initialData?.data || {}} onDataChange={setData} />
-      </div>
+      {hasSchema ? (
+        <SchemaDrivenForm formData={data} onChange={(newData) => setData(newData as Record<string, string | number | boolean | string[] | null>)} />
+      ) : (
+        <div className={"col-span-2"}>
+          <ContactMetadataForm initialData={initialData?.data || {}} onDataChange={setData} />
+        </div>
+      )}
 
       <div className={"col-span-2"}>
         <Toggle

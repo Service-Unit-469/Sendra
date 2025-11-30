@@ -25,7 +25,7 @@ If you're a member of multiple projects:
 
 ### Project Settings
 
-Access via **Project Settingst**
+Access via **Project Settings**
 
 **Configurable Options:**
 - Project name
@@ -34,6 +34,53 @@ Access via **Project Settingst**
 **To Update Project:**
 1. Modify the fields you want to change
 2. Click **"Save Changes"**
+
+### Contact Data Schema
+
+Access via **Project Settings** → **Contact Schema**
+
+Define a JSON schema to structure and validate contact data. When a schema is defined, contact forms will automatically generate fields based on the schema, providing a consistent data structure across the project.
+
+**To Define a Contact Schema:**
+
+1. Navigate to **Project Settings** → **Contact Schema**
+2. Enter a JSON schema in the text area
+3. Click **"Save Schema"**
+
+**Example Schema:**
+```json
+{
+  "type": "object",
+  "properties": {
+    "firstName": {
+      "type": "string",
+      "title": "First Name",
+      "minLength": 1
+    },
+    "lastName": {
+      "type": "string",
+      "title": "Last Name"
+    },
+    "company": {
+      "type": "string",
+      "title": "Company"
+    },
+    "plan": {
+      "type": "string",
+      "enum": ["free", "premium", "enterprise"],
+      "title": "Plan"
+    }
+  },
+  "required": ["firstName", "lastName"]
+}
+```
+
+**Benefits:**
+- Automatic form generation based on schema
+- Data validation when creating or updating contacts
+- Consistent data structure across your project
+
+**Note:** Projects without a schema will continue to use the free-form metadata editor. See [JSON Schema documentation](https://json-schema.org/learn/getting-started-step-by-step) for more information on schema syntax.
 
 ### API Access
 

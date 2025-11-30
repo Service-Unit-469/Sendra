@@ -587,6 +587,121 @@ describe("Projects Endpoint Contract Tests", () => {
       expect(data.project.colors).toEqual(updatePayload.colors);
     });
 
+    test("should update project contactDataSchema", async () => {
+      const { project, token } = await createTestSetup();
+
+      const schema = {
+        type: "object",
+        properties: {
+          firstName: { type: "string", minLength: 1 },
+          lastName: { type: "string" },
+          age: { type: "number", minimum: 0 },
+        },
+        required: ["firstName"],
+      };
+
+      const updatePayload = {
+        id: project.id,
+        name: project.name,
+        url: project.url,
+        contactDataSchema: JSON.stringify(schema),
+      };
+
+      const response = await app.request(`/api/v1/projects/${project.id}`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatePayload),
+      });
+
+      expect(response.status).toBe(200);
+
+      const data = await response.json();
+      expect(data.project.contactDataSchema).toBe(JSON.stringify(schema));
+
+      // Verify schema was saved in database
+      const projectPersistence = new ProjectPersistence();
+      const updatedProject = await projectPersistence.get(project.id);
+      expect(updatedProject?.contactDataSchema).toBe(JSON.stringify(schema));
+    });
+
+    test("should update project with contactDataSchema and other fields", async () => {
+      const { project, token } = await createTestSetup();
+
+      const schema = {
+        type: "object",
+        properties: {
+          company: { type: "string" },
+        },
+      };
+
+      const updatePayload = {
+        id: project.id,
+        name: "Updated Name",
+        url: project.url,
+        colors: ["#FF0000"],
+        contactDataSchema: JSON.stringify(schema),
+      };
+
+      const response = await app.request(`/api/v1/projects/${project.id}`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatePayload),
+      });
+
+      expect(response.status).toBe(200);
+
+      const data = await response.json();
+      expect(data.project.name).toBe("Updated Name");
+      expect(data.project.colors).toEqual(["#FF0000"]);
+      expect(data.project.contactDataSchema).toBe(JSON.stringify(schema));
+    });
+
+    test("should allow removing contactDataSchema by setting to null", async () => {
+      const { project, token } = await createTestSetup();
+
+      // First set a schema
+      const projectPersistence = new ProjectPersistence();
+      const schema = {
+        type: "object",
+        properties: {
+          test: { type: "string" },
+        },
+      };
+      await projectPersistence.put({
+        ...project,
+        contactDataSchema: JSON.stringify(schema),
+      });
+
+      // Then remove it
+      const updatePayload = {
+        id: project.id,
+        name: project.name,
+        url: project.url,
+        contactDataSchema: undefined,
+      };
+
+      const response = await app.request(`/api/v1/projects/${project.id}`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatePayload),
+      });
+
+      expect(response.status).toBe(200);
+
+      // Verify schema was removed
+      const updatedProject = await projectPersistence.get(project.id);
+      expect(updatedProject?.contactDataSchema).toBeUndefined();
+    });
+
     test("should return 404 when project does not exist", async () => {
       const { token } = await createTestSetup();
 

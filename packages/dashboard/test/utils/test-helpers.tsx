@@ -1,10 +1,21 @@
 import { render as rtlRender, type RenderOptions } from "@testing-library/react";
 import { type ReactElement, type ReactNode } from "react";
 import { MemoryRouter } from "react-router-dom";
-import { Provider as JotaiProvider } from "jotai";
+import { Provider as JotaiProvider, useSetAtom } from "jotai";
 import { SWRConfig } from "swr";
 import { network } from "../../src/lib/network";
+import { atomCurrentProject } from "../../src/lib/atoms/project";
 import { vi, beforeEach, afterEach } from "vitest";
+
+/**
+ * Component to set up project atom for tests
+ * Must be inside JotaiProvider
+ */
+function ProjectAtomSetup({ project }: { project: ReturnType<typeof createMockProject> }) {
+	const setCurrentProject = useSetAtom(atomCurrentProject);
+	setCurrentProject(project as any);
+	return null;
+}
 
 /**
  * Custom render function that wraps components with necessary providers
@@ -14,9 +25,10 @@ export function renderWithProviders(
 	ui: ReactElement,
 	options?: Omit<RenderOptions, "wrapper"> & {
 		initialEntries?: string[];
+		project?: ReturnType<typeof createMockProject>;
 	},
 ) {
-	const { initialEntries = ["/"], ...renderOptions } = options || {};
+	const { initialEntries = ["/"], project, ...renderOptions } = options || {};
 
 	function Wrapper({ children }: { children: ReactNode }) {
 		return (
@@ -29,7 +41,10 @@ export function renderWithProviders(
 				}}
 			>
 				<JotaiProvider>
-					<MemoryRouter initialEntries={initialEntries}>{children}</MemoryRouter>
+					<MemoryRouter initialEntries={initialEntries}>
+						{project && <ProjectAtomSetup project={project} />}
+						{children}
+					</MemoryRouter>
 				</JotaiProvider>
 			</SWRConfig>
 		);
@@ -174,7 +189,7 @@ export function createMockUser(overrides: Record<string, any> = {}) {
 }
 
 // Default render function that uses renderWithProviders
-export function render(ui: ReactElement, options?: Omit<RenderOptions, "wrapper"> & { initialEntries?: string[] }) {
+export function render(ui: ReactElement, options?: Omit<RenderOptions, "wrapper"> & { initialEntries?: string[]; project?: ReturnType<typeof createMockProject> }) {
 	return renderWithProviders(ui, options);
 }
 

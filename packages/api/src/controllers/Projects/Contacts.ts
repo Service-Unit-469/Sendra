@@ -1,11 +1,45 @@
 import { createRoute, z } from "@hono/zod-openapi";
-import { ContactPersistence, ContactService } from "@sendra/lib";
+import { ContactPersistence, ContactService, ProjectPersistence, rootLogger } from "@sendra/lib";
 import { ContactSchema, ContactSchemas, EmailSchema, EventSchema } from "@sendra/shared";
+import Ajv from "ajv";
+import addFormats from "ajv-formats";
 import type { AppType } from "../../app";
 import { HttpException, NotFound } from "../../exceptions";
 import { getProblemResponseSchema } from "../../exceptions/responses";
 import { isAuthenticatedProjectMemberOrSecretKey } from "../../middleware/auth";
 import { registerProjectEntityCrudRoutes } from "./ProjectEntity";
+
+const logger = rootLogger.child({
+  module: "Contacts",
+});
+
+const ajv = new Ajv({ allErrors: true, strict: false });
+addFormats(ajv);
+
+function validateContactData(data: Record<string, unknown>, schemaString: string | undefined): void {
+  if (!schemaString) {
+    return; // No schema defined, skip validation
+  }
+
+  let schema: object;
+  try {
+    schema = JSON.parse(schemaString);
+  } catch (error) {
+    logger.warn({ err: error }, "Invalid contact data schema");
+    throw new HttpException(500, "Internal server error: Invalid contact data schema", {
+      schemaError: error,
+    });
+  }
+
+  const validate = ajv.compile(schema);
+  const valid = validate(data);
+
+  if (!valid) {
+    logger.warn({ errors: validate.errors }, "Contact data validation failed");
+    const errors = validate.errors?.map((err) => `${err.instancePath || "root"} ${err.message}`).join(", ") || "Validation failed";
+    throw new HttpException(400, `Contact data validation failed: ${errors}`);
+  }
+}
 
 export const registerContactsRoutes = (app: AppType) => {
   registerProjectEntityCrudRoutes(app, {
@@ -30,6 +64,23 @@ export const registerContactsRoutes = (app: AppType) => {
 
       if (existingContact) {
         throw new HttpException(409, "Contact already exists");
+      }
+
+      // Validate contact data against project schema if defined
+      const projectPersistence = new ProjectPersistence();
+      const project = await projectPersistence.get(projectId);
+      if (project?.contactDataSchema) {
+        validateContactData(contact.data || {}, project.contactDataSchema);
+      }
+
+      return contact;
+    },
+    preUpdateEntity: async (projectId, contact) => {
+      // Validate contact data against project schema if defined
+      const projectPersistence = new ProjectPersistence();
+      const project = await projectPersistence.get(projectId);
+      if (project?.contactDataSchema && contact.data) {
+        validateContactData(contact.data, project.contactDataSchema);
       }
       return contact;
     },

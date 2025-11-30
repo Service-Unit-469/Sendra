@@ -1,6 +1,7 @@
 import {
     ContactPersistence,
-    EmailPersistence
+    EmailPersistence,
+    ProjectPersistence,
 } from "@sendra/lib";
 import { startupDynamoDB, stopDynamoDB } from "@sendra/test";
 import { afterAll, beforeAll, describe, expect, test } from "vitest";
@@ -1105,6 +1106,319 @@ describe("Contacts Endpoint Contract Tests", () => {
       });
 
       expect(response.status).toBe(401);
+    });
+  });
+
+  describe("Contact Schema Validation", () => {
+    test("should successfully create contact with valid schema data", async () => {
+      const { project, token } = await createTestSetup();
+
+      // Set up a contact schema
+      const projectPersistence = new ProjectPersistence();
+      const schema = {
+        type: "object",
+        properties: {
+          firstName: { type: "string", minLength: 1 },
+          lastName: { type: "string" },
+          age: { type: "number", minimum: 0 },
+        },
+        required: ["firstName"],
+      };
+      await projectPersistence.put({
+        ...project,
+        contactDataSchema: JSON.stringify(schema),
+      });
+
+      const contactPayload = {
+        email: "schema-valid@example.com",
+        subscribed: true,
+        data: {
+          firstName: "John",
+          lastName: "Doe",
+          age: 30,
+        },
+      };
+
+      const response = await app.request(`/api/v1/projects/${project.id}/contacts`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(contactPayload),
+      });
+
+      expect(response.status).toBe(201);
+
+      const data = await response.json();
+      expect(data.data).toMatchObject(contactPayload.data);
+    });
+
+    test("should return 400 when contact data violates schema", async () => {
+      const { project, token } = await createTestSetup();
+
+      // Set up a contact schema with required field
+      const projectPersistence = new ProjectPersistence();
+      const schema = {
+        type: "object",
+        properties: {
+          firstName: { type: "string", minLength: 1 },
+          lastName: { type: "string" },
+        },
+        required: ["firstName"],
+      };
+      await projectPersistence.put({
+        ...project,
+        contactDataSchema: JSON.stringify(schema),
+      });
+
+      const contactPayload = {
+        email: "schema-invalid@example.com",
+        subscribed: true,
+        data: {
+          lastName: "Doe",
+          // Missing required firstName
+        },
+      };
+
+      const response = await app.request(`/api/v1/projects/${project.id}/contacts`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(contactPayload),
+      });
+
+      expect(response.status).toBe(400);
+
+      const data = await response.json();
+      expect(data.detail).toContain("Contact data validation failed");
+    });
+
+    test("should return 400 when contact data violates schema type constraints", async () => {
+      const { project, token } = await createTestSetup();
+
+      // Set up a contact schema with type constraints
+      const projectPersistence = new ProjectPersistence();
+      const schema = {
+        type: "object",
+        properties: {
+          age: { type: "number", minimum: 0 },
+          email: { type: "string", format: "email" },
+        },
+      };
+      await projectPersistence.put({
+        ...project,
+        contactDataSchema: JSON.stringify(schema),
+      });
+
+      const contactPayload = {
+        email: "type-invalid@example.com",
+        subscribed: true,
+        data: {
+          age: "not-a-number", // Should be number
+        },
+      };
+
+      const response = await app.request(`/api/v1/projects/${project.id}/contacts`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(contactPayload),
+      });
+
+      expect(response.status).toBe(400);
+
+      const data = await response.json();
+      expect(data.detail).toContain("Contact data validation failed");
+    });
+
+    test("should successfully create contact without schema", async () => {
+      const { project, token } = await createTestSetup();
+
+      // Ensure no schema is set
+      const projectPersistence = new ProjectPersistence();
+      await projectPersistence.put({
+        ...project,
+        contactDataSchema: undefined,
+      });
+
+      const contactPayload = {
+        email: "no-schema@example.com",
+        subscribed: true,
+        data: {
+          anyField: "anyValue",
+          anotherField: 123,
+        },
+      };
+
+      const response = await app.request(`/api/v1/projects/${project.id}/contacts`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(contactPayload),
+      });
+
+      expect(response.status).toBe(201);
+
+      const data = await response.json();
+      expect(data.data).toMatchObject(contactPayload.data);
+    });
+
+    test("should successfully update contact with valid schema data", async () => {
+      const { project, token } = await createTestSetup();
+
+      // Set up a contact schema
+      const projectPersistence = new ProjectPersistence();
+      const schema = {
+        type: "object",
+        properties: {
+          firstName: { type: "string", minLength: 1 },
+          lastName: { type: "string" },
+        },
+        required: ["firstName"],
+      };
+      await projectPersistence.put({
+        ...project,
+        contactDataSchema: JSON.stringify(schema),
+      });
+
+      const contact = await createTestContact(project.id, "update-schema@example.com");
+
+      const updatePayload = {
+        id: contact.id,
+        email: contact.email,
+        subscribed: contact.subscribed,
+        data: {
+          firstName: "Jane",
+          lastName: "Smith",
+        },
+      };
+
+      const response = await app.request(`/api/v1/projects/${project.id}/contacts/${contact.id}`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatePayload),
+      });
+
+      expect(response.status).toBe(200);
+
+      const data = await response.json();
+      expect(data.data).toMatchObject(updatePayload.data);
+    });
+
+    test("should return 400 when updating contact with invalid schema data", async () => {
+      const { project, token } = await createTestSetup();
+
+      // Set up a contact schema
+      const projectPersistence = new ProjectPersistence();
+      const schema = {
+        type: "object",
+        properties: {
+          firstName: { type: "string", minLength: 1 },
+          lastName: { type: "string" },
+        },
+        required: ["firstName"],
+      };
+      await projectPersistence.put({
+        ...project,
+        contactDataSchema: JSON.stringify(schema),
+      });
+
+      const contact = await createTestContact(project.id, "update-invalid@example.com");
+
+      const updatePayload = {
+        id: contact.id,
+        email: contact.email,
+        subscribed: contact.subscribed,
+        data: {
+          lastName: "Smith",
+          // Missing required firstName
+        },
+      };
+
+      const response = await app.request(`/api/v1/projects/${project.id}/contacts/${contact.id}`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatePayload),
+      });
+
+      expect(response.status).toBe(400);
+
+      const data = await response.json();
+      expect(data.detail).toContain("Contact data validation failed");
+    });
+
+    test("should allow updating contact without data when schema exists", async () => {
+      const { project, token } = await createTestSetup();
+
+      // Set up a contact schema (no required fields)
+      const projectPersistence = new ProjectPersistence();
+      const schema = {
+        type: "object",
+        properties: {
+          firstName: { type: "string" },
+        },
+      };
+      await projectPersistence.put({
+        ...project,
+        contactDataSchema: JSON.stringify(schema),
+      });
+
+      // Create contact with valid schema data first
+      const contactPayload = {
+        email: "update-no-data@example.com",
+        subscribed: true,
+        data: {
+          firstName: "Initial",
+        },
+      };
+
+      const createResponse = await app.request(`/api/v1/projects/${project.id}/contacts`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(contactPayload),
+      });
+
+      expect(createResponse.status).toBe(201);
+      const createdContact = await createResponse.json();
+
+      // Now update without providing data - should preserve existing data
+      const updatePayload = {
+        id: createdContact.id,
+        email: createdContact.email,
+        subscribed: false,
+        data: createdContact.data, // Explicitly include existing data
+      };
+
+      const response = await app.request(`/api/v1/projects/${project.id}/contacts/${createdContact.id}`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatePayload),
+      });
+
+      expect(response.status).toBe(200);
+
+      const data = await response.json();
+      expect(data.subscribed).toBe(false);
+      expect(data.data).toMatchObject(createdContact.data);
     });
   });
 });

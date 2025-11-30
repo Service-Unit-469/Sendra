@@ -226,13 +226,13 @@ export const registerProjectCrudRoutes = (app: AppType) => {
     }),
     async (c) => {
       const projectId = c.req.param("projectId");
-      const { name, url, colors } = ProjectSchemas.update.parse(await c.req.json());
+      const { name, url, colors, contactDataSchema } = ProjectSchemas.update.parse(await c.req.json());
       const projectPersistence = new ProjectPersistence();
       let project = await projectPersistence.get(projectId);
       if (!project) {
         throw new NotFound("project");
       }
-      project = await projectPersistence.put({ ...project, name, url, colors });
+      project = await projectPersistence.put({ ...project, name, url, colors, contactDataSchema });
       return c.json({ project: ProjectSchemas.get.parse(project) }, 200);
     },
   );

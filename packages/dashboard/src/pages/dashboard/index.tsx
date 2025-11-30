@@ -22,6 +22,7 @@ const EditGroupPage = lazy(() => import("./groups/Edit"));
 const HomePage = lazy(() => import("./Home"));
 const SettingsPage = lazy(() => import("./settings/index"));
 const ProjectPage = lazy(() => import("./settings/project"));
+const ContactSchemaPage = lazy(() => import("./settings/contact-schema"));
 const ApiPage = lazy(() => import("./settings/api"));
 const IdentityPage = lazy(() => import("./settings/identity"));
 const MembersPage = lazy(() => import("./settings/members"));
@@ -60,6 +61,7 @@ export default function Index() {
         <Route path="/groups/:id" element={<EditGroupPage />} />
         <Route path="/settings" element={<SettingsPage />} />
         <Route path="/settings/project" element={<ProjectPage />} />
+        <Route path="/settings/contact-schema" element={<ContactSchemaPage />} />
         <Route path="/settings/api" element={<ApiPage />} />
         <Route path="/settings/identity" element={<IdentityPage />} />
         <Route path="/settings/members" element={<MembersPage />} />

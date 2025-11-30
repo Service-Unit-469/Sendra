@@ -23,10 +23,12 @@ Navigate to **Contacts** to see:
 1. Go to **Contacts** → **"New Contact"**
 2. Enter email address
 3. Set subscription status
-4. Add custom data (optional)
-   - Name, company, preferences, etc.
-   - Use key-value pairs
+4. Add contact data:
+   - **If a contact schema is defined**: The form will automatically generate fields based on your project's JSON schema
+   - **If no schema is defined**: Use the free-form metadata editor to add custom key-value pairs (name, company, preferences, etc.)
 5. Click **"Create Contact"**
+
+**Note:** If your project has a contact data schema defined (see [Project Settings - Contact Schema](../project-settings#contact-data-schema)), the contact form will automatically generate structured fields based on the schema. This ensures consistent data structure and provides validation.
 
 ## Groups
 

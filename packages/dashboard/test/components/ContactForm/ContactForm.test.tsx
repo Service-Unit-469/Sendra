@@ -2,16 +2,18 @@ import { http, HttpResponse } from "msw";
 import { describe, expect, it, vi, beforeEach } from "vitest";
 import { ContactForm } from "../../../src/components/ContactForm/ContactForm";
 import { server } from "../../mocks/server";
-import { mockAuthToken, render, screen, userEvent, waitFor } from "../../utils/test-helpers";
+import { mockAuthToken, render, screen, userEvent, waitFor, createMockProject } from "../../utils/test-helpers";
 
 describe("ContactForm Integration", () => {
+	const mockProject = createMockProject({ id: "project-1" });
+
 	beforeEach(() => {
 		mockAuthToken();
 	});
 
 	describe("Create Contact", () => {
 		it("renders form with email field and submit button", () => {
-			render(<ContactForm projectId="project-1" />);
+			render(<ContactForm projectId="project-1" />, { project: mockProject });
 
 			expect(screen.getByPlaceholderText(/hello@email.com/i)).toBeInTheDocument();
 			expect(screen.getByText("Email")).toBeInTheDocument();
@@ -19,7 +21,7 @@ describe("ContactForm Integration", () => {
 		});
 
 		it("renders subscribed toggle", () => {
-			render(<ContactForm projectId="project-1" />);
+			render(<ContactForm projectId="project-1" />, { project: mockProject });
 
 			expect(screen.getByText("Subscribed")).toBeInTheDocument();
 			expect(screen.getByRole("switch")).toBeInTheDocument();
@@ -29,7 +31,7 @@ describe("ContactForm Integration", () => {
 			const user = userEvent.setup();
 			const onSuccess = vi.fn();
 
-			render(<ContactForm projectId="project-1" onSuccess={onSuccess} />);
+			render(<ContactForm projectId="project-1" onSuccess={onSuccess} />, { project: mockProject });
 
 			const emailInput = screen.getByPlaceholderText(/hello@email.com/i);
 			const submitButton = screen.getByRole("button", { name: /save/i });
@@ -45,7 +47,7 @@ describe("ContactForm Integration", () => {
 		it("displays validation error for invalid email", async () => {
 			const user = userEvent.setup();
 
-			render(<ContactForm projectId="project-1" />);
+			render(<ContactForm projectId="project-1" />, { project: mockProject });
 
 			const emailInput = screen.getByPlaceholderText(/hello@email.com/i);
 			const submitButton = screen.getByRole("button", { name: /save/i });
@@ -61,7 +63,7 @@ describe("ContactForm Integration", () => {
 		it("toggles subscribed status", async () => {
 			const user = userEvent.setup();
 
-			render(<ContactForm projectId="project-1" />);
+			render(<ContactForm projectId="project-1" />, { project: mockProject });
 
 			const toggle = screen.getByRole("switch");
 
@@ -77,13 +79,13 @@ describe("ContactForm Integration", () => {
 		});
 
 		it("hides email field when showEmailField is false", () => {
-			render(<ContactForm projectId="project-1" showEmailField={false} />);
+			render(<ContactForm projectId="project-1" showEmailField={false} />, { project: mockProject });
 
 			expect(screen.queryByPlaceholderText(/hello@email.com/i)).not.toBeInTheDocument();
 		});
 
 		it("uses custom submit button text", () => {
-			render(<ContactForm projectId="project-1" submitButtonText="Create Contact" />);
+			render(<ContactForm projectId="project-1" submitButtonText="Create Contact" />, { project: mockProject });
 
 			expect(screen.getByRole("button", { name: /create contact/i })).toBeInTheDocument();
 		});
@@ -97,7 +99,7 @@ describe("ContactForm Integration", () => {
 				data: { firstName: "John", lastName: "Doe" },
 			};
 
-			render(<ContactForm projectId="project-1" contactId="contact-1" initialData={initialData} />);
+			render(<ContactForm projectId="project-1" contactId="contact-1" initialData={initialData} />, { project: mockProject });
 
 			const emailInput = screen.getByPlaceholderText(/hello@email.com/i) as HTMLInputElement;
 			expect(emailInput.value).toBe("existing@example.com");
@@ -115,6 +117,7 @@ describe("ContactForm Integration", () => {
 
 			render(
 				<ContactForm projectId="project-1" contactId="contact-1" initialData={initialData} onSuccess={onSuccess} />,
+				{ project: mockProject },
 			);
 
 			const emailInput = screen.getByPlaceholderText(/hello@email.com/i);
@@ -141,7 +144,7 @@ describe("ContactForm Integration", () => {
 				}),
 			);
 
-			render(<ContactForm projectId="project-1" />);
+			render(<ContactForm projectId="project-1" />, { project: mockProject });
 
 			const emailInput = screen.getByPlaceholderText(/hello@email.com/i);
 			const submitButton = screen.getByRole("button", { name: /save/i });
@@ -173,7 +176,7 @@ describe("ContactForm Integration", () => {
 				data: {},
 			};
 
-			render(<ContactForm projectId="project-1" contactId="contact-1" initialData={initialData} />);
+			render(<ContactForm projectId="project-1" contactId="contact-1" initialData={initialData} />, { project: mockProject });
 
 			const submitButton = screen.getByRole("button", { name: /save/i });
 			await user.click(submitButton);
@@ -187,7 +190,7 @@ describe("ContactForm Integration", () => {
 
 	describe("Metadata Form", () => {
 		it("renders metadata form for additional contact data", () => {
-			render(<ContactForm projectId="project-1" />);
+			render(<ContactForm projectId="project-1" />, { project: mockProject });
 
 			// ContactMetadataForm should be rendered
 			// This component allows dynamic key-value pairs

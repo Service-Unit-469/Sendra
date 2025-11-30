@@ -94,6 +94,9 @@
                             "type": "string"
                           },
                           "default": []
+                        },
+                        "contactDataSchema": {
+                          "type": "string"
                         }
                       },
                       "required": [

@@ -52,7 +52,7 @@ Each user has a unique email address and must verify their email before full acc
 
 **Purpose**: The primary organizational unit that contains all email-related resources (contacts, templates, campaigns, etc.).
 
-Each project has unique API keys (public and secret) that are used for programmatic access. Projects can configure custom event types for tracking and can verify email identities or domains with AWS SES.
+Each project has unique API keys (public and secret) that are used for programmatic access. Projects can configure custom event types for tracking and can verify email identities or domains with AWS SES. Projects can optionally define a JSON schema for contact data, which enables structured contact forms and validation.
 
 **Relationships**:
 - One project has many contacts
@@ -62,6 +62,11 @@ Each project has unique API keys (public and secret) that are used for programma
 - One project has many events
 - One project has many groups
 - One project has many memberships (users)
+
+**Contact Data Schema:**
+Projects can define a JSON schema to structure and validate contact data. When defined, this schema:
+- Generates form fields when creating/editing contacts
+- Validates contact data on create and update operations
 
 ---
 
@@ -85,6 +90,8 @@ Membership implements project-level access control, allowing a user to have diff
 **Purpose**: Represents an email recipient in your project's audience.
 
 Each contact is unique per project by email address. The `data` field stores custom attributes (name, company, preferences, etc.), and the `subscribed` status must be respected for compliance. Contacts can be added via API or dashboard.
+
+If the project defines a `contactDataSchema`, the contact data must conform to that JSON schema. The schema enables structured forms and automatic validation when creating or updating contacts.
 
 **Relationships**:
 - Belongs to one project
