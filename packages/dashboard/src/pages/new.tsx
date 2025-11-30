@@ -65,7 +65,7 @@ export default function NewProject() {
       await mutate([...projects, result]);
       localStorage.setItem("project", result.id);
       setActiveProjectId(result.id);
-      navigate("/dashboard");
+      navigate("/");
       return;
     } catch (e) {
       setError("name", { message: (e as Error).message });

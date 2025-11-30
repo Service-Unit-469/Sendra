@@ -219,7 +219,7 @@ export default function Index() {
                       <div className="-mt-px flex divide-x divide-neutral-200">
                         <div className="flex w-0 flex-1">
                           <Link
-                            to={`/dashboard/campaigns/${c.id}`}
+                            to={`/campaigns/${c.id}`}
                             className="relative inline-flex w-0 flex-1 items-center justify-center rounded-bl rounded-br py-4 text-sm font-medium text-neutral-800 transition hover:bg-neutral-50 hover:text-neutral-700"
                           >
                             {c.status === "DELIVERED" ? <Eye size={18} /> : <Edit2 size={18} />}
