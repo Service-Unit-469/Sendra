@@ -14,7 +14,7 @@
 	},
 	"dependencies": {
 		"@sendra/shared": "1.0.0",
-		"@tailwindcss/postcss": "^4.1.16",
+		"@tailwindcss/postcss": "^4.1.17",
 		"framer-motion": "^12.23.24",
 		"lucide-react": "^0.552.0",
 		"react": "19.2.0",
