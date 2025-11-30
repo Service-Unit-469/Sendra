@@ -13,8 +13,8 @@ export default function Index() {
   return (
     <>
       <AnalyticsTabs />
-      <div className={"grid grid-cols-2 gap-6"}>
-        <Card title={"Clicks"} description={"Last 7 days"} className={"sm:col-span-2"}>
+      <div className="grid grid-cols-2 gap-6">
+        <Card title="Clicks" description="Last 7 days" className="sm:col-span-2">
           {analytics ? (
             <ResponsiveContainer width="100%" height={300}>
               <BarChart
@@ -29,17 +29,17 @@ export default function Index() {
               >
                 <CartesianGrid strokeDasharray="4 5" />
 
-                <YAxis axisLine={false} fill={"#fff"} tickSize={0} width={5} />
+                <YAxis axisLine={false} fill="#fff" tickSize={0} width={5} />
 
                 <XAxis
                   tickSize={0}
-                  stroke={"#fff"}
+                  stroke="#fff"
                   interval={0}
                   dataKey="link"
                   tick={({ x, y, payload }) => {
                     return (
                       <g transform={`translate(${x},${y})`}>
-                        <text x={0} y={0} dy={16} fill={"#666"} textAnchor={"middle"} className="text-xs">
+                        <text x={0} y={0} dy={16} fill="#666" textAnchor="middle" className="text-xs">
                           {payload.value.length > 5 ? `${payload.value.substring(0, 20)}...` : payload.value}
                         </text>
                       </g>
@@ -55,7 +55,7 @@ export default function Index() {
                       const dataPoint = payload[0];
                       return (
                         <div className="rounded-sm border border-neutral-100 bg-white px-5 py-3 shadow-xs">
-                          <p className="font-medium text-neutral-800">{`${label}`}</p>
+                          <p className="font-medium text-neutral-800">{label}</p>
                           <p className="text-neutral-600">{valueFormatter(dataPoint.value as number)}</p>
                         </div>
                       );
@@ -65,11 +65,11 @@ export default function Index() {
                   }}
                 />
 
-                <Bar dataKey="count" stackId="a" fill={"#3b82f6"} />
+                <Bar dataKey="count" stackId="a" fill="#3b82f6" />
               </BarChart>
             </ResponsiveContainer>
           ) : (
-            <div className={"flex h-[300px] items-center justify-center"}>
+            <div className="flex h-[300px] items-center justify-center">
               <LoaderCircle size={32} className="animate-spin" />
             </div>
           )}
