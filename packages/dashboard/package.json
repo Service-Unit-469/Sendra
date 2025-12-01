@@ -32,7 +32,7 @@
 		"@tippyjs/react": "^4.2.6",
 		"@tiptap/extension-color": "^3.10.7",
 		"@tiptap/extension-link": "^3.10.7",
-		"@tiptap/extension-list-item": "^3.10.7",
+		"@tiptap/extension-list-item": "^3.11.1",
 		"@tiptap/extension-text-align": "^3.11.0",
 		"@tiptap/extension-text-style": "^3.10.7",
 		"@tiptap/extension-underline": "^3.10.7",
