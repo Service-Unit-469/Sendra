@@ -15,7 +15,7 @@
     "@vitest/coverage-v8": "^4.0.6",
     "jsdom": "^27.1.0",
     "rimraf": "^6.1.0",
-    "vitest": "^4.0.6"
+    "vitest": "^4.0.15"
   },
   "scripts": {
     "build": "npm run build --workspaces",
