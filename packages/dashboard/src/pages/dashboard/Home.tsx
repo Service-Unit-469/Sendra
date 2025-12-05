@@ -65,7 +65,7 @@ export default function Home() {
         </TopCard>
 
         <TopCard>
-          <TopCardBody icon={<Book size={20} />} title="Documentation" description="Discover how to use Sendra" link="https://github.com/Service-Unit-469/Sendra/blob/main/docs/index.md" />
+          <TopCardBody icon={<Book size={20} />} title="Documentation" description="Discover how to use Sendra" link="https://service-unit-469.github.io/Sendra/" />
           <TopCardRightIcon icon={<Book size={20} />} />
         </TopCard>
       </div>
