@@ -40,7 +40,7 @@
     "packages/subscription"
   ],
   "dependencies": {
-    "@aws-sdk/client-dynamodb": "^3.922.0",
+    "@aws-sdk/client-dynamodb": "^3.943.0",
     "sst": "^3.17.24",
     "tar": "^7.5.2"
   },
