@@ -1,10 +1,11 @@
 import dayjs from "dayjs";
-import { Edit2, Plus } from "lucide-react";
+import { Edit2, Plus, Upload } from "lucide-react";
 import { useCallback, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { BlackButton } from "../../../components/Buttons/BlackButton";
 import Card from "../../../components/Card/Card";
 import { ContactForm } from "../../../components/ContactForm/ContactForm";
+import { ContactImport } from "../../../components/ContactImport/ContactImport";
 import Dropdown from "../../../components/Input/Dropdown/Dropdown";
 import { StyledInput } from "../../../components/Input/Input/StyledInput";
 import Modal from "../../../components/Overlay/Modal/Modal";
@@ -50,10 +51,16 @@ export default function Index() {
   }, [mutateContacts]);
 
   const [contactModal, setContactModal] = useState(false);
+  const [importModal, setImportModal] = useState(false);
 
   const handleContactSuccess = () => {
     resetContacts();
     setContactModal(false);
+  };
+
+  const handleImportSuccess = () => {
+    resetContacts();
+    setImportModal(false);
   };
 
   const renderContacts = () => {
@@ -111,11 +118,14 @@ export default function Index() {
       <Modal isOpen={contactModal} onToggle={() => setContactModal((s) => !s)} onAction={() => {}} type="info" title={"Create new contact"} hideActionButtons={true}>
         <ContactForm projectId={project.id} showEmailField={true} submitButtonText="Create" onSuccess={handleContactSuccess} />
       </Modal>
+      <Modal isOpen={importModal} type="info" title="Import contacts from CSV" action="Import" hideActionButtons={true}>
+        <ContactImport projectId={project.id} onClose={handleImportSuccess} />
+      </Modal>
       <Card
         title="Contacts"
         description="View and manage your contacts"
         actions={
-          <div className="grid w-full gap-3 md:w-fit md:grid-cols-3">
+          <div className="grid w-full gap-3 md:w-fit md:grid-cols-4">
             <StyledInput className="" onChange={(e) => setQuery(e.target.value)} autoComplete="off" type="search" placeholder="Filter contacts" aria-label="Filter contacts by email" />
             <Dropdown
               ariaLabel="Filter contacts by status"
@@ -127,6 +137,10 @@ export default function Index() {
               ]}
               selectedValue={statusFilter}
             />
+            <BlackButton onClick={() => setImportModal(true)}>
+              <Upload strokeWidth={1.5} size={18} />
+              Import
+            </BlackButton>
             <BlackButton onClick={() => setContactModal(true)}>
               <Plus strokeWidth={1.5} size={18} />
               New

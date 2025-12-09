@@ -8,8 +8,8 @@ export type ModalProps = {
   title: string;
   description?: string;
   isOpen: boolean;
-  onToggle: () => void;
-  onAction: () => void;
+  onToggle?: () => void;
+  onAction?: () => void;
   children?: React.ReactNode;
   action?: string;
   type: "info" | "danger";
@@ -17,7 +17,7 @@ export type ModalProps = {
   hideActionButtons?: boolean;
 };
 
-export default function Modal({ title, description, isOpen, onToggle, onAction, children, action, type, icon, hideActionButtons = false }: ModalProps) {
+export default function Modal({ title, description, isOpen, onToggle, onAction = () => {}, children, action, type, icon, hideActionButtons = false }: ModalProps) {
   return (
     <AnimatePresence>
       {isOpen && (
@@ -44,20 +44,22 @@ export default function Modal({ title, description, isOpen, onToggle, onAction, 
               transition={{ ease: "easeInOut", duration: 0.15 }}
               className="relative z-40 inline-block transform overflow-hidden rounded-lg border border-black border-opacity-5 bg-white px-8 py-10 text-left align-bottom shadow-2xl sm:my-8 sm:w-full sm:max-w-2xl sm:align-middle"
             >
-              <div className="absolute right-0 top-0 hidden p-8 sm:block">
-                <button
-                  onClick={(e) => {
-                    e.preventDefault();
-                    onToggle();
-                  }}
-                  type="button"
-                  className="rounded-md bg-white text-neutral-400 transition hover:text-neutral-500 focus:outline-hidden focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                >
-                  <span className="sr-only">Close</span>
+              {onToggle && (
+                <div className="absolute right-0 top-0 hidden p-8 sm:block">
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      onToggle();
+                    }}
+                    type="button"
+                    className="rounded-md bg-white text-neutral-400 transition hover:text-neutral-500 focus:outline-hidden focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                  >
+                    <span className="sr-only">Close</span>
 
-                  <X />
-                </button>
-              </div>
+                    <X />
+                  </button>
+                </div>
+              )}
               <div className="sm:flex sm:items-start">
                 {type === "info" ? (
                   <div className="mx-auto flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-neutral-100 p-3 text-neutral-800 sm:mx-0 sm:h-12 sm:w-12">
