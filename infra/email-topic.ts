@@ -23,10 +23,15 @@ emailTopic.subscribe("EmailTopicSubscriber", {
   },
 });
 
-export const configurationSet: aws.ses.ConfigurationSet =
-  new aws.ses.ConfigurationSet("SendraConfigurationSet", {
+let configurationSet: aws.ses.ConfigurationSet;
+try {
+  configurationSet =  aws.ses.ConfigurationSet.get(`SendraConfigurationSet-${$app.stage}`, "");
+} catch (error) {
+  configurationSet = new aws.ses.ConfigurationSet("SendraConfigurationSet", {
     name: `SendraConfigurationSet-${$app.stage}`,
   });
+}
+export { configurationSet };
 
 export const eventDestination: aws.ses.EventDestination =
   new aws.ses.EventDestination("SendraConfigurationSetDestination", {

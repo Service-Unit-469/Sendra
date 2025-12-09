@@ -66,7 +66,7 @@ async function exportOpenAPI() {
         url: "https://{hostname}",
         variables: {
           hostname: {
-            default: "someid.lambda-url.us-east-2.on.aws",
+            default: "someid.cloudfront.net",
             description: "Hostname of the API",
           },
         },
