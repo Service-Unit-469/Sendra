@@ -34,8 +34,8 @@ export default function QuickEmailEditor({ templateHtml, templatePlainText, init
   }, [initialContent]);
 
   return (
-    <div className="flex h-full flex-col gap-6">
-      <div className="flex items-center justify-between border-b border-neutral-200 bg-white px-6 py-4">
+    <div className="flex h-[calc(100vh-2rem)] flex-col gap-6">
+      <div className="flex items-center justify-between px-6 py-4">
         <h1 className="text-xl font-semibold text-neutral-800">Edit Campaign Content</h1>
         <div className="flex items-center gap-3">{actions()}</div>
       </div>
