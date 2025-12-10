@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { CampaignUpdate, Email } from "@sendra/shared";
 import { CampaignSchemas } from "@sendra/shared";
-import { Copy, Edit, Eye, LoaderCircle, Save, Send, Trash } from "lucide-react";
+import { Copy, Edit, Eye, FlaskConical, LoaderCircle, Save, Send, Trash } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { type FieldError, useForm } from "react-hook-form";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -10,6 +10,7 @@ import { ErrorAlert } from "../../../components/Alert/ErrorAlert";
 import Badge from "../../../components/Badge/Badge";
 import { BlackButton } from "../../../components/Buttons/BlackButton";
 import { MenuButton } from "../../../components/Buttons/MenuButton";
+import { SecondaryButton } from "../../../components/Buttons/SecondaryButton";
 import Card from "../../../components/Card/Card";
 import GroupOrContacts from "../../../components/ContactSelector/GroupOrContacts";
 import Dropdown from "../../../components/Input/Dropdown/Dropdown";
@@ -85,15 +86,31 @@ export default function ViewCampaignPage() {
         return;
       }
 
-      await network.fetch(`/projects/${project.id}/campaigns/${campaign.id}`, {
-        method: "PUT",
-        body: {
-          id: campaign.id,
-          ...data,
-        },
+      await new Promise<void>((resolve, reject) => {
+        toast.promise(
+          network.fetch(`/projects/${project.id}/campaigns/${campaign.id}`, {
+            method: "PUT",
+            body: {
+              id: campaign.id,
+              ...data,
+            },
+          }),
+          {
+            loading: "Saving your campaign",
+            success: () => {
+              void campaignMutate();
+              resolve();
+              return "Saved your campaign";
+            },
+            error: (error) => {
+              reject(error);
+              return `Could not save your campaign: ${error}`;
+            },
+          },
+        );
       });
     },
-    [project, campaign],
+    [project, campaign, campaignMutate],
   );
 
   if (!campaign || (watch("body") as object | undefined) === undefined) {
@@ -144,9 +161,9 @@ export default function ViewCampaignPage() {
         },
       }),
       {
-        loading: "Sending you a test campaign",
+        loading: "Sending all project members a test campaign",
         success: "Sent all project members a test campaign",
-        error: "Could not send your campaign!",
+        error: "Could not send test campaign!",
       },
     );
   };
@@ -328,10 +345,6 @@ export default function ViewCampaignPage() {
           <div className={"ml-auto mt-6 sm:flex justify-end sm:gap-x-5 sm:col-span-6"}>
             {campaign.status === "DRAFT" ? (
               <>
-                <BlackButton onClick={handleSubmit(sendTest)}>
-                  <Send />
-                  Send test to {project.name}'s members
-                </BlackButton>
                 <BlackButton
                   onClick={(e) => {
                     e.preventDefault();
@@ -339,12 +352,16 @@ export default function ViewCampaignPage() {
                   }}
                 >
                   <Send />
-                  Save & Send
+                  Send
                 </BlackButton>
-                <BlackButton>
+                <SecondaryButton onClick={handleSubmit(sendTest)}>
+                  <FlaskConical size={18} />
+                  Test
+                </SecondaryButton>
+                <SecondaryButton>
                   <Save strokeWidth={1.5} size={18} />
                   Save
-                </BlackButton>
+                </SecondaryButton>
               </>
             ) : null}
           </div>
