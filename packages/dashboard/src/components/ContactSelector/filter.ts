@@ -33,12 +33,6 @@ function matchesMetadataFilter(contact: Contact, filter: MetadataFilterType) {
     return false;
   }
 
-  let _letFilterValue: string | number | boolean = filter.value;
-  if (typeof value === "number") {
-    _letFilterValue = Number(filter.value);
-  } else if (typeof filter.value === "boolean") {
-    _letFilterValue = Boolean(filter.value);
-  }
   switch (filter.condition) {
     case "is":
       return value === filter.value;

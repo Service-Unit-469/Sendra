@@ -134,7 +134,7 @@ describe("ActionPersistence", () => {
   describe("list", () => {
     it("should list all actions for a project", async () => {
       // Create multiple actions
-      const actions = await Promise.all([
+      await Promise.all([
         persistence.create({
           project: TEST_PROJECT_ID,
           name: "Action 1",

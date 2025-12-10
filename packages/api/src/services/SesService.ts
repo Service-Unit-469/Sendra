@@ -83,8 +83,6 @@ export const getIdentityVerificationAttributes = async (
     };
   }
 
-  parsedAttributes.DkimTokens;
-
   return {
     status: parsedAttributes.DkimVerificationStatus ?? VerificationStatus.NotStarted,
     dkimTokens: parsedAttributes.DkimTokens ?? [],

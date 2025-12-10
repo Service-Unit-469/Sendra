@@ -22,9 +22,6 @@ function createArgsArray(args: any[]) {
       if (typeof arg === "function") {
         return `function ${arg.name}()`;
       }
-      if (typeof arg === "undefined") {
-        return "undefined";
-      }
       if (arg instanceof Blob) {
         return {
           Blob: {

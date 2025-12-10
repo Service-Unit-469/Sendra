@@ -3,7 +3,6 @@ import { startupDynamoDB, stopDynamoDB } from "@sendra/test";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { CampaignPersistence } from "../../src/persistence/CampaignPersistence";
 
-const TEST_TABLE_NAME = "test-sendra-table";
 const TEST_PROJECT_ID = "test-project-456";
 
 describe("CampaignPersistence", () => {

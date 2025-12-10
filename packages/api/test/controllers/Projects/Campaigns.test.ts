@@ -2,8 +2,7 @@ import {
   CampaignPersistence,
   ContactPersistence,
   EmailPersistence,
-  EmailService,
-  TemplatePersistence,
+  EmailService
 } from "@sendra/lib";
 import { startupDynamoDB, stopDynamoDB } from "@sendra/test";
 import { afterAll, beforeAll, describe, expect, test, vi } from "vitest";
@@ -747,7 +746,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
 
   describe("POST /projects/{projectId}/campaigns/:campaignId/send", () => {
     test("should successfully send a test campaign (live=false)", async () => {
-      const { project, token, user } = await createTestSetup();
+      const { project, token } = await createTestSetup();
       const contact = await createTestContact(project.id);
       const template = await createTestTemplate(project.id);
 

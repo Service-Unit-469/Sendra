@@ -14,7 +14,7 @@ const ContactSelectorWrapper = ({ onRecipientsChange, onGroupsChange, disabled, 
   }
 
   onGroupsChange([]);
-  return <ContactSelector contacts={contacts ?? []} disabled={disabled} label={label} onChange={onRecipientsChange} initialSelectedContacts={selectedContacts} />;
+  return <ContactSelector contacts={contacts} disabled={disabled} label={label} onChange={onRecipientsChange} initialSelectedContacts={selectedContacts} />;
 };
 
 const GroupSelector = ({ onRecipientsChange, onGroupsChange, disabled, selectedGroups = [] }: GroupOrContactsProps) => {

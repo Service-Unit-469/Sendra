@@ -1,9 +1,7 @@
 import {
-  ContactPersistence,
   EmailPersistence,
-  MembershipPersistence,
   ProjectPersistence,
-  UserPersistence,
+  UserPersistence
 } from "@sendra/lib";
 import { startupDynamoDB, stopDynamoDB } from "@sendra/test";
 import { afterAll, beforeAll, describe, expect, test } from "vitest";
@@ -245,7 +243,7 @@ describe("Emails Endpoint Contract Tests", () => {
 
       // Create test emails
       const email1 = await createTestEmail(project.id, contact.id);
-      const email2 = await createTestEmail(project.id, contact.id);
+      await createTestEmail(project.id, contact.id);
 
       const response = await app.request(`/api/v1/projects/${project.id}/emails/all`, {
         method: "GET",
@@ -549,6 +547,7 @@ describe("Emails Endpoint Contract Tests", () => {
         public: "other-public",
         secret: "other-secret",
         eventTypes: [],
+        colors: [],
       });
 
       // Try to use other project's secret key

@@ -1,9 +1,7 @@
 import {
-  ContactPersistence,
   GroupPersistence,
-  MembershipPersistence,
   ProjectPersistence,
-  UserPersistence,
+  UserPersistence
 } from "@sendra/lib";
 import { startupDynamoDB, stopDynamoDB } from "@sendra/test";
 import { afterAll, beforeAll, describe, expect, test } from "vitest";
@@ -218,7 +216,7 @@ describe("Groups Endpoint Contract Tests", () => {
 
       // Create test groups
       const group1 = await createTestGroup(project.id);
-      const group2 = await createTestGroup(project.id);
+      await createTestGroup(project.id);
 
       const response = await app.request(`/api/v1/projects/${project.id}/groups/all`, {
         method: "GET",

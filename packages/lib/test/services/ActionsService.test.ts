@@ -60,6 +60,7 @@ describe("ActionsService", () => {
   };
 
   const mockTemplate: Template = {
+    quickEmail: false,
     id: "template-123",
     project: "project-123",
     subject: "Welcome!",

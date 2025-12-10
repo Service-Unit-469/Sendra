@@ -14,7 +14,6 @@ describe("ContactPersistence", () => {
     // Start local DynamoDB
     await startupDynamoDB();
 
-    
     persistence = new ContactPersistence(TEST_PROJECT_ID);
     persistence2 = new ContactPersistence(TEST_PROJECT_ID_2);
   });
@@ -47,7 +46,7 @@ describe("ContactPersistence", () => {
 
     it("should only return contacts from the same project", async () => {
       const email = "cross-project@example.com";
-      
+
       // Create contact in project 1
       await persistence.create({
         project: TEST_PROJECT_ID,
@@ -79,16 +78,16 @@ describe("ContactPersistence", () => {
   describe("getByEmailFromAllProjects", () => {
     it("should retrieve contacts by email from all projects", async () => {
       const email = "multi-project@example.com";
-      
+
       // Create contacts in different projects with same email
-      const contact1 = await persistence.create({
+      await persistence.create({
         project: TEST_PROJECT_ID,
         email,
         data: { source: "project1" },
         subscribed: true,
       });
 
-      const contact2 = await persistence2.create({
+      await persistence2.create({
         project: TEST_PROJECT_ID_2,
         email,
         data: { source: "project2" },
@@ -96,7 +95,7 @@ describe("ContactPersistence", () => {
       });
 
       // Import the class to use static method
-      
+
       const results = await ContactPersistence.getByEmailFromAllProjects(email);
 
       expect(results.length).toBe(2);
@@ -105,15 +104,17 @@ describe("ContactPersistence", () => {
     });
 
     it("should return empty array for non-existent email", async () => {
-      
-      const results = await ContactPersistence.getByEmailFromAllProjects("nobody@example.com");
-      
+      const results =
+        await ContactPersistence.getByEmailFromAllProjects(
+          "nobody@example.com"
+        );
+
       expect(results).toEqual([]);
     });
 
     it("should handle pagination when retrieving contacts from all projects", async () => {
       const email = "paginated@example.com";
-      
+
       // Create 60 contacts across different projects with the same email
       // This will trigger pagination since DynamoDB page size is typically 50
       const contactPromises = [];
@@ -129,14 +130,14 @@ describe("ContactPersistence", () => {
           })
         );
       }
-      
+
       await Promise.all(contactPromises);
 
       const results = await ContactPersistence.getByEmailFromAllProjects(email);
 
       expect(results.length).toBe(60);
       expect(results.every((c: Contact) => c.email === email)).toBe(true);
-      
+
       // Verify that all contacts have unique projects
       const projectIds = results.map((c: Contact) => c.project);
       const uniqueProjectIds = new Set(projectIds);
@@ -213,7 +214,9 @@ describe("ContactPersistence", () => {
       const created = await persistence.create(contactData);
       expect(created.subscribed).toBeUndefined();
 
-      const retrieved = await persistence.getByEmail("optional-sub@example.com");
+      const retrieved = await persistence.getByEmail(
+        "optional-sub@example.com"
+      );
       expect(retrieved?.subscribed).toBeUndefined();
     });
 
@@ -226,7 +229,7 @@ describe("ContactPersistence", () => {
       };
 
       const created = await persistence.create(contactData);
-      
+
       const updated = await persistence.put({
         ...created,
         data: { version: 2, updated: true },
@@ -242,7 +245,7 @@ describe("ContactPersistence", () => {
   describe("findBy email", () => {
     it("should find contacts by email using findBy method", async () => {
       const email = "findby@example.com";
-      
+
       await persistence.create({
         project: TEST_PROJECT_ID,
         email,
@@ -320,4 +323,3 @@ describe("ContactPersistence", () => {
     });
   });
 });
-

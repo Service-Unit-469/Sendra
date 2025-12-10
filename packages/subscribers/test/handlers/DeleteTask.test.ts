@@ -34,8 +34,8 @@ describe("DeleteTask Handler", () => {
 	describe("Project Deletion", () => {
 		test("should delete all actions associated with project", async () => {
 			const template = await createTestTemplate(projectId);
-			const action1 = await createTestAction(projectId, template.id);
-			const action2 = await createTestAction(projectId, template.id);
+			await createTestAction(projectId, template.id);
+			await createTestAction(projectId, template.id);
 
 			const task = {
 				type: "batchDeleteRelated" as const,

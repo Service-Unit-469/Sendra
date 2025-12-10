@@ -36,7 +36,7 @@ export default function Index() {
         .filter((contact) => {
           let allowed = true;
           if (query) {
-            allowed = allowed && (contact.email.toLowerCase().includes(query.toLowerCase()) || Object.values(contact.data).some((v) => JSON.stringify(v).toLowerCase().includes(query.toLowerCase())));
+            allowed = contact.email.toLowerCase().includes(query.toLowerCase()) || Object.values(contact.data).some((v) => JSON.stringify(v).toLowerCase().includes(query.toLowerCase()));
           }
           if (statusFilter !== "all") {
             return allowed && (statusFilter === "subscribed" ? contact.subscribed : !contact.subscribed);
@@ -68,49 +68,47 @@ export default function Index() {
       return <Skeleton type={"table"} />;
     }
 
-    if (contacts) {
-      if (filterContacts.length > 0) {
-        return (
-          <>
-            <Table
-              values={filterContacts
-                .sort((a, b) => {
-                  const aTrigger = a.updatedAt;
-                  const bTrigger = b.updatedAt;
-                  return bTrigger > aTrigger ? 1 : -1;
-                })
-                .map((u) => {
-                  return {
-                    Email: u.email,
-                    Created: dayjs().to(u.updatedAt).toString(),
-                    Subscribed: u.subscribed,
-                    Edit: (
-                      <Link to={`/contacts/${u.id}`} className="transition hover:text-neutral-800" aria-label="Edit contact">
-                        <Edit2 size={18} />
-                      </Link>
-                    ),
-                  };
-                })}
-            />
-            <nav className="flex items-center justify-between py-3" aria-label="Pagination">
-              <div className="hidden sm:block">
-                <p className="text-sm text-neutral-700">
-                  Showing <span className="font-medium">{filterContacts.length}</span> contacts
-                </p>
-              </div>
-              <div className="flex flex-1 justify-between gap-1 sm:justify-end">
-                {hasMore && (
-                  <button onClick={() => setSize(size + 1)} className={"flex w-28 items-center justify-center gap-x-0.5 rounded-sm bg-neutral-800 py-2 text-center text-sm font-medium text-white"}>
-                    Load More
-                  </button>
-                )}
-              </div>
-            </nav>
-          </>
-        );
-      }
-      return <Empty title="No contacts" description="New contacts will automatically be added when they trigger an event" />;
+    if (filterContacts.length > 0) {
+      return (
+        <>
+          <Table
+            values={filterContacts
+              .sort((a, b) => {
+                const aTrigger = a.updatedAt;
+                const bTrigger = b.updatedAt;
+                return bTrigger > aTrigger ? 1 : -1;
+              })
+              .map((u) => {
+                return {
+                  Email: u.email,
+                  Created: dayjs().to(u.updatedAt).toString(),
+                  Subscribed: u.subscribed,
+                  Edit: (
+                    <Link to={`/contacts/${u.id}`} className="transition hover:text-neutral-800" aria-label="Edit contact">
+                      <Edit2 size={18} />
+                    </Link>
+                  ),
+                };
+              })}
+          />
+          <nav className="flex items-center justify-between py-3" aria-label="Pagination">
+            <div className="hidden sm:block">
+              <p className="text-sm text-neutral-700">
+                Showing <span className="font-medium">{filterContacts.length}</span> contacts
+              </p>
+            </div>
+            <div className="flex flex-1 justify-between gap-1 sm:justify-end">
+              {hasMore && (
+                <button onClick={() => setSize(size + 1)} className={"flex w-28 items-center justify-center gap-x-0.5 rounded-sm bg-neutral-800 py-2 text-center text-sm font-medium text-white"}>
+                  Load More
+                </button>
+              )}
+            </div>
+          </nav>
+        </>
+      );
     }
+    return <Empty title="No contacts" description="New contacts will automatically be added when they trigger an event" />;
   };
 
   return (

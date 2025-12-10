@@ -241,7 +241,7 @@ describe("Events Endpoint Contract Tests", () => {
 
   describe("POST /projects/{projectId}/send", () => {
     test("should successfully send a transactional email", async () => {
-      const { project, token } = await createTestSetup();
+      const { project } = await createTestSetup();
       
       // Set up project with verified domain
       const projectPersistence = new ProjectPersistence();
@@ -296,7 +296,7 @@ describe("Events Endpoint Contract Tests", () => {
     });
 
     test("should send email to multiple recipients", async () => {
-      const { project, token } = await createTestSetup();
+      const { project } = await createTestSetup();
       
       const projectPersistence = new ProjectPersistence();
       const updatedProject = await projectPersistence.put({
@@ -338,7 +338,7 @@ describe("Events Endpoint Contract Tests", () => {
     });
 
     test("should create contact if it does not exist", async () => {
-      const { project, token } = await createTestSetup();
+      const { project } = await createTestSetup();
       
       const projectPersistence = new ProjectPersistence();
       const updatedProject = await projectPersistence.put({
@@ -385,7 +385,7 @@ describe("Events Endpoint Contract Tests", () => {
     });
 
     test("should update contact subscription status if changed", async () => {
-      const { project, token } = await createTestSetup();
+      const { project } = await createTestSetup();
       
       const projectPersistence = new ProjectPersistence();
       const updatedProject = await projectPersistence.put({
@@ -437,7 +437,7 @@ describe("Events Endpoint Contract Tests", () => {
     });
 
     test("should send email with custom from address from same domain", async () => {
-      const { project, token } = await createTestSetup();
+      const { project } = await createTestSetup();
       
       const projectPersistence = new ProjectPersistence();
       const updatedProject = await projectPersistence.put({
@@ -478,7 +478,7 @@ describe("Events Endpoint Contract Tests", () => {
     });
 
     test("should send email with reply-to address", async () => {
-      const { project, token } = await createTestSetup();
+      const { project } = await createTestSetup();
       
       const projectPersistence = new ProjectPersistence();
       const updatedProject = await projectPersistence.put({
@@ -518,7 +518,7 @@ describe("Events Endpoint Contract Tests", () => {
     });
 
     test("should send email with headers", async () => {
-      const { project, token } = await createTestSetup();
+      const { project } = await createTestSetup();
       
       const projectPersistence = new ProjectPersistence();
       const updatedProject = await projectPersistence.put({
@@ -560,7 +560,7 @@ describe("Events Endpoint Contract Tests", () => {
     });
 
     test("should send email with attachments", async () => {
-      const { project, token } = await createTestSetup();
+      const { project } = await createTestSetup();
       
       const projectPersistence = new ProjectPersistence();
       const updatedProject = await projectPersistence.put({
@@ -606,7 +606,7 @@ describe("Events Endpoint Contract Tests", () => {
     });
 
     test("should return 400 when project email is not verified", async () => {
-      const { project, token } = await createTestSetup();
+      const { project } = await createTestSetup();
 
       const emailPayload = {
         to: ["recipient@example.com"],
@@ -635,7 +635,7 @@ describe("Events Endpoint Contract Tests", () => {
     });
 
     test("should return 400 when custom from address is from different domain", async () => {
-      const { project, token } = await createTestSetup();
+      const { project } = await createTestSetup();
       
       const projectPersistence = new ProjectPersistence();
       const updatedProject = await projectPersistence.put({
@@ -677,7 +677,7 @@ describe("Events Endpoint Contract Tests", () => {
     });
 
     test("should return 400 with invalid payload", async () => {
-      const { project, token } = await createTestSetup();
+      const { project } = await createTestSetup();
       
       const projectPersistence = new ProjectPersistence();
       const updatedProject = await projectPersistence.put({
@@ -766,7 +766,7 @@ describe("Events Endpoint Contract Tests", () => {
     });
 
     test("should create email record in database", async () => {
-      const { project, token } = await createTestSetup();
+      const { project } = await createTestSetup();
       
       const projectPersistence = new ProjectPersistence();
       const updatedProject = await projectPersistence.put({
@@ -1002,7 +1002,7 @@ describe("Events Endpoint Contract Tests", () => {
     });
 
     test("should update contact subscription status when tracking event", async () => {
-      const { project, token } = await createTestSetup();
+      const { project } = await createTestSetup();
       
       const contactPersistence = new ContactPersistence(project.id);
       const contact = await contactPersistence.create({

@@ -210,7 +210,6 @@ export class AssetService {
       Bucket: this.bucketName,
       Prefix: `${projectId}/`,
     });
-    ``;
     const response = await this.s3Client.send(command);
     const assets: Asset[] = [];
 

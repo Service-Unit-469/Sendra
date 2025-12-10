@@ -112,7 +112,7 @@ async function exportOpenAPI() {
             );
           }
         }
-      }) ?? [];
+      });
   });
   writeFileSync(outputPath, JSON.stringify(openApiDoc, null, 2), "utf-8");
 

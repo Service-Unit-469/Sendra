@@ -5,7 +5,6 @@ import {
   EventPersistence,
 } from "@sendra/lib";
 import { startupDynamoDB, stopDynamoDB } from "@sendra/test";
-import dayjs from "dayjs";
 import { afterAll, beforeAll, describe, expect, test } from "vitest";
 import { app } from "../../../src/app";
 import { AuthService } from "../../../src/services/AuthService";

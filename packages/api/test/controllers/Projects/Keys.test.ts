@@ -436,7 +436,7 @@ describe("Keys Endpoint Contract Tests", () => {
       expect(publicResponse.status).toBe(401);
 
       // Verify keys were not changed by fetching them with a user token
-      const { token: userToken } = await createTestSetup();
+      await createTestSetup();
       const projectPersistence = new ProjectPersistence();
       const unchangedProject = await projectPersistence.get(project.id);
 
