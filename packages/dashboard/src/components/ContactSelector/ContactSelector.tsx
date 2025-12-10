@@ -59,10 +59,14 @@ export default function ContactSelector({
                     e.preventDefault();
 
                     if (selectedContacts.length > 0) {
-                      return setSelectedContacts([]);
+                      setSelectedContacts([]);
+                      onChange([]);
+                      return;
                     }
 
-                    setSelectedContacts(contacts.filter((c) => c.subscribed));
+                    const subscribedContacts = contacts.filter((c) => c.subscribed);
+                    setSelectedContacts(subscribedContacts);
+                    onChange(subscribedContacts.map((c) => c.id));
                   }}
                   className={
                     "mt-6 flex items-center justify-center gap-x-1 rounded-sm border border-neutral-300 bg-white px-8 py-1 text-center text-sm font-medium text-neutral-800 transition ease-in-out hover:bg-neutral-100"
