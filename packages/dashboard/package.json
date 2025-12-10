@@ -82,7 +82,7 @@
 		"autoprefixer": "^10.4.19",
 		"dotenv": "^17.2.3",
 		"jest-axe": "^10.0.0",
-		"jsdom": "^27.1.0",
+		"jsdom": "^27.2.0",
 		"msw": "^2.6.0",
 		"postcss": "^8.4.39",
 		"tailwindcss": "^4.1.16",
