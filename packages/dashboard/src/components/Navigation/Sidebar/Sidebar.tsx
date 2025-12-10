@@ -181,7 +181,7 @@ export default function Sidebar({ mobileOpen, onSidebarVisibilityChange, wideLay
                 <div className="flex flex-1 flex-col overflow-y-auto pb-4 pt-5">
                   <div className="flex shrink-0 items-center justify-center px-4">
                     <Link to={""}>
-                      <SendraLogo width="100%" />
+                      <SendraLogo width="100%" height="90px" />
                     </Link>
                   </div>
 
