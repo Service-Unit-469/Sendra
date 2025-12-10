@@ -15,7 +15,6 @@ export const CampaignSchema = ProjectEntitySchema.extend({
 
 export const CampaignSchemas = {
   send: z.object({
-    id,
     live: z.boolean().default(false),
     delay: z.number().int("Delay needs to be a whole number").nonnegative("Delay needs to be a positive number"),
   }),
