@@ -15,7 +15,7 @@ taskQueue.subscribe(
     logging: {
       retention: "1 week",
     },
-    link: [dynamo],
+    link: [dynamo, taskQueue],
     environment: {
       EMAIL_CONFIGURATION_SET_NAME: `SendraConfigurationSet-${$app.stage}`,
       ...passEnvironmentVariables([

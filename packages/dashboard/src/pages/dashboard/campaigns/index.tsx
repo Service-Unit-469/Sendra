@@ -69,7 +69,7 @@ export default function Index() {
           // For quick email templates, start with template HTML containing {{quickBody}} token
           // The editor will replace this with actual content
           campaignBody = {
-            data: JSON.stringify({ quickBody: "" }),
+            data: "",
             html: template.body.html,
             plainText: template.body.plainText,
           };

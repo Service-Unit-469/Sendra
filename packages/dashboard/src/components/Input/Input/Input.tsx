@@ -1,5 +1,5 @@
-import { AnimatePresence, motion } from "framer-motion";
 import type { FieldError, UseFormRegisterReturn } from "react-hook-form";
+import { ErrorMessage } from "../../Label/ErrorMessage";
 import { StyledLabel } from "../../Label/StyledLabel";
 import { StyledInput } from "./StyledInput";
 
@@ -40,13 +40,7 @@ export default function Input(props: InputProps) {
           />
         </div>
       </StyledLabel>
-      <AnimatePresence>
-        {props.error && (
-          <motion.p initial={{ height: 0 }} animate={{ height: "auto" }} exit={{ height: 0 }} className="mt-1 text-xs text-red-500">
-            {props.error.message}
-          </motion.p>
-        )}
-      </AnimatePresence>
+      <ErrorMessage error={props.error} />
     </div>
   );
 }

@@ -3,13 +3,13 @@ import type { Fields } from "@measured/puck";
 import type { CampaignUpdate } from "@sendra/shared";
 import { CampaignSchemas } from "@sendra/shared";
 import { Save } from "lucide-react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { BlackButton } from "../../../components/Buttons/BlackButton";
-import { EmailEditor } from "../../../components/EmailEditor";
 import { ColorPickerRender } from "../../../components/EmailEditor/Fields";
+import PuckEmailEditor from "../../../components/EmailEditor/PuckEmailEditor";
 import QuickEmailEditor from "../../../components/EmailEditor/QuickEmailEditor";
 import FullscreenLoader from "../../../components/Utility/FullscreenLoader/FullscreenLoader";
 import { useCampaign } from "../../../lib/hooks/campaigns";
@@ -26,30 +26,18 @@ export default function EditCampaignPage() {
   const { data: campaign, mutate: campaignMutate } = useCampaign(id ?? "");
   const { data: projectIdentity } = useCurrentProjectIdentity();
   const { data: template } = useTemplate(campaign?.template ?? "");
-  const [quickBodyContent, setQuickBodyContent] = useState<string>("");
   const navigate = useNavigate();
 
-  const { setValue, watch, reset } = useForm({
+  const { setValue, getValues, reset } = useForm({
     resolver: zodResolver(CampaignSchemas.update.omit({ id: true, status: true, template: true, groups: true, recipients: true })),
     defaultValues: { body: undefined },
   });
 
-  // Extract quick email content from campaign body if it's a quick email
   useEffect(() => {
-    if (campaign && template?.quickEmail) {
-      try {
-        const bodyData = JSON.parse(campaign.body.data);
-        if (bodyData.quickBody) {
-          setQuickBodyContent(bodyData.quickBody);
-        }
-      } catch (error) {
-        console.error("Failed to parse campaign body data", error);
-      }
-    }
     if (campaign) {
       reset(campaign);
     }
-  }, [campaign, template, reset]);
+  }, [campaign, reset]);
 
   const fields = useMemo(() => {
     if (!projectIdentity) {
@@ -119,8 +107,8 @@ export default function EditCampaignPage() {
           network.fetch(`/projects/${project.id}/campaigns/${campaign.id}`, {
             method: "PUT",
             body: {
-              id: campaign.id,
               ...data,
+              id: campaign.id,
               recipients: campaign.recipients,
               template: campaign.template,
               status: campaign.status,
@@ -149,32 +137,15 @@ export default function EditCampaignPage() {
   if (template.quickEmail) {
     return (
       <QuickEmailEditor
-        templateHtml={template.body.html}
-        templatePlainText={template.body.plainText}
-        initialContent={quickBodyContent}
+        template={template}
+        initialCampaign={campaign}
         onChange={(value) => {
-          setValue("body", {
-            data: value.data,
-            html: value.html,
-            plainText: value.plainText,
-          });
+          setValue("body", value.body);
+          setValue("subject", value.subject);
         }}
         actions={() => (
           <>
-            <BlackButton
-              onClick={() =>
-                saveCampaign({
-                  subject: watch("subject") ?? "",
-                  email: watch("email") ?? undefined,
-                  from: watch("from") ?? undefined,
-                  body: {
-                    data: watch("body")?.data ?? "",
-                    html: watch("body")?.html ?? "",
-                    plainText: watch("body")?.plainText ?? undefined,
-                  },
-                })
-              }
-            >
+            <BlackButton onClick={() => saveCampaign(getValues())}>
               <Save strokeWidth={1.5} size={18} />
               Save
             </BlackButton>
@@ -189,7 +160,7 @@ export default function EditCampaignPage() {
 
   // Render regular Email Editor for non-quick email templates
   return (
-    <EmailEditor
+    <PuckEmailEditor
       initialData={JSON.parse(campaign.body.data)}
       onChange={(value) => {
         setValue("body", {
@@ -200,20 +171,7 @@ export default function EditCampaignPage() {
       fields={fields}
       actions={() => (
         <>
-          <BlackButton
-            onClick={() =>
-              saveCampaign({
-                subject: watch("subject") ?? campaign.subject,
-                email: watch("email") ?? campaign.email,
-                from: watch("from") ?? campaign.from,
-                body: {
-                  data: watch("body")?.data ?? campaign.body.data,
-                  html: watch("body")?.html ?? campaign.body.html,
-                  plainText: watch("body")?.plainText ?? campaign.body.plainText,
-                },
-              })
-            }
-          >
+          <BlackButton onClick={() => saveCampaign(getValues())}>
             <Save strokeWidth={1.5} size={18} />
             Save
           </BlackButton>

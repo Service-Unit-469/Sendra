@@ -2,10 +2,11 @@ import {
   CampaignPersistence,
   ContactPersistence,
   EmailPersistence,
-  EmailService
+  EmailService,
+  TaskQueue
 } from "@sendra/lib";
 import { startupDynamoDB, stopDynamoDB } from "@sendra/test";
-import { afterAll, beforeAll, describe, expect, test, vi } from "vitest";
+import { afterAll, beforeAll, beforeEach, describe, expect, test, vi } from "vitest";
 import { app } from "../../../src/app";
 import { AuthService } from "../../../src/services/AuthService";
 import {
@@ -26,6 +27,10 @@ describe("Campaigns Endpoint Contract Tests", () => {
 
   afterAll(async () => {
     await stopDynamoDB();
+  });
+
+  beforeEach(() => {
+    vi.mocked(TaskQueue.addTask).mockClear();
   });
 
   describe("POST /projects/{projectId}/campaigns", () => {
@@ -825,11 +830,15 @@ describe("Campaigns Endpoint Contract Tests", () => {
       const updatedCampaign = await campaignPersistence.get(campaign.id);
       expect(updatedCampaign?.status).toBe("DELIVERED");
 
-      // Verify email was created
-      const emailPersistence = new EmailPersistence(project.id);
-      const emails = await emailPersistence.listAll();
-      const campaignEmails = emails.filter((e) => e.source === campaign.id);
-      expect(campaignEmails.length).toBeGreaterThanOrEqual(1);
+      // Verify task was queued
+      expect(TaskQueue.addTask).toHaveBeenCalledWith({
+        type: "queueCampaign",
+        payload: {
+          campaign: campaign.id,
+          project: project.id,
+          delay: 0,
+        },
+      });
     });
 
     test("should send live campaign with delay", async () => {
@@ -867,6 +876,16 @@ describe("Campaigns Endpoint Contract Tests", () => {
       });
 
       expect(response.status).toBe(202);
+
+      // Verify task was queued with delay
+      expect(TaskQueue.addTask).toHaveBeenCalledWith({
+        type: "queueCampaign",
+        payload: {
+          campaign: campaign.id,
+          project: project.id,
+          delay: 5,
+        },
+      });
     });
 
     test("should send live campaign with multiple recipients and staggered delays", async () => {
@@ -909,11 +928,15 @@ describe("Campaigns Endpoint Contract Tests", () => {
 
       expect(response.status).toBe(202);
 
-      // Verify emails were created for all recipients
-      const emailPersistence = new EmailPersistence(project.id);
-      const emails = await emailPersistence.listAll();
-      const campaignEmails = emails.filter((e) => e.source === campaign.id);
-      expect(campaignEmails.length).toBe(3);
+      // Verify task was queued
+      expect(TaskQueue.addTask).toHaveBeenCalledWith({
+        type: "queueCampaign",
+        payload: {
+          campaign: campaign.id,
+          project: project.id,
+          delay: 1,
+        },
+      });
     });
 
     test("should return 400 when sending live campaign with no recipients", async () => {
