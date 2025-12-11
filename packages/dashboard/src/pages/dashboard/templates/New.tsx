@@ -8,8 +8,8 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { BlackButton } from "../../../components/Buttons/BlackButton";
-import { EmailEditor } from "../../../components/EmailEditor";
 import { initialEmailData } from "../../../components/EmailEditor/config";
+import PuckEmailEditor from "../../../components/EmailEditor/PuckEmailEditor";
 import FullscreenLoader from "../../../components/Utility/FullscreenLoader/FullscreenLoader";
 import { useCurrentProject, useCurrentProjectIdentity } from "../../../lib/hooks/projects";
 import { type TemplateFormValues, useTemplateFields, useTemplates } from "../../../lib/hooks/templates";
@@ -91,7 +91,7 @@ export default function NewTemplatePage() {
   };
 
   return (
-    <EmailEditor
+    <PuckEmailEditor
       initialData={initialData}
       fields={fields}
       onChange={(value) => {

@@ -3,7 +3,6 @@ import {
   CampaignPersistence,
   type CompileProps,
   ContactPersistence,
-  EmailPersistence,
   EmailService,
   getEmailConfig,
   MembershipPersistence,
@@ -144,7 +143,7 @@ export const registerCampaignsRoutes = (app: AppType) => {
           throw new HttpException(400, "No recipients provided");
         }
 
-        logger.info({ campaign: campaign.id, recipients: campaign.recipients.length }, "Sending campaign");
+        logger.info({ campaign: campaign.id, recipients: campaign.recipients.length }, "Queueing campaign");
 
         // Update campaign status
         await campaignPersistence.put({
@@ -152,48 +151,15 @@ export const registerCampaignsRoutes = (app: AppType) => {
           status: "DELIVERED",
         });
 
-        let delay = userDelay ?? 0;
-
-        const tasks = campaign.recipients.map((contactId: string, index: number) => {
-          if (index % 80 === 0) {
-            delay += 1;
-          }
-
-          return {
+        await TaskQueue.addTask({
+          type: "queueCampaign",
+          payload: {
             campaign: campaign.id,
-            contactId,
-            delaySeconds: delay * 60,
-          };
+            project: projectId,
+            delay: userDelay,
+          },
         });
-
-        const emailPersistence = new EmailPersistence(projectId);
-        const contactPersistence = new ContactPersistence(projectId);
-        await Promise.all(
-          tasks.map(async (taskData) => {
-            const createdEmail = await emailPersistence.create({
-              subject: campaign.subject,
-              body: campaign.body,
-              source: campaign.id,
-              sourceType: "CAMPAIGN",
-              email: await contactPersistence.get(taskData.contactId).then((c) => c?.email ?? ""),
-              contact: taskData.contactId,
-              sendType: "MARKETING",
-              status: "QUEUED",
-              project: projectId,
-            });
-
-            await TaskQueue.addTask({
-              type: "sendEmail",
-              payload: {
-                email: createdEmail.id,
-                campaign: taskData.campaign,
-                contact: taskData.contactId,
-                project: projectId,
-              },
-              delaySeconds: taskData.delaySeconds,
-            });
-          }),
-        );
+        logger.info({ campaign: campaign.id, recipients: campaign.recipients.length }, "Campaign queued");
       } else {
         const projectPersistence = new ProjectPersistence();
         const project = await projectPersistence.get(projectId);

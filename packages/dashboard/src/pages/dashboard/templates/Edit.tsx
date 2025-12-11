@@ -9,7 +9,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { BlackButton } from "../../../components/Buttons/BlackButton";
 import { MenuButton } from "../../../components/Buttons/MenuButton";
-import { EmailEditor } from "../../../components/EmailEditor";
+import PuckEmailEditor from "../../../components/EmailEditor/PuckEmailEditor";
 import { Options } from "../../../components/Overlay/Options";
 import FullscreenLoader from "../../../components/Utility/FullscreenLoader/FullscreenLoader";
 import { useCurrentProject } from "../../../lib/hooks/projects";
@@ -134,7 +134,7 @@ export default function EditTemplatePage() {
   };
 
   return (
-    <EmailEditor
+    <PuckEmailEditor
       initialData={JSON.parse(template.body.data)}
       fields={fields}
       onChange={(value) => {
