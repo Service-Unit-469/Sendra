@@ -319,7 +319,7 @@ describe("QueueCampaignTask Handler", () => {
 
 			await expect(sendEmail(task, "test-record-id")).resolves.toBeUndefined();
 
-			// Verify no email records were created due to the error
+			// Verify no email records
 			const emailPersistence = new EmailPersistence(projectId);
 			const emails = await emailPersistence.listAll();
 			expect(emails.length).toBe(0);

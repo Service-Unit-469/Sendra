@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { BlackButton } from "../../../components/Buttons/BlackButton";
-import { EmailEditor } from "../../../components/EmailEditor";
+import PuckEmailEditor from "../../../components/EmailEditor/PuckEmailEditor";
 import { initialEmailData } from "../../../components/EmailEditor/config";
 import FullscreenLoader from "../../../components/Utility/FullscreenLoader/FullscreenLoader";
 import { useCurrentProject, useCurrentProjectIdentity } from "../../../lib/hooks/projects";
@@ -19,7 +19,7 @@ import { network } from "../../../lib/network";
  *
  */
 export default function NewTemplatePage() {
-  const navigate = useNavigate();
+  const navigate = useNavigate(); 
 
   const project = useCurrentProject();
   const { mutate } = useTemplates();
@@ -91,7 +91,7 @@ export default function NewTemplatePage() {
   };
 
   return (
-    <EmailEditor
+    <PuckEmailEditor
       initialData={initialData}
       fields={fields}
       onChange={(value) => {
