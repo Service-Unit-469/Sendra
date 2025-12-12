@@ -2,9 +2,11 @@ import { QueryCommand } from "@aws-sdk/client-dynamodb";
 import { BatchGetCommand, BatchWriteCommand, DeleteCommand, DynamoDBDocumentClient, GetCommand, PutCommand, type QueryCommandInput } from "@aws-sdk/lib-dynamodb";
 import { unmarshall } from "@aws-sdk/util-dynamodb";
 import type { Action, Email, Event, Template } from "@sendra/shared";
+import { type MetricsLogger, Unit } from "aws-embedded-metrics";
 import { uuidv7 } from "uuidv7";
 import type { ZodType } from "zod";
 import { logMethodReturningPromise, rootLogger } from "../logging";
+import { getMetricsLogger, withMetrics } from "../metrics";
 import { getPersistenceConfig } from "../services/AppConfig";
 import { HttpException } from "./utils/HttpException";
 
@@ -99,6 +101,7 @@ export abstract class BasePersistence<T extends BaseItem> {
     module: "BasePersistence",
     type: this.type,
   });
+  private readonly metricsLogger: MetricsLogger;
   public readonly docClient: DynamoDBDocumentClient;
   public readonly tableName: string;
 
@@ -109,6 +112,9 @@ export abstract class BasePersistence<T extends BaseItem> {
     const config = getPersistenceConfig();
     this.docClient = DynamoDBDocumentClient.from(config.client);
     this.tableName = config.tableName;
+    this.metricsLogger = getMetricsLogger("Persistence", {
+      ObjectType: this.type,
+    });
   }
 
   abstract embed(items: T[], embed?: Embeddable[], limit?: number): Promise<EmbeddedObject<T>[]>;
@@ -124,57 +130,76 @@ export abstract class BasePersistence<T extends BaseItem> {
 
   @logMethodReturningPromise("BasePersistence")
   async batchDelete(ids: string[]): Promise<void> {
-    const command = new BatchWriteCommand({
-      RequestItems: {
-        [this.tableName]: ids.map((id) => ({
-          DeleteRequest: { Key: { id: id, type: this.type } },
-        })),
+    this.metricsLogger.putMetric("BatchDeleteCount", ids.length, Unit.Count);
+
+    await withMetrics(
+      async () =>
+        this.docClient.send(
+          new BatchWriteCommand({
+            RequestItems: {
+              [this.tableName]: ids.map((id) => ({
+                DeleteRequest: { Key: { id: id, type: this.type } },
+              })),
+            },
+          }),
+        ),
+      "Persistence/BatchDelete",
+      {
+        ObjectType: this.type,
       },
-    });
-    await this.docClient.send(command);
+    );
   }
 
   @logMethodReturningPromise("BasePersistence")
   async batchGet(ids: readonly string[]): Promise<T[]> {
-    if (ids.length === 0) {
-      return [];
-    }
-    const idsCopy = [...ids];
-    this.logger.debug({ ids: ids.length, type: this.type }, "Performing batch get");
+    this.metricsLogger.putMetric("BatchGetCount", ids.length, Unit.Count);
+    return withMetrics(
+      async () => {
+        if (ids.length === 0) {
+          return [];
+        }
+        const idsCopy = [...ids];
+        this.logger.debug({ ids: ids.length, type: this.type }, "Performing batch get");
 
-    const allItems: T[] = [];
-    while (idsCopy.length > 0) {
-      const batchIds = [];
-      while (idsCopy.length > 0 && batchIds.length < 100) {
-        batchIds.push(idsCopy.pop());
-      }
-      this.logger.debug({ batchIds, type: this.type }, "Getting batch of items");
-      const command = new BatchGetCommand({
-        RequestItems: {
-          [this.tableName]: {
-            Keys: batchIds.map((id) => ({ id: id, type: this.type })),
-          },
-        },
-      });
-      const result = await this.docClient.send(command);
+        const allItems: T[] = [];
+        while (idsCopy.length > 0) {
+          const batchIds = [];
+          while (idsCopy.length > 0 && batchIds.length < 100) {
+            batchIds.push(idsCopy.pop());
+          }
+          this.logger.debug({ batchIds, type: this.type }, "Getting batch of items");
+          const command = new BatchGetCommand({
+            RequestItems: {
+              [this.tableName]: {
+                Keys: batchIds.map((id) => ({ id: id, type: this.type })),
+              },
+            },
+          });
+          const result = await this.docClient.send(command);
 
-      const items = result.Responses?.[this.tableName].filter((item) => item !== undefined) as T[];
+          const items = result.Responses?.[this.tableName].filter((item) => item !== undefined) as T[];
 
-      const unprocessedKeys = result.UnprocessedKeys?.[this.tableName]?.Keys?.map((key) => key.id) ?? [];
-      this.logger.debug(
-        {
-          unprocessedKeys: unprocessedKeys.length,
-          items: items.length,
-          type: this.type,
-        },
-        "Batch result",
-      );
+          const unprocessedKeys = result.UnprocessedKeys?.[this.tableName]?.Keys?.map((key) => key.id) ?? [];
+          this.logger.debug(
+            {
+              unprocessedKeys: unprocessedKeys.length,
+              items: items.length,
+              type: this.type,
+            },
+            "Batch result",
+          );
 
-      allItems.push(...items);
-      idsCopy.push(...unprocessedKeys);
-    }
+          allItems.push(...items);
+          idsCopy.push(...unprocessedKeys);
+        }
 
-    return allItems.map((i) => this.schema.parse(i));
+        return allItems.map((i) => this.schema.parse(i));
+      },
+      "Persistence/BatchGet",
+      {
+        ObjectType: this.type,
+      },
+    );
   }
 
   @logMethodReturningPromise("BasePersistence")
@@ -187,25 +212,43 @@ export abstract class BasePersistence<T extends BaseItem> {
       updatedAt: new Date().toISOString(),
     } as T & { type: string });
     this.logger.debug({ newItem }, "Creating item");
-    const command = new PutCommand({
-      TableName: this.tableName,
-      Item: newItem,
-    });
-    await this.docClient.send(command);
+
+    await withMetrics(
+      async () =>
+        this.docClient.send(
+          new PutCommand({
+            TableName: this.tableName,
+            Item: newItem,
+          }),
+        ),
+      "Persistence/Create",
+      {
+        ObjectType: this.type,
+      },
+    );
     return this.schema.parse(newItem);
   }
 
   @logMethodReturningPromise("BasePersistence")
   async delete(id: string): Promise<void> {
     this.logger.debug({ id }, "Deleting item");
-    const command = new DeleteCommand({
-      TableName: this.tableName,
-      Key: {
-        id: id,
-        type: this.type,
+
+    await withMetrics(
+      async () =>
+        this.docClient.send(
+          new DeleteCommand({
+            TableName: this.tableName,
+            Key: {
+              id: id,
+              type: this.type,
+            },
+          }),
+        ),
+      "Persistence/Delete",
+      {
+        ObjectType: this.type,
       },
-    });
-    await this.docClient.send(command);
+    );
   }
 
   @logMethodReturningPromise("BasePersistence")
@@ -238,8 +281,10 @@ export abstract class BasePersistence<T extends BaseItem> {
       ExclusiveStartKey: cursor ? JSON.parse(Buffer.from(cursor, "base64").toString("ascii")) : undefined,
     } as QueryCommandInput;
     this.logger.debug(config, "Executing query");
-    const command = new QueryCommand(config);
-    const result = await this.docClient.send(command);
+    const result = await withMetrics(async () => this.docClient.send(new QueryCommand(config)), "Persistence/FindBy", {
+      ObjectType: this.type,
+      IndexName: indexName,
+    });
 
     const items =
       result.Items?.map((item) => unmarshall(item) as T)
@@ -303,14 +348,23 @@ export abstract class BasePersistence<T extends BaseItem> {
   async get(key: string, options?: Pick<QueryParams, "embed">): Promise<EmbeddedObject<T> | undefined> {
     this.logger.debug({ key, options }, "Getting item");
     const { embed } = options ?? {};
-    const command = new GetCommand({
-      TableName: this.tableName,
-      Key: {
-        id: key,
-        type: this.type,
+
+    const result = await withMetrics(
+      async () =>
+        this.docClient.send(
+          new GetCommand({
+            TableName: this.tableName,
+            Key: {
+              id: key,
+              type: this.type,
+            },
+          }),
+        ),
+      "Persistence/Get",
+      {
+        ObjectType: this.type,
       },
-    });
-    const result = await this.docClient.send(command);
+    );
     if (!result.Item) {
       return undefined;
     }
@@ -342,7 +396,10 @@ export abstract class BasePersistence<T extends BaseItem> {
       ExclusiveStartKey: cursor ? JSON.parse(Buffer.from(cursor, "base64").toString("ascii")) : undefined,
       ScanIndexForward: false,
     } as QueryCommandInput);
-    const result = await this.docClient.send(command);
+
+    const result = await withMetrics(async () => this.docClient.send(command), "Persistence/List", {
+      ObjectType: this.type,
+    });
 
     const items =
       result.Items?.map((item) => unmarshall(item) as T)
@@ -391,16 +448,24 @@ export abstract class BasePersistence<T extends BaseItem> {
   async put(item: T): Promise<T> {
     this.logger.debug({ item }, "Putting item");
     const parsedItem = this.schema.parse(item);
-    const command = new PutCommand({
-      TableName: this.tableName,
-      Item: this.projectItem({
-        ...parsedItem,
-        type: this.type,
-        updatedAt: new Date().toISOString(),
-      }),
-      ConditionExpression: "attribute_exists(id)",
-    });
-    await this.docClient.send(command);
+    await withMetrics(
+      async () =>
+        this.docClient.send(
+          new PutCommand({
+            TableName: this.tableName,
+            Item: this.projectItem({
+              ...parsedItem,
+              type: this.type,
+              updatedAt: new Date().toISOString(),
+            }),
+            ConditionExpression: "attribute_exists(id)",
+          }),
+        ),
+      "Persistence/Put",
+      {
+        ObjectType: this.type,
+      },
+    );
     return parsedItem;
   }
 }

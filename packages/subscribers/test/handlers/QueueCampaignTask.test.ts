@@ -5,7 +5,7 @@ import {
 } from "@sendra/lib";
 import { startupDynamoDB, stopDynamoDB } from "@sendra/test";
 import { afterAll, beforeAll, beforeEach, describe, expect, test, vi } from "vitest";
-import { sendEmail } from "../../src/handlers/QueueCampaignTask";
+import { queueCampaign } from "../../src/handlers/QueueCampaignTask";
 import { createTestContact, createTestSetup, createTestTemplate } from "../utils/test-helpers";
 
 // Mock TaskQueue
@@ -64,7 +64,7 @@ describe("QueueCampaignTask Handler", () => {
 				},
 			};
 
-			await sendEmail(task, "test-record-id");
+			await queueCampaign(task, "test-record-id");
 
 			// Verify email record was created
 			const emailPersistence = new EmailPersistence(projectId);
@@ -123,7 +123,7 @@ describe("QueueCampaignTask Handler", () => {
 				},
 			};
 
-			await sendEmail(task, "test-record-id");
+			await queueCampaign(task, "test-record-id");
 
 			// Verify email records were created for all recipients
 			const emailPersistence = new EmailPersistence(projectId);
@@ -171,7 +171,7 @@ describe("QueueCampaignTask Handler", () => {
 				delaySeconds: 300, // 5 minutes in seconds
 			};
 
-			await sendEmail(task, "test-record-id");
+			await queueCampaign(task, "test-record-id");
 
 			// Verify email record was created
 			const emailPersistence = new EmailPersistence(projectId);
@@ -219,7 +219,7 @@ describe("QueueCampaignTask Handler", () => {
 				},
 			};
 
-			await sendEmail(task, "test-record-id");
+			await queueCampaign(task, "test-record-id");
 
 			// Verify email records have correct email addresses
 			const emailPersistence = new EmailPersistence(projectId);
@@ -244,7 +244,7 @@ describe("QueueCampaignTask Handler", () => {
 			};
 
 			// Should not throw
-			await sendEmail(task, "test-record-id");
+			await queueCampaign(task, "test-record-id");
 
 			// Verify no email records were created
 			const emailPersistence = new EmailPersistence(projectId);
@@ -281,7 +281,7 @@ describe("QueueCampaignTask Handler", () => {
 			};
 
 			// Should not throw
-			await sendEmail(task, "test-record-id");
+			await queueCampaign(task, "test-record-id");
 
 			// Verify no email records were created
 			const emailPersistence = new EmailPersistence(projectId);
@@ -317,7 +317,7 @@ describe("QueueCampaignTask Handler", () => {
 				},
 			};
 
-			await expect(sendEmail(task, "test-record-id")).resolves.toBeUndefined();
+			await expect(queueCampaign(task, "test-record-id")).resolves.toBeUndefined();
 
 			// Verify no email records
 			const emailPersistence = new EmailPersistence(projectId);
@@ -357,7 +357,7 @@ describe("QueueCampaignTask Handler", () => {
 				},
 			};
 
-			await sendEmail(task, "test-record-id");
+			await queueCampaign(task, "test-record-id");
 
 			// Verify email record has correct subject and body
 			const emailPersistence = new EmailPersistence(projectId);

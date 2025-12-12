@@ -61,6 +61,7 @@
 		"tailwind-scrollbar": "^4.0.2",
 		"tailwindcss": "^4.1.16",
 		"to-json-schema": "^0.2.5",
+		"uuid": "^13.0.0",
 		"zod": "^4.1.11"
 	},
 	"devDependencies": {
