@@ -210,9 +210,8 @@ export const registerProjectEntityReadRoutes = <T extends BaseItem>(
       if (!entity) {
         throw new NotFound(config.entityName);
       }
-      // biome-ignore lint/suspicious/noTsIgnore: ts-expect-error doesn't work
-      // @ts-ignore
-      return c.json(entity, 200);
+      const parsedEntity = config.getSchema.parse(entity);
+      return c.json(parsedEntity as T, 200);
     },
   );
 };
@@ -267,9 +266,8 @@ export const registerProjectEntityCrudRoutes = <T extends BaseItem>(app: AppType
         project: projectId,
       } as Omit<T, "id" | "createdAt" | "updatedAt">);
 
-      // biome-ignore lint/suspicious/noTsIgnore: ts-expect-error doesn't work
-      // @ts-ignore
-      return c.json(entity, 201);
+      const parsedEntity = config.getSchema.parse(entity);
+      return c.json(parsedEntity as T, 201);
     },
   );
 
@@ -330,9 +328,7 @@ export const registerProjectEntityCrudRoutes = <T extends BaseItem>(app: AppType
         ...toUpdate,
       });
       const parsedEntity = config.getSchema.parse(entity);
-      // biome-ignore lint/suspicious/noTsIgnore: ts-expect-error doesn't work
-      // @ts-ignore
-      return c.json(parsedEntity, 200);
+      return c.json(parsedEntity as T, 200);
     },
   );
 

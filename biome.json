@@ -17,9 +17,9 @@
         "noForEach": "off",
         "noStaticOnlyClass": "off"
       },
-	  "correctness": {
-		"useUniqueElementIds": "off"
-	  }
+      "correctness": {
+        "useUniqueElementIds": "off"
+      }
     }
   },
   "formatter": {
