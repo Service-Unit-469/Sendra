@@ -1,4 +1,14 @@
+import { v4 as randomUUID } from "uuid";
 import { API_URI, TOKEN_KEY } from "./constants";
+
+const getCorrelationId = () => {
+  let correlationId = sessionStorage.getItem("correlationId");
+  if (!correlationId) {
+    correlationId = randomUUID();
+    sessionStorage.setItem("correlationId", correlationId);
+  }
+  return correlationId;
+};
 
 export class network {
   /**
@@ -19,7 +29,16 @@ export class network {
 
     const body = init?.body ? JSON.stringify(init?.body) : undefined;
 
-    const headers: Record<string, string> = init?.headers ? { ...(init.headers as Record<string, string>) } : {};
+    const headers: Record<string, string> = init?.headers
+      ? {
+          ...(init.headers as Record<string, string>),
+          "x-correlation-id": getCorrelationId(),
+          "x-request-id": randomUUID(),
+        }
+      : {
+          "x-correlation-id": getCorrelationId(),
+          "x-request-id": randomUUID(),
+        };
     const requestInit = {
       ...init,
       body,

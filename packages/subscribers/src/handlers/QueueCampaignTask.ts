@@ -4,7 +4,7 @@ import type { z } from "zod";
 
 type QueueCampaignTask = z.infer<typeof QueueCampaignTaskSchema>;
 
-export const sendEmail = async (task: QueueCampaignTask, recordId: string) => {
+export const queueCampaign = async (task: QueueCampaignTask, recordId: string) => {
   const logger = rootLogger.child({
     recordId,
   });

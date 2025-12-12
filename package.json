@@ -41,6 +41,7 @@
   ],
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.943.0",
+    "aws-embedded-metrics": "^4.2.1",
     "sst": "^3.17.24",
     "tar": "^7.5.2"
   },

@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { OpenAPIHono } from "@hono/zod-openapi";
-import { rootLogger, setRequestInfo } from "@sendra/lib";
+import { rootLogger, setRequestInfo, withMetrics } from "@sendra/lib";
 import type { Context, Next } from "hono";
 import { handle } from "hono/aws-lambda";
 import { bodyLimit } from "hono/body-limit";
@@ -54,6 +54,21 @@ app.use(
     return promise;
   }),
 );
+app.use("*", (c: Context, next: Next) => {
+  const promise = new Promise<void>((resolve) =>
+    withMetrics(
+      async () => {
+        await next();
+        resolve();
+      },
+      "Api",
+      {
+        Method: c.req.method,
+      },
+    ),
+  );
+  return promise;
+});
 app.use(
   pinoLogger({
     pino: rootLogger.child({
@@ -76,7 +91,7 @@ app.use(
   cors({
     origin: "*",
     allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowHeaders: ["Content-Type", "Authorization"],
+    allowHeaders: ["Content-Type", "Authorization", "X-Request-Id", "X-Correlation-Id"],
     credentials: true,
   }),
 );
