@@ -22,7 +22,6 @@ export const api = new sst.aws.Function("ApiFn", {
     EMAIL_CONFIGURATION_SET_NAME: `SendraConfigurationSet-${$app.stage}`,
     ASSETS_BUCKET_NAME: assetsBucket.name,
     APP_URL: router.url,
-    ASSETS_URL: router.url,
     ...passEnvironmentVariables([
       "LOG_LEVEL",
       "LOG_PRETTY",

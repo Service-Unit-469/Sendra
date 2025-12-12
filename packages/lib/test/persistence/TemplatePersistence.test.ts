@@ -44,6 +44,7 @@ describe("TemplatePersistence", () => {
         templateType: "MARKETING" as Template["templateType"],
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
+        quickEmail: false,
       };
 
       const projected = persistence.projectItem(template);
@@ -65,6 +66,7 @@ describe("TemplatePersistence", () => {
           plainText: "Welcome! Thanks for signing up.",
         },
         templateType: "MARKETING" as Template["templateType"],
+        quickEmail: false,
       };
 
       const created = await persistence.create(templateData);
@@ -85,6 +87,7 @@ describe("TemplatePersistence", () => {
           plainText: "Click here to reset your password",
         },
         templateType: "TRANSACTIONAL" as Template["templateType"],
+        quickEmail: false,
       };
 
       const created = await persistence.create(templateData);
@@ -121,7 +124,8 @@ describe("TemplatePersistence", () => {
           html: complexHTML,
           plainText: "{{title}} {{content}}",
         },
-        templateType: "MARKETING" as Template["templateType"],
+        templateType: "MARKETING" as Template["templateType"],  
+        quickEmail: false,
       };
 
       const created = await persistence.create(templateData);
@@ -144,6 +148,7 @@ describe("TemplatePersistence", () => {
           plainText: "Body 1",
         },
         templateType: "MARKETING",
+        quickEmail: false,
       });
 
       await persistence.create({
@@ -155,6 +160,7 @@ describe("TemplatePersistence", () => {
           plainText: "Body 2",
         },
         templateType: "MARKETING",
+        quickEmail: false,
       });
 
       const result = await persistence.list({ limit: 10 });
@@ -175,6 +181,7 @@ describe("TemplatePersistence", () => {
           plainText: "Other Body",
         },
         templateType: "MARKETING",
+        quickEmail: false,
       });
 
       const result = await persistence.list();
@@ -194,6 +201,7 @@ describe("TemplatePersistence", () => {
           plainText: "Original Body",
         },
         templateType: "MARKETING",
+        quickEmail: false,
       });
 
       const updatedBody = {
@@ -224,7 +232,8 @@ describe("TemplatePersistence", () => {
           plainText: "Delete Me",
         },
         templateType: "MARKETING",
-      });
+        quickEmail: false,
+          });
 
       await persistence.delete(template.id);
 
@@ -248,6 +257,7 @@ describe("TemplatePersistence", () => {
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
           templateType: "MARKETING",
+          quickEmail: false,
         },
       ];
 
@@ -267,6 +277,7 @@ describe("TemplatePersistence", () => {
           plainText: "Test Body",
         },
         templateType: "MARKETING",
+        quickEmail: false,
       });
 
       // Create actions associated with this template
@@ -318,6 +329,7 @@ describe("TemplatePersistence", () => {
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
           templateType: "MARKETING",
+          quickEmail: false,
         },
       ];
 

@@ -1,10 +1,10 @@
 import type { Asset } from "@sendra/shared";
 import dayjs from "dayjs";
-import { motion } from "framer-motion";
 import { FileImage, FileText, Plus, Trash2, Upload } from "lucide-react";
 import { useCallback, useState } from "react";
 import { toast } from "sonner";
 import Badge from "../../../components/Badge/Badge";
+import { BlackButton } from "../../../components/Buttons/BlackButton";
 import Card from "../../../components/Card/Card";
 import Modal from "../../../components/Overlay/Modal/Modal";
 import Skeleton from "../../../components/Skeleton/Skeleton";
@@ -74,17 +74,10 @@ export default function Index() {
         description={"Images and attachments for your emails"}
         actions={
           <label htmlFor="file-upload">
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.9 }}
-              className={"flex items-center gap-x-1 rounded-sm bg-neutral-800 px-8 py-2 text-center text-sm font-medium text-white disabled:opacity-50"}
-              disabled={uploading}
-              onClick={() => document.getElementById("file-upload")?.click()}
-              type="button"
-            >
+            <BlackButton disabled={uploading} onClick={() => document.getElementById("file-upload")?.click()}>
               {uploading ? <Upload strokeWidth={1.5} size={18} className="animate-pulse" /> : <Plus strokeWidth={1.5} size={18} />}
               {uploading ? "Uploading..." : "Upload"}
-            </motion.button>
+            </BlackButton>
             <input id="file-upload" type="file" multiple accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.txt,.csv" className="hidden" onChange={handleFileUpload} disabled={uploading} />
           </label>
         }

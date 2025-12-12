@@ -1,4 +1,4 @@
-import { DeleteObjectCommand, GetObjectCommand, HeadObjectCommand, type HeadObjectCommandOutput, ListObjectsV2Command, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { DeleteObjectCommand, HeadObjectCommand, type HeadObjectCommandOutput, ListObjectsV2Command, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import type { Asset } from "@sendra/shared";
 import { rootLogger } from "../logging/Logger";
@@ -12,17 +12,16 @@ const logger = rootLogger.child({
 export class AssetService {
   private s3Client: S3Client;
   private bucketName: string;
-  private assetsUrl: string;
+  private appUrl: string;
 
   constructor() {
     const assetsConfig = getAssetsConfig();
     this.s3Client = new S3Client();
     this.bucketName = assetsConfig.ASSETS_BUCKET_NAME || "";
-    this.assetsUrl = assetsConfig.ASSETS_URL || "";
-
     if (!this.bucketName) {
       throw new Error("ASSETS_BUCKET_NAME environment variable is not set");
     }
+    this.appUrl = assetsConfig.APP_URL;
   }
 
   /**
@@ -47,7 +46,7 @@ export class AssetService {
     const filename = filenameParts.join("/");
     const name = filename;
     const mimeType = response.ContentType ?? "application/octet-stream";
-    const url = `${this.assetsUrl}/assets/${key}`;
+    const url = `${this.appUrl}/assets/${key}`;
 
     return {
       id: this.s3KeyToId(key),
@@ -148,35 +147,6 @@ export class AssetService {
   }
 
   /**
-   * Generate a pre-signed URL for downloading a file from S3
-   */
-  async generateDownloadUrl(projectId: string, id: string, expiresIn: number = 3600): Promise<string> {
-    const s3Key = this.idToS3Key(id);
-    // Verify the asset belongs to this project
-    if (!s3Key.startsWith(`${projectId}/`)) {
-      throw new HttpException(403, "Access denied to this asset");
-    }
-    const command = new GetObjectCommand({
-      Bucket: this.bucketName,
-      Key: s3Key,
-    });
-
-    const downloadUrl = await getSignedUrl(this.s3Client, command, {
-      expiresIn,
-    });
-
-    logger.info(
-      {
-        id,
-        s3Key,
-      },
-      "Generated download URL",
-    );
-
-    return downloadUrl;
-  }
-
-  /**
    * Get asset by ID
    */
   async getAsset(projectId: string, id: string): Promise<Asset> {
@@ -246,18 +216,6 @@ export class AssetService {
     );
 
     return assets;
-  }
-
-  /**
-   * List assets by type
-   */
-  async listAssetsByType(projectId: string, assetType: "IMAGE" | "ATTACHMENT"): Promise<Asset[]> {
-    const allAssets = await this.listAssets(projectId);
-
-    return allAssets.filter((asset) => {
-      const isImage = asset.mimeType.startsWith("image/");
-      return assetType === "IMAGE" ? isImage : !isImage;
-    });
   }
 
   /**

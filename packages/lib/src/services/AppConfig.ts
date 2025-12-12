@@ -18,7 +18,7 @@ const TTLSchema = z.union([z.number(), z.string().regex(/^\d+ (Y|W|D|H|M|s|Ms)$/
 
 const AssetsConfigSchema = z.object({
   ASSETS_BUCKET_NAME: z.string(),
-  ASSETS_URL: z.string(),
+  APP_URL: z.string(),
 });
 export const getAssetsConfig = () => AssetsConfigSchema.parse(process.env);
 

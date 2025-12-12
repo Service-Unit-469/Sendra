@@ -35,10 +35,7 @@ export const uploadAsset = async (projectId: string, file: File): Promise<Asset>
   // Step 3: Fetch the asset metadata (now stored in S3)
   const asset = await network.fetch<Asset, void>(`/projects/${projectId}/assets/${uploadUrlResponse.id}`);
 
-  // Invalidate cache
-  const assetType = file.type.startsWith("image/") ? "IMAGE" : "ATTACHMENT";
   await mutate(["assets"]);
-  await mutate(["assets", "by-type", assetType]);
 
   return asset;
 };
