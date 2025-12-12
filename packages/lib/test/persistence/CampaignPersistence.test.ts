@@ -12,7 +12,6 @@ describe("CampaignPersistence", () => {
     // Start local DynamoDB
     await startupDynamoDB();
 
-    // Now import CampaignPersistence after mocks are set up
     persistence = new CampaignPersistence(TEST_PROJECT_ID);
   });
 

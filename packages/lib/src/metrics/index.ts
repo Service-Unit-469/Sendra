@@ -1,8 +1,9 @@
 import { createMetricsLogger, type MetricsLogger, Unit } from "aws-embedded-metrics";
 import { Resource } from "sst";
 import { getRequestInfo } from "../logging";
+import { getLogConfig } from "../services/AppConfig";
 
-export const getMetricsLogger = (namespace: string, dimensions: Record<string, string>) => {
+const getMetricsLogger = (namespace: string, dimensions: Record<string, string>) => {
   const logger = createMetricsLogger();
   let stage = "Local";
   try {
@@ -32,5 +33,8 @@ export const withMetrics = async <T>(fn: (metricsLogger: MetricsLogger) => Promi
     throw error;
   } finally {
     logger.putMetric("Duration", Date.now() - start, Unit.Milliseconds);
+    if (getLogConfig().metricsEnabled) {
+      await logger.flush();
+    }
   }
 };

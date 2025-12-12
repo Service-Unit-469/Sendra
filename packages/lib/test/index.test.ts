@@ -11,6 +11,7 @@ vi.mock("../src/services/AppConfig", () => ({
 	getLogConfig: vi.fn(() => ({
 		level: "info",
 		pretty: false,
+		metricsEnabled: false,
 	})),
 	getAuthConfig: vi.fn(() => ({
 		issuer: "test",

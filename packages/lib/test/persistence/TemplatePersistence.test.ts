@@ -44,6 +44,7 @@ describe("TemplatePersistence", () => {
         templateType: "MARKETING" as Template["templateType"],
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
+        quickEmail: false,
       };
 
       const projected = persistence.projectItem(template);
@@ -65,6 +66,7 @@ describe("TemplatePersistence", () => {
           plainText: "Welcome! Thanks for signing up.",
         },
         templateType: "MARKETING" as Template["templateType"],
+        quickEmail: false,
       };
 
       const created = await persistence.create(templateData);
@@ -85,6 +87,7 @@ describe("TemplatePersistence", () => {
           plainText: "Click here to reset your password",
         },
         templateType: "TRANSACTIONAL" as Template["templateType"],
+        quickEmail: false,
       };
 
       const created = await persistence.create(templateData);
