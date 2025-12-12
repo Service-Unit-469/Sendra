@@ -149,6 +149,7 @@ describe("AppConfig", () => {
 			expect(config).toEqual({
 				level: "info",
 				pretty: false,
+				metricsEnabled: false,
 			});
 		});
 
@@ -221,6 +222,7 @@ describe("AppConfig", () => {
 			expect(config).toEqual({
 				level: "debug",
 				pretty: true,
+				metricsEnabled: false,
 			});
 		});
 	});

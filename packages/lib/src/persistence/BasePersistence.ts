@@ -6,7 +6,7 @@ import { type MetricsLogger, Unit } from "aws-embedded-metrics";
 import { uuidv7 } from "uuidv7";
 import type { ZodType } from "zod";
 import { logMethodReturningPromise, rootLogger } from "../logging";
-import { getMetricsLogger, withMetrics } from "../metrics";
+import { withMetrics } from "../metrics";
 import { getPersistenceConfig } from "../services/AppConfig";
 import { HttpException } from "./utils/HttpException";
 
@@ -101,7 +101,6 @@ export abstract class BasePersistence<T extends BaseItem> {
     module: "BasePersistence",
     type: this.type,
   });
-  private readonly metricsLogger: MetricsLogger;
   public readonly docClient: DynamoDBDocumentClient;
   public readonly tableName: string;
 
@@ -112,9 +111,6 @@ export abstract class BasePersistence<T extends BaseItem> {
     const config = getPersistenceConfig();
     this.docClient = DynamoDBDocumentClient.from(config.client);
     this.tableName = config.tableName;
-    this.metricsLogger = getMetricsLogger("Persistence", {
-      ObjectType: this.type,
-    });
   }
 
   abstract embed(items: T[], embed?: Embeddable[], limit?: number): Promise<EmbeddedObject<T>[]>;
@@ -130,11 +126,10 @@ export abstract class BasePersistence<T extends BaseItem> {
 
   @logMethodReturningPromise("BasePersistence")
   async batchDelete(ids: string[]): Promise<void> {
-    this.metricsLogger.putMetric("BatchDeleteCount", ids.length, Unit.Count);
-
     await withMetrics(
-      async () =>
-        this.docClient.send(
+      async (metricsLogger: MetricsLogger) => {
+        metricsLogger.putMetric("BatchDeleteCount", ids.length, Unit.Count);
+        return this.docClient.send(
           new BatchWriteCommand({
             RequestItems: {
               [this.tableName]: ids.map((id) => ({
@@ -142,7 +137,8 @@ export abstract class BasePersistence<T extends BaseItem> {
               })),
             },
           }),
-        ),
+        );
+      },
       "Persistence/BatchDelete",
       {
         ObjectType: this.type,
@@ -152,9 +148,9 @@ export abstract class BasePersistence<T extends BaseItem> {
 
   @logMethodReturningPromise("BasePersistence")
   async batchGet(ids: readonly string[]): Promise<T[]> {
-    this.metricsLogger.putMetric("BatchGetCount", ids.length, Unit.Count);
     return withMetrics(
-      async () => {
+      async (metricsLogger: MetricsLogger) => {
+        metricsLogger.putMetric("BatchGetCount", ids.length, Unit.Count);
         if (ids.length === 0) {
           return [];
         }

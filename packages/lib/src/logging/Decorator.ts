@@ -71,7 +71,7 @@ export function logMethodReturningPromise<TReturn, TFunctionParameters>(classNam
     function replacementMethod(this: any, ...args: any[]) {
       const logger = getLogger(className, methodName, args, options);
       const start = Date.now();
-      const _timer = logger.info(`${methodName}.start`);
+      logger.info(`${methodName}.start`);
       const result = target.call(this, ...args);
 
       return new Promise<TReturn>((resolve, reject) => {

@@ -3,6 +3,7 @@ import type { Action, Contact, Email, PublicProject } from "@sendra/shared";
 import Handlebars from "handlebars";
 import { createMimeMessage } from "mail-mime-builder";
 import { rootLogger } from "../logging/Logger";
+import { withMetrics } from "../metrics";
 import { getEmailConfig } from "./AppConfig";
 
 const logger = rootLogger.child({
@@ -90,14 +91,19 @@ export class EmailService {
       message.headers.set(key, value);
     });
 
-    const response = await ses.sendRawEmail({
-      Destinations: to,
-      ConfigurationSetName: emailConfig.emailConfigurationSetName,
-      RawMessage: {
-        Data: new TextEncoder().encode(message.asRaw()),
-      },
-      Source: `${from.name} <${from.email}>`,
-    });
+    const response = await withMetrics(
+      () =>
+        ses.sendRawEmail({
+          Destinations: to,
+          ConfigurationSetName: emailConfig.emailConfigurationSetName,
+          RawMessage: {
+            Data: new TextEncoder().encode(message.asRaw()),
+          },
+          Source: `${from.name} <${from.email}>`,
+        }),
+      "EmailService/Send",
+      {},
+    );
 
     if (!response.MessageId) {
       logger.error({ response }, "Could not send email");

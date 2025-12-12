@@ -45,10 +45,12 @@ const LogConfigSchema = z
   .object({
     LOG_LEVEL: z.enum(["debug", "info", "warn", "error"]).default("info"),
     LOG_PRETTY: z.enum(["true", "false"]).default("false"),
+    METRICS_ENABLED: z.enum(["true", "false"]).default("false"),
   })
   .transform((env) => ({
     level: env.LOG_LEVEL,
     pretty: env.LOG_PRETTY === "true",
+    metricsEnabled: env.METRICS_ENABLED === "true",
   }));
 export const getLogConfig = () => LogConfigSchema.parse(process.env);
 
