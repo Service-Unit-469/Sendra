@@ -78,6 +78,7 @@ describe("Projects Endpoint Contract Tests", () => {
         public: `second-public-${Date.now()}`,
         secret: `second-secret-${Date.now()}`,
         eventTypes: [],
+        colors: [],
       });
 
       const membershipPersistence = new MembershipPersistence();
@@ -841,9 +842,7 @@ describe("Projects Endpoint Contract Tests", () => {
         },
       });
 
-      // Note: May return 500 if there are cascade deletion constraints in DynamoDB
-      // This is acceptable for now as it's a database implementation detail
-      expect([200, 500]).toContain(response.status);
+      expect(response.status).toBe(200);
     });
 
     test("should return 404 when project does not exist", async () => {

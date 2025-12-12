@@ -106,13 +106,19 @@ export class AssetService {
     const s3Key = `${projectId}/${name}`;
     const id = this.s3KeyToId(s3Key);
 
+    let existingAsset: Asset | undefined;
     try {
-      const asset = await this.getAsset(projectId, id);
-      if (asset) {
-        throw new HttpException(409, "Asset with this name already exists");
+      existingAsset = await this.getAsset(projectId, id);
+    } catch (error) {
+      // Only catch 404 errors (asset not found) - re-throw other errors like 409 (already exists)
+      if (error instanceof HttpException && error.code === 404) {
+        // Asset does not exist, continue
+      } else {
+        throw error;
       }
-    } catch {
-      // Asset does not exist, continue
+    }
+    if (existingAsset) {
+      throw new HttpException(409, "Asset with this name already exists");
     }
 
     // Create pre-signed URL for upload with metadata

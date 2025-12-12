@@ -27,6 +27,7 @@ export const createTestSetup = async () => {
     public: `test-public-${Date.now()}`,
     secret: `test-secret-${Date.now()}`,
     eventTypes: ["user.signup", "user.login"],
+    colors: [],
   });
 
   const membershipPersistence = new MembershipPersistence();
@@ -71,6 +72,7 @@ export const createTestTemplate = async (projectId: string) => {
       plainText: "Header {{body}} Footer",
     },
     templateType: "MARKETING",
+    quickEmail: false,
   });
 };
 

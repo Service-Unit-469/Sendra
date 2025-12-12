@@ -407,8 +407,7 @@ describe("CampaignPersistence", () => {
         expect(campaign.recipients).toHaveLength(1);
       });
 
-      it("should require at least one recipient", async () => {
-        // Note: The schema doesn't explicitly enforce min length, but recipients is required
+      it("should support empty recipients array", async () => {
         const campaign = await persistence.create({
           project: TEST_PROJECT_ID,
           subject: "Empty Recipients Test",

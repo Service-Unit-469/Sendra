@@ -66,6 +66,8 @@ describe("AssetService", () => {
 
 	describe("generateUploadUrl", () => {
 		it("should generate upload URL for valid file", async () => {
+			// Mock getAsset to throw 404 (asset doesn't exist)
+			mockSend.mockRejectedValueOnce({ name: "NotFound" });
 			mockGetSignedUrl.mockResolvedValue("https://test-bucket.s3.amazonaws.com/presigned-url");
 
 			const result = await assetService.generateUploadUrl(TEST_PROJECT_ID, "test-image.png", 1024, "image/png");
@@ -100,6 +102,8 @@ describe("AssetService", () => {
 			const imageTypes = ["image/jpeg", "image/jpg", "image/png", "image/gif", "image/webp", "image/svg+xml"];
 
 			for (const mimeType of imageTypes) {
+				// Mock getAsset to throw 404 (asset doesn't exist) for each iteration
+				mockSend.mockRejectedValueOnce({ name: "NotFound" });
 				await expect(assetService.generateUploadUrl(TEST_PROJECT_ID, "test-image", 1024, mimeType)).resolves.toBeDefined();
 			}
 		});
@@ -118,25 +122,24 @@ describe("AssetService", () => {
 			];
 
 			for (const mimeType of documentTypes) {
+				// Mock getAsset to throw 404 (asset doesn't exist) for each iteration
+				mockSend.mockRejectedValueOnce({ name: "NotFound" });
 				await expect(assetService.generateUploadUrl(TEST_PROJECT_ID, "test-doc", 1024, mimeType)).resolves.toBeDefined();
 			}
 		});
 
-		// Note: There's a bug in AssetService where the catch block in generateUploadUrl
-		// catches all errors including HttpException, preventing the "asset already exists"
-		// check from working properly. This test is commented out until that bug is fixed.
-		// it("should throw error when asset with same name already exists", async () => {
-		// 	mockSend.mockResolvedValueOnce({
-		// 		ContentLength: 1024,
-		// 		LastModified: new Date(),
-		// 		ContentType: "image/png",
-		// 	});
-		// 	const error = await assetService
-		// 		.generateUploadUrl(TEST_PROJECT_ID, "existing-file.png", 1024, "image/png")
-		// 		.catch((e) => e);
-		// 	expect(error).toBeInstanceOf(HttpException);
-		// 	expect(error.message).toBe("Asset with this name already exists");
-		// });
+		it("should throw error when asset with same name already exists", async () => {
+			mockSend.mockResolvedValueOnce({
+				ContentLength: 1024,
+				LastModified: new Date(),
+				ContentType: "image/png",
+			});
+			const error = await assetService
+				.generateUploadUrl(TEST_PROJECT_ID, "existing-file.png", 1024, "image/png")
+				.catch((e) => e);
+			expect(error).toBeInstanceOf(HttpException);
+			expect(error.message).toBe("Asset with this name already exists");
+		});
 	});
 
 	describe("generateDownloadUrl", () => {
