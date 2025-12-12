@@ -5,7 +5,7 @@ const getCorrelationId = () => {
   let correlationId = sessionStorage.getItem("correlationId");
   if (!correlationId) {
     correlationId = randomUUID();
-    sessionStorage.setItem("correlationId", correlationId);
+    sessionStorage.setItem("correlationId", correlationId as string);
   }
   return correlationId;
 };

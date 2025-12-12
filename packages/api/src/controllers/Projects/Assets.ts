@@ -38,7 +38,6 @@ export const registerAssetsRoutes = (app: AppType) => {
     },
   );
 
-  // Get single asset
   app.openapi(
     {
       operationId: "getAsset",
@@ -71,7 +70,6 @@ export const registerAssetsRoutes = (app: AppType) => {
     },
   );
 
-  // Delete asset
   app.openapi(
     {
       operationId: "deleteAsset",
@@ -99,7 +97,6 @@ export const registerAssetsRoutes = (app: AppType) => {
     },
   );
 
-  // Custom route: Generate upload URL
   app.openapi(
     {
       operationId: "generateAssetUploadUrl",
@@ -145,87 +142,6 @@ export const registerAssetsRoutes = (app: AppType) => {
       const result = await assetService.generateUploadUrl(projectId, name, size, mimeType);
 
       return c.json(result, 200);
-    },
-  );
-
-  // Custom route: Get download URL
-  app.openapi(
-    {
-      operationId: "getAssetDownloadUrl",
-      tags: ["Assets"],
-      method: "get",
-      path: "/projects/{projectId}/assets/{id}/download-url",
-      middleware: [isAuthenticatedProjectMember],
-      ...BearerAuth,
-      request: {
-        params: UtilitySchemas.projectAndId,
-        query: z.object({
-          expiresIn: z.string().optional(),
-        }),
-      },
-      responses: {
-        200: {
-          description: "Pre-signed download URL generated",
-          content: {
-            "application/json": {
-              schema: z.object({
-                downloadUrl: z.string().url(),
-              }),
-            },
-          },
-        },
-        404: {
-          description: "Asset not found",
-        },
-      },
-    },
-    async (c) => {
-      const { projectId, id } = c.req.valid("param");
-
-      const expiresInString = c.req.query("expiresIn");
-      const expiresIn = expiresInString ? parseInt(expiresInString, 10) : 3600;
-
-      // Verify asset exists and belongs to project
-      await assetService.getAsset(projectId, id);
-      const downloadUrl = await assetService.generateDownloadUrl(projectId, id, expiresIn);
-
-      return c.json({ downloadUrl }, 200);
-    },
-  );
-
-  // Custom route: List assets by type
-  app.openapi(
-    {
-      operationId: "listAssetsByType",
-      tags: ["Assets"],
-      method: "get",
-      path: "/projects/{projectId}/assets/by-type/{assetType}",
-      middleware: [isAuthenticatedProjectMember],
-      ...BearerAuth,
-      request: {
-        params: UtilitySchemas.projectId.extend({
-          assetType: z.enum(["IMAGE", "ATTACHMENT"]),
-        }),
-      },
-      responses: {
-        200: {
-          description: "List of assets",
-          content: {
-            "application/json": {
-              schema: z.object({
-                assets: z.array(AssetSchema),
-              }),
-            },
-          },
-        },
-      },
-    },
-    async (c) => {
-      const { projectId, assetType } = c.req.valid("param");
-
-      const assets = await assetService.listAssetsByType(projectId, assetType as "IMAGE" | "ATTACHMENT");
-
-      return c.json({ assets }, 200);
     },
   );
 };
