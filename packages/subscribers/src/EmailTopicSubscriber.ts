@@ -183,7 +183,6 @@ const handleRecord = async (record: SNSEventRecord) => {
       } catch (e) {
         logger.error({ error: e, record }, "Failed to handle record");
         metricsLogger.putMetric("EmailEventProcessingError", 1, Unit.Count);
-        throw e;
       }
     },
     {
