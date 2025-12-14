@@ -3,7 +3,11 @@ import { Resource } from "sst";
 import { getRequestInfo } from "../logging";
 import { getLogConfig } from "../services/AppConfig";
 
-const getMetricsLogger = (namespace: string, dimensions: Record<string, string>) => {
+export type DimensionsType = {
+  Operation: string;
+} & Record<string, string>;
+
+const getMetricsLogger = (dimensions: DimensionsType) => {
   const logger = createMetricsLogger();
   let stage = "Local";
   try {
@@ -11,7 +15,7 @@ const getMetricsLogger = (namespace: string, dimensions: Record<string, string>)
   } catch {
     // we're running locally
   }
-  logger.setNamespace(`Sendra/${namespace}`);
+  logger.setNamespace("Sendra");
   logger.putDimensions({ ...dimensions, Stage: stage });
 
   const requestInfo = getRequestInfo();
@@ -20,8 +24,8 @@ const getMetricsLogger = (namespace: string, dimensions: Record<string, string>)
   return logger;
 };
 
-export const withMetrics = async <T>(fn: (metricsLogger: MetricsLogger) => Promise<T>, namespace: string, dimensions: Record<string, string>) => {
-  const logger = getMetricsLogger(namespace, dimensions);
+export const withMetrics = async <T>(fn: (metricsLogger: MetricsLogger) => Promise<T>, dimensions: DimensionsType) => {
+  const logger = getMetricsLogger(dimensions);
   const start = Date.now();
 
   try {
