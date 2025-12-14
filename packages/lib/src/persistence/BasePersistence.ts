@@ -128,6 +128,7 @@ export abstract class BasePersistence<T extends BaseItem> {
   async batchDelete(ids: string[]): Promise<void> {
     await withMetrics(
       async (metricsLogger: MetricsLogger) => {
+        metricsLogger.setProperty("ObjectType", this.type);
         metricsLogger.putMetric("BatchDeleteCount", ids.length, Unit.Count);
         return this.docClient.send(
           new BatchWriteCommand({
@@ -139,9 +140,8 @@ export abstract class BasePersistence<T extends BaseItem> {
           }),
         );
       },
-      "Persistence/BatchDelete",
       {
-        ObjectType: this.type,
+        Operation: "BatchDelete",
       },
     );
   }
@@ -150,6 +150,7 @@ export abstract class BasePersistence<T extends BaseItem> {
   async batchGet(ids: readonly string[]): Promise<T[]> {
     return withMetrics(
       async (metricsLogger: MetricsLogger) => {
+        metricsLogger.setProperty("ObjectType", this.type);
         metricsLogger.putMetric("BatchGetCount", ids.length, Unit.Count);
         if (ids.length === 0) {
           return [];
@@ -191,9 +192,8 @@ export abstract class BasePersistence<T extends BaseItem> {
 
         return allItems.map((i) => this.schema.parse(i));
       },
-      "Persistence/BatchGet",
       {
-        ObjectType: this.type,
+        Operation: "BatchGet",
       },
     );
   }
@@ -210,16 +210,17 @@ export abstract class BasePersistence<T extends BaseItem> {
     this.logger.debug({ newItem }, "Creating item");
 
     await withMetrics(
-      async () =>
-        this.docClient.send(
+      async (metricsLogger: MetricsLogger) => {
+        metricsLogger.setProperty("ObjectType", this.type);
+        return this.docClient.send(
           new PutCommand({
             TableName: this.tableName,
             Item: newItem,
           }),
-        ),
-      "Persistence/Create",
+        );
+      },
       {
-        ObjectType: this.type,
+        Operation: "Create",
       },
     );
     return this.schema.parse(newItem);
@@ -230,8 +231,9 @@ export abstract class BasePersistence<T extends BaseItem> {
     this.logger.debug({ id }, "Deleting item");
 
     await withMetrics(
-      async () =>
-        this.docClient.send(
+      async (metricsLogger: MetricsLogger) => {
+        metricsLogger.setProperty("ObjectType", this.type);
+        return this.docClient.send(
           new DeleteCommand({
             TableName: this.tableName,
             Key: {
@@ -239,10 +241,10 @@ export abstract class BasePersistence<T extends BaseItem> {
               type: this.type,
             },
           }),
-        ),
-      "Persistence/Delete",
+        );
+      },
       {
-        ObjectType: this.type,
+        Operation: "Delete",
       },
     );
   }
@@ -277,10 +279,16 @@ export abstract class BasePersistence<T extends BaseItem> {
       ExclusiveStartKey: cursor ? JSON.parse(Buffer.from(cursor, "base64").toString("ascii")) : undefined,
     } as QueryCommandInput;
     this.logger.debug(config, "Executing query");
-    const result = await withMetrics(async () => this.docClient.send(new QueryCommand(config)), "Persistence/FindBy", {
-      ObjectType: this.type,
-      IndexName: indexName,
-    });
+    const result = await withMetrics(
+      async (metricsLogger: MetricsLogger) => {
+        metricsLogger.setProperty("ObjectType", this.type);
+        return this.docClient.send(new QueryCommand(config));
+      },
+      {
+        Operation: "FindBy",
+        IndexName: indexName,
+      },
+    );
 
     const items =
       result.Items?.map((item) => unmarshall(item) as T)
@@ -346,8 +354,9 @@ export abstract class BasePersistence<T extends BaseItem> {
     const { embed } = options ?? {};
 
     const result = await withMetrics(
-      async () =>
-        this.docClient.send(
+      async (metricsLogger: MetricsLogger) => {
+        metricsLogger.setProperty("ObjectType", this.type);
+        return this.docClient.send(
           new GetCommand({
             TableName: this.tableName,
             Key: {
@@ -355,10 +364,10 @@ export abstract class BasePersistence<T extends BaseItem> {
               type: this.type,
             },
           }),
-        ),
-      "Persistence/Get",
+        );
+      },
       {
-        ObjectType: this.type,
+        Operation: "Get",
       },
     );
     if (!result.Item) {
@@ -393,9 +402,15 @@ export abstract class BasePersistence<T extends BaseItem> {
       ScanIndexForward: false,
     } as QueryCommandInput);
 
-    const result = await withMetrics(async () => this.docClient.send(command), "Persistence/List", {
-      ObjectType: this.type,
-    });
+    const result = await withMetrics(
+      async (metricsLogger: MetricsLogger) => {
+        metricsLogger.setProperty("ObjectType", this.type);
+        return this.docClient.send(command);
+      },
+      {
+        Operation: "List",
+      },
+    );
 
     const items =
       result.Items?.map((item) => unmarshall(item) as T)
@@ -445,8 +460,9 @@ export abstract class BasePersistence<T extends BaseItem> {
     this.logger.debug({ item }, "Putting item");
     const parsedItem = this.schema.parse(item);
     await withMetrics(
-      async () =>
-        this.docClient.send(
+      async (metricsLogger: MetricsLogger) => {
+        metricsLogger.setProperty("ObjectType", this.type);
+        return this.docClient.send(
           new PutCommand({
             TableName: this.tableName,
             Item: this.projectItem({
@@ -456,10 +472,10 @@ export abstract class BasePersistence<T extends BaseItem> {
             }),
             ConditionExpression: "attribute_exists(id)",
           }),
-        ),
-      "Persistence/Put",
+        );
+      },
       {
-        ObjectType: this.type,
+        Operation: "Put",
       },
     );
     return parsedItem;

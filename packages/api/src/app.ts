@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { OpenAPIHono } from "@hono/zod-openapi";
 import { rootLogger, setRequestInfo, withMetrics } from "@sendra/lib";
+import { Unit } from "aws-embedded-metrics";
 import type { Context, Next } from "hono";
 import { handle } from "hono/aws-lambda";
 import { bodyLimit } from "hono/body-limit";
@@ -57,12 +58,20 @@ app.use(
 app.use("*", (c: Context, next: Next) => {
   const promise = new Promise<void>((resolve) =>
     withMetrics(
-      async () => {
+      async (metricsLogger) => {
+        metricsLogger.setProperty("Method", c.req.method);
+        metricsLogger.setProperty("Path", c.req.path);
         await next();
         resolve();
+        if (c.res.status >= 200 && c.res.status < 300) {
+          metricsLogger.putMetric("ApiSuccess", 1, Unit.Count);
+        } else {
+          metricsLogger.putMetric("ApiStatusCode", c.res.status, Unit.Count);
+          metricsLogger.putMetric("ApiError", 1, Unit.Count);
+        }
       },
-      "Api",
       {
+        Operation: "ApiRequest",
         Method: c.req.method,
       },
     ),

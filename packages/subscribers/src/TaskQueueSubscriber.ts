@@ -29,8 +29,8 @@ const handleRecord = async (record: SQSRecord) => {
         await queueCampaign(task, record.messageId);
       }
     },
-    "TaskQueueSubscriber",
     {
+      Operation: "HandleQueueTask",
       TaskType: task.type,
     },
   );

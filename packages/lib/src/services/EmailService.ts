@@ -101,8 +101,9 @@ export class EmailService {
           },
           Source: `${from.name} <${from.email}>`,
         }),
-      "EmailService/Send",
-      {},
+      {
+        Operation: "Send",
+      },
     );
 
     if (!response.MessageId) {
