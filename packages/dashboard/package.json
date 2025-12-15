@@ -24,7 +24,7 @@
 		"@hookform/resolvers": "^5.2.2",
 		"@measured/puck": "^0.20.2",
 		"@react-email/components": "^0.5.7",
-		"@react-email/render": "^1.4.0",
+		"@react-email/render": "^2.0.0",
 		"@rjsf/core": "^6.1.2",
 		"@rjsf/utils": "^6.1.2",
 		"@rjsf/validator-ajv8": "^6.1.2",
