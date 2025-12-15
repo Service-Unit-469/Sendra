@@ -80,7 +80,7 @@
 		"@types/react-window": "^1",
 		"@types/to-json-schema": "^0.2.4",
 		"@types/uuid": "^10.0.0",
-		"@vitejs/plugin-react": "^4.3.0",
+		"@vitejs/plugin-react": "^5.1.2",
 		"autoprefixer": "^10.4.19",
 		"dotenv": "^17.2.3",
 		"jest-axe": "^10.0.0",
