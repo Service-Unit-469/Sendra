@@ -231,7 +231,7 @@ export class AuthService {
     logger.info({ email }, "Signing up user");
 
     const memberships = await AuthService.checkForMemberships(email);
-    if (authConfig.disableSignups && memberships.length === 0) {
+    if (authConfig.disableSignups && memberships.length > 0) {
       logger.info({ email }, "Signups are currently disabled");
       throw new HttpException(400, "Signups are currently disabled");
     }

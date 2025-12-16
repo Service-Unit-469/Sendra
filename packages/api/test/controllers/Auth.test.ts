@@ -1,4 +1,4 @@
-import { UserPersistence } from "@sendra/lib";
+import { MembershipPersistence, UserPersistence } from "@sendra/lib";
 import { startupDynamoDB, stopDynamoDB } from "@sendra/test";
 import { afterAll, beforeAll, beforeEach, describe, expect, test, vi } from "vitest";
 import { app } from "../../src/app";
@@ -25,6 +25,8 @@ describe("Auth Endpoint Contract Tests", () => {
   beforeEach(async () => {
     // Clear mocks between tests
     vi.clearAllMocks();
+    // Reset DISABLE_SIGNUPS to default
+    delete process.env.DISABLE_SIGNUPS;
   });
 
   describe("POST /auth/signup", () => {
@@ -143,6 +145,61 @@ describe("Auth Endpoint Contract Tests", () => {
       });
 
       expect(response.status).toBe(400);
+    });
+
+    test("should return 400 when signups are disabled and user has memberships", async () => {
+      process.env.DISABLE_SIGNUPS = "true";
+      const testEmail = "invited@example.com";
+      const testPassword = "password123";
+
+      // Create a membership for the email (simulating an invitation)
+      const membershipPersistence = new MembershipPersistence();
+      await membershipPersistence.create({
+        email: testEmail,
+        user: "NEW_USER",
+        project: "test-project-id",
+        role: "MEMBER",
+      });
+
+      const response = await app.request("/api/v1/auth/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: testEmail,
+          password: testPassword,
+        }),
+      });
+
+      expect(response.status).toBe(400);
+      const data = await response.json();
+      expect(data.detail).toBe("Signups are currently disabled");
+    });
+
+    test("should allow signup when signups are disabled but user has no memberships", async () => {
+      process.env.DISABLE_SIGNUPS = "true";
+      const testEmail = "public@example.com";
+      const testPassword = "password123";
+
+      const response = await app.request("/api/v1/auth/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: testEmail,
+          password: testPassword,
+        }),
+      });
+
+      expect(response.status).toBe(200);
+      const data = await response.json();
+      expect(data).toMatchObject({
+        id: expect.any(String),
+        email: testEmail,
+        enabled: false,
+      });
     });
   });
 
