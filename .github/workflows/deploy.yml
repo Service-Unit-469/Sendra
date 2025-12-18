@@ -69,7 +69,9 @@ jobs:
       - name: Deploy app
         run: npm run deploy
         env:
+          ALLOW_DUPLICATE_PROJECT_IDENTITIES: ${{ secrets.ALLOW_DUPLICATE_PROJECT_IDENTITIES }}
           APP_URL: ${{ secrets.APP_URL }}
           DEFAULT_EMAIL: ${{ secrets.DEFAULT_EMAIL }}
-          DISABLE_SIGNUPS: true
+          DISABLE_SIGNUPS: ${{ secrets.DISABLE_SIGNUPS }}
+          LOG_LEVEL: ${{ secrets.LOG_LEVEL }}
           METRICS_ENABLED: true

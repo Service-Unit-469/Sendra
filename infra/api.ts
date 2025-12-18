@@ -21,8 +21,8 @@ export const api = new sst.aws.Function("ApiFn", {
   environment: {
     EMAIL_CONFIGURATION_SET_NAME: `SendraConfigurationSet-${$app.stage}`,
     ASSETS_BUCKET_NAME: assetsBucket.name,
-    APP_URL: router.url,
     ...passEnvironmentVariables([
+      "ALLOW_DUPLICATE_PROJECT_IDENTITIES",
       "AUTH_ISSUER",
       "AUTH_TTL_PUBLIC",
       "AUTH_TTL_SECRET",
@@ -33,6 +33,7 @@ export const api = new sst.aws.Function("ApiFn", {
       "LOG_PRETTY",
       "METRICS_ENABLED",
     ]),
+    APP_URL: process.env.APP_URL ?? router.url,
   },
   nodejs: {
     loader: {

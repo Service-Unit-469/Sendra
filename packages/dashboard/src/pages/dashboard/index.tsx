@@ -1,8 +1,9 @@
 import { lazy } from "react";
 import { Route, Routes } from "react-router-dom";
 import FullscreenLoader from "../../components/Utility/FullscreenLoader/FullscreenLoader";
+import Redirect from "../../components/Utility/Redirect/Redirect";
 import { Dashboard } from "../../layouts";
-import { useActiveProject } from "../../lib/hooks/projects";
+import { useActiveProject, useProjects } from "../../lib/hooks/projects";
 import NotFound from "../NotFound";
 
 const ActionsPage = lazy(() => import("./actions/index"));
@@ -35,6 +36,12 @@ const EditTemplatePage = lazy(() => import("./templates/Edit"));
  */
 export default function Index() {
   const activeProject = useActiveProject();
+  const { data: projects } = useProjects();
+
+  // the user has no projects, redirect to the new project page
+  if (typeof projects !== "undefined" && projects.length === 0) {
+    return <Redirect to="/new" />;
+  }
 
   if (!activeProject) {
     return <FullscreenLoader />;
