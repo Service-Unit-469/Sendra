@@ -64,7 +64,7 @@
 		"framer-motion": "^12.23.24",
 		"html-to-text": "^9.0.5",
 		"jotai": "^2.15.0",
-		"lucide-react": "^0.552.0",
+		"lucide-react": "^0.562.0",
 		"nprogress": "^0.2.0",
 		"p-map": "^7.0.4",
 		"papaparse": "^5.5.3",
