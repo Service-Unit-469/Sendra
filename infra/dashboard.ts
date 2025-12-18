@@ -1,5 +1,5 @@
-import { api } from "./api";
 import { router } from "./route";
+import { getApiUrl } from "./util";
 
 export const dashboard = new sst.aws.StaticSite("Dashboard", {
   path: "packages/dashboard",
@@ -9,10 +9,10 @@ export const dashboard = new sst.aws.StaticSite("Dashboard", {
   },
   router: {
     instance: router,
-    path: '/dashboard'
+    path: "/dashboard",
   },
   environment: {
     VITE_AWS_REGION: "us-east-2",
-    VITE_API_URI: api.url,
+    VITE_API_URI: getApiUrl(),
   },
 });
