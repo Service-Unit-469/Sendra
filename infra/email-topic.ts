@@ -2,6 +2,7 @@
 
 import { dynamo } from "./dynamo";
 import { passEnvironmentVariables } from "./env";
+import { router } from "./route";
 
 export const emailTopic = new sst.aws.SnsTopic("EmailTopic");
 
@@ -15,12 +16,12 @@ emailTopic.subscribe("EmailTopicSubscriber", {
   environment: {
     EMAIL_CONFIGURATION_SET_NAME: `SendraConfigurationSet-${$app.stage}`,
     ...passEnvironmentVariables([
-      "APP_URL",
       "DEFAULT_EMAIL",
       "LOG_LEVEL",
       "LOG_PRETTY",
       "METRICS_ENABLED",
     ]),
+    APP_URL: process.env.APP_URL ?? router.url,
   },
 });
 

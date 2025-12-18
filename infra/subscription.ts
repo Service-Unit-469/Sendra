@@ -1,5 +1,6 @@
-import { api } from "./api";
 import { router } from "./route";
+import { getApiUrl } from "./util";
+
 
 export const subscription = new sst.aws.StaticSite("Subscription", {
   path: "packages/subscription",
@@ -12,6 +13,6 @@ export const subscription = new sst.aws.StaticSite("Subscription", {
     path: '/subscription'
   },
   environment: {
-    VITE_API_URI: api.url,
+    VITE_API_URI: getApiUrl(),
   },
 });
