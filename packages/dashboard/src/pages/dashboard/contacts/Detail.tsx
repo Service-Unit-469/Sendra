@@ -1,12 +1,12 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { Email } from "@sendra/shared";
+import type { Email, Event } from "@sendra/shared";
 import { EventSchemas } from "@sendra/shared";
 import dayjs from "dayjs";
 import DOMPurify from "dompurify";
 import { Mail, TerminalSquare, Trash, Workflow } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import Badge from "../../../components/Badge/Badge";
 import { MenuButton } from "../../../components/Buttons/MenuButton";
@@ -20,10 +20,55 @@ import { useContact } from "../../../lib/hooks/contacts";
 import { useCurrentProject } from "../../../lib/hooks/projects";
 import { network } from "../../../lib/network";
 
+type JourneyItemProps = {
+  icon: React.ReactNode;
+  title: string;
+  item: Email | Event;
+  detail: React.ReactNode;
+  selectedItemId: string | null;
+  supportsExpansion?: boolean;
+  setSelectedItemId: (id: string | null) => void;
+};
+
+const LabeledItem = ({ label, value }: { label: string; value: React.ReactNode }) => (
+  <div className="flex items-center gap-2">
+    <span className="font-semibold text-neutral-700 w-20">{label}</span>
+    <span className="text-neutral-800">{value}</span>
+  </div>
+);
+
+const JourneyItem = ({ icon, title, item, detail, selectedItemId, supportsExpansion = true, setSelectedItemId }: JourneyItemProps) => {
+  const expanded = selectedItemId === item.id;
+  return (
+    <li key={item.id} className="mb-8">
+      <div className="relative flex space-x-3">
+        <div>
+          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-neutral-100 text-neutral-800 ring-8 ring-white">{icon}</span>
+        </div>
+        <div className="flex min-w-0 flex-1 justify-between space-x-4 pt-1.5">
+          <div className="relative">
+            <p className={`text-sm text-neutral-500 ${supportsExpansion ? "cursor-pointer" : ""}`} onClick={() => supportsExpansion && setSelectedItemId(expanded ? null : item.id)}>
+              {title}
+            </p>
+          </div>
+          <div className="whitespace-nowrap text-right text-sm text-neutral-500">
+            <time dateTime={dayjs(item.createdAt).format("YYYY-MM-DD")}>{dayjs().to(item.createdAt)}</time>
+          </div>
+        </div>
+      </div>
+      {expanded && (
+        <div className="mt-4 mb-2 ml-10 rounded-sm border border-neutral-200 bg-neutral-50 p-4 text-sm">
+          <div className="space-y-4">{detail}</div>
+        </div>
+      )}
+    </li>
+  );
+};
+
 export default function ContactDetailPage() {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const [selectedEmail, setSelectedEmail] = useState<Email | null>(null);
+  const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
   const [eventModal, setEventModal] = useState(false);
   const project = useCurrentProject();
   const { data: contact, mutate } = useContact(id ?? "");
@@ -144,85 +189,67 @@ export default function ContactDetailPage() {
             <ul className="-mb-8">
               {[...contact._embed.events, ...contact._embed.emails]
                 .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-                .map((t, index) => {
+                .map((t) => {
                   if ("messageId" in t) {
-                    const email = t as Email;
-                    const expanded = selectedEmail?.id === email.id;
-
                     return (
-                      <li key={email.id} className="mb-8">
-                        {contact._embed.events.length + contact._embed.emails.length - 1 !== index && <span className="absolute left-4 top-4 -ml-px h-full w-0.5 bg-neutral-200" aria-hidden="true" />}
-                        <div className="relative flex space-x-3">
-                          <div>
-                            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-neutral-100 text-neutral-800 ring-8 ring-white">
-                              <Mail size={18} />
-                            </span>
-                          </div>
-                          <div className="flex min-w-0 flex-1 justify-between space-x-4 pt-1.5">
-                            <div className="relative">
-                              <p className="text-sm text-neutral-500 cursor-pointer" onClick={() => setSelectedEmail(expanded ? null : email)}>
-                                Email "{email.subject}" delivered
-                              </p>
-                            </div>
-                            <div className="whitespace-nowrap text-right text-sm text-neutral-500">
-                              <time dateTime={dayjs(t.createdAt).format("YYYY-MM-DD")}>{dayjs().to(t.createdAt)}</time>
-                            </div>
-                          </div>
-                        </div>
-                        {/* Expanded panel for all screen sizes */}
-                        {expanded && (
-                          <div className="mt-4 mb-2 ml-10 rounded-sm border border-neutral-200 bg-neutral-50 p-4 text-sm">
-                            <div className="space-y-4">
-                              <div className="flex items-center gap-2">
-                                <span className="font-semibold text-neutral-700 w-20">Status</span>
+                      <JourneyItem
+                        key={t.id}
+                        icon={<Mail size={18} />}
+                        selectedItemId={selectedItemId}
+                        setSelectedItemId={setSelectedItemId}
+                        title={`Email "${t.subject}" delivered`}
+                        item={t}
+                        detail={
+                          <>
+                            <LabeledItem
+                              label="Status"
+                              value={
                                 <Badge type="info">
-                                  <span className={"capitalize"}>{email.status.toLowerCase()}</span>
+                                  <span className={"capitalize"}>{t.status.toLowerCase()}</span>
                                 </Badge>
-                              </div>
-                              <div className="flex items-center gap-2">
-                                <span className="font-semibold text-neutral-700 w-20">Sent</span>
-                                <span className="text-neutral-800">{dayjs(email.createdAt).format("YYYY-MM-DD HH:mm")}</span>
-                              </div>
-                              <div>
-                                <span className="font-semibold text-neutral-700 block mb-1">Body</span>
+                              }
+                            />
+                            <LabeledItem label="Sent" value={dayjs(t.createdAt).format("YYYY-MM-DD HH:mm")} />
+                            <LabeledItem
+                              label="Body"
+                              value={
                                 <div
                                   // biome-ignore lint/security/noDangerouslySetInnerHtml: Content is sanitized with DOMPurify
-                                  dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(email.body.html) }}
-                                  className="rounded-sm bg-white p-3 text-neutral-800 whitespace-pre-line max-h-64 overflow-y-auto"
+                                  dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(t.body.html) }}
+                                  className="rounded-sm bg-white p-3 text-neutral-800 whitespace-pre-line max-h-64 overflow-y-auto w-full"
                                 />
-                              </div>
-                            </div>
-                          </div>
-                        )}
-                      </li>
+                              }
+                            />
+                          </>
+                        }
+                      />
                     );
                   }
-
                   if ("eventType" in t) {
                     return (
-                      <li className="mb-8" key={t.id}>
-                        <div className="relative pb-8">
-                          {contact._embed.events.length + contact._embed.emails.length - 1 !== index && (
-                            <span className="absolute left-4 top-4 -ml-px h-full w-0.5 bg-neutral-200" aria-hidden="true" />
-                          )}
-
-                          <div className="relative flex space-x-3">
-                            <div>
-                              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-neutral-100 text-neutral-800 ring-8 ring-white">
-                                <Workflow size={18} />
-                              </span>
-                            </div>
-                            <div className="flex min-w-0 flex-1 justify-between space-x-4 pt-1.5">
-                              <div>
-                                <p className="text-sm text-neutral-500">{t.eventType} triggered</p>
-                              </div>
-                              <div className="whitespace-nowrap text-right text-sm text-neutral-500">
-                                <time dateTime={dayjs(t.createdAt).format("YYYY-MM-DD")}>{dayjs().to(t.createdAt)}</time>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </li>
+                      <JourneyItem
+                        key={t.id}
+                        icon={<Workflow size={18} />}
+                        title={`${t.eventType} triggered`}
+                        item={t}
+                        detail={
+                          <>
+                            {t.relationType && (
+                              <LabeledItem
+                                label="Related"
+                                value={t.relationType === "ACTION" ? <Link to={`/actions/${t.relation}`}>Related Action</Link> : <Link to={`/campaigns/${t.relation}`}>Related Campaign</Link>}
+                              />
+                            )}
+                            {t.data &&
+                              Object.entries(t.data).map(([key, value]) => (
+                                <LabeledItem key={key} label={key} value={typeof value === "object" && value !== null ? JSON.stringify(value, null, 2) : String(value ?? "")} />
+                              ))}
+                          </>
+                        }
+                        selectedItemId={selectedItemId}
+                        supportsExpansion={Boolean(t.relationType || (t.data && Object.keys(t.data).length > 0))}
+                        setSelectedItemId={setSelectedItemId}
+                      />
                     );
                   }
                   return null;
