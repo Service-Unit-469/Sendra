@@ -9,6 +9,27 @@ export const taskQueue = new sst.aws.Queue("TaskQueue", {
   visibilityTimeout: "15 minutes",
 });
 
+const wait = sst.aws.StepFunctions.wait({
+  name: "Wait",
+  time: "{% $states.input.delaySeconds %}",
+});
+
+const queueTask = sst.aws.StepFunctions.sqsSendMessage({
+  name: "QueueTask",
+  queue: taskQueue,
+  messageBody: "{% $states.input.task %}",
+});
+
+export const delayedTaskStateMachine = new sst.aws.StepFunctions(
+  "DelayedTaskStateMachine",
+  {
+    definition: wait.next(queueTask),
+    logging: {
+      retention: "1 week",
+    },
+  }
+);
+
 taskQueue.subscribe(
   {
     handler: "packages/subscribers/src/TaskQueueSubscriber.handler",
@@ -16,7 +37,7 @@ taskQueue.subscribe(
     logging: {
       retention: "1 week",
     },
-    link: [dynamo, taskQueue],
+    link: [dynamo, taskQueue, delayedTaskStateMachine],
     environment: {
       EMAIL_CONFIGURATION_SET_NAME: `SendraConfigurationSet-${$app.stage}`,
       ...passEnvironmentVariables([
@@ -37,27 +58,6 @@ taskQueue.subscribe(
   {
     batch: {
       partialResponses: true,
-    },
-  }
-);
-
-const wait = sst.aws.StepFunctions.wait({
-  name: "Wait",
-  time: "{% $states.input.delaySeconds %}",
-});
-
-const queueTask = sst.aws.StepFunctions.sqsSendMessage({
-  name: "QueueTask",
-  queue: taskQueue,
-  messageBody: "{% $states.input.task %}",
-});
-
-export const delayedTaskStateMachine = new sst.aws.StepFunctions(
-  "DelayedTaskStateMachine",
-  {
-    definition: wait.next(queueTask),
-    logging: {
-      retention: "1 week",
     },
   }
 );
