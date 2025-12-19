@@ -1,12 +1,13 @@
 import type { CustomField } from "@measured/puck";
 import { Color } from "@tiptap/extension-color";
+import Image from "@tiptap/extension-image";
 import Link from "@tiptap/extension-link";
 import TextAlign from "@tiptap/extension-text-align";
 import { TextStyle } from "@tiptap/extension-text-style";
 import Underline from "@tiptap/extension-underline";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import { AlignCenter, AlignJustify, AlignLeft, AlignRight, Bold, Code, Italic, Link2, Link2Off, List, ListOrderedIcon, PaintBucket, RemoveFormatting } from "lucide-react";
+import { AlignCenter, AlignJustify, AlignLeft, AlignRight, Bold, Code, Image as ImageIcon, Italic, Link2, Link2Off, List, ListOrderedIcon, PaintBucket, RemoveFormatting } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useCurrentProject } from "../../../lib/hooks/projects";
 
@@ -76,9 +77,19 @@ export const RichTextEditorField: React.FC<RichTextEditorFieldProps> = ({ value 
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [showSourceCode, setShowSourceCode] = useState(false);
   const [sourceCode, setSourceCode] = useState(value || "");
+  const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useClickOutside(colorPickerRef as React.RefObject<HTMLElement>, () => setShowColorPicker(false));
   const activeProject = useCurrentProject();
+
+  // Cleanup debounce timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (debounceTimeoutRef.current) {
+        clearTimeout(debounceTimeoutRef.current);
+      }
+    };
+  }, []);
 
   const editor = useEditor({
     immediatelyRender: false,
@@ -106,15 +117,30 @@ export const RichTextEditorField: React.FC<RichTextEditorFieldProps> = ({ value 
         },
       }),
       Underline,
+      Image.configure({
+        inline: true,
+        allowBase64: true,
+        HTMLAttributes: {
+          style: "width: 100%; height: auto;",
+        },
+      }),
     ],
     content: value || "",
     onUpdate: ({ editor }) => {
-      const html = editor.getHTML();
-      if (html === "<p></p>" || html === "") {
-        onChange("");
-      } else {
-        onChange(html);
+      // Clear any existing timeout
+      if (debounceTimeoutRef.current) {
+        clearTimeout(debounceTimeoutRef.current);
       }
+
+      // Set a new timeout to debounce the onChange call
+      debounceTimeoutRef.current = setTimeout(() => {
+        const html = editor.getHTML();
+        if (html === "<p></p>" || html === "") {
+          onChange("");
+        } else {
+          onChange(html);
+        }
+      }, 250); // 250ms debounce delay
     },
     editorProps: {
       attributes: {
@@ -140,6 +166,21 @@ export const RichTextEditorField: React.FC<RichTextEditorFieldProps> = ({ value 
 
   // Handle switching to source code mode
   const handleToggleSourceCode = () => {
+    // Flush any pending debounced updates before switching modes
+    if (debounceTimeoutRef.current) {
+      clearTimeout(debounceTimeoutRef.current);
+      debounceTimeoutRef.current = null;
+      // Immediately update with current editor content
+      if (editor) {
+        const html = editor.getHTML();
+        if (html === "<p></p>" || html === "") {
+          onChange("");
+        } else {
+          onChange(html);
+        }
+      }
+    }
+
     if (showSourceCode) {
       // Switching back to visual mode - update editor with source code
       const html = sourceCode.trim();
@@ -195,6 +236,14 @@ export const RichTextEditorField: React.FC<RichTextEditorFieldProps> = ({ value 
 
   const unsetLink = () => {
     editor?.chain().focus().unsetLink().run();
+  };
+
+  const insertImage = () => {
+    const url = window.prompt("Enter image URL:");
+    if (url) {
+      const alt = window.prompt("Enter image alt text (optional):") || "";
+      editor?.chain().focus().setImage({ src: url, alt }).run();
+    }
   };
 
   const clearFormatting = () => {
@@ -336,6 +385,13 @@ export const RichTextEditorField: React.FC<RichTextEditorFieldProps> = ({ value 
                   <Link2 size={16} />
                 </button>
               )}
+
+              <div className="w-px h-6 bg-zinc-300 mx-1" />
+
+              {/* Image */}
+              <button type="button" onClick={insertImage} className="p-2 rounded hover:bg-zinc-200" title="Insert Image">
+                <ImageIcon size={16} />
+              </button>
 
               <div className="w-px h-6 bg-zinc-300 mx-1" />
 

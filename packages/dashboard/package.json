@@ -51,6 +51,7 @@
 		"@tailwindcss/postcss": "^4.1.17",
 		"@tippyjs/react": "^4.2.6",
 		"@tiptap/extension-color": "^3.10.7",
+		"@tiptap/extension-image": "^3.13.0",
 		"@tiptap/extension-link": "^3.10.7",
 		"@tiptap/extension-list-item": "^3.11.1",
 		"@tiptap/extension-text-align": "^3.11.0",
