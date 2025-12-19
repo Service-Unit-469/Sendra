@@ -816,6 +816,210 @@ describe("Events Endpoint Contract Tests", () => {
     });
   });
 
+  describe("GET /projects/{projectId}/events/{eventId}", () => {
+    test("should successfully get an event by ID", async () => {
+      const { project, token } = await createTestSetup();
+      const contact = await createTestContact(project.id);
+      const event = await createTestEvent(project.id, contact.id);
+
+      const response = await app.request(`/api/v1/projects/${project.id}/events/${event.id}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      expect(response.status).toBe(200);
+
+      const data = await response.json();
+      expect(data).toMatchObject({
+        id: event.id,
+        eventType: "user.signup",
+        contact: contact.id,
+        project: project.id,
+        createdAt: expect.any(String),
+        updatedAt: expect.any(String),
+      });
+    });
+
+    test("should get an event with embedded contact", async () => {
+      const { project, token } = await createTestSetup();
+      const contact = await createTestContact(project.id);
+      const event = await createTestEvent(project.id, contact.id);
+
+      const response = await app.request(`/api/v1/projects/${project.id}/events/${event.id}?embed=contact`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      expect(response.status).toBe(200);
+
+      const data = await response.json();
+      expect(data).toHaveProperty("_embed");
+      expect(data._embed).toHaveProperty("contact");
+      expect(data._embed.contact).toMatchObject({
+        id: contact.id,
+        email: contact.email,
+        project: project.id,
+        createdAt: expect.any(String),
+        updatedAt: expect.any(String),
+      });
+    });
+
+    test("should return event with data field when present", async () => {
+      const { project, token } = await createTestSetup();
+      const contact = await createTestContact(project.id);
+      
+      const eventPersistence = new EventPersistence(project.id);
+      const event = await eventPersistence.create({
+        project: project.id,
+        eventType: "user.signup",
+        contact: contact.id,
+        data: {
+          firstName: "John",
+          lastName: "Doe",
+          age: 30,
+        },
+      });
+
+      const response = await app.request(`/api/v1/projects/${project.id}/events/${event.id}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      expect(response.status).toBe(200);
+
+      const data = await response.json();
+      expect(data.data).toMatchObject({
+        firstName: "John",
+        lastName: "Doe",
+        age: 30,
+      });
+    });
+
+    test("should return 404 when event does not exist", async () => {
+      const { project, token } = await createTestSetup();
+
+      const response = await app.request(`/api/v1/projects/${project.id}/events/non-existent-event-id`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      expect(response.status).toBe(404);
+    });
+
+    test("should return 404 when project does not exist", async () => {
+      const { token } = await createTestSetup();
+
+      const response = await app.request("/api/v1/projects/non-existent-project/events/some-event-id", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      expect(response.status).toBe(404);
+    });
+
+    test("should return 401 when no authentication token provided", async () => {
+      const { project } = await createTestSetup();
+      const contact = await createTestContact(project.id);
+      const event = await createTestEvent(project.id, contact.id);
+
+      const response = await app.request(`/api/v1/projects/${project.id}/events/${event.id}`, {
+        method: "GET",
+      });
+
+      expect(response.status).toBe(401);
+    });
+
+    test("should return 401 with invalid token", async () => {
+      const { project } = await createTestSetup();
+      const contact = await createTestContact(project.id);
+      const event = await createTestEvent(project.id, contact.id);
+
+      const response = await app.request(`/api/v1/projects/${project.id}/events/${event.id}`, {
+        method: "GET",
+        headers: {
+          Authorization: "Bearer invalid-token",
+        },
+      });
+
+      expect(response.status).toBe(401);
+    });
+
+    test("should allow access with project secret key", async () => {
+      const { project } = await createTestSetup();
+      const contact = await createTestContact(project.id);
+      const event = await createTestEvent(project.id, contact.id);
+      const secretToken = AuthService.createProjectToken(project.secret, "secret", project.id);
+
+      const response = await app.request(`/api/v1/projects/${project.id}/events/${event.id}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${secretToken}`,
+        },
+      });
+
+      expect(response.status).toBe(200);
+
+      const data = await response.json();
+      expect(data.id).toBe(event.id);
+    });
+
+    test("should allow access with project public key", async () => {
+      const { project } = await createTestSetup();
+      const contact = await createTestContact(project.id);
+      const event = await createTestEvent(project.id, contact.id);
+      const publicToken = AuthService.createProjectToken(project.public, "public", project.id);
+
+      const response = await app.request(`/api/v1/projects/${project.id}/events/${event.id}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${publicToken}`,
+        },
+      });
+
+      expect(response.status).toBe(200);
+
+      const data = await response.json();
+      expect(data.id).toBe(event.id);
+    });
+
+    test("should return event with relationType and relation when present", async () => {
+      const { project, token } = await createTestSetup();
+      const contact = await createTestContact(project.id);
+      
+      const eventPersistence = new EventPersistence(project.id);
+      const event = await eventPersistence.create({
+        project: project.id,
+        eventType: "action.triggered",
+        contact: contact.id,
+        relationType: "ACTION",
+        relation: "some-action-id",
+      });
+
+      const response = await app.request(`/api/v1/projects/${project.id}/events/${event.id}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      expect(response.status).toBe(200);
+
+      const data = await response.json();
+      expect(data.relationType).toBe("ACTION");
+      expect(data.relation).toBe("some-action-id");
+    });
+  });
+
   describe("POST /projects/{projectId}/track", () => {
     test("should successfully track a new event", async () => {
       const { project, token } = await createTestSetup();

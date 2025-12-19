@@ -6,7 +6,7 @@ import DOMPurify from "dompurify";
 import { Mail, TerminalSquare, Trash, Workflow } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import Badge from "../../../components/Badge/Badge";
 import { MenuButton } from "../../../components/Buttons/MenuButton";
@@ -214,7 +214,9 @@ export default function ContactDetailPage() {
                             </div>
                             <div className="flex min-w-0 flex-1 justify-between space-x-4 pt-1.5">
                               <div>
-                                <p className="text-sm text-neutral-500">{t.eventType} triggered</p>
+                                <Link to={`/events/${t.id}`} className="text-sm text-neutral-500 hover:text-neutral-800 transition-colors cursor-pointer">
+                                  {t.eventType} triggered
+                                </Link>
                               </div>
                               <div className="whitespace-nowrap text-right text-sm text-neutral-500">
                                 <time dateTime={dayjs(t.createdAt).format("YYYY-MM-DD")}>{dayjs().to(t.createdAt)}</time>

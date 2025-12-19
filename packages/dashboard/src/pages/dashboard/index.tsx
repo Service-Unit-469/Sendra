@@ -18,6 +18,7 @@ const ViewCampaignPage = lazy(() => import("./campaigns/View"));
 const ContactDetailPage = lazy(() => import("./contacts/Detail"));
 const ContactsPage = lazy(() => import("./contacts/index"));
 const EventsPage = lazy(() => import("./events/index"));
+const EventDetailPage = lazy(() => import("./events/Detail"));
 const GroupsPage = lazy(() => import("./groups/index"));
 const EditGroupPage = lazy(() => import("./groups/Edit"));
 const HomePage = lazy(() => import("./Home"));
@@ -64,6 +65,7 @@ export default function Index() {
         <Route path="/contacts" element={<ContactsPage />} />
         <Route path="/contacts/:id" element={<ContactDetailPage />} />
         <Route path="/events" element={<EventsPage />} />
+        <Route path="/events/:id" element={<EventDetailPage />} />
         <Route path="/groups" element={<GroupsPage />} />
         <Route path="/groups/:id" element={<EditGroupPage />} />
         <Route path="/settings" element={<SettingsPage />} />
