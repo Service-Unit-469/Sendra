@@ -111,69 +111,6 @@ export const registerEventsRoutes = (app: AppType) => {
 
   app.openapi(
     createRoute({
-      tags: ["Event"],
-      operationId: "get-event-by-id",
-      method: "get",
-      path: "/projects/{projectId}/events/{eventId}",
-      request: {
-        params: z.object({
-          projectId: z.string(),
-          eventId: z.string(),
-        }),
-        query: z.object({
-          embed: z.enum(["contact"]).optional(),
-        }),
-      },
-      responses: {
-        200: {
-          description: "Get an event",
-          content: {
-            "application/json": {
-              schema: EventSchema.extend({
-                _embed: z
-                  .object({
-                    contact: z.any().optional(),
-                  })
-                  .optional(),
-              }),
-            },
-          },
-        },
-        400: getProblemResponseSchema(400),
-        401: getProblemResponseSchema(401),
-        404: getProblemResponseSchema(404),
-        403: getProblemResponseSchema(403),
-      },
-      ...BearerAuth,
-      middleware: [isAuthenticatedProjectMemberOrSecretKey],
-    }),
-    async (c) => {
-      const { projectId, eventId } = c.req.param();
-      const embedParam = c.req.query("embed");
-
-      const eventPersistence = new EventPersistence(projectId);
-      const event = await eventPersistence.get(eventId);
-
-      if (!event) {
-        throw new NotFound("event");
-      }
-
-      const result = { ...event } as Event & { _embed?: { contact?: Contact } };
-
-      if (embedParam === "contact" || (Array.isArray(embedParam) && embedParam.includes("contact"))) {
-        const contactPersistence = new ContactPersistence(projectId);
-        const contact = await contactPersistence.get(event.contact);
-        if (contact) {
-          result._embed = { contact };
-        }
-      }
-
-      return c.json(result, 200);
-    },
-  );
-
-  app.openapi(
-    createRoute({
       tags: ["Event", "Email"],
       operationId: "send-email",
       method: "post",
