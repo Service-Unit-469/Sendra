@@ -9,7 +9,7 @@ import { useEvent } from "../../../lib/hooks/events";
 export default function EventDetailPage() {
   const { id } = useParams<{ id: string }>();
   const { data: event } = useEvent(id ?? "");
-  
+
   if (!event) {
     return <FullscreenLoader />;
   }
@@ -62,9 +62,7 @@ export default function EventDetailPage() {
           )}
 
           {event.relationType && (
-            <div>
-             {event.relationType === "ACTION" ? <Link to={`/actions/${event.relation}`}>Related Action</Link> : <Link to={`/campaigns/${event.relation}`}>Related Campaign</Link>}
-            </div>
+            <div>{event.relationType === "ACTION" ? <Link to={`/actions/${event.relation}`}>Related Action</Link> : <Link to={`/campaigns/${event.relation}`}>Related Campaign</Link>}</div>
           )}
 
           {event.data && Object.keys(event.data).length > 0 ? (
