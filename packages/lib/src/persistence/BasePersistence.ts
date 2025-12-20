@@ -8,6 +8,7 @@ import type { ZodType } from "zod";
 import { logMethodReturningPromise, rootLogger } from "../logging";
 import { incrementRequestCapacityUsed, withMetrics } from "../metrics";
 import { getPersistenceConfig } from "../services/AppConfig";
+import type { EmbedLimit } from "./utils/EmbedHelper";
 import { HttpException } from "./utils/HttpException";
 
 export const GLOBAL_INDEXES = {
@@ -69,7 +70,7 @@ export type BaseItem = {
 
 export type Embeddable = "actions" | "emails" | "events";
 
-export type StopFn<T> = (item: T) => boolean;
+export type StopFn<T> = (item: T, index: number) => boolean;
 
 export type QueryParams = {
   key: string;
@@ -78,6 +79,7 @@ export type QueryParams = {
   limit?: number;
   cursor?: string;
   embed?: Embeddable[];
+  embedLimit?: EmbedLimit;
 };
 
 export type QueryResult<T> = {
@@ -113,7 +115,7 @@ export abstract class BasePersistence<T extends BaseItem> {
     this.tableName = config.tableName;
   }
 
-  abstract embed(items: T[], embed?: Embeddable[], limit?: number): Promise<EmbeddedObject<T>[]>;
+  abstract embed(items: T[], embed?: Embeddable[], embedLimit?: EmbedLimit): Promise<EmbeddedObject<T>[]>;
 
   abstract getIndexInfo(key: string): IndexInfo;
 
@@ -274,7 +276,7 @@ export abstract class BasePersistence<T extends BaseItem> {
 
   @logMethodReturningPromise("BasePersistence")
   async findBy(params: QueryParams): Promise<QueryResult<EmbeddedObject<T>>> {
-    const { key, value, comparator, limit, cursor, embed } = params;
+    const { key, value, comparator, limit, cursor, embed, embedLimit } = params;
 
     const indexInfo = this.getIndexInfo(key);
     const hashKey = indexInfo.type === "local" ? "type" : indexInfo.hashKey;
@@ -330,7 +332,7 @@ export abstract class BasePersistence<T extends BaseItem> {
 
     this.logger.debug({ items: items.length, hasMore: !!result.LastEvaluatedKey }, "Found items");
     return {
-      items: await this.embed(items, embed, limit),
+      items: await this.embed(items, embed, embedLimit),
       cursor: result.LastEvaluatedKey ? Buffer.from(JSON.stringify(result.LastEvaluatedKey)).toString("base64") : undefined,
       hasMore: !!result.LastEvaluatedKey,
       count: result.Count ?? 0,
@@ -339,7 +341,7 @@ export abstract class BasePersistence<T extends BaseItem> {
 
   @logMethodReturningPromise("BasePersistence")
   async findAllBy(params: Omit<QueryParams, "limit" | "cursor"> & { stop?: StopFn<T> }): Promise<EmbeddedObject<T>[]> {
-    const { embed } = params;
+    const { embed, embedLimit } = params;
     let stopped = false;
     const items: EmbeddedObject<T>[] = [];
     const result = await this.findBy({
@@ -348,12 +350,12 @@ export abstract class BasePersistence<T extends BaseItem> {
       cursor: undefined,
     });
 
-    for (const item of result.items) {
-      if (params.stop?.(item)) {
+    for (let i = 0; i < result.items.length; i++) {
+      if (params.stop?.(result.items[i], i)) {
         stopped = true;
         break;
       }
-      items.push(item);
+      items.push(result.items[i]);
     }
 
     while (result.hasMore && !stopped) {
@@ -361,23 +363,23 @@ export abstract class BasePersistence<T extends BaseItem> {
         ...params,
         cursor: result.cursor,
       });
-      for (const item of result.items) {
-        if (params.stop?.(item)) {
+      for (let i = 0; i < nextResult.items.length; i++) {
+        if (params.stop?.(nextResult.items[i], i + result.items.length)) {
           stopped = true;
           break;
         }
-        items.push(item);
+        items.push(nextResult.items[i]);
       }
       result.cursor = nextResult.cursor;
       result.hasMore = nextResult.hasMore;
     }
-    return await this.embed(items, embed);
+    return await this.embed(items, embed, embedLimit);
   }
 
   @logMethodReturningPromise("BasePersistence")
-  async get(key: string, options?: Pick<QueryParams, "embed">): Promise<EmbeddedObject<T> | undefined> {
+  async get(key: string, options?: Pick<QueryParams, "embed" | "embedLimit">): Promise<EmbeddedObject<T> | undefined> {
     this.logger.debug({ key, options }, "Getting item");
-    const { embed } = options ?? {};
+    const { embed, embedLimit } = options ?? {};
 
     const result = await withMetrics(
       async (metricsLogger: MetricsLogger) => {
@@ -403,7 +405,7 @@ export abstract class BasePersistence<T extends BaseItem> {
       return undefined;
     }
 
-    const items = await this.embed([this.schema.parse(result.Item as T)], embed);
+    const items = await this.embed([this.schema.parse(result.Item as T)], embed, embedLimit);
     if (!items || items.length === 0) {
       this.logger.debug("No item retrieved");
       return undefined;
@@ -413,8 +415,8 @@ export abstract class BasePersistence<T extends BaseItem> {
   }
 
   @logMethodReturningPromise("BasePersistence")
-  async list(params?: Pick<QueryParams, "limit" | "cursor" | "embed">): Promise<QueryResult<EmbeddedObject<T>>> {
-    const { limit, cursor, embed } = params ?? {};
+  async list(params?: Pick<QueryParams, "limit" | "cursor" | "embed" | "embedLimit">): Promise<QueryResult<EmbeddedObject<T>>> {
+    const { limit, cursor, embed, embedLimit } = params ?? {};
 
     this.logger.debug({ limit, cursor, embed }, "Listing items");
     const command = new QueryCommand({
@@ -458,33 +460,33 @@ export abstract class BasePersistence<T extends BaseItem> {
 
     this.logger.debug({ count: items.length, hasMore: !!result.LastEvaluatedKey }, "Listed items");
     return {
-      items: await this.embed(items, embed, limit),
+      items: await this.embed(items, embed, embedLimit),
       cursor: result.LastEvaluatedKey ? Buffer.from(JSON.stringify(result.LastEvaluatedKey)).toString("base64") : undefined,
       hasMore: !!result.LastEvaluatedKey,
       count: result.Count ?? 0,
     };
   }
 
-  async listAll(options?: Pick<QueryParams, "embed"> & { stop?: StopFn<T> }): Promise<EmbeddedObject<T>[]> {
-    const { embed, stop } = options ?? {};
+  async listAll(options?: Pick<QueryParams, "embed" | "embedLimit"> & { stop?: StopFn<T> }): Promise<EmbeddedObject<T>[]> {
+    const { embed, embedLimit, stop } = options ?? {};
     let stopped = false;
     const all: T[] = [];
     let cursor: string | undefined;
     while (true && !stopped) {
       const result = await this.list({ limit: 100, cursor });
-      for (const item of result.items) {
-        if (stop?.(item)) {
+      for (let i = 0; i < result.items.length; i++) {
+        if (stop?.(result.items[i], i)) {
           stopped = true;
           break;
         }
-        all.push(item);
+        all.push(result.items[i]);
       }
       cursor = result.cursor;
       if (!result.hasMore) {
         break;
       }
     }
-    return await this.embed(all, embed);
+    return await this.embed(all, embed, embedLimit);
   }
 
   @logMethodReturningPromise("BasePersistence")

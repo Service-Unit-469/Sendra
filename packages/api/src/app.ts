@@ -38,7 +38,7 @@ export const app = new OpenAPIHono<{
 }).basePath("/api/v1");
 
 app.onError((error, c) => {
-  rootLogger.error({ error, message: error.message }, "Error handling request");
+  rootLogger.error({ err: error, message: error.message }, "Error handling request");
   return sendProblem(c, error);
 });
 app.use(

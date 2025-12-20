@@ -1,6 +1,7 @@
 import { createRoute, z } from "@hono/zod-openapi";
 import type { BaseItem, BasePersistence, Embeddable, QueryResult } from "@sendra/lib";
 import type { EmbeddedObject } from "lib/dist/persistence/BasePersistence";
+import type { EmbedLimit } from "lib/dist/persistence/utils/EmbedHelper";
 import type { AppType } from "../../app";
 import { BadRequest, NotFound } from "../../exceptions";
 import { getProblemResponseSchema } from "../../exceptions/responses";
@@ -8,6 +9,7 @@ import { BearerAuth, isAuthenticatedProjectMemberOrSecretKey } from "../../middl
 
 export type ProjectEntityCreate<T extends BaseItem> = Omit<T, "id" | "type" | "createdAt" | "updatedAt" | "project">;
 export type ProjectEntityUpdate<T extends BaseItem> = Omit<T, "type" | "createdAt" | "updatedAt" | "project">;
+export const EmbedLimitSchema = z.enum(["standard", "extended", "all"]);
 
 export type ProjectEntityConfig<T extends BaseItem> = {
   entityPath: string;
@@ -43,6 +45,7 @@ export const registerProjectEntityReadRoutes = <T extends BaseItem>(
           filter: config.listQuerySchema?.optional(),
           value: z.string().optional(),
           embed: z.union([z.array(z.enum(config.embeddable)), z.enum(config.embeddable)]).optional(),
+          embedLimit: EmbedLimitSchema.optional(),
         }),
       },
       responses: {
@@ -72,7 +75,7 @@ export const registerProjectEntityReadRoutes = <T extends BaseItem>(
 
       let actualLimit = 100;
       const { embed } = c.req.queries();
-      const { limit, cursor, filter, value } = c.req.query();
+      const { limit, cursor, filter, value, embedLimit } = c.req.query();
       if (limit) {
         const parsedLimit = Number.parseInt(limit, 10);
         if (parsedLimit > 100) {
@@ -91,12 +94,14 @@ export const registerProjectEntityReadRoutes = <T extends BaseItem>(
           limit: actualLimit,
           cursor: cursor,
           embed: embed as Embeddable[] | undefined,
+          embedLimit: embedLimit as EmbedLimit | undefined,
         });
       } else {
         entities = await persistence.list({
           limit: actualLimit,
           cursor: cursor,
           embed: embed as Embeddable[] | undefined,
+          embedLimit: embedLimit as EmbedLimit | undefined,
         });
       }
 
@@ -126,6 +131,7 @@ export const registerProjectEntityReadRoutes = <T extends BaseItem>(
           filter: config.listQuerySchema.optional(),
           value: z.string().optional(),
           embed: z.union([z.array(z.enum(config.embeddable)), z.enum(config.embeddable)]).optional(),
+          embedLimit: EmbedLimitSchema.optional(),
         }),
       },
       responses: {
@@ -148,7 +154,7 @@ export const registerProjectEntityReadRoutes = <T extends BaseItem>(
     async (c) => {
       const { projectId } = c.req.param();
       const { embed } = c.req.queries();
-      const { filter, value } = c.req.query();
+      const { filter, value, embedLimit } = c.req.query();
       const persistence = config.getPersistence(projectId);
       let entities: T[];
       if (filter && value) {
@@ -156,10 +162,12 @@ export const registerProjectEntityReadRoutes = <T extends BaseItem>(
           key: config.listQuerySchema.parse(filter),
           value: value,
           embed: embed as Embeddable[] | undefined,
+          embedLimit: embedLimit as EmbedLimit | undefined,
         });
       } else {
         entities = await persistence.listAll({
           embed: embed as Embeddable[] | undefined,
+          embedLimit: embedLimit as EmbedLimit | undefined,
         });
       }
 
@@ -180,6 +188,7 @@ export const registerProjectEntityReadRoutes = <T extends BaseItem>(
         }),
         query: z.object({
           embed: z.union([z.array(z.enum(config.embeddable)), z.enum(config.embeddable)]).optional(),
+          embedLimit: EmbedLimitSchema.optional(),
         }),
       },
       responses: {
@@ -202,16 +211,16 @@ export const registerProjectEntityReadRoutes = <T extends BaseItem>(
     async (c) => {
       const { projectId, entityId } = c.req.param();
       const { embed } = c.req.queries();
+      const { embedLimit } = c.req.query();
 
       const persistence = config.getPersistence(projectId);
       const entity = await persistence.get(entityId, {
         embed: embed as Embeddable[] | undefined,
+        embedLimit: embedLimit as EmbedLimit | undefined,
       });
       if (!entity) {
         throw new NotFound(config.entityName);
       }
-      // biome-ignore lint/suspicious/noTsIgnore: ts-expect-error doesn't work
-      // @ts-ignore
       return c.json(entity, 200);
     },
   );

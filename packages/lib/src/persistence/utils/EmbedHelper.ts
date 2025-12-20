@@ -1,15 +1,40 @@
 import type { Action, BaseType, Email, Event } from "@sendra/shared";
 import { ActionPersistence } from "../ActionPersistence";
-import type { Embeddable, EmbeddedObject } from "../BasePersistence";
+import type { Embeddable, EmbeddedObject, StopFn } from "../BasePersistence";
 import { EmailPersistence } from "../EmailPersistence";
 import { EventPersistence } from "../EventPersistence";
 import { HttpException } from "./HttpException";
+
+const ONE_MONTH_IN_MS = 1000 * 60 * 60 * 24 * 30;
+const ONE_YEAR_IN_MS = 1000 * 60 * 60 * 24 * 365;
+
+const getEmbedLimitFunction: (limit?: EmbedLimit) => StopFn<ProjectEntity> = (limit?: EmbedLimit) => {
+  switch (limit) {
+    case "extended":
+      return (item: ProjectEntity, index: number) => index < 1001 && new Date(item.createdAt) > new Date(Date.now() - ONE_YEAR_IN_MS);
+    case "all":
+      return () => true;
+    default:
+      return (item: ProjectEntity, index: number) => index < 256 && new Date(item.createdAt) > new Date(Date.now() - ONE_MONTH_IN_MS);
+  }
+};
+
+export type EmbedLimit = "standard" | "extended" | "all";
 
 export type ProjectEntity = BaseType & {
   project: string;
 };
 
-export const embedHelper = async <T extends ProjectEntity>(items: T[], key: string, supportedEmbed: Embeddable[], embed?: Embeddable[]): Promise<EmbeddedObject<T>[]> => {
+export type EmbedOptions<T extends ProjectEntity> = {
+  items: T[];
+  key: string;
+  supportedEmbed: Embeddable[];
+  embed?: Embeddable[];
+  embedLimit?: EmbedLimit;
+};
+
+export const embedHelper = async <T extends ProjectEntity>(options: EmbedOptions<T>): Promise<EmbeddedObject<T>[]> => {
+  const { items, key, supportedEmbed, embed, embedLimit } = options;
   if (!embed || embed.length === 0) {
     return items as EmbeddedObject<T>[];
   }
@@ -25,6 +50,7 @@ export const embedHelper = async <T extends ProjectEntity>(items: T[], key: stri
         actions = await actionPersistence.findAllBy({
           key,
           value: item.id,
+          stop: getEmbedLimitFunction(embedLimit),
         });
       }
 
@@ -34,6 +60,7 @@ export const embedHelper = async <T extends ProjectEntity>(items: T[], key: stri
         emails = await emailPersistence.findAllBy({
           key: ["action", "campaign"].includes(key) ? "source" : key,
           value: item.id,
+          stop: getEmbedLimitFunction(embedLimit),
         });
       }
 
@@ -43,6 +70,7 @@ export const embedHelper = async <T extends ProjectEntity>(items: T[], key: stri
         events = await eventPersistence.findAllBy({
           key: ["action", "campaign"].includes(key) ? "relation" : key,
           value: item.id,
+          stop: getEmbedLimitFunction(embedLimit),
         });
       }
       if (events || emails || actions) {

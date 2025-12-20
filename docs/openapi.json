@@ -977,6 +977,19 @@
             "required": false,
             "name": "embed",
             "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "standard",
+                "extended",
+                "all"
+              ]
+            },
+            "required": false,
+            "name": "embedLimit",
+            "in": "query"
           }
         ],
         "responses": {
@@ -1843,6 +1856,19 @@
             "required": false,
             "name": "embed",
             "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "standard",
+                "extended",
+                "all"
+              ]
+            },
+            "required": false,
+            "name": "embedLimit",
+            "in": "query"
           }
         ],
         "responses": {
@@ -2256,6 +2282,19 @@
             },
             "required": false,
             "name": "embed",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "standard",
+                "extended",
+                "all"
+              ]
+            },
+            "required": false,
+            "name": "embedLimit",
             "in": "query"
           }
         ],
@@ -4015,6 +4054,19 @@
             "required": false,
             "name": "embed",
             "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "standard",
+                "extended",
+                "all"
+              ]
+            },
+            "required": false,
+            "name": "embedLimit",
+            "in": "query"
           }
         ],
         "responses": {
@@ -4878,6 +4930,19 @@
             "required": false,
             "name": "embed",
             "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "standard",
+                "extended",
+                "all"
+              ]
+            },
+            "required": false,
+            "name": "embedLimit",
+            "in": "query"
           }
         ],
         "responses": {
@@ -5273,6 +5338,19 @@
             },
             "required": false,
             "name": "embed",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "standard",
+                "extended",
+                "all"
+              ]
+            },
+            "required": false,
+            "name": "embedLimit",
             "in": "query"
           }
         ],
@@ -6536,6 +6614,19 @@
             "required": false,
             "name": "embed",
             "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "standard",
+                "extended",
+                "all"
+              ]
+            },
+            "required": false,
+            "name": "embedLimit",
+            "in": "query"
           }
         ],
         "responses": {
@@ -7413,6 +7504,19 @@
             "required": false,
             "name": "embed",
             "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "standard",
+                "extended",
+                "all"
+              ]
+            },
+            "required": false,
+            "name": "embedLimit",
+            "in": "query"
           }
         ],
         "responses": {
@@ -7830,6 +7934,19 @@
             },
             "required": false,
             "name": "embed",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "standard",
+                "extended",
+                "all"
+              ]
+            },
+            "required": false,
+            "name": "embedLimit",
             "in": "query"
           }
         ],
@@ -9345,6 +9462,19 @@
             "required": false,
             "name": "value",
             "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "standard",
+                "extended",
+                "all"
+              ]
+            },
+            "required": false,
+            "name": "embedLimit",
+            "in": "query"
           }
         ],
         "responses": {
@@ -9828,6 +9958,19 @@
             "required": false,
             "name": "value",
             "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "standard",
+                "extended",
+                "all"
+              ]
+            },
+            "required": false,
+            "name": "embedLimit",
+            "in": "query"
           }
         ],
         "responses": {
@@ -10054,6 +10197,19 @@
             "required": true,
             "name": "entityId",
             "in": "path"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "standard",
+                "extended",
+                "all"
+              ]
+            },
+            "required": false,
+            "name": "embedLimit",
+            "in": "query"
           }
         ],
         "responses": {
@@ -10993,6 +11149,19 @@
             "required": false,
             "name": "value",
             "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "standard",
+                "extended",
+                "all"
+              ]
+            },
+            "required": false,
+            "name": "embedLimit",
+            "in": "query"
           }
         ],
         "responses": {
@@ -11301,6 +11470,19 @@
             "required": false,
             "name": "value",
             "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "standard",
+                "extended",
+                "all"
+              ]
+            },
+            "required": false,
+            "name": "embedLimit",
+            "in": "query"
           }
         ],
         "responses": {
@@ -11577,6 +11759,19 @@
             "required": true,
             "name": "entityId",
             "in": "path"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "standard",
+                "extended",
+                "all"
+              ]
+            },
+            "required": false,
+            "name": "embedLimit",
+            "in": "query"
           }
         ],
         "responses": {
@@ -11852,6 +12047,19 @@
             },
             "required": false,
             "name": "embed",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "standard",
+                "extended",
+                "all"
+              ]
+            },
+            "required": false,
+            "name": "embedLimit",
             "in": "query"
           }
         ],
@@ -12462,6 +12670,19 @@
             },
             "required": false,
             "name": "embed",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "standard",
+                "extended",
+                "all"
+              ]
+            },
+            "required": false,
+            "name": "embedLimit",
             "in": "query"
           }
         ],
@@ -13229,6 +13450,19 @@
             "required": false,
             "name": "embed",
             "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "standard",
+                "extended",
+                "all"
+              ]
+            },
+            "required": false,
+            "name": "embedLimit",
+            "in": "query"
           }
         ],
         "responses": {
@@ -13582,6 +13816,19 @@
             },
             "required": false,
             "name": "embed",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "standard",
+                "extended",
+                "all"
+              ]
+            },
+            "required": false,
+            "name": "embedLimit",
             "in": "query"
           }
         ],
