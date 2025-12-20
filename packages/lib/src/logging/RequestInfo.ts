@@ -18,11 +18,3 @@ export const getRequestInfo = () => {
   }
   return requestInfo;
 };
-
-export const getSafeRequestInfo = () => {
-  const requestInfo = getRequestInfo();
-  if (!requestInfo) {
-    return {} as RequestInfo;
-  }
-  return requestInfo;
-};

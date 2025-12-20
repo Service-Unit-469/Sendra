@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { type RequestInfo, getRequestInfo, getSafeRequestInfo, setRequestInfo } from "../../src/logging/RequestInfo";
+import { type RequestInfo, getRequestInfo, setRequestInfo } from "../../src/logging/RequestInfo";
 
 describe("RequestInfo", () => {
 	const mockRequestInfo: RequestInfo = {
@@ -133,36 +133,6 @@ describe("RequestInfo", () => {
 
 			const infoOutside = getRequestInfo();
 			expect(infoOutside).toEqual({} as RequestInfo);
-		});
-	});
-
-	describe("getSafeRequestInfo", () => {
-		it("should return request info when inside setRequestInfo context", () => {
-			setRequestInfo(mockRequestInfo, async () => {
-				const info = getSafeRequestInfo();
-				expect(info).toEqual(mockRequestInfo);
-			});
-		});
-
-		it("should return empty RequestInfo object when outside context", () => {
-			const info = getSafeRequestInfo();
-			expect(info).toEqual({} as RequestInfo);
-			expect(info.requestId).toBeUndefined();
-			expect(info.correlationId).toBeUndefined();
-		});
-
-		it("should behave identically to getRequestInfo", () => {
-			// Inside context
-			setRequestInfo(mockRequestInfo, async () => {
-				const info1 = getRequestInfo();
-				const info2 = getSafeRequestInfo();
-				expect(info1).toEqual(info2);
-			});
-
-			// Outside context
-			const info1 = getRequestInfo();
-			const info2 = getSafeRequestInfo();
-			expect(info1).toEqual(info2);
 		});
 	});
 });
