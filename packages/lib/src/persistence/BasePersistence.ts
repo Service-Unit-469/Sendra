@@ -1,4 +1,4 @@
-import { QueryCommand } from "@aws-sdk/client-dynamodb";
+import { type ConsumedCapacity, QueryCommand } from "@aws-sdk/client-dynamodb";
 import { BatchGetCommand, BatchWriteCommand, DeleteCommand, DynamoDBDocumentClient, GetCommand, PutCommand, type QueryCommandInput } from "@aws-sdk/lib-dynamodb";
 import { unmarshall } from "@aws-sdk/util-dynamodb";
 import type { Action, Email, Event, Template } from "@sendra/shared";
@@ -6,7 +6,7 @@ import { type MetricsLogger, Unit } from "aws-embedded-metrics";
 import { uuidv7 } from "uuidv7";
 import type { ZodType } from "zod";
 import { logMethodReturningPromise, rootLogger } from "../logging";
-import { withMetrics } from "../metrics";
+import { incrementRequestCapacityUsed, withMetrics } from "../metrics";
 import { getPersistenceConfig } from "../services/AppConfig";
 import { HttpException } from "./utils/HttpException";
 
@@ -124,14 +124,27 @@ export abstract class BasePersistence<T extends BaseItem> {
     i_attr4?: string;
   };
 
+  trackConsumedCapacity(result: { ConsumedCapacity?: ConsumedCapacity[] | ConsumedCapacity }) {
+    let used = 0;
+    if (result.ConsumedCapacity) {
+      if (Array.isArray(result.ConsumedCapacity)) {
+        used = result.ConsumedCapacity.reduce((acc, curr) => acc + (curr.CapacityUnits ?? 0), 0);
+      } else {
+        used = result.ConsumedCapacity.CapacityUnits ?? 0;
+      }
+    }
+    incrementRequestCapacityUsed(used);
+  }
+
   @logMethodReturningPromise("BasePersistence")
   async batchDelete(ids: string[]): Promise<void> {
     await withMetrics(
       async (metricsLogger: MetricsLogger) => {
         metricsLogger.setProperty("ObjectType", this.type);
         metricsLogger.putMetric("BatchDeleteCount", ids.length, Unit.Count);
-        return this.docClient.send(
+        const result = await this.docClient.send(
           new BatchWriteCommand({
+            ReturnConsumedCapacity: "TOTAL",
             RequestItems: {
               [this.tableName]: ids.map((id) => ({
                 DeleteRequest: { Key: { id: id, type: this.type } },
@@ -139,6 +152,8 @@ export abstract class BasePersistence<T extends BaseItem> {
             },
           }),
         );
+        this.trackConsumedCapacity(result);
+        return result;
       },
       {
         Operation: "BatchDelete",
@@ -166,6 +181,7 @@ export abstract class BasePersistence<T extends BaseItem> {
           }
           this.logger.debug({ batchIds, type: this.type }, "Getting batch of items");
           const command = new BatchGetCommand({
+            ReturnConsumedCapacity: "TOTAL",
             RequestItems: {
               [this.tableName]: {
                 Keys: batchIds.map((id) => ({ id: id, type: this.type })),
@@ -173,6 +189,7 @@ export abstract class BasePersistence<T extends BaseItem> {
             },
           });
           const result = await this.docClient.send(command);
+          this.trackConsumedCapacity(result);
 
           const items = result.Responses?.[this.tableName].filter((item) => item !== undefined) as T[];
 
@@ -212,12 +229,15 @@ export abstract class BasePersistence<T extends BaseItem> {
     await withMetrics(
       async (metricsLogger: MetricsLogger) => {
         metricsLogger.setProperty("ObjectType", this.type);
-        return this.docClient.send(
+        const result = await this.docClient.send(
           new PutCommand({
+            ReturnConsumedCapacity: "TOTAL",
             TableName: this.tableName,
             Item: newItem,
           }),
         );
+        this.trackConsumedCapacity(result);
+        return result;
       },
       {
         Operation: "Create",
@@ -233,8 +253,9 @@ export abstract class BasePersistence<T extends BaseItem> {
     await withMetrics(
       async (metricsLogger: MetricsLogger) => {
         metricsLogger.setProperty("ObjectType", this.type);
-        return this.docClient.send(
+        const result = await this.docClient.send(
           new DeleteCommand({
+            ReturnConsumedCapacity: "TOTAL",
             TableName: this.tableName,
             Key: {
               id: id,
@@ -242,6 +263,8 @@ export abstract class BasePersistence<T extends BaseItem> {
             },
           }),
         );
+        this.trackConsumedCapacity(result);
+        return result;
       },
       {
         Operation: "Delete",
@@ -277,12 +300,15 @@ export abstract class BasePersistence<T extends BaseItem> {
 
       Limit: limit,
       ExclusiveStartKey: cursor ? JSON.parse(Buffer.from(cursor, "base64").toString("ascii")) : undefined,
+      ReturnConsumedCapacity: "TOTAL",
     } as QueryCommandInput;
     this.logger.debug(config, "Executing query");
     const result = await withMetrics(
       async (metricsLogger: MetricsLogger) => {
         metricsLogger.setProperty("ObjectType", this.type);
-        return this.docClient.send(new QueryCommand(config));
+        const result = await this.docClient.send(new QueryCommand(config));
+        this.trackConsumedCapacity(result);
+        return result;
       },
       {
         Operation: "FindBy",
@@ -356,8 +382,9 @@ export abstract class BasePersistence<T extends BaseItem> {
     const result = await withMetrics(
       async (metricsLogger: MetricsLogger) => {
         metricsLogger.setProperty("ObjectType", this.type);
-        return this.docClient.send(
+        const result = await this.docClient.send(
           new GetCommand({
+            ReturnConsumedCapacity: "TOTAL",
             TableName: this.tableName,
             Key: {
               id: key,
@@ -365,6 +392,8 @@ export abstract class BasePersistence<T extends BaseItem> {
             },
           }),
         );
+        this.trackConsumedCapacity(result);
+        return result;
       },
       {
         Operation: "Get",
@@ -400,12 +429,15 @@ export abstract class BasePersistence<T extends BaseItem> {
       Limit: limit,
       ExclusiveStartKey: cursor ? JSON.parse(Buffer.from(cursor, "base64").toString("ascii")) : undefined,
       ScanIndexForward: false,
+      ReturnConsumedCapacity: "TOTAL",
     } as QueryCommandInput);
 
     const result = await withMetrics(
       async (metricsLogger: MetricsLogger) => {
         metricsLogger.setProperty("ObjectType", this.type);
-        return this.docClient.send(command);
+        const result = await this.docClient.send(command);
+        this.trackConsumedCapacity(result);
+        return result;
       },
       {
         Operation: "List",
@@ -462,7 +494,7 @@ export abstract class BasePersistence<T extends BaseItem> {
     await withMetrics(
       async (metricsLogger: MetricsLogger) => {
         metricsLogger.setProperty("ObjectType", this.type);
-        return this.docClient.send(
+        const result = await this.docClient.send(
           new PutCommand({
             TableName: this.tableName,
             Item: this.projectItem({
@@ -471,8 +503,11 @@ export abstract class BasePersistence<T extends BaseItem> {
               updatedAt: new Date().toISOString(),
             }),
             ConditionExpression: "attribute_exists(id)",
+            ReturnConsumedCapacity: "TOTAL",
           }),
         );
+        this.trackConsumedCapacity(result);
+        return result;
       },
       {
         Operation: "Put",
