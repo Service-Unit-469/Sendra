@@ -16,7 +16,7 @@ export default function App() {
     document.title = "Manage your subscription preferences";
   }, []);
 
-  if (isLoading || !subscriber) {
+  if (isLoading || (!subscriber && !error)) {
     return (
       <div className="flex h-screen w-full items-center justify-center">
         <LoaderCircle className="animate-spin" size={24} />
