@@ -10,7 +10,7 @@ export const registerEmailsRoutes = (app: AppType) => {
     entityName: "Email",
     embeddable: [],
     getSchema: EmailSchema,
-    listQuerySchema: z.enum(["messageId"]),
+    listQuerySchema: z.enum(["contact", "messageId", "source"]),
     getPersistence: (projectId: string) => new EmailPersistence(projectId),
   });
 };

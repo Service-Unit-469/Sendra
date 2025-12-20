@@ -10977,7 +10977,9 @@
             "schema": {
               "type": "string",
               "enum": [
-                "messageId"
+                "contact",
+                "messageId",
+                "source"
               ]
             },
             "required": false,
@@ -11283,7 +11285,9 @@
             "schema": {
               "type": "string",
               "enum": [
-                "messageId"
+                "contact",
+                "messageId",
+                "source"
               ]
             },
             "required": false,
