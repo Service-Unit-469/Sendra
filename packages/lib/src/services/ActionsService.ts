@@ -1,7 +1,7 @@
 import { type Contact, OOTB_EVENT_VALUES, type Project } from "@sendra/shared";
 import { Unit } from "aws-embedded-metrics";
 import { rootLogger } from "../logging";
-import { withMetrics } from "../metrics";
+import { withMetrics } from "../metrics/Logger";
 import { ActionPersistence, EventPersistence, ProjectPersistence, TemplatePersistence } from "../persistence";
 import { TaskQueue } from "./TaskQueue";
 

@@ -88,7 +88,8 @@ export default function App() {
     <SWRConfig
       value={{
         fetcher: network.fetch,
-        revalidateOnFocus: true,
+        errorRetryCount: 3,
+        focusThrottleInterval: 60_000, // 1 minute
       }}
     >
       <JotaiProvider>

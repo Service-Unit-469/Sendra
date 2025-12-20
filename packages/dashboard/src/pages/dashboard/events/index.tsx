@@ -216,36 +216,6 @@ export default function Index() {
           <Skeleton type={"table"} />
         )}
       </Card>
-      <Card title="Template events" description="Events linked to your templates">
-        {eventTypes && contacts ? (
-          eventTypes.length > 0 ? (
-            <Table
-              values={eventTypes
-                .sort((a, b) => {
-                  const aTrigger = a._embed.events.length > 0 ? a._embed.events.sort()[0].createdAt : a.name;
-
-                  const bTrigger = b._embed.events.length > 0 ? b._embed.events.sort()[0].createdAt : b.name;
-
-                  return bTrigger > aTrigger ? 1 : -1;
-                })
-                .map((e) => {
-                  return {
-                    Event: e.name,
-                    "Triggered by users": (
-                      <Badge type="info">{`${e._embed.events.length > 0 ? Math.round(([...new Map(e._embed.events.map((t) => [t.contact, t])).values()].length / contacts.length) * 100) : 0}%`}</Badge>
-                    ),
-                    "Total times triggered": e._embed.events.length,
-                    "Last Activity": lastActivity(e),
-                  };
-                })}
-            />
-          ) : (
-            <Empty title={"No template events"} description={"All delivery tracking for templates can be found here"} />
-          )
-        ) : (
-          <Skeleton type={"table"} />
-        )}
-      </Card>
     </>
   );
 }

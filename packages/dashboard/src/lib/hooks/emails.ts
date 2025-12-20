@@ -1,8 +1,12 @@
-import type { Email } from "@sendra/shared";
+import type { Campaign, Email } from "@sendra/shared";
 import useSWR from "swr";
 import { useCurrentProject } from "./projects";
 
-export function useEmailsByCampaign(campaignId?: string) {
+export function useEmailsByCampaign(campaign?: Campaign) {
   const currentProject = useCurrentProject();
-  return useSWR<Email[]>(`/projects/${currentProject.id}/emails/all?campaign=${campaignId}`);
+  let input: string | null = null;
+  if (campaign?.id && campaign?.status === "DELIVERED") {
+    input = `/projects/${currentProject.id}/emails/all?filter=source&value=${campaign.id}`;
+  }
+  return useSWR<Email[]>(input);
 }
