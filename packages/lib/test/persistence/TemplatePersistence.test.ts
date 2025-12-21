@@ -455,7 +455,7 @@ describe("TemplatePersistence", () => {
             })
           );
         }
-        const createdActions = await Promise.all(actionPromises);
+        await Promise.all(actionPromises);
 
         // Embed with 'all' limit
         const result = await persistence.embed([template], ["actions"], "all");
@@ -661,7 +661,7 @@ describe("TemplatePersistence", () => {
         });
 
         // Create a recent action
-        const recentAction = await actionPersistence.create({
+        await actionPersistence.create({
           project: TEST_PROJECT_ID,
           name: "Recent Action for All",
           runOnce: false,
