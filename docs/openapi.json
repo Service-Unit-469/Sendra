@@ -12158,34 +12158,6 @@
         }
       }
     },
-    "/api/v1/projects/{projectId}/events": {
-      "get": {
-        "tags": [
-          "Event"
-        ],
-        "operationId": "list-events",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "schema": {
-              "type": "string"
-            },
-            "required": true,
-            "name": "projectId",
-            "in": "path"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "List events"
-          }
-        }
-      }
-    },
     "/api/v1/projects/{projectId}/send": {
       "post": {
         "tags": [

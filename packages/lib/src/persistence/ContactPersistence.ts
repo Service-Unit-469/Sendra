@@ -23,7 +23,7 @@ export class ContactPersistence extends BasePersistence<Contact> {
       key: "contact",
       supportedEmbed: ["emails", "events"],
       embed,
-      embedLimit,
+      embedLimit: embedLimit ?? "standard",
     });
   }
 

@@ -15,7 +15,7 @@ export class ActionPersistence extends BasePersistence<Action> {
       key: "action",
       supportedEmbed: ["emails", "events"],
       embed,
-      embedLimit,
+      embedLimit: embedLimit ?? "standard",
     });
   }
 

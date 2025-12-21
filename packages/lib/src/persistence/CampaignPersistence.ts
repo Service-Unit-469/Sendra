@@ -15,7 +15,7 @@ export class CampaignPersistence extends BasePersistence<Campaign> {
       key: "campaign",
       supportedEmbed: ["emails"],
       embed,
-      embedLimit,
+      embedLimit: embedLimit ?? "all",
     });
   }
 

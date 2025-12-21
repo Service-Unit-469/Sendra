@@ -2,6 +2,8 @@ import type { Contact } from "@sendra/shared";
 import { startupDynamoDB, stopDynamoDB } from "@sendra/test";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { ContactPersistence } from "../../src/persistence/ContactPersistence";
+import { EmailPersistence } from "../../src/persistence/EmailPersistence";
+import { EventPersistence } from "../../src/persistence/EventPersistence";
 
 const TEST_PROJECT_ID = "test-project-123";
 const TEST_PROJECT_ID_2 = "test-project-456";
@@ -320,6 +322,124 @@ describe("ContactPersistence", () => {
       await expect(persistence.embed(contacts, ["actions"])).rejects.toThrow(
         "Only emails, events are supported"
       );
+    });
+
+    describe("embedLimit", () => {
+      it("should respect standard limit (250 items max) for emails", async () => {
+        const contact = await persistence.create({
+          project: TEST_PROJECT_ID,
+          email: "limit-test@example.com",
+          data: {},
+          subscribed: true,
+        });
+
+        const emailPersistence = new EmailPersistence(TEST_PROJECT_ID);
+        
+        // Create 300 emails (more than the standard limit of 250)
+        const emailPromises = [];
+        for (let i = 0; i < 300; i++) {
+          emailPromises.push(
+            emailPersistence.create({
+              project: TEST_PROJECT_ID,
+              contact: contact.id,
+              email: `test${i}@example.com`,
+              subject: `Email ${i}`,
+              body: {
+                html: `<p>Email ${i}</p>`,
+                plainText: `Email ${i}`,
+              },
+              sendType: "MARKETING",
+              status: "DELIVERED",
+              source: "source-1",
+              messageId: `msg-${i}`,
+            })
+          );
+        }
+        await Promise.all(emailPromises);
+
+        // Embed with standard limit
+        const result = await persistence.embed([contact], ["emails"], "standard");
+
+        expect(result.length).toBe(1);
+        expect(result[0]._embed?.emails).toBeDefined();
+        // Should be limited to 250 items
+        expect(result[0]._embed?.emails?.length).toBeLessThanOrEqual(250);
+      });
+
+      it("should respect extended limit (1000 items max) for events", async () => {
+        const contact = await persistence.create({
+          project: TEST_PROJECT_ID,
+          email: "extended-limit-test@example.com",
+          data: {},
+          subscribed: true,
+        });
+
+        const eventPersistence = new EventPersistence(TEST_PROJECT_ID);
+        
+        // Create 1100 events (more than the extended limit of 1000)
+        const eventPromises = [];
+        for (let i = 0; i < 1100; i++) {
+          eventPromises.push(
+            eventPersistence.create({
+              project: TEST_PROJECT_ID,
+              contact: contact.id,
+              eventType: `event-type-${i}`,
+              relation: `relation-${i}`,
+              relationType: "ACTION",
+            })
+          );
+        }
+        await Promise.all(eventPromises);
+
+        // Embed with extended limit
+        const result = await persistence.embed([contact], ["events"], "extended");
+
+        expect(result.length).toBe(1);
+        expect(result[0]._embed?.events).toBeDefined();
+        // Should be limited to 1000 items
+        expect(result[0]._embed?.events?.length).toBeLessThanOrEqual(1001);
+      });
+
+      it("should return all items with 'all' limit", async () => {
+        const contact = await persistence.create({
+          project: TEST_PROJECT_ID,
+          email: "all-limit-test@example.com",
+          data: {},
+          subscribed: true,
+        });
+
+        const emailPersistence = new EmailPersistence(TEST_PROJECT_ID);
+        
+        // Create 50 emails
+        const emailPromises = [];
+        for (let i = 0; i < 50; i++) {
+          emailPromises.push(
+            emailPersistence.create({
+              project: TEST_PROJECT_ID,
+              contact: contact.id,
+              email: `alltest${i}@example.com`,
+              subject: `All Email ${i}`,
+              body: {
+                html: `<p>Email ${i}</p>`,
+                plainText: `Email ${i}`,
+              },
+              sendType: "MARKETING",
+              status: "DELIVERED",
+              source: "source-1",
+              messageId: `msg-all-${i}`,
+            })
+          );
+        }
+        await Promise.all(emailPromises);
+
+        // Embed with 'all' limit
+        const result = await persistence.embed([contact], ["emails"], "all");
+
+        expect(result.length).toBe(1);
+        expect(result[0]._embed?.emails).toBeDefined();
+        // Should return all items
+        expect(result[0]._embed?.emails?.length).toBe(50);
+      });
     });
   });
 });

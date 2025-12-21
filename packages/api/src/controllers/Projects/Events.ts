@@ -1,7 +1,6 @@
 import { createRoute, z } from "@hono/zod-openapi";
-import { ActionsService, ContactPersistence, ContactService, EmailPersistence, EmailService, EventPersistence, ProjectPersistence, rootLogger } from "@sendra/lib";
+import { ActionsService, ContactPersistence, ContactService, EmailPersistence, EmailService, EventPersistence, getEmbedLimitFunction, ProjectPersistence, rootLogger } from "@sendra/lib";
 import { type Contact, type ContactSchemas, type Event, EventSchema, EventSchemas, id, OOTB_EVENT_VALUES } from "@sendra/shared";
-import type { EmbedLimit } from "lib/dist/persistence/utils/EmbedHelper";
 import type { AppType } from "../../app";
 import { BadRequest, HttpException, NotFound } from "../../exceptions";
 import { getProblemResponseSchema } from "../../exceptions/responses";
@@ -69,44 +68,17 @@ export const registerEventsRoutes = (app: AppType) => {
 
       if (c.req.query("embed") === "events") {
         const eventPersistence = new EventPersistence(projectId);
-        const { embedLimit } = c.req.query();
+        const { embedLimit } = c.req.valid("query");
         for (const eventType of eventTypes) {
           const events = await eventPersistence.findAllBy({
             key: "eventType",
             value: eventType.name,
-            embedLimit: embedLimit as EmbedLimit | undefined,
+            stop: getEmbedLimitFunction(embedLimit ?? "standard"),
           });
           eventType._embed = { events: events as unknown as Event[] };
         }
       }
       return c.json({ eventTypes }, 200);
-    },
-  );
-
-  app.openapi(
-    createRoute({
-      tags: ["Event"],
-      operationId: "list-events",
-      method: "get",
-      path: "/projects/{projectId}/events",
-      request: {
-        params: z.object({
-          projectId: z.string(),
-        }),
-      },
-      responses: {
-        200: {
-          description: "List events",
-        },
-      },
-      ...BearerAuth,
-      middleware: [isAuthenticatedProjectMemberOrSecretKey],
-    }),
-    async (c) => {
-      const { projectId } = c.req.param();
-      const eventPersistence = new EventPersistence(projectId);
-      const events = await eventPersistence.listAll();
-      return c.json(events, 200);
     },
   );
 

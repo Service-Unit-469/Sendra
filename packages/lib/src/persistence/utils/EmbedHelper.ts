@@ -8,14 +8,14 @@ import { HttpException } from "./HttpException";
 const ONE_MONTH_IN_MS = 1000 * 60 * 60 * 24 * 30;
 const ONE_YEAR_IN_MS = 1000 * 60 * 60 * 24 * 365;
 
-const getEmbedLimitFunction: (limit?: EmbedLimit) => StopFn<ProjectEntity> = (limit?: EmbedLimit) => {
+export const getEmbedLimitFunction: (limit: EmbedLimit) => StopFn<ProjectEntity> = (limit: EmbedLimit) => {
   switch (limit) {
     case "extended":
-      return (item: ProjectEntity, index: number) => index < 1001 && new Date(item.createdAt) > new Date(Date.now() - ONE_YEAR_IN_MS);
+      return (item: ProjectEntity, index: number) => index >= 1000 || new Date(item.createdAt) < new Date(Date.now() - ONE_YEAR_IN_MS);
     case "all":
-      return () => true;
-    default:
-      return (item: ProjectEntity, index: number) => index < 256 && new Date(item.createdAt) > new Date(Date.now() - ONE_MONTH_IN_MS);
+      return () => false;
+    case "standard":
+      return (item: ProjectEntity, index: number) => index >= 250 || new Date(item.createdAt) < new Date(Date.now() - ONE_MONTH_IN_MS);
   }
 };
 
@@ -30,7 +30,7 @@ export type EmbedOptions<T extends ProjectEntity> = {
   key: string;
   supportedEmbed: Embeddable[];
   embed?: Embeddable[];
-  embedLimit?: EmbedLimit;
+  embedLimit: EmbedLimit;
 };
 
 export const embedHelper = async <T extends ProjectEntity>(options: EmbedOptions<T>): Promise<EmbeddedObject<T>[]> => {

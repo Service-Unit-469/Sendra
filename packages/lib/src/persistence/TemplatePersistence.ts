@@ -10,7 +10,13 @@ export class TemplatePersistence extends BasePersistence<Template> {
   }
 
   async embed(items: Template[], embed?: Embeddable[], embedLimit?: EmbedLimit): Promise<EmbeddedObject<Template>[]> {
-    return await embedHelper({ items, key: "template", supportedEmbed: ["actions"], embed, embedLimit });
+    return await embedHelper({
+      items,
+      key: "template",
+      supportedEmbed: ["actions"],
+      embed,
+      embedLimit: embedLimit ?? "all",
+    });
   }
 
   getIndexInfo(): IndexInfo {
