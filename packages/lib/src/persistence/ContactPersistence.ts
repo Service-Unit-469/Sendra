@@ -6,7 +6,7 @@ import { ContactSchema } from "@sendra/shared";
 import { rootLogger } from "../logging";
 import { getPersistenceConfig } from "../services/AppConfig";
 import { BasePersistence, type Embeddable, type IndexInfo, LOCAL_INDEXES } from "./BasePersistence";
-import { embedHelper } from "./utils/EmbedHelper";
+import { type EmbedLimit, embedHelper } from "./utils/EmbedHelper";
 
 const logger = rootLogger.child({
   module: "ContactPersistence",
@@ -17,8 +17,14 @@ export class ContactPersistence extends BasePersistence<Contact> {
     super(`CONTACT#${projectId}`, ContactSchema);
   }
 
-  async embed(items: Contact[], embed?: Embeddable[]) {
-    return await embedHelper(items, "contact", ["emails", "events"], embed);
+  async embed(items: Contact[], embed?: Embeddable[], embedLimit?: EmbedLimit) {
+    return await embedHelper({
+      items,
+      key: "contact",
+      supportedEmbed: ["emails", "events"],
+      embed,
+      embedLimit: embedLimit ?? "standard",
+    });
   }
 
   private static async getByEmailFromAllProjectsPage(email: string, cursor?: string) {

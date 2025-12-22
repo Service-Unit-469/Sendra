@@ -1,8 +1,7 @@
 import type { Contact } from "@sendra/shared";
 import { motion } from "framer-motion";
 import { Plus } from "lucide-react";
-import { useMemo, useState } from "react";
-import { useEventTypes } from "../../lib/hooks/events";
+import { useState } from "react";
 import { useActiveProject } from "../../lib/hooks/projects";
 import MetadataFilterEditor from "../Input/MetadataFilter/Editor";
 import type { MetadataFilterGroupType } from "../Input/MetadataFilter/types";
@@ -14,13 +13,11 @@ import useFilterContacts from "./filter";
  */
 export default function ContactFilterForm({ contacts, onSelect }: { contacts: Contact[]; onSelect: (contacts: Contact[]) => void }) {
   const project = useActiveProject();
-  const { data: eventTypeData } = useEventTypes();
-  const eventTypes = useMemo(() => eventTypeData?.eventTypes ?? [], [eventTypeData]);
 
   const [filter, setFilter] = useState<MetadataFilterGroupType>();
   const filteredContacts = useFilterContacts(contacts, filter);
 
-  if (!project || !eventTypes) {
+  if (!project) {
     return <Skeleton type="form" />;
   }
 

@@ -977,6 +977,19 @@
             "required": false,
             "name": "embed",
             "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "standard",
+                "extended",
+                "all"
+              ]
+            },
+            "required": false,
+            "name": "embedLimit",
+            "in": "query"
           }
         ],
         "responses": {
@@ -1843,6 +1856,19 @@
             "required": false,
             "name": "embed",
             "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "standard",
+                "extended",
+                "all"
+              ]
+            },
+            "required": false,
+            "name": "embedLimit",
+            "in": "query"
           }
         ],
         "responses": {
@@ -2256,6 +2282,19 @@
             },
             "required": false,
             "name": "embed",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "standard",
+                "extended",
+                "all"
+              ]
+            },
+            "required": false,
+            "name": "embedLimit",
             "in": "query"
           }
         ],
@@ -4015,6 +4054,19 @@
             "required": false,
             "name": "embed",
             "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "standard",
+                "extended",
+                "all"
+              ]
+            },
+            "required": false,
+            "name": "embedLimit",
+            "in": "query"
           }
         ],
         "responses": {
@@ -4878,6 +4930,19 @@
             "required": false,
             "name": "embed",
             "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "standard",
+                "extended",
+                "all"
+              ]
+            },
+            "required": false,
+            "name": "embedLimit",
+            "in": "query"
           }
         ],
         "responses": {
@@ -5273,6 +5338,19 @@
             },
             "required": false,
             "name": "embed",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "standard",
+                "extended",
+                "all"
+              ]
+            },
+            "required": false,
+            "name": "embedLimit",
             "in": "query"
           }
         ],
@@ -6536,6 +6614,19 @@
             "required": false,
             "name": "embed",
             "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "standard",
+                "extended",
+                "all"
+              ]
+            },
+            "required": false,
+            "name": "embedLimit",
+            "in": "query"
           }
         ],
         "responses": {
@@ -7413,6 +7504,19 @@
             "required": false,
             "name": "embed",
             "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "standard",
+                "extended",
+                "all"
+              ]
+            },
+            "required": false,
+            "name": "embedLimit",
+            "in": "query"
           }
         ],
         "responses": {
@@ -7830,6 +7934,19 @@
             },
             "required": false,
             "name": "embed",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "standard",
+                "extended",
+                "all"
+              ]
+            },
+            "required": false,
+            "name": "embedLimit",
             "in": "query"
           }
         ],
@@ -9345,6 +9462,19 @@
             "required": false,
             "name": "value",
             "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "standard",
+                "extended",
+                "all"
+              ]
+            },
+            "required": false,
+            "name": "embedLimit",
+            "in": "query"
           }
         ],
         "responses": {
@@ -9828,6 +9958,19 @@
             "required": false,
             "name": "value",
             "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "standard",
+                "extended",
+                "all"
+              ]
+            },
+            "required": false,
+            "name": "embedLimit",
+            "in": "query"
           }
         ],
         "responses": {
@@ -10054,6 +10197,19 @@
             "required": true,
             "name": "entityId",
             "in": "path"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "standard",
+                "extended",
+                "all"
+              ]
+            },
+            "required": false,
+            "name": "embedLimit",
+            "in": "query"
           }
         ],
         "responses": {
@@ -10977,7 +11133,9 @@
             "schema": {
               "type": "string",
               "enum": [
-                "messageId"
+                "contact",
+                "messageId",
+                "source"
               ]
             },
             "required": false,
@@ -10990,6 +11148,19 @@
             },
             "required": false,
             "name": "value",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "standard",
+                "extended",
+                "all"
+              ]
+            },
+            "required": false,
+            "name": "embedLimit",
             "in": "query"
           }
         ],
@@ -11283,7 +11454,9 @@
             "schema": {
               "type": "string",
               "enum": [
-                "messageId"
+                "contact",
+                "messageId",
+                "source"
               ]
             },
             "required": false,
@@ -11296,6 +11469,19 @@
             },
             "required": false,
             "name": "value",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "standard",
+                "extended",
+                "all"
+              ]
+            },
+            "required": false,
+            "name": "embedLimit",
             "in": "query"
           }
         ],
@@ -11573,6 +11759,19 @@
             "required": true,
             "name": "entityId",
             "in": "path"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "standard",
+                "extended",
+                "all"
+              ]
+            },
+            "required": false,
+            "name": "embedLimit",
+            "in": "query"
           }
         ],
         "responses": {
@@ -11849,6 +12048,19 @@
             "required": false,
             "name": "embed",
             "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "standard",
+                "extended",
+                "all"
+              ]
+            },
+            "required": false,
+            "name": "embedLimit",
+            "in": "query"
           }
         ],
         "responses": {
@@ -11942,34 +12154,6 @@
                 }
               }
             }
-          }
-        }
-      }
-    },
-    "/api/v1/projects/{projectId}/events": {
-      "get": {
-        "tags": [
-          "Event"
-        ],
-        "operationId": "list-events",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "schema": {
-              "type": "string"
-            },
-            "required": true,
-            "name": "projectId",
-            "in": "path"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "List events"
           }
         }
       }
@@ -12458,6 +12642,19 @@
             },
             "required": false,
             "name": "embed",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "standard",
+                "extended",
+                "all"
+              ]
+            },
+            "required": false,
+            "name": "embedLimit",
             "in": "query"
           }
         ],
@@ -13225,6 +13422,19 @@
             "required": false,
             "name": "embed",
             "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "standard",
+                "extended",
+                "all"
+              ]
+            },
+            "required": false,
+            "name": "embedLimit",
+            "in": "query"
           }
         ],
         "responses": {
@@ -13578,6 +13788,19 @@
             },
             "required": false,
             "name": "embed",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "standard",
+                "extended",
+                "all"
+              ]
+            },
+            "required": false,
+            "name": "embedLimit",
             "in": "query"
           }
         ],

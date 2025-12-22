@@ -33,7 +33,7 @@ export default function ViewCampaignPage() {
   const { mutate: campaignsMutate } = useCampaignsWithEmails();
   const { data: campaign, mutate: campaignMutate } = useCampaign(id ?? "");
 
-  const { data: emails } = useEmailsByCampaign(campaign?.id);
+  const { data: emails } = useEmailsByCampaign(campaign);
 
   const [confirmModal, setConfirmModal] = useState(false);
   const [delay, setDelay] = useState(0);

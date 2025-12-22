@@ -1,3 +1,4 @@
+import type { EmbedLimit } from "@sendra/lib";
 import type { Event } from "@sendra/shared";
 import useSWR from "swr";
 import { useCurrentProject } from "./projects";
@@ -18,8 +19,8 @@ export function useEventTypes() {
   return useSWR<{ eventTypes: { name: string }[] }>(`/projects/${currentProject.id}/event-types/all`);
 }
 
-export function useEventTypesWithEvents() {
+export function useEventTypesWithEvents(embedLimit?: EmbedLimit) {
   const currentProject = useCurrentProject();
 
-  return useSWR<{ eventTypes: EventType[] }>(`/projects/${currentProject.id}/event-types/all?embed=events`);
+  return useSWR<{ eventTypes: EventType[] }>(`/projects/${currentProject.id}/event-types/all?embed=events&embedLimit=${embedLimit}`);
 }

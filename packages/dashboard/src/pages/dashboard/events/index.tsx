@@ -1,4 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { EmbedLimit } from "@sendra/lib";
 import { EventSchemas } from "@sendra/shared";
 import dayjs from "dayjs";
 import { Plus, TerminalSquare } from "lucide-react";
@@ -9,6 +10,7 @@ import { toast } from "sonner";
 import Badge from "../../../components/Badge/Badge";
 import { BlackButton } from "../../../components/Buttons/BlackButton";
 import Card from "../../../components/Card/Card";
+import Dropdown from "../../../components/Input/Dropdown/Dropdown";
 import Input from "../../../components/Input/Input/Input";
 import Modal from "../../../components/Overlay/Modal/Modal";
 import Skeleton from "../../../components/Skeleton/Skeleton";
@@ -31,7 +33,8 @@ export default function Index() {
   const project = useCurrentProject();
   const user = useUser();
   const { data: contacts } = useAllContacts();
-  const { data: eventTypeData, mutate } = useEventTypesWithEvents();
+  const [embedLimit, setEmbedLimit] = useState<EmbedLimit>("standard");
+  const { data: eventTypeData, mutate, isLoading } = useEventTypesWithEvents(embedLimit);
   const eventTypes = useMemo(() => eventTypeData?.eventTypes ?? [], [eventTypeData]);
 
   const [eventModal, setEventModal] = useState(false);
@@ -99,148 +102,135 @@ export default function Index() {
         title="Events"
         description="View the events your application has sent to Sendra"
         actions={
-          <BlackButton onClick={() => setEventModal(true)}>
-            <Plus strokeWidth={1.5} size={18} />
-            New
-          </BlackButton>
+          <>
+            <Dropdown
+              values={[
+                { name: "Standard", value: "standard" },
+                { name: "Extended", value: "extended" },
+                { name: "All", value: "all" },
+              ]}
+              selectedValue={embedLimit}
+              onChange={(v) => setEmbedLimit(v as EmbedLimit)}
+            />
+            <BlackButton onClick={() => setEventModal(true)}>
+              <Plus strokeWidth={1.5} size={18} />
+              New
+            </BlackButton>
+          </>
         }
       >
-        {eventTypes && contacts ? (
+        {eventTypes && contacts && !isLoading ? (
           eventTypes.length > 0 ? (
-            <Table
-              values={eventTypes
-                .sort((a, b) => {
-                  const aTrigger = a._embed.events.length > 0 ? a._embed.events.sort()[0].createdAt : a.name;
+            <>
+              {embedLimit === "standard" && <p className="text-sm text-neutral-700 my-2">Showing events from the last 30 days or up to 250 events per event type</p>}
+              {embedLimit === "extended" && <p className="text-sm text-neutral-700 my-2">Showing events from the last year or up to 1000 events per event type</p>}
+              {embedLimit === "all" && <p className="text-sm text-neutral-700 my-2">Showing all events</p>}
+              <Table
+                values={eventTypes
+                  .filter((e) => e._embed.events.length > 0)
+                  .sort((a, b) => {
+                    const aTrigger = a._embed.events.length > 0 ? a._embed.events.sort()[0].createdAt : a.name;
 
-                  const bTrigger = b._embed.events.length > 0 ? b._embed.events.sort()[0].createdAt : b.name;
+                    const bTrigger = b._embed.events.length > 0 ? b._embed.events.sort()[0].createdAt : b.name;
 
-                  return bTrigger > aTrigger ? 1 : -1;
-                })
-                .map((e) => {
-                  return {
-                    Event: e.name,
-                    "Triggered by users": (
-                      <Badge type="info">{`${e._embed.events.length > 0 ? Math.round(([...new Map(e._embed.events.map((t) => [t.contact, t])).values()].length / contacts.length) * 100) : 0}%`}</Badge>
-                    ),
-                    "Total triggers": e._embed.events.length,
-                    Timeline: (
-                      <>
-                        <ResponsiveContainer width={100} height={40}>
-                          <AreaChart
-                            width={100}
-                            height={40}
-                            data={Object.entries(
-                              e._embed.events.reduce(
-                                (acc, cur) => {
-                                  const date = dayjs(cur.createdAt).format("MM/YYYY");
+                    return bTrigger > aTrigger ? 1 : -1;
+                  })
+                  .map((e) => {
+                    return {
+                      Event: e.name,
+                      "Triggered by users": (
+                        <Badge type="info">{`${e._embed.events.length > 0 ? Math.round(([...new Map(e._embed.events.map((t) => [t.contact, t])).values()].length / contacts.length) * 100) : 0}%`}</Badge>
+                      ),
+                      "Total triggers": e._embed.events.length,
+                      Timeline: (
+                        <>
+                          <ResponsiveContainer width={100} height={40}>
+                            <AreaChart
+                              width={100}
+                              height={40}
+                              data={Object.entries(
+                                e._embed.events.reduce(
+                                  (acc, cur) => {
+                                    const date = dayjs(cur.createdAt).format("MM/YYYY");
 
-                                  if (acc[date]) {
-                                    acc[date] += 1;
-                                  } else {
-                                    acc[date] = 1;
-                                  }
+                                    if (acc[date]) {
+                                      acc[date] += 1;
+                                    } else {
+                                      acc[date] = 1;
+                                    }
 
-                                  return acc;
+                                    return acc;
+                                  },
+                                  {} as Record<string, number>,
+                                ),
+                              )
+                                .sort((a, b) => {
+                                  // day is the month with year e.g 01/2021
+                                  const aDay = a[0];
+                                  const bDay = b[0];
+
+                                  return aDay > bDay ? 1 : -1;
+                                })
+                                .map(([day, count]) => {
+                                  return {
+                                    day,
+                                    count,
+                                  };
+                                })}
+                              margin={{
+                                top: 5,
+                                right: 0,
+                                left: 0,
+                              }}
+                            >
+                              <defs>
+                                <linearGradient id="gradientFill" x1="0" y1="0" x2="0" y2="1">
+                                  <stop offset="100%" stopColor="#2563eb" stopOpacity={0.4} />
+                                  <stop offset="100%" stopColor="#93c5fd" stopOpacity={0} />
+                                </linearGradient>
+                              </defs>
+
+                              <YAxis axisLine={false} fill={"#fff"} tickSize={0} width={5} interval={0} />
+
+                              <Area type="monotone" dataKey="count" stroke="#2563eb" fill="url(#gradientFill)" strokeWidth={2} />
+                            </AreaChart>
+                          </ResponsiveContainer>
+                        </>
+                      ),
+                      "Last Activity": lastActivity(e),
+                      Trigger: (
+                        <button
+                          onClick={() => {
+                            toast.promise(
+                              network.fetch(`/projects/${project.id}/track`, {
+                                method: "POST",
+                                body: {
+                                  email: user?.email ?? "",
+                                  event: e.name,
+                                  subscribed: true,
                                 },
-                                {} as Record<string, number>,
-                              ),
-                            )
-                              .sort((a, b) => {
-                                // day is the month with year e.g 01/2021
-                                const aDay = a[0];
-                                const bDay = b[0];
-
-                                return aDay > bDay ? 1 : -1;
-                              })
-                              .map(([day, count]) => {
-                                return {
-                                  day,
-                                  count,
-                                };
-                              })}
-                            margin={{
-                              top: 5,
-                              right: 0,
-                              left: 0,
-                            }}
-                          >
-                            <defs>
-                              <linearGradient id="gradientFill" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="100%" stopColor="#2563eb" stopOpacity={0.4} />
-                                <stop offset="100%" stopColor="#93c5fd" stopOpacity={0} />
-                              </linearGradient>
-                            </defs>
-
-                            <YAxis axisLine={false} fill={"#fff"} tickSize={0} width={5} interval={0} />
-
-                            <Area type="monotone" dataKey="count" stroke="#2563eb" fill="url(#gradientFill)" strokeWidth={2} />
-                          </AreaChart>
-                        </ResponsiveContainer>
-                      </>
-                    ),
-                    "Last Activity": lastActivity(e),
-                    Trigger: (
-                      <button
-                        onClick={() => {
-                          toast.promise(
-                            network.fetch(`/projects/${project.id}/track`, {
-                              method: "POST",
-                              body: {
-                                email: user?.email ?? "",
-                                event: e.name,
-                                subscribed: true,
+                              }),
+                              {
+                                loading: "Creating new trigger",
+                                success: () => {
+                                  void mutate();
+                                  return "Trigger created";
+                                },
+                                error: "Could not create new trigger!",
                               },
-                            }),
-                            {
-                              loading: "Creating new trigger",
-                              success: () => {
-                                void mutate();
-                                return "Trigger created";
-                              },
-                              error: "Could not create new trigger!",
-                            },
-                          );
-                        }}
-                        className={"flex items-center text-center text-sm font-medium transition hover:text-neutral-800"}
-                      >
-                        <TerminalSquare size={18} />
-                      </button>
-                    ),
-                  };
-                })}
-            />
+                            );
+                          }}
+                          className={"flex items-center text-center text-sm font-medium transition hover:text-neutral-800"}
+                        >
+                          <TerminalSquare size={18} />
+                        </button>
+                      ),
+                    };
+                  })}
+              />
+            </>
           ) : (
             <Empty title={"No events"} description={"You have not yet posted an event to Sendra"} />
-          )
-        ) : (
-          <Skeleton type={"table"} />
-        )}
-      </Card>
-      <Card title="Template events" description="Events linked to your templates">
-        {eventTypes && contacts ? (
-          eventTypes.length > 0 ? (
-            <Table
-              values={eventTypes
-                .sort((a, b) => {
-                  const aTrigger = a._embed.events.length > 0 ? a._embed.events.sort()[0].createdAt : a.name;
-
-                  const bTrigger = b._embed.events.length > 0 ? b._embed.events.sort()[0].createdAt : b.name;
-
-                  return bTrigger > aTrigger ? 1 : -1;
-                })
-                .map((e) => {
-                  return {
-                    Event: e.name,
-                    "Triggered by users": (
-                      <Badge type="info">{`${e._embed.events.length > 0 ? Math.round(([...new Map(e._embed.events.map((t) => [t.contact, t])).values()].length / contacts.length) * 100) : 0}%`}</Badge>
-                    ),
-                    "Total times triggered": e._embed.events.length,
-                    "Last Activity": lastActivity(e),
-                  };
-                })}
-            />
-          ) : (
-            <Empty title={"No template events"} description={"All delivery tracking for templates can be found here"} />
           )
         ) : (
           <Skeleton type={"table"} />

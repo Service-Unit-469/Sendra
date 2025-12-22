@@ -1,7 +1,7 @@
 import type { Campaign } from "@sendra/shared";
 import { CampaignSchema } from "@sendra/shared";
 import { BasePersistence, type Embeddable, type IndexInfo } from "./BasePersistence";
-import { embedHelper } from "./utils/EmbedHelper";
+import { type EmbedLimit, embedHelper } from "./utils/EmbedHelper";
 import { HttpException } from "./utils/HttpException";
 
 export class CampaignPersistence extends BasePersistence<Campaign> {
@@ -9,8 +9,14 @@ export class CampaignPersistence extends BasePersistence<Campaign> {
     super(`CAMPAIGN#${projectId}`, CampaignSchema);
   }
 
-  async embed(items: Campaign[], embed?: Embeddable[]) {
-    return await embedHelper(items, "campaign", ["emails"], embed);
+  async embed(items: Campaign[], embed?: Embeddable[], embedLimit?: EmbedLimit) {
+    return await embedHelper({
+      items,
+      key: "campaign",
+      supportedEmbed: ["emails"],
+      embed,
+      embedLimit: embedLimit ?? "all",
+    });
   }
 
   getIndexInfo(): IndexInfo {

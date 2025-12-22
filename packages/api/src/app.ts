@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { OpenAPIHono } from "@hono/zod-openapi";
-import { rootLogger, setRequestInfo, withMetrics } from "@sendra/lib";
+import { getEmailConfig, getMetricsLogger, getRequestCapacityUsed, rootLogger, setRequestCapacityUsed, setRequestInfo, withMetrics } from "@sendra/lib";
 import { Unit } from "aws-embedded-metrics";
 import type { Context, Next } from "hono";
 import { handle } from "hono/aws-lambda";
@@ -38,7 +38,7 @@ export const app = new OpenAPIHono<{
 }).basePath("/api/v1");
 
 app.onError((error, c) => {
-  rootLogger.error({ error, message: error.message }, "Error handling request");
+  rootLogger.error({ err: error, message: error.message }, "Error handling request");
   return sendProblem(c, error);
 });
 app.use(
@@ -46,15 +46,35 @@ app.use(
   createMiddleware((c: Context, next: Next) => {
     const requestId = c.req.header("x-request-id") ?? randomUUID();
     const correlationId = c.req.header("x-correlation-id") ?? randomUUID();
-    const promise = new Promise<void>((resolve) =>
+    return new Promise<void>((resolve) =>
       setRequestInfo({ requestId, correlationId }, async () => {
         await next();
         resolve();
       }),
     );
-    return promise;
   }),
 );
+
+app.use(
+  "*",
+  createMiddleware((c: Context, next: Next) => {
+    if (c.req.method.toLowerCase() === "options") {
+      return next();
+    }
+    return new Promise<void>((resolve) =>
+      setRequestCapacityUsed({ used: 0 }, async () => {
+        const metricsLogger = getMetricsLogger({ Operation: "ApiRequest" });
+        metricsLogger.setProperty("Method", c.req.method);
+        metricsLogger.setProperty("Path", c.req.path);
+        await next();
+        const { used } = getRequestCapacityUsed();
+        metricsLogger.putMetric("CapacityUsed", used, Unit.Count);
+        resolve();
+      }),
+    );
+  }),
+);
+
 app.use("*", (c: Context, next: Next) => {
   const promise = new Promise<void>((resolve) =>
     withMetrics(
@@ -118,6 +138,11 @@ app.doc("/doc", {
     version: "1.0.0",
     title: "Sendra API",
   },
+  servers: [
+    {
+      url: `${getEmailConfig().appUrl}/api/v1`,
+    },
+  ],
 });
 
 export const handler = handle(app);

@@ -10,3 +10,5 @@ export { MembershipPersistence } from "./MembershipPersistence";
 export { ProjectPersistence } from "./ProjectPersistence";
 export { TemplatePersistence } from "./TemplatePersistence";
 export { UserPersistence } from "./UserPersistence";
+export type { EmbedLimit } from "./utils/EmbedHelper";
+export { getEmbedLimitFunction } from "./utils/EmbedHelper";
