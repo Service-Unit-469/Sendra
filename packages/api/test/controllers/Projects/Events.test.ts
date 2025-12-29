@@ -915,6 +915,90 @@ describe("Events Endpoint Contract Tests", () => {
       });
     });
 
+    test("should merge array data properties when tracking event", async () => {
+      const { project } = await createTestSetup();
+      
+      const contactPersistence = new ContactPersistence(project.id);
+      const contact = await contactPersistence.create({
+        project: project.id,
+        email: "arraymerge@example.com",
+        subscribed: true,
+        data: { 
+          tags: ["tag1", "tag2"],
+          interests: ["coding", "reading"],
+        },
+      });
+
+      const eventPayload = {
+        event: "tags.updated",
+        email: "arraymerge@example.com",
+        data: {
+          tags: ["tag2", "tag3"], // tag2 already exists, tag3 is new
+          interests: ["coding", "gaming"], // coding already exists, gaming is new
+        },
+      };
+
+      const publicToken = AuthService.createProjectToken(project.public, "public", project.id);
+
+      const response = await app.request(`/api/v1/projects/${project.id}/track`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${publicToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(eventPayload),
+      });
+
+      expect(response.status).toBe(200);
+
+      // Verify array data was merged correctly (no duplicates, new items added)
+      const updatedContact = await contactPersistence.get(contact.id);
+      expect(updatedContact?.data.tags).toEqual(expect.arrayContaining(["tag1", "tag2", "tag3"]));
+      expect(updatedContact?.data.tags).toHaveLength(3);
+      expect(updatedContact?.data.interests).toEqual(expect.arrayContaining(["coding", "reading", "gaming"]));
+      expect(updatedContact?.data.interests).toHaveLength(3);
+    });
+
+    test("should replace non-array value with array when tracking event", async () => {
+      const { project } = await createTestSetup();
+      
+      const contactPersistence = new ContactPersistence(project.id);
+      const contact = await contactPersistence.create({
+        project: project.id,
+        email: "replacewitharray@example.com",
+        subscribed: true,
+        data: { 
+          tags: "single-tag", // non-array value
+        },
+      });
+
+      const eventPayload = {
+        event: "tags.updated",
+        email: "replacewitharray@example.com",
+        data: {
+          tags: ["tag1", "tag2"], // array value
+        },
+      };
+
+      const publicToken = AuthService.createProjectToken(project.public, "public", project.id);
+
+      const response = await app.request(`/api/v1/projects/${project.id}/track`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${publicToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(eventPayload),
+      });
+
+      expect(response.status).toBe(200);
+
+      // Verify non-array was replaced with array (no merging when types don't match)
+      const updatedContact = await contactPersistence.get(contact.id);
+      expect(updatedContact?.data.tags).toEqual(["tag1", "tag2"]);
+      expect(Array.isArray(updatedContact?.data.tags)).toBe(true);
+    });
+
     test("should update contact subscription status when tracking event", async () => {
       const { project } = await createTestSetup();
       
