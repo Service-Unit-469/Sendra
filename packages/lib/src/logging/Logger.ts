@@ -20,6 +20,7 @@ const createLogger = () =>
         const requestInfo = getRequestInfo();
         return {
           reqId: requestInfo.requestId,
+          correlationId: requestInfo.correlationId,
         };
       },
       formatters: {
