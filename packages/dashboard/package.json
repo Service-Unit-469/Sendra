@@ -73,7 +73,7 @@
 		"quill": "^2.0.3",
 		"react": "19.2.0",
 		"react-dom": "19.2.0",
-		"react-error-boundary": "^6.0.0",
+		"react-error-boundary": "^6.0.1",
 		"react-hook-form": "^7.69.0",
 		"react-router-dom": "^7.9.6",
 		"react-window": "^2.2.3",
