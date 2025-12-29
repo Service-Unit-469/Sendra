@@ -164,6 +164,12 @@ POST /projects/:projectId/track
 }
 ```
 
+The data provided will be used to update the contact in the following manner:
+
+ - Any new key will be added to the contact
+ - Any existing key where both the existing and updated value are arrays, only new values will be appended to the array
+ - Any other value of an existing key will be overridden
+
 See the [API Documentation](../api.html) for complete details.
 
 ### Transient Event Data

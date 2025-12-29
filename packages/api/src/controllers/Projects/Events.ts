@@ -324,7 +324,15 @@ export const registerEventsRoutes = (app: AppType) => {
         const givenUserData = Object.entries(data);
 
         givenUserData.forEach(([key, value]) => {
-          dataToUpdate[key] = value;
+          if (Array.isArray(dataToUpdate[key]) && Array.isArray(value)) {
+            for (const item of value) {
+              if (!dataToUpdate[key].includes(item)) {
+                dataToUpdate[key].push(item);
+              }
+            }
+          } else if (dataToUpdate[key] !== value) {
+            dataToUpdate[key] = value;
+          }
         });
 
         // Update contact data
