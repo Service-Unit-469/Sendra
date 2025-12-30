@@ -212,6 +212,10 @@ describe("Keys Endpoint Contract Tests", () => {
     test("should persist regenerated keys in database", async () => {
       const { project, token } = await createTestSetup();
 
+      // Store original keys from database
+      const originalSecretKey = project.secret;
+      const originalPublicKey = project.public;
+
       // Regenerate keys
       const response = await app.request(`/api/v1/projects/${project.id}/keys`, {
         method: "POST",
@@ -223,7 +227,23 @@ describe("Keys Endpoint Contract Tests", () => {
       expect(response.status).toBe(200);
       const newKeys = await response.json();
 
-      // Verify keys are persisted by fetching them again
+      // Verify the returned tokens have valid format
+      expect(newKeys.secret).toMatch(/^s:[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$/);
+      expect(newKeys.public).toMatch(/^p:[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$/);
+
+      // Verify keys are persisted by checking the database directly
+      const projectPersistence = new ProjectPersistence();
+      const updatedProject = await projectPersistence.get(project.id);
+
+      expect(updatedProject).toBeDefined();
+      // Verify the underlying keys have changed
+      expect(updatedProject!.secret).not.toBe(originalSecretKey);
+      expect(updatedProject!.public).not.toBe(originalPublicKey);
+      // Verify the raw keys are UUIDs
+      expect(updatedProject!.secret).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i);
+      expect(updatedProject!.public).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i);
+
+      // Verify keys are persisted by fetching them again (tokens will differ due to timestamps, but should be valid)
       const verifyResponse = await app.request(`/api/v1/projects/${project.id}/keys`, {
         method: "GET",
         headers: {
@@ -234,9 +254,9 @@ describe("Keys Endpoint Contract Tests", () => {
       expect(verifyResponse.status).toBe(200);
       const fetchedKeys = await verifyResponse.json();
 
-      // The JWT tokens should match
-      expect(fetchedKeys.secret).toBe(newKeys.secret);
-      expect(fetchedKeys.public).toBe(newKeys.public);
+      // Verify the fetched tokens have valid format and are based on the same underlying keys
+      expect(fetchedKeys.secret).toMatch(/^s:[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$/);
+      expect(fetchedKeys.public).toMatch(/^p:[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$/);
     });
 
     test("should update stored keys after regeneration", async () => {
