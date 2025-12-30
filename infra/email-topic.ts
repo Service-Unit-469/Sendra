@@ -3,6 +3,8 @@
 import { dynamo } from "./dynamo";
 import { passEnvironmentVariables } from "./env";
 import { router } from "./route";
+import * as aws from "@pulumi/aws";
+import * as pulumi from "@pulumi/pulumi";
 
 export const emailTopic = new sst.aws.SnsTopic("EmailTopic");
 
@@ -25,23 +27,57 @@ emailTopic.subscribe("EmailTopicSubscriber", {
   },
 });
 
-let configurationSet: aws.ses.ConfigurationSet;
-try {
-  configurationSet =  aws.ses.ConfigurationSet.get(`SendraConfigurationSet-${$app.stage}`, "");
-} catch (error) {
-  configurationSet = new aws.ses.ConfigurationSet("SendraConfigurationSet", {
-    name: `SendraConfigurationSet-${$app.stage}`,
-  });
-}
-export { configurationSet };
+const configurationSetName = `SendraConfigurationSet-${$app.stage}`;
 
-export const eventDestination: aws.ses.EventDestination =
-  new aws.ses.EventDestination("SendraConfigurationSetDestination", {
-    name: `SendraConfigurationSetDestination-${$app.stage}`,
-    configurationSetName: configurationSet.name,
-    enabled: true,
-    matchingTypes: ["send", "bounce", "complaint", "delivery", "open", "click"],
-    snsDestination: {
-      topicArn: emailTopic.arn,
+// Check if configuration set exists by wrapping getConfigurationSetOutput
+// in a way that handles errors gracefully
+const configSetExists = pulumi.output(
+  (async () => {
+    try {
+      await aws.sesv2.getConfigurationSet({
+        configurationSetName: configurationSetName,
+      });
+      return true;
+    } catch {
+      return false;
+    }
+  })(),
+);
+
+// Create or reference configuration set based on existence
+export const configurationSet = configSetExists.apply((exists) => {
+  if (exists) {
+    // Reference existing configuration set
+    return aws.sesv2.ConfigurationSet.get(
+      "SendraConfigurationSet",
+      configurationSetName,
+    );
+  } else {
+    // Create new configuration set
+    return new aws.sesv2.ConfigurationSet("SendraConfigurationSet", {
+      configurationSetName: configurationSetName,
+    });
+  }
+});
+
+export const eventDestination = new aws.sesv2.ConfigurationSetEventDestination(
+  "SendraConfigurationSetDestination",
+  {
+    configurationSetName: configurationSet.configurationSetName,
+    eventDestinationName: `SendraConfigurationSetDestination-${$app.stage}`,
+    eventDestination: {
+      enabled: true,
+      matchingEventTypes: [
+        "SEND",
+        "BOUNCE",
+        "COMPLAINT",
+        "DELIVERY",
+        "OPEN",
+        "CLICK",
+      ],
+      snsDestination: {
+        topicArn: emailTopic.arn,
+      },
     },
-  });
+  },
+);
