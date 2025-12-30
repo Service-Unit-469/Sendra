@@ -113,6 +113,14 @@ export default function ContactDetailPage() {
     void mutate();
   };
 
+  // Calculate metrics
+  const totalEmails = contact._embed.emails.length;
+  const openedEmails = contact._embed.emails.filter((email) => email.status === "OPENED").length;
+  const clickEvents = contact._embed.events.filter((event) => event.eventType === "email.click");
+  const uniqueClickedEmails = new Set(clickEvents.filter((event) => event.email).map((event) => event.email)).size;
+  const openRate = totalEmails > 0 ? (openedEmails / totalEmails) * 100 : 0;
+  const clickRate = totalEmails > 0 ? (uniqueClickedEmails / totalEmails) * 100 : 0;
+
   const remove = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
     toast.promise(
@@ -181,6 +189,22 @@ export default function ContactDetailPage() {
             showEmailField={false}
             submitButtonText="Save"
           />
+        </div>
+      </Card>
+      <Card title={"Metrics Summary"}>
+        <div className="grid grid-cols-3 gap-6">
+          <div>
+            <p className="font-medium text-neutral-600">Emails Sent</p>
+            <p className="text-2xl font-semibold text-neutral-800">{totalEmails}</p>
+          </div>
+          <div>
+            <p className="font-medium text-neutral-600">Open Rate</p>
+            <p className="text-2xl font-semibold text-neutral-800">{openRate.toFixed(2)}%</p>
+          </div>
+          <div>
+            <p className="font-medium text-neutral-600">Click Rate</p>
+            <p className="text-2xl font-semibold text-neutral-800">{clickRate.toFixed(2)}%</p>
+          </div>
         </div>
       </Card>
       <Card title={"Journey"}>
