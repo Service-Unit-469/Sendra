@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import { Book, Eye, Frown, Globe, LineChart, LineChartIcon, Send } from "lucide-react";
+import { Book, Frown, Globe, LineChart, LineChartIcon, Send } from "lucide-react";
 import { Link } from "react-router-dom";
 import Badge from "../../components/Badge/Badge";
 import Card from "../../components/Card/Card";
@@ -79,41 +79,26 @@ export default function Home() {
               values={feed.map((f) => {
                 if ("messageId" in f && f.contact) {
                   return {
-                    Email: f.contact?.email,
+                    Email: f.contact && <Link to={`/contacts/${f.contact?.id}`}>{f.contact?.email}</Link>,
                     Activity: <Badge type="info">{`Email ${f.status.toLowerCase()}`}</Badge>,
                     Type: <Badge type={"success"}>Email</Badge>,
                     Time: dayjs().to(dayjs(f.createdAt)),
-                    View: f.contact && (
-                      <Link to={`/contacts/${f.contact?.id}`}>
-                        <Eye size={20} />
-                      </Link>
-                    ),
                   };
                 }
                 if ("action" in f && f.action) {
                   return {
-                    Email: f.contact?.email,
+                    Email: f.contact && <Link to={`/contacts/${f.contact?.id}`}>{f.contact?.email}</Link>,
                     Activity: <Badge type="info">{f.action?.name}</Badge>,
                     Type: <Badge type="info">Action</Badge>,
                     Time: dayjs().to(dayjs(f.createdAt)),
-                    View: f.contact && (
-                      <Link to={`/contacts/${f.contact.id}`}>
-                        <Eye size={20} />
-                      </Link>
-                    ),
                   };
                 }
                 if ("event" in f && f.event) {
                   return {
-                    Email: f.contact?.email,
+                    Email: f.contact && <Link to={`/contacts/${f.contact?.id}`}>{f.contact?.email}</Link>,
                     Activity: <Badge type="info">{f.event.name}</Badge>,
                     Type: <Badge type={"purple"}>Event</Badge>,
                     Time: dayjs().to(dayjs(f.createdAt)),
-                    View: f.contact && (
-                      <Link to={`/contacts/${f.contact?.id}`}>
-                        <Eye size={20} />
-                      </Link>
-                    ),
                   };
                 }
 

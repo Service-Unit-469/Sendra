@@ -1,8 +1,9 @@
 import dayjs from "dayjs";
-import { Edit2, Plus, Upload } from "lucide-react";
+import { Plus, Upload } from "lucide-react";
 import { useCallback, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { BlackButton } from "../../../components/Buttons/BlackButton";
+import { LoadingButton } from "../../../components/Buttons/LoadingButton";
 import Card from "../../../components/Card/Card";
 import { ContactForm } from "../../../components/ContactForm/ContactForm";
 import { ContactImport } from "../../../components/ContactImport/ContactImport";
@@ -72,24 +73,17 @@ export default function Index() {
       return (
         <>
           <Table
-            values={filterContacts
-              .sort((a, b) => {
-                const aTrigger = a.updatedAt;
-                const bTrigger = b.updatedAt;
-                return bTrigger > aTrigger ? 1 : -1;
-              })
-              .map((u) => {
-                return {
-                  Email: u.email,
-                  Created: dayjs().to(u.updatedAt).toString(),
-                  Subscribed: u.subscribed,
-                  Edit: (
-                    <Link to={`/contacts/${u.id}`} className="transition hover:text-neutral-800" aria-label="Edit contact">
-                      <Edit2 size={18} />
-                    </Link>
-                  ),
-                };
-              })}
+            values={filterContacts.map((u) => {
+              return {
+                Email: (
+                  <Link to={`/contacts/${u.id}`} className="transition hover:text-neutral-800 ">
+                    {u.email}
+                  </Link>
+                ),
+                Created: dayjs().to(u.updatedAt).toString(),
+                Subscribed: u.subscribed,
+              };
+            })}
           />
           <nav className="flex items-center justify-between py-3" aria-label="Pagination">
             <div className="hidden sm:block">
@@ -98,11 +92,7 @@ export default function Index() {
               </p>
             </div>
             <div className="flex flex-1 justify-between gap-1 sm:justify-end">
-              {hasMore && (
-                <button onClick={() => setSize(size + 1)} className={"flex w-28 items-center justify-center gap-x-0.5 rounded-sm bg-neutral-800 py-2 text-center text-sm font-medium text-white"}>
-                  Load More
-                </button>
-              )}
+              <div className="w-28">{(hasMore || isValidating) && <LoadingButton onClick={() => setSize(size + 1)} label="Load More" state={isValidating ? "loading" : "idle"} />}</div>
             </div>
           </nav>
         </>

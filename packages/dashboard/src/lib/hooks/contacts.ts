@@ -32,13 +32,13 @@ export function useContacts() {
     count: number;
   }>((_, prev) => {
     if (!prev) {
-      return `/projects/${currentProject.id}/contacts`;
+      return `/projects/${currentProject.id}/contacts?limit=50`;
     }
     if (!prev.cursor) {
       return null; // reached the end
     }
 
-    const params = new URLSearchParams({ cursor: prev.cursor });
+    const params = new URLSearchParams({ cursor: prev.cursor, limit: "50" });
     return `/projects/${currentProject.id}/contacts?${params.toString()}`; // SWR key
   });
 }
