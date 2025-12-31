@@ -1,8 +1,9 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronLeft, ChevronRight, FileImage, Home, LayoutTemplate, LineChart, LogOut, Send, Settings, TerminalSquare, User, Users2, Workflow, X } from "lucide-react";
-import React, { type ReactElement, useEffect, useState } from "react";
+import { ChevronLeft, ChevronRight, FileImage, Home, LayoutTemplate, LineChart, LogOut, MessageCircle, Send, Settings, TerminalSquare, User, Users2, Workflow, X } from "lucide-react";
+import React, { type ReactElement, useEffect, useMemo, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import SendraLogo from "../../../icons/SendraLogo";
+import { useCurrentProjectSms } from "../../../lib/hooks/projects";
 import ProjectSelector from "../ProjectSelector/ProjectSelector";
 
 type SidebarLinkType = {
@@ -17,7 +18,7 @@ export interface SidebarProps {
   onSidebarVisibilityChange: () => void;
 }
 
-const links: SidebarLinkType[] = [
+const staticLinks: SidebarLinkType[] = [
   {
     to: "/",
     text: "Dashboard",
@@ -102,6 +103,22 @@ export default function Sidebar({ mobileOpen, onSidebarVisibilityChange, wideLay
   const [projectSelectorOpen, setProjectSelectorOpen] = useState(false);
   const [expanded, setExpanded] = useState(false);
   useEffect(() => setExpanded(!wideLayout), [wideLayout]);
+  const { data: smsConfig } = useCurrentProjectSms();
+
+  const links = useMemo(() => {
+    return [
+      ...staticLinks,
+      ...(smsConfig?.enabled
+        ? [
+            {
+              to: "/sms",
+              text: "SMS",
+              icon: <MessageCircle />,
+            },
+          ]
+        : []),
+    ];
+  }, [smsConfig]);
 
   return (
     <>

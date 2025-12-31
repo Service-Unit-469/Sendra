@@ -21,6 +21,7 @@ This guide covers how to use the Sendra dashboard to manage your email infrastru
 - [Contacts & Groups](./user-guide/contacts-groups.html)
 - [Project Settings](./user-guide/project-settings.html)
 - [Quick Emails](./user-guide/quick-emails.html)
+- [SMS](./user-guide/sms.html)
 - [Templates](./user-guide/templates.html)
 
 ## Getting Started

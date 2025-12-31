@@ -1,4 +1,4 @@
-import z from "zod";
+import { z } from "@hono/zod-openapi";
 import { BaseSchema, email, id } from "./common";
 
 export const IdentitySchema = z.object({
@@ -6,6 +6,12 @@ export const IdentitySchema = z.object({
   identity: z.string(),
   mailFromDomain: z.string().optional(),
   verified: z.boolean().default(false),
+});
+
+export const SmsConfigSchema = z.object({
+  enabled: z.boolean().default(false),
+  phoneField: z.string().optional(),
+  groupSize: z.number().int().positive("Group size must be a positive number").default(20),
 });
 
 export const ProjectSchema = BaseSchema.extend({
@@ -17,6 +23,7 @@ export const ProjectSchema = BaseSchema.extend({
   name: z.string().min(1, "Name can't be empty"),
   public: z.string(),
   secret: z.string(),
+  sms: SmsConfigSchema.optional(),
   url: z.url(),
   colors: z.array(z.string()).default([]),
   contactDataSchema: z.string().optional(),
@@ -28,9 +35,10 @@ export const ProjectKeysSchema = z.object({
 });
 
 export const PublicProjectSchema = ProjectSchema.omit({
-  secret: true,
-  public: true,
   identity: true,
+  public: true,
+  secret: true,
+  sms: true,
 });
 
 export const ProjectSchemas = {

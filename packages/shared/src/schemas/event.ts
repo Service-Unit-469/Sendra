@@ -1,4 +1,4 @@
-import z from "zod";
+import { z } from "@hono/zod-openapi";
 import { DataSchema, email, id, ProjectEntitySchema, subscribed } from "./common";
 
 export const EventSchema = ProjectEntitySchema.extend({

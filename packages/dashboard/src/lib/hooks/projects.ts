@@ -1,4 +1,4 @@
-import type { Action, Contact, Email, Membership, ProjectIdentity, ProjectKeys, PublicProject } from "@sendra/shared";
+import type { Action, Contact, Email, Membership, ProjectIdentity, ProjectKeys, PublicProject, SmsConfig } from "@sendra/shared";
 import { useAtom } from "jotai";
 import { useMemo } from "react";
 import useSWR from "swr";
@@ -98,4 +98,9 @@ export function useCurrentProjectIdentity() {
 export function useCurrentProjectKeys() {
   const currentProject = useCurrentProject();
   return useSWR<ProjectKeys>(`/projects/${currentProject.id}/keys`);
+}
+
+export function useCurrentProjectSms() {
+  const currentProject = useCurrentProject();
+  return useSWR<SmsConfig>(`/projects/${currentProject.id}/sms`);
 }
