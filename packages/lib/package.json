@@ -6,7 +6,7 @@
   "private": true,
   "dependencies": {
     "@aws-sdk/client-s3": "^3.958.0",
-    "aws-embedded-metrics": "^3.0.0",
+    "aws-embedded-metrics": "^4.2.1",
     "@aws-sdk/client-ses": "^3.958.0",
     "@aws-sdk/client-sfn": "^3.958.0",
     "@aws-sdk/client-sqs": "^3.960.0",
