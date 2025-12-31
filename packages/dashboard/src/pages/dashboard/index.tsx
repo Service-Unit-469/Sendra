@@ -30,6 +30,8 @@ const MembersPage = lazy(() => import("./settings/members"));
 const TemplatesPage = lazy(() => import("./templates/index"));
 const NewTemplatePage = lazy(() => import("./templates/New"));
 const EditTemplatePage = lazy(() => import("./templates/Edit"));
+const SmsPage = lazy(() => import("./sms/index"));
+const SmsSettingsPage = lazy(() => import("./settings/sms"));
 
 /**
  *
@@ -72,6 +74,8 @@ export default function Index() {
         <Route path="/settings/api" element={<ApiPage />} />
         <Route path="/settings/identity" element={<IdentityPage />} />
         <Route path="/settings/members" element={<MembersPage />} />
+        <Route path="/settings/sms" element={<SmsSettingsPage />} />
+        <Route path="/sms" element={<SmsPage />} />
         <Route path="/templates" element={<TemplatesPage />} />
         <Route path="/templates/new" element={<NewTemplatePage />} />
         <Route path="/templates/:id" element={<EditTemplatePage />} />

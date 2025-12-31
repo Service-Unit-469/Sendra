@@ -24,6 +24,7 @@ import type {
   ProjectSchemas,
   PublicProjectSchema,
   SEND_TYPES,
+  SmsConfigSchema,
   SubscriberSchema,
   SubscriberUpdateSchema,
   TaskSchema,
@@ -78,6 +79,9 @@ export type TemplateCreate = z.infer<typeof TemplateSchemas.create>;
 export type TemplateUpdate = z.infer<typeof TemplateSchemas.update>;
 
 export type SendTypes = (typeof SEND_TYPES)[number];
+
+export type SmsConfig = z.infer<typeof SmsConfigSchema>;
+
 export type Subscriber = z.infer<typeof SubscriberSchema>;
 export type SubscriberUpdate = z.infer<typeof SubscriberUpdateSchema>;
 

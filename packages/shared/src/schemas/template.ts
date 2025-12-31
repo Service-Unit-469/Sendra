@@ -1,4 +1,4 @@
-import z from "zod";
+import { z } from "@hono/zod-openapi";
 import { BodySchema, email, ProjectEntitySchema, SEND_TYPES } from "./common";
 
 export const TemplateSchema = ProjectEntitySchema.extend({

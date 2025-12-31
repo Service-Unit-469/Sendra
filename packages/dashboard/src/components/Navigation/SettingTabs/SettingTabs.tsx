@@ -13,6 +13,7 @@ export default function SettingTabs() {
     { to: "/settings/api", text: "API Access", active: location.pathname === "/settings/api" },
     { to: "/settings/identity", text: "Verified Identity", active: location.pathname === "/settings/identity" },
     { to: "/settings/members", text: "Members", active: location.pathname === "/settings/members" },
+    { to: "/settings/sms", text: "SMS", active: location.pathname === "/settings/sms" },
   ];
 
   return <Tabs links={links} />;

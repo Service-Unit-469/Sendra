@@ -10,28 +10,18 @@ export default defineConfig({
         manualChunks: {
           // Vendor chunks
           "react-vendor": ["react", "react-dom", "react-router-dom"],
-          "ui-vendor": [
-            "@tiptap/react",
-            "@tiptap/starter-kit",
-            "framer-motion",
-            "lucide-react",
-          ],
-          "form-vendor": [
-            "react-hook-form",
-            "@hookform/resolvers",
-            "zod",
-          ],
+          "ui-vendor": ["framer-motion", "lucide-react"],
+          "rte-vendor": ["@tiptap/react", "@tiptap/starter-kit"],
+          "form-vendor": ["react-hook-form", "@hookform/resolvers", "zod"],
           "data-vendor": ["swr"],
-          "editor-vendor": [
-            "@measured/puck"
-          ],
+          "editor-vendor": ["@measured/puck"],
         },
         chunkFileNames: () => {
           return `assets/[name]-[hash].js`;
         },
       },
     },
-    
+
     // Optimize for production
     minify: "esbuild",
     sourcemap: true,
@@ -42,13 +32,6 @@ export default defineConfig({
   },
   // Optimize dependencies
   optimizeDeps: {
-    include: [
-      "react",
-      "react-dom",
-      "react-router-dom",
-      "swr",
-      "jotai",
-    ],
+    include: ["react", "react-dom", "react-router-dom", "swr", "jotai"],
   },
 });
-

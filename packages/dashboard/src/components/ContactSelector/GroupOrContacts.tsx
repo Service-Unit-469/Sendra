@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useAllContacts } from "../../lib/hooks/contacts";
 import { useAllGroups } from "../../lib/hooks/groups";
 import Dropdown from "../Input/Dropdown/Dropdown";
@@ -9,11 +9,10 @@ import ContactSelector from "./ContactSelector";
 
 const ContactSelectorWrapper = ({ onRecipientsChange, onGroupsChange, disabled, label, selectedContacts }: GroupOrContactsProps) => {
   const { data: contacts } = useAllContacts();
+  useEffect(() => onGroupsChange([]), [onGroupsChange]);
   if (!contacts) {
     return <Skeleton type="input" />;
   }
-
-  onGroupsChange([]);
   return <ContactSelector contacts={contacts} disabled={disabled} label={label} onChange={onRecipientsChange} initialSelectedContacts={selectedContacts} />;
 };
 

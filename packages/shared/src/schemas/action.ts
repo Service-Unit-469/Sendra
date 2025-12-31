@@ -1,4 +1,4 @@
-import z from "zod";
+import { z } from "@hono/zod-openapi";
 import { id, ProjectEntitySchema } from "./common";
 
 export const ActionSchema = ProjectEntitySchema.extend({

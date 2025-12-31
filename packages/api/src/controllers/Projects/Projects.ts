@@ -175,6 +175,7 @@ export const registerProjectCrudRoutes = (app: AppType) => {
         public: randomUUID(),
         eventTypes: [],
         colors: [],
+        sms: { enabled: false, groupSize: 20 },
       });
       await new MembershipPersistence().create({
         email: user.email,
