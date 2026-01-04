@@ -102,7 +102,7 @@ export default function Index() {
             </div>
 
             <div>
-              <PasswordInput label="Password" error={error} {...register("password")} />
+              <PasswordInput label="Password" error={errors.password} {...register("password")} />
               <div className={"w-full text-center"}>
                 <Link to={`/auth/forgot-password?email=${encodeURIComponent(watch("email") ?? "")}`} className={"text-sm text-neutral-500 underline transition ease-in-out hover:text-neutral-500"}>
                   Forgot your password?

@@ -6,7 +6,6 @@ import type { Context, Next } from "hono";
 import { handle } from "hono/aws-lambda";
 import { bodyLimit } from "hono/body-limit";
 import { compress } from "hono/compress";
-import { cors } from "hono/cors";
 import { createMiddleware } from "hono/factory";
 import { pinoLogger } from "hono-pino";
 import { registerAuthRoutes } from "./controllers/Auth";
@@ -115,15 +114,8 @@ app.use("*", compress());
 
 app.use("*", errorWrapper);
 
-app.use(
-  "*",
-  cors({
-    origin: "*",
-    allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowHeaders: ["Content-Type", "Authorization", "X-Request-Id", "X-Correlation-Id"],
-    credentials: true,
-  }),
-);
+// Allow OPTIONS requests for all routes since we are using API Gateway to handle CORS
+app.options("*", (c) => c.body(null));
 
 registerUserRoutes(app);
 registerAuthRoutes(app);

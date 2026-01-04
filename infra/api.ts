@@ -5,14 +5,19 @@ import { router } from "./route";
 import { jwtSecret } from "./secrets";
 import { delayedTaskStateMachine, taskQueue } from "./task-queue";
 
-export const api = new sst.aws.Function("ApiFn", {
-  url: {
-    router: {
-      instance: router,
-      path: "/api/v1",
-    },
-    cors: false,
+export const api = new sst.aws.ApiGatewayV2("ApiGateway", {
+  accessLog: {
+    retention: "1 week",
   },
+  cors: {
+    allowOrigins: ["http://localhost:3000", process.env.APP_URL ?? "*"],
+    allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowHeaders: ["Content-Type", "Authorization", "X-Request-Id", "X-Correlation-Id"],
+  },
+});
+router.route("/api/v1", api.url);
+
+api.route("ANY /api/v1/{proxy+}", {
   handler: "packages/api/src/app.handler",
   link: [dynamo, taskQueue, delayedTaskStateMachine, jwtSecret, assetsBucket],
   logging: {

@@ -4,6 +4,10 @@ if (apiUrl.endsWith("/")) {
   apiUrl = apiUrl.slice(0, -1);
 }
 
+if (!apiUrl.endsWith("/api/v1")) {
+  apiUrl = `${apiUrl}/api/v1`;
+}
+
 export const API_URI = apiUrl;
 export const AWS_REGION = import.meta.env.VITE_AWS_REGION;
 
