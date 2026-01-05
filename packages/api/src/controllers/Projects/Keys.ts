@@ -62,8 +62,8 @@ export const registerProjectKeysRoutes = (app: AppType) => {
         public: publicKey,
       });
 
-      const secret = AuthService.createProjectToken(secretKey, "secret", projectId);
-      const publicToken = AuthService.createProjectToken(publicKey, "public", projectId);
+      const secret = AuthService.createProjectToken(secretKey, "SECRET", projectId);
+      const publicToken = AuthService.createProjectToken(publicKey, "PUBLIC", projectId);
 
       return c.json({ secret, public: publicToken }, 200);
     },
@@ -108,8 +108,8 @@ export const registerProjectKeysRoutes = (app: AppType) => {
         throw new NotFound("project");
       }
 
-      const secret = AuthService.createProjectToken(project.secret, "secret", projectId);
-      const publicToken = AuthService.createProjectToken(project.public, "public", projectId);
+      const secret = AuthService.createProjectToken(project.secret, "SECRET", projectId);
+      const publicToken = AuthService.createProjectToken(project.public, "PUBLIC", projectId);
 
       return c.json({ secret, public: publicToken }, 200);
     },

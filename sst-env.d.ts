@@ -5,9 +5,8 @@
 
 declare module "sst" {
   export interface Resource {
-    "ApiFn": {
-      "name": string
-      "type": "sst.aws.Function"
+    "ApiGateway": {
+      "type": "sst.aws.ApiGatewayV2"
       "url": string
     }
     "AssetsBucket": {

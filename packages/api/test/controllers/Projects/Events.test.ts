@@ -140,7 +140,7 @@ describe("Events Endpoint Contract Tests", () => {
 
     test("should allow access with project secret key", async () => {
       const { project } = await createTestSetup();
-      const secretToken = AuthService.createProjectToken(project.secret, "secret", project.id);
+      const secretToken = AuthService.createProjectToken(project.secret, "SECRET", project.id);
 
       const response = await app.request(`/api/v1/projects/${project.id}/event-types/all`, {
         method: "GET",
@@ -170,7 +170,7 @@ describe("Events Endpoint Contract Tests", () => {
         from: "Test Sender",
       });
 
-      const publicToken = AuthService.createProjectToken(updatedProject.public, "public", updatedProject.id);
+      const publicToken = AuthService.createProjectToken(updatedProject.public, "PUBLIC", updatedProject.id);
 
       const emailPayload = {
         to: ["recipient@example.com"],
@@ -234,7 +234,7 @@ describe("Events Endpoint Contract Tests", () => {
         subscribed: true,
       };
 
-      const publicToken = AuthService.createProjectToken(updatedProject.public, "public", updatedProject.id);
+      const publicToken = AuthService.createProjectToken(updatedProject.public, "PUBLIC", updatedProject.id);
 
       const response = await app.request(`/api/v1/projects/${updatedProject.id}/send`, {
         method: "POST",
@@ -277,7 +277,7 @@ describe("Events Endpoint Contract Tests", () => {
         subscribed: false,
       };
 
-      const publicToken = AuthService.createProjectToken(updatedProject.public, "public", updatedProject.id);
+      const publicToken = AuthService.createProjectToken(updatedProject.public, "PUBLIC", updatedProject.id);
 
       const response = await app.request(`/api/v1/projects/${updatedProject.id}/send`, {
         method: "POST",
@@ -332,7 +332,7 @@ describe("Events Endpoint Contract Tests", () => {
         subscribed: true,
       };
 
-      const publicToken = AuthService.createProjectToken(updatedProject.public, "public", updatedProject.id);
+      const publicToken = AuthService.createProjectToken(updatedProject.public, "PUBLIC", updatedProject.id);
 
       const response = await app.request(`/api/v1/projects/${updatedProject.id}/send`, {
         method: "POST",
@@ -377,7 +377,7 @@ describe("Events Endpoint Contract Tests", () => {
         subscribed: true,
       };
 
-      const publicToken = AuthService.createProjectToken(updatedProject.public, "public", updatedProject.id);
+      const publicToken = AuthService.createProjectToken(updatedProject.public, "PUBLIC", updatedProject.id);
 
       const response = await app.request(`/api/v1/projects/${updatedProject.id}/send`, {
         method: "POST",
@@ -417,7 +417,7 @@ describe("Events Endpoint Contract Tests", () => {
         subscribed: true,
       };
 
-      const publicToken = AuthService.createProjectToken(updatedProject.public, "public", updatedProject.id);
+      const publicToken = AuthService.createProjectToken(updatedProject.public, "PUBLIC", updatedProject.id);
 
       const response = await app.request(`/api/v1/projects/${updatedProject.id}/send`, {
         method: "POST",
@@ -459,7 +459,7 @@ describe("Events Endpoint Contract Tests", () => {
         subscribed: true,
       };
 
-      const publicToken = AuthService.createProjectToken(updatedProject.public, "public", updatedProject.id);
+      const publicToken = AuthService.createProjectToken(updatedProject.public, "PUBLIC", updatedProject.id);
 
       const response = await app.request(`/api/v1/projects/${updatedProject.id}/send`, {
         method: "POST",
@@ -505,7 +505,7 @@ describe("Events Endpoint Contract Tests", () => {
         subscribed: true,
       };
 
-      const publicToken = AuthService.createProjectToken(updatedProject.public, "public", updatedProject.id);
+      const publicToken = AuthService.createProjectToken(updatedProject.public, "PUBLIC", updatedProject.id);
 
       const response = await app.request(`/api/v1/projects/${updatedProject.id}/send`, {
         method: "POST",
@@ -532,7 +532,7 @@ describe("Events Endpoint Contract Tests", () => {
         subscribed: true,
       };
 
-      const publicToken = AuthService.createProjectToken(project.public, "public", project.id);
+      const publicToken = AuthService.createProjectToken(project.public, "PUBLIC", project.id);
 
       const response = await app.request(`/api/v1/projects/${project.id}/send`, {
         method: "POST",
@@ -574,7 +574,7 @@ describe("Events Endpoint Contract Tests", () => {
         subscribed: true,
       };
 
-      const publicToken = AuthService.createProjectToken(updatedProject.public, "public", updatedProject.id);
+      const publicToken = AuthService.createProjectToken(updatedProject.public, "PUBLIC", updatedProject.id);
 
       const response = await app.request(`/api/v1/projects/${updatedProject.id}/send`, {
         method: "POST",
@@ -614,7 +614,7 @@ describe("Events Endpoint Contract Tests", () => {
         },
       };
 
-      const publicToken = AuthService.createProjectToken(updatedProject.public, "public", updatedProject.id);
+      const publicToken = AuthService.createProjectToken(updatedProject.public, "PUBLIC", updatedProject.id);
 
       const response = await app.request(`/api/v1/projects/${updatedProject.id}/send`, {
         method: "POST",
@@ -665,7 +665,7 @@ describe("Events Endpoint Contract Tests", () => {
         subscribed: true,
       };
 
-      const publicToken = AuthService.createProjectToken(project.public, "public", project.id);
+      const publicToken = AuthService.createProjectToken(project.public, "PUBLIC", project.id);
 
       const response = await app.request("/projects/non-existent-project/send", {
         method: "POST",
@@ -704,7 +704,7 @@ describe("Events Endpoint Contract Tests", () => {
         subscribed: true,
       };
 
-      const publicToken = AuthService.createProjectToken(updatedProject.public, "public", updatedProject.id);
+      const publicToken = AuthService.createProjectToken(updatedProject.public, "PUBLIC", updatedProject.id);
 
       const response = await app.request(`/api/v1/projects/${updatedProject.id}/send`, {
         method: "POST",
@@ -740,7 +740,7 @@ describe("Events Endpoint Contract Tests", () => {
         subscribed: true,
       };
 
-      const publicToken = AuthService.createProjectToken(project.public, "public", project.id);
+      const publicToken = AuthService.createProjectToken(project.public, "PUBLIC", project.id);
 
       const response = await app.request(`/api/v1/projects/${project.id}/track`, {
         method: "POST",
@@ -773,7 +773,7 @@ describe("Events Endpoint Contract Tests", () => {
         subscribed: true,
       };
 
-      const publicToken = AuthService.createProjectToken(project.public, "public", project.id);
+      const publicToken = AuthService.createProjectToken(project.public, "PUBLIC", project.id);
 
       const response = await app.request(`/api/v1/projects/${project.id}/track`, {
         method: "POST",
@@ -811,7 +811,7 @@ describe("Events Endpoint Contract Tests", () => {
         email: "existing@example.com",
       };
 
-      const publicToken = AuthService.createProjectToken(project.public, "public", project.id);
+      const publicToken = AuthService.createProjectToken(project.public, "PUBLIC", project.id);
 
       const response = await app.request(`/api/v1/projects/${project.id}/track`, {
         method: "POST",
@@ -848,7 +848,7 @@ describe("Events Endpoint Contract Tests", () => {
         },
       };
 
-      const publicToken = AuthService.createProjectToken(project.public, "public", project.id);
+      const publicToken = AuthService.createProjectToken(project.public, "PUBLIC", project.id);
 
       const response = await app.request(`/api/v1/projects/${project.id}/track`, {
         method: "POST",
@@ -892,7 +892,7 @@ describe("Events Endpoint Contract Tests", () => {
         },
       };
 
-      const publicToken = AuthService.createProjectToken(project.public, "public", project.id);
+      const publicToken = AuthService.createProjectToken(project.public, "PUBLIC", project.id);
 
       const response = await app.request(`/api/v1/projects/${project.id}/track`, {
         method: "POST",
@@ -938,7 +938,7 @@ describe("Events Endpoint Contract Tests", () => {
         },
       };
 
-      const publicToken = AuthService.createProjectToken(project.public, "public", project.id);
+      const publicToken = AuthService.createProjectToken(project.public, "PUBLIC", project.id);
 
       const response = await app.request(`/api/v1/projects/${project.id}/track`, {
         method: "POST",
@@ -980,7 +980,7 @@ describe("Events Endpoint Contract Tests", () => {
         },
       };
 
-      const publicToken = AuthService.createProjectToken(project.public, "public", project.id);
+      const publicToken = AuthService.createProjectToken(project.public, "PUBLIC", project.id);
 
       const response = await app.request(`/api/v1/projects/${project.id}/track`, {
         method: "POST",
@@ -1016,7 +1016,7 @@ describe("Events Endpoint Contract Tests", () => {
         subscribed: true,
       };
 
-      const publicToken = AuthService.createProjectToken(project.public, "public", project.id);
+      const publicToken = AuthService.createProjectToken(project.public, "PUBLIC", project.id);
 
       const response = await app.request(`/api/v1/projects/${project.id}/track`, {
         method: "POST",
@@ -1054,7 +1054,7 @@ describe("Events Endpoint Contract Tests", () => {
         },
       };
 
-      const publicToken = AuthService.createProjectToken(project.public, "public", project.id);
+      const publicToken = AuthService.createProjectToken(project.public, "PUBLIC", project.id);
 
       const response = await app.request(`/api/v1/projects/${project.id}/track`, {
         method: "POST",
@@ -1088,7 +1088,7 @@ describe("Events Endpoint Contract Tests", () => {
         email: "tracker@example.com",
       };
 
-      const publicToken = AuthService.createProjectToken(project.public, "public", project.id);
+      const publicToken = AuthService.createProjectToken(project.public, "PUBLIC", project.id);
 
       const response = await app.request(`/api/v1/projects/${project.id}/track`, {
         method: "POST",
@@ -1149,7 +1149,7 @@ describe("Events Endpoint Contract Tests", () => {
         email: "buyer@example.com",
       };
 
-      const publicToken = AuthService.createProjectToken(project.public, "public", project.id);
+      const publicToken = AuthService.createProjectToken(project.public, "PUBLIC", project.id);
 
       const response = await app.request(`/api/v1/projects/${project.id}/track`, {
         method: "POST",
@@ -1172,7 +1172,7 @@ describe("Events Endpoint Contract Tests", () => {
         email: "user@example.com",
       };
 
-      const publicToken = AuthService.createProjectToken(project.public, "public", project.id);
+      const publicToken = AuthService.createProjectToken(project.public, "PUBLIC", project.id);
 
       const response = await app.request(`/api/v1/projects/${project.id}/track`, {
         method: "POST",
@@ -1201,7 +1201,7 @@ describe("Events Endpoint Contract Tests", () => {
         email: "user@example.com",
       };
 
-      const publicToken = AuthService.createProjectToken(project.public, "public", project.id);
+      const publicToken = AuthService.createProjectToken(project.public, "PUBLIC", project.id);
 
       const response = await app.request(`/api/v1/projects/${project.id}/track`, {
         method: "POST",
@@ -1230,7 +1230,7 @@ describe("Events Endpoint Contract Tests", () => {
         email: "user@example.com",
       };
 
-      const publicToken = AuthService.createProjectToken(project.public, "public", project.id);
+      const publicToken = AuthService.createProjectToken(project.public, "PUBLIC", project.id);
 
       const response = await app.request(`/api/v1/projects/${project.id}/track`, {
         method: "POST",
@@ -1252,7 +1252,7 @@ describe("Events Endpoint Contract Tests", () => {
         // Missing required 'email' field
       };
 
-      const publicToken = AuthService.createProjectToken(project.public, "public", project.id);
+      const publicToken = AuthService.createProjectToken(project.public, "PUBLIC", project.id);
 
       const response = await app.request(`/api/v1/projects/${project.id}/track`, {
         method: "POST",
@@ -1336,7 +1336,7 @@ describe("Events Endpoint Contract Tests", () => {
         },
       };
 
-      const publicToken = AuthService.createProjectToken(project.public, "public", project.id);
+      const publicToken = AuthService.createProjectToken(project.public, "PUBLIC", project.id);
 
       const response = await app.request(`/api/v1/projects/${project.id}/track`, {
         method: "POST",
@@ -1370,7 +1370,7 @@ describe("Events Endpoint Contract Tests", () => {
         // subscribed not provided
       };
 
-      const publicToken = AuthService.createProjectToken(project.public, "public", project.id);
+      const publicToken = AuthService.createProjectToken(project.public, "PUBLIC", project.id);
 
       const response = await app.request(`/api/v1/projects/${project.id}/track`, {
         method: "POST",
@@ -1403,7 +1403,7 @@ describe("Events Endpoint Contract Tests", () => {
         },
       };
 
-      const publicToken = AuthService.createProjectToken(project.public, "public", project.id);
+      const publicToken = AuthService.createProjectToken(project.public, "PUBLIC", project.id);
 
       const response = await app.request(`/api/v1/projects/${project.id}/track`, {
         method: "POST",

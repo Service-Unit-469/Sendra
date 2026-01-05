@@ -1,6 +1,6 @@
 import { http, HttpResponse } from "msw";
 
-const API_URL = "http://localhost:4000";
+const API_URL = "http://localhost:4000/api/v1";
 
 /**
  * Default MSW handlers for common API endpoints

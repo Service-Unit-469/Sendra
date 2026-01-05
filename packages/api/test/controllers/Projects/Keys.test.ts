@@ -34,8 +34,8 @@ describe("Keys Endpoint Contract Tests", () => {
       expect(typeof data.public).toBe("string");
 
       // Verify the returned tokens have the correct prefixes and structure
-      expect(data.secret).toMatch(/^s:[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$/);
-      expect(data.public).toMatch(/^p:[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$/);
+      expect(data.secret).toMatch(/^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$/);
+      expect(data.public).toMatch(/^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$/);
     });
 
     test("should return keys with correct prefixes", async () => {
@@ -52,15 +52,13 @@ describe("Keys Endpoint Contract Tests", () => {
 
       const data = await response.json();
 
-      // Verify the secret token starts with "s:"
-      expect(data.secret).toMatch(/^s:/);
+      // Verify tokens are JWTs (start with eyJ)
+      expect(data.secret).toMatch(/^eyJ/);
+      expect(data.public).toMatch(/^eyJ/);
       
-      // Verify the public token starts with "p:"
-      expect(data.public).toMatch(/^p:/);
-      
-      // Verify tokens are not empty after the prefix
-      expect(data.secret.length).toBeGreaterThan(2);
-      expect(data.public.length).toBeGreaterThan(2);
+      // Verify tokens are not empty
+      expect(data.secret.length).toBeGreaterThan(10);
+      expect(data.public.length).toBeGreaterThan(10);
     });
 
     test("should return 401 when not authenticated", async () => {
@@ -119,7 +117,7 @@ describe("Keys Endpoint Contract Tests", () => {
       // Create a secret API key token
       const secretToken = AuthService.createProjectToken(
         project.secret,
-        "secret",
+        "SECRET",
         project.id,
       );
 
@@ -139,7 +137,7 @@ describe("Keys Endpoint Contract Tests", () => {
       // Create a public API key token
       const publicToken = AuthService.createProjectToken(
         project.public,
-        "public",
+        "PUBLIC",
         project.id,
       );
 
@@ -201,8 +199,8 @@ describe("Keys Endpoint Contract Tests", () => {
       const data = await response.json();
 
       // Verify the tokens have the correct prefixes and structure
-      expect(data.secret).toMatch(/^s:[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$/);
-      expect(data.public).toMatch(/^p:[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$/);
+      expect(data.secret).toMatch(/^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$/);
+      expect(data.public).toMatch(/^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$/);
       
       // Verify tokens are not empty
       expect(data.secret.length).toBeGreaterThan(2);
@@ -228,8 +226,8 @@ describe("Keys Endpoint Contract Tests", () => {
       const newKeys = await response.json();
 
       // Verify the returned tokens have valid format
-      expect(newKeys.secret).toMatch(/^s:[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$/);
-      expect(newKeys.public).toMatch(/^p:[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$/);
+      expect(newKeys.secret).toMatch(/^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$/);
+      expect(newKeys.public).toMatch(/^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$/);
 
       // Verify keys are persisted by checking the database directly
       const projectPersistence = new ProjectPersistence();
@@ -255,8 +253,8 @@ describe("Keys Endpoint Contract Tests", () => {
       const fetchedKeys = await verifyResponse.json();
 
       // Verify the fetched tokens have valid format and are based on the same underlying keys
-      expect(fetchedKeys.secret).toMatch(/^s:[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$/);
-      expect(fetchedKeys.public).toMatch(/^p:[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$/);
+      expect(fetchedKeys.secret).toMatch(/^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$/);
+      expect(fetchedKeys.public).toMatch(/^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$/);
     });
 
     test("should update stored keys after regeneration", async () => {
@@ -361,10 +359,10 @@ describe("Keys Endpoint Contract Tests", () => {
       expect(secondKeys.public).not.toBe(firstKeys.public);
 
       // Both sets of keys should have valid format
-      expect(secondKeys.secret).toMatch(/^s:[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$/);
-      expect(secondKeys.public).toMatch(/^p:[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$/);
-      expect(firstKeys.secret).toMatch(/^s:[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$/);
-      expect(firstKeys.public).toMatch(/^p:[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$/);
+      expect(secondKeys.secret).toMatch(/^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$/);
+      expect(secondKeys.public).toMatch(/^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$/);
+      expect(firstKeys.secret).toMatch(/^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$/);
+      expect(firstKeys.public).toMatch(/^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$/);
     });
 
     test("should work with valid Bearer token", async () => {
@@ -386,7 +384,7 @@ describe("Keys Endpoint Contract Tests", () => {
       // Create a secret API key token
       const secretToken = AuthService.createProjectToken(
         project.secret,
-        "secret",
+        "SECRET",
         project.id,
       );
 
@@ -406,7 +404,7 @@ describe("Keys Endpoint Contract Tests", () => {
       // Create a public API key token
       const publicToken = AuthService.createProjectToken(
         project.public,
-        "public",
+        "PUBLIC",
         project.id,
       );
 
@@ -426,7 +424,7 @@ describe("Keys Endpoint Contract Tests", () => {
       // Try with secret token
       const secretToken = AuthService.createProjectToken(
         project.secret,
-        "secret",
+        "SECRET",
         project.id,
       );
 
@@ -442,7 +440,7 @@ describe("Keys Endpoint Contract Tests", () => {
       // Try with public token
       const publicToken = AuthService.createProjectToken(
         project.public,
-        "public",
+        "PUBLIC",
         project.id,
       );
 

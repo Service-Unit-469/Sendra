@@ -32,6 +32,7 @@ describe("Memberships Endpoint Contract Tests", () => {
         public: "test-public",
         secret: "test-secret",
         eventTypes: [],
+        colors: [],
       });
 
       // Create admin membership
@@ -47,7 +48,11 @@ describe("Memberships Endpoint Contract Tests", () => {
       const sendInvitationEmailSpy = vi.spyOn(SystemEmailService, "sendInvitationEmail").mockResolvedValue(undefined);
 
       // Create admin token
-      const token = AuthService.createUserToken(adminUser.id, adminUser.email);
+      let memberships = await membershipPersistence.findAllBy({
+        key: "user",
+        value: adminUser.id,
+      });
+      const token = AuthService.createUserToken(adminUser.id, adminUser.email, memberships);
 
       // Invite a new user
       const invitePayload = {
@@ -74,7 +79,7 @@ describe("Memberships Endpoint Contract Tests", () => {
       expect(data.memberships.length).toBeGreaterThan(0);
 
       // Verify the membership was created
-      const memberships = await membershipPersistence.findAllBy({
+      memberships = await membershipPersistence.findAllBy({
         key: "email",
         value: "newuser@example.com",
       });
@@ -111,6 +116,7 @@ describe("Memberships Endpoint Contract Tests", () => {
         public: "test-public-2",
         secret: "test-secret-2",
         eventTypes: [],
+        colors: [],
       });
 
       // Create admin membership
@@ -126,7 +132,11 @@ describe("Memberships Endpoint Contract Tests", () => {
       const sendInvitationEmailSpy = vi.spyOn(SystemEmailService, "sendInvitationEmail").mockResolvedValue(undefined);
 
       // Create admin token
-      const token = AuthService.createUserToken(adminUser.id, adminUser.email);
+      const memberships = await membershipPersistence.findAllBy({
+        key: "user",
+        value: adminUser.id,
+      });
+      const token = AuthService.createUserToken(adminUser.id, adminUser.email, memberships);
 
       // Invite existing user
       const invitePayload = {
@@ -150,13 +160,13 @@ describe("Memberships Endpoint Contract Tests", () => {
       expect(data.success).toBe(true);
 
       // Verify the membership was created with the user ID
-      const memberships = await membershipPersistence.findAllBy({
+      const existingUserMemberships = await membershipPersistence.findAllBy({
         key: "email",
         value: existingUser.email,
       });
-      expect(memberships).toHaveLength(1);
-      expect(memberships[0].user).toBe(existingUser.id);
-      expect(memberships[0].role).toBe("MEMBER");
+      expect(existingUserMemberships).toHaveLength(1);
+      expect(existingUserMemberships[0].user).toBe(existingUser.id);
+      expect(existingUserMemberships[0].role).toBe("MEMBER");
 
       // Verify invitation email was NOT sent for existing users
       expect(sendInvitationEmailSpy).not.toHaveBeenCalled();
@@ -186,6 +196,7 @@ describe("Memberships Endpoint Contract Tests", () => {
         public: "test-public-3",
         secret: "test-secret-3",
         eventTypes: [],
+        colors: [],
       });
 
       // Create memberships
@@ -203,8 +214,13 @@ describe("Memberships Endpoint Contract Tests", () => {
         role: "MEMBER",
       });
 
+      const memberships = await membershipPersistence.findAllBy({
+        key: "user",
+        value: adminUser.id,
+      });
+
       // Create admin token
-      const token = AuthService.createUserToken(adminUser.id, adminUser.email);
+      const token = AuthService.createUserToken(adminUser.id, adminUser.email, memberships);
 
       // Try to invite user who is already a member
       const invitePayload = {
@@ -239,7 +255,12 @@ describe("Memberships Endpoint Contract Tests", () => {
       });
 
       // Create admin token
-      const token = AuthService.createUserToken(adminUser.id, adminUser.email);
+      const membershipPersistence = new MembershipPersistence();
+      const memberships = await membershipPersistence.findAllBy({
+        key: "user",
+        value: adminUser.id,
+      });
+      const token = AuthService.createUserToken(adminUser.id, adminUser.email, memberships);
 
       // Try to invite to non-existent project
       const invitePayload = {
@@ -291,7 +312,12 @@ describe("Memberships Endpoint Contract Tests", () => {
         enabled: true,
       });
 
-      const token = AuthService.createUserToken(adminUser.id, adminUser.email);
+      const membershipPersistence = new MembershipPersistence();
+      const memberships = await membershipPersistence.findAllBy({
+        key: "user",
+        value: adminUser.id,
+      });
+      const token = AuthService.createUserToken(adminUser.id, adminUser.email, memberships);
 
       const response = await app.request("/api/v1/memberships/invite", {
         method: "POST",
@@ -331,6 +357,7 @@ describe("Memberships Endpoint Contract Tests", () => {
         public: "test-public-4",
         secret: "test-secret-4",
         eventTypes: [],
+        colors: [],
       });
 
       // Create memberships
@@ -349,7 +376,11 @@ describe("Memberships Endpoint Contract Tests", () => {
       });
 
       // Create admin token
-      const token = AuthService.createUserToken(adminUser.id, adminUser.email);
+      const memberships = await membershipPersistence.findAllBy({
+        key: "user",
+        value: adminUser.id,
+      });
+      const token = AuthService.createUserToken(adminUser.id, adminUser.email, memberships);
 
       // Kick the member
       const kickPayload = {
@@ -395,6 +426,7 @@ describe("Memberships Endpoint Contract Tests", () => {
         public: "test-public-5",
         secret: "test-secret-5",
         eventTypes: [],
+        colors: [],
       });
 
       // Create admin membership
@@ -407,7 +439,11 @@ describe("Memberships Endpoint Contract Tests", () => {
       });
 
       // Create admin token
-      const token = AuthService.createUserToken(adminUser.id, adminUser.email);
+      const memberships = await membershipPersistence.findAllBy({
+        key: "user",
+        value: adminUser.id,
+      });
+      const token = AuthService.createUserToken(adminUser.id, adminUser.email, memberships);
 
       // Try to kick self
       const kickPayload = {
@@ -457,7 +493,12 @@ describe("Memberships Endpoint Contract Tests", () => {
         enabled: true,
       });
 
-      const token = AuthService.createUserToken(adminUser.id, adminUser.email);
+      const membershipPersistence = new MembershipPersistence();
+      const memberships = await membershipPersistence.findAllBy({
+        key: "user",
+        value: adminUser.id,
+      });
+      const token = AuthService.createUserToken(adminUser.id, adminUser.email, memberships);
 
       const response = await app.request("/api/v1/memberships/kick", {
         method: "POST",
@@ -490,6 +531,7 @@ describe("Memberships Endpoint Contract Tests", () => {
         public: "test-public-6",
         secret: "test-secret-6",
         eventTypes: [],
+        colors: [],
       });
 
       // Create admin membership
@@ -502,7 +544,11 @@ describe("Memberships Endpoint Contract Tests", () => {
       });
 
       // Create admin token
-      const token = AuthService.createUserToken(adminUser.id, adminUser.email);
+      const memberships = await membershipPersistence.findAllBy({
+        key: "user",
+        value: adminUser.id,
+      });
+      const token = AuthService.createUserToken(adminUser.id, adminUser.email, memberships);
 
       // Try to kick non-existent user
       const kickPayload = {
@@ -545,6 +591,7 @@ describe("Memberships Endpoint Contract Tests", () => {
         public: "test-public-7",
         secret: "test-secret-7",
         eventTypes: [],
+        colors: [],
       });
       const project2 = await projectPersistence.create({
         name: "Test Project 8",
@@ -552,6 +599,7 @@ describe("Memberships Endpoint Contract Tests", () => {
         public: "test-public-8",
         secret: "test-secret-8",
         eventTypes: [],
+        colors: [],
       });
 
       // Create memberships
@@ -570,7 +618,11 @@ describe("Memberships Endpoint Contract Tests", () => {
       });
 
       // Create member token
-      const token = AuthService.createUserToken(memberUser.id, memberUser.email);
+      const memberships = await membershipPersistence.findAllBy({
+        key: "user",
+        value: memberUser.id,
+      });
+      const token = AuthService.createUserToken(memberUser.id, memberUser.email, memberships);
 
       // Leave project 1
       const leavePayload = {
@@ -627,7 +679,12 @@ describe("Memberships Endpoint Contract Tests", () => {
         enabled: true,
       });
 
-      const token = AuthService.createUserToken(memberUser.id, memberUser.email);
+      const membershipPersistence = new MembershipPersistence();
+      const memberships = await membershipPersistence.findAllBy({
+        key: "user",
+        value: memberUser.id,
+      });
+      const token = AuthService.createUserToken(memberUser.id, memberUser.email, memberships);
 
       const response = await app.request("/api/v1/memberships/leave", {
         method: "POST",
@@ -660,10 +717,16 @@ describe("Memberships Endpoint Contract Tests", () => {
         public: "test-public-9",
         secret: "test-secret-9",
         eventTypes: [],
+        colors: [],
       });
 
       // Create member token (but no membership created)
-      const token = AuthService.createUserToken(memberUser.id, memberUser.email);
+      const membershipPersistence = new MembershipPersistence();
+      const memberships = await membershipPersistence.findAllBy({
+        key: "user",
+        value: memberUser.id,
+      });
+      const token = AuthService.createUserToken(memberUser.id, memberUser.email, memberships);
 
       // Try to leave project user is not a member of
       const leavePayload = {

@@ -4,7 +4,7 @@ import { type Contact, type ContactSchemas, type Event, EventSchema, EventSchema
 import type { AppType } from "../../app";
 import { BadRequest, HttpException, NotFound } from "../../exceptions";
 import { getProblemResponseSchema } from "../../exceptions/responses";
-import { BearerAuth, isAuthenticatedProjectMemberKey, isAuthenticatedProjectMemberOrSecretKey } from "../../middleware/auth";
+import { BearerAuth, isAuthenticatedProjectMemberOrKey, isAuthenticatedProjectMemberOrSecretKey } from "../../middleware/auth";
 import { EmbedLimitSchema } from "./ProjectEntity";
 
 const logger = rootLogger.child({
@@ -106,7 +106,7 @@ export const registerEventsRoutes = (app: AppType) => {
         },
       },
       ...BearerAuth,
-      middleware: [isAuthenticatedProjectMemberKey],
+      middleware: [isAuthenticatedProjectMemberOrKey],
     }),
     async (c) => {
       const { projectId } = c.req.param();
@@ -273,7 +273,7 @@ export const registerEventsRoutes = (app: AppType) => {
         403: getProblemResponseSchema(403),
       },
       ...BearerAuth,
-      middleware: [isAuthenticatedProjectMemberKey],
+      middleware: [isAuthenticatedProjectMemberOrKey],
     }),
     async (c) => {
       const { projectId } = c.req.param();

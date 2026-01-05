@@ -12,7 +12,12 @@ export const api = new sst.aws.ApiGatewayV2("ApiGateway", {
   cors: {
     allowOrigins: ["http://localhost:3000", process.env.APP_URL ?? "*"],
     allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowHeaders: ["Content-Type", "Authorization", "X-Request-Id", "X-Correlation-Id"],
+    allowHeaders: [
+      "Content-Type",
+      "Authorization",
+      "X-Request-Id",
+      "X-Correlation-Id",
+    ],
   },
 });
 router.route("/api/v1", api.url);

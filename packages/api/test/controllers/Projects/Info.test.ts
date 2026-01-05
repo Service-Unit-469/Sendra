@@ -1046,7 +1046,7 @@ describe("Info Endpoint Contract Tests", () => {
         sendType: "TRANSACTIONAL",
       });
 
-      const secretToken = AuthService.createProjectToken(project.secret, "secret", project.id);
+      const secretToken = AuthService.createProjectToken(project.secret, "SECRET", project.id);
 
       const response = await app.request(`/api/v1/projects/${project.id}/usage`, {
         method: "GET",

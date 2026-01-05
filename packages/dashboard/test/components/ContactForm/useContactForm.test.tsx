@@ -50,7 +50,7 @@ describe("useContactForm Hook", () => {
 
 			// Intercept request to capture body
 			server.use(
-				http.post("http://localhost:4000/projects/project-1/contacts", async ({ request }) => {
+				http.post("http://localhost:4000/api/v1/projects/project-1/contacts", async ({ request }) => {
 					requestBody = await request.json();
 					return HttpResponse.json({
 						id: "new-contact-id",
@@ -84,7 +84,7 @@ describe("useContactForm Hook", () => {
 			const onSuccess = vi.fn();
 
 			server.use(
-				http.post("http://localhost:4000/projects/project-1/contacts", () => {
+				http.post("http://localhost:4000/api/v1/projects/project-1/contacts", () => {
 					return HttpResponse.json({ message: "Email already exists" }, { status: 400 });
 				}),
 			);
@@ -118,7 +118,7 @@ describe("useContactForm Hook", () => {
 			let requestBody: any;
 
 			server.use(
-				http.put("http://localhost:4000/projects/project-1/contacts/contact-1", async ({ request }) => {
+				http.put("http://localhost:4000/api/v1/projects/project-1/contacts/contact-1", async ({ request }) => {
 					requestBody = await request.json();
 					return HttpResponse.json({
 						id: "contact-1",
@@ -181,7 +181,7 @@ describe("useContactForm Hook", () => {
 			let deleteCalled = false;
 
 			server.use(
-				http.delete("http://localhost:4000/projects/project-1/contacts/contact-1", () => {
+				http.delete("http://localhost:4000/api/v1/projects/project-1/contacts/contact-1", () => {
 					deleteCalled = true;
 					return new HttpResponse(null, { status: 204 });
 				}),
@@ -205,7 +205,7 @@ describe("useContactForm Hook", () => {
 			let deleteCalled = false;
 
 			server.use(
-				http.delete("http://localhost:4000/projects/project-1/contacts/:contactId", () => {
+				http.delete("http://localhost:4000/api/v1/projects/project-1/contacts/:contactId", () => {
 					deleteCalled = true;
 					return new HttpResponse(null, { status: 204 });
 				}),

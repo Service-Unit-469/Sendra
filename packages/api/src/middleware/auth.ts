@@ -1,10 +1,21 @@
-import { MembershipPersistence, ProjectPersistence, rootLogger } from "@sendra/lib";
+import { ProjectPersistence, rootLogger } from "@sendra/lib";
+import type { Project } from "@sendra/shared";
 import type { HonoRequest } from "hono";
 import { createMiddleware } from "hono/factory";
+import { LRUCache } from "lru-cache";
 import { HttpException } from "../exceptions";
-import { AuthService } from "../services/AuthService";
+import { type Auth, AuthService } from "../services/AuthService";
 
 const logger = rootLogger.child({ module: "auth" });
+
+const projectCache = new LRUCache<string, Project>({
+  max: 500,
+  ttl: 1000 * 30, // 30 seconds
+  fetchMethod: (projectId) => {
+    const projectPersistence = new ProjectPersistence();
+    return projectPersistence.get(projectId);
+  },
+});
 
 async function getProjectId(request: HonoRequest): Promise<string> {
   let projectId = request.param("projectId") || request.query("projectId");
@@ -21,6 +32,18 @@ async function getProjectId(request: HonoRequest): Promise<string> {
   return projectId;
 }
 
+async function getProject(projectId: string): Promise<Project> {
+  const project = await projectCache.fetch(projectId);
+  if (!project) {
+    throw new HttpException(404, "Project not found");
+  }
+  return project;
+}
+
+function isProjectMember(auth: Auth, projectId: string, role?: "MEMBER" | "ADMIN"): boolean {
+  return auth.scopes.some((scope) => scope.projectId === projectId && (role ? scope.type === role : true));
+}
+
 export const BearerAuth = {
   security: [
     {
@@ -30,29 +53,17 @@ export const BearerAuth = {
 };
 
 export const isAuthenticatedUser = createMiddleware(async (c, next) => {
-  c.set("auth", AuthService.parseToken(c, { type: "user" }));
+  c.set("auth", AuthService.parseToken(c, { type: "USER" }));
   await next();
 });
 
-export const isAuthenticatedProjectMemberKey = createMiddleware(async (c, next) => {
+export const isAuthenticatedProjectMemberOrKey = createMiddleware(async (c, next) => {
   const projectId = await getProjectId(c.req);
-  const projectPersistence = new ProjectPersistence();
-  const project = await projectPersistence.get(projectId);
-  if (!project) {
-    throw new HttpException(404, "Project not found");
-  }
+  const project = await getProject(projectId);
 
   const auth = AuthService.parseToken(c, { project });
-  if (auth.type === "secret" || auth.type === "public") {
-    if (project.id !== auth.sub) {
-      throw new HttpException(404, "Project not found");
-    }
-  } else {
-    const membershipPersistence = new MembershipPersistence();
-    const isMember = await membershipPersistence.isMember(projectId, auth.sub);
-    if (!isMember) {
-      throw new HttpException(404, "Project not found");
-    }
+  if (!isProjectMember(auth, projectId)) {
+    throw new HttpException(404, "Project not found");
   }
   c.set("auth", auth);
   c.set("project", project);
@@ -61,24 +72,15 @@ export const isAuthenticatedProjectMemberKey = createMiddleware(async (c, next) 
 
 export const isAuthenticatedProjectMemberOrSecretKey = createMiddleware(async (c, next) => {
   const projectId = await getProjectId(c.req);
-  const projectPersistence = new ProjectPersistence();
-  const project = await projectPersistence.get(projectId);
-  if (!project) {
-    throw new HttpException(404, "Project not found");
-  }
-
+  const project = await getProject(projectId);
   const auth = AuthService.parseToken(c, { project });
-  if (auth.type !== "user" && auth.type !== "secret") {
+  if (!["USER", "SECRET"].includes(auth.type)) {
     logger.warn({ auth }, "Invalid public authorization token for request");
-    throw new HttpException(400, "Invalid authorization token for request");
+    throw new HttpException(404, "You do not have permission to perform this action");
   }
-  if (auth.type === "user") {
-    const membershipPersistence = new MembershipPersistence();
-    const isMember = await membershipPersistence.isMember(projectId, auth.sub);
-    if (!isMember) {
-      logger.warn({ auth, projectId }, "User is not a member of the project");
-      throw new HttpException(404, "Project not found");
-    }
+  if (!isProjectMember(auth, projectId)) {
+    logger.warn({ auth, projectId }, "Token is not a member of the project");
+    throw new HttpException(404, "Project not found");
   }
   c.set("auth", auth);
   c.set("project", project);
@@ -86,16 +88,12 @@ export const isAuthenticatedProjectMemberOrSecretKey = createMiddleware(async (c
 });
 
 export const isAuthenticatedProjectMember = createMiddleware(async (c, next) => {
-  const auth = AuthService.parseToken(c, { type: "user" });
-  if (auth.type !== "user") {
-    logger.warn({ auth }, "Invalid non-user authorization token for request");
-    throw new HttpException(400, "Invalid authorization token for request");
-  }
+  const auth = AuthService.parseToken(c, { type: "USER" });
 
   const projectId = await getProjectId(c.req);
-  const membershipPersistence = new MembershipPersistence();
-  const isMember = await membershipPersistence.isMember(projectId, auth.sub);
-  if (!isMember) {
+  // Check if project exists first
+  await getProject(projectId);
+  if (!isProjectMember(auth, projectId)) {
     logger.warn({ auth, projectId }, "User is not a member of the project");
     throw new HttpException(404, "Project not found");
   }
@@ -104,21 +102,17 @@ export const isAuthenticatedProjectMember = createMiddleware(async (c, next) => 
 });
 
 export const isAuthenticatedProjectAdmin = createMiddleware(async (c, next) => {
-  const auth = AuthService.parseToken(c, { type: "user" });
-  if (auth.type !== "user") {
-    logger.warn({ auth }, "Invalid non-user authorization token for request");
-    throw new HttpException(400, "Invalid authorization token for request");
-  }
-
+  const auth = AuthService.parseToken(c, { type: "USER" });
   const projectId = await getProjectId(c.req);
-  const membershipPersistence = new MembershipPersistence();
-  const isAdmin = await membershipPersistence.isAdmin(projectId, auth.sub);
-  const isMember = await membershipPersistence.isMember(projectId, auth.sub);
-  if (!isAdmin && !isMember) {
+  // Check if project exists first
+  await getProject(projectId);
+  // Check if user is a member first
+  if (!isProjectMember(auth, projectId)) {
     logger.warn({ auth, projectId }, "User is not a member of the project");
     throw new HttpException(404, "Project not found");
   }
-  if (!isAdmin) {
+  // Then check if user is an admin
+  if (!isProjectMember(auth, projectId, "ADMIN")) {
     logger.warn({ auth, projectId }, "User is not an admin of the project");
     throw new HttpException(403, "You do not have permission to perform this action");
   }

@@ -139,7 +139,7 @@ describe("ContactForm Integration", () => {
 
 			// Override handler to return error
 			server.use(
-				http.post("http://localhost:4000/projects/:projectId/contacts", () => {
+				http.post("http://localhost:4000/api/v1/projects/:projectId/contacts", () => {
 					return HttpResponse.json({ message: "Email already exists" }, { status: 400 });
 				}),
 			);
@@ -165,7 +165,7 @@ describe("ContactForm Integration", () => {
 
 			// Override handler to return error
 			server.use(
-				http.put("http://localhost:4000/projects/:projectId/contacts/:contactId", () => {
+				http.put("http://localhost:4000/api/v1/projects/:projectId/contacts/:contactId", () => {
 					return HttpResponse.json({ message: "Update failed" }, { status: 500 });
 				}),
 			);

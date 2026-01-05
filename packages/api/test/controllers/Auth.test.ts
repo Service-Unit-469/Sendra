@@ -233,8 +233,9 @@ describe("Auth Endpoint Contract Tests", () => {
       expect(data).toEqual({
         id: user.id,
         email: testEmail,
-        token: expect.stringMatching(/^u:/),
+        token: expect.any(String),
       });
+      expect(data.token.length).toBeGreaterThan(0);
 
       expect(response.headers.get("content-type")).toContain("application/json");
     });

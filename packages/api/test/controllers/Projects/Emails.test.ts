@@ -1,5 +1,6 @@
 import {
   EmailPersistence,
+  MembershipPersistence,
   ProjectPersistence,
   UserPersistence
 } from "@sendra/lib";
@@ -432,7 +433,7 @@ describe("Emails Endpoint Contract Tests", () => {
       const contact = await createTestContact(project.id);
       await createTestEmail(project.id, contact.id);
 
-      const secretToken = AuthService.createProjectToken(project.secret, "secret", project.id);
+      const secretToken = AuthService.createProjectToken(project.secret, "SECRET", project.id);
 
       const response = await app.request(`/api/v1/projects/${project.id}/emails`, {
         method: "GET",
@@ -452,7 +453,7 @@ describe("Emails Endpoint Contract Tests", () => {
       const contact = await createTestContact(project.id);
       const email = await createTestEmail(project.id, contact.id);
 
-      const secretToken = AuthService.createProjectToken(project.secret, "secret", project.id);
+      const secretToken = AuthService.createProjectToken(project.secret, "SECRET", project.id);
 
       const response = await app.request(`/api/v1/projects/${project.id}/emails/${email.id}`, {
         method: "GET",
@@ -472,7 +473,7 @@ describe("Emails Endpoint Contract Tests", () => {
       const contact = await createTestContact(project.id);
       await createTestEmail(project.id, contact.id);
 
-      const secretToken = AuthService.createProjectToken(project.secret, "secret", project.id);
+      const secretToken = AuthService.createProjectToken(project.secret, "SECRET", project.id);
 
       const response = await app.request(`/api/v1/projects/${project.id}/emails/all`, {
         method: "GET",
@@ -493,7 +494,7 @@ describe("Emails Endpoint Contract Tests", () => {
       const messageId = `secret-filter-${Date.now()}@example.com`;
       await createTestEmail(project.id, contact.id, messageId);
 
-      const secretToken = AuthService.createProjectToken(project.secret, "secret", project.id);
+      const secretToken = AuthService.createProjectToken(project.secret, "SECRET", project.id);
 
       const response = await app.request(
         `/api/v1/projects/${project.id}/emails?filter=messageId&value=${encodeURIComponent(messageId)}`,
@@ -524,7 +525,13 @@ describe("Emails Endpoint Contract Tests", () => {
         enabled: true,
       });
 
-      const nonMemberToken = AuthService.createUserToken(nonMemberUser.id, nonMemberUser.email);
+      const membershipPersistence = new MembershipPersistence();
+      const memberships = await membershipPersistence.findAllBy({
+        key: "user",
+        value: nonMemberUser.id,
+      });
+
+      const nonMemberToken = AuthService.createUserToken(nonMemberUser.id, nonMemberUser.email, memberships);
 
       const response = await app.request(`/api/v1/projects/${project.id}/emails`, {
         method: "GET",

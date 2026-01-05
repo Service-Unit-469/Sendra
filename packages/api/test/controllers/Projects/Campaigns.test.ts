@@ -1031,7 +1031,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
       const template = await createTestTemplate(project.id);
 
       // Create a proper secret token using AuthService
-      const secretToken = AuthService.createProjectToken(project.secret, "secret", project.id);
+      const secretToken = AuthService.createProjectToken(project.secret, "SECRET", project.id);
 
       const campaignPayload = {
         subject: "Secret Key Campaign",

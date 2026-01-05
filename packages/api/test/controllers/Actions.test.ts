@@ -37,6 +37,7 @@ describe("Actions Endpoint Contract Tests", () => {
       public: `test-public-${Date.now()}`,
       secret: `test-secret-${Date.now()}`,
       eventTypes: ["user.signup", "user.login"],
+      colors: [],
     });
 
     const membershipPersistence = new MembershipPersistence();
@@ -47,7 +48,12 @@ describe("Actions Endpoint Contract Tests", () => {
       role: "ADMIN",
     });
 
-    const token = AuthService.createUserToken(user.id, user.email);
+    const memberships = await membershipPersistence.findAllBy({
+      key: "user",
+      value: user.id,
+    });
+
+    const token = AuthService.createUserToken(user.id, user.email, memberships);
 
     return { user, project, token };
   };
@@ -77,6 +83,7 @@ describe("Actions Endpoint Contract Tests", () => {
         plainText: "Test email body content",
       },
       templateType: "MARKETING",
+      quickEmail: false,
     });
   };
 
@@ -1025,7 +1032,7 @@ describe("Actions Endpoint Contract Tests", () => {
       const event = await createTestEvent(project.id, contact.id);
 
       // Create a proper secret token using AuthService
-      const secretToken = AuthService.createProjectToken(project.secret, "secret", project.id);
+      const secretToken = AuthService.createProjectToken(project.secret, "SECRET", project.id);
 
       const actionPayload = {
         name: "Secret Key Action",

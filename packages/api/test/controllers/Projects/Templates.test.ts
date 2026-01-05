@@ -263,7 +263,7 @@ describe("Templates Endpoint Contract Tests", () => {
       const { project } = await createTestSetup();
       const secretToken = AuthService.createProjectToken(
         project.secret,
-        "secret",
+        "SECRET",
         project.id,
       );
 
@@ -473,7 +473,7 @@ describe("Templates Endpoint Contract Tests", () => {
       await createTestTemplate(project.id);
       const secretToken = AuthService.createProjectToken(
         project.secret,
-        "secret",
+        "SECRET",
         project.id,
       );
 

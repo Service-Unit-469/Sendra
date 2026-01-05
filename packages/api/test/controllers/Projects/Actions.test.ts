@@ -945,7 +945,7 @@ describe("Actions Endpoint Contract Tests", () => {
       const event = await createTestEvent(project.id, contact.id);
 
       // Create a proper secret token using AuthService
-      const secretToken = AuthService.createProjectToken(project.secret, "secret", project.id);
+      const secretToken = AuthService.createProjectToken(project.secret, "SECRET", project.id);
 
       const actionPayload = {
         name: "Secret Key Action",

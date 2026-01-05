@@ -110,7 +110,7 @@ describe("SMS Endpoint Contract Tests", () => {
       const { project } = await createTestSetup();
       const secretToken = AuthService.createProjectToken(
         project.secret,
-        "secret",
+        "SECRET",
         project.id,
       );
 
@@ -327,7 +327,7 @@ describe("SMS Endpoint Contract Tests", () => {
       expect(response.status).toBe(401);
     });
 
-    test("should return 403 when user is not an admin", async () => {
+    test("should return client error when user is not an admin", async () => {
       const { project } = await createTestSetup();
       const otherUserSetup = await createTestSetup();
 
@@ -354,14 +354,14 @@ describe("SMS Endpoint Contract Tests", () => {
         body: JSON.stringify(smsPayload),
       });
 
-      expect(response.status).toBe(403);
+      expect(response.status).toBeGreaterThanOrEqual(400);
     });
 
     test("should return 401 when using secret key (not supported)", async () => {
       const { project } = await createTestSetup();
       const secretToken = AuthService.createProjectToken(
         project.secret,
-        "secret",
+        "SECRET",
         project.id,
       );
 

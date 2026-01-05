@@ -27,7 +27,13 @@ describe("Projects Endpoint Contract Tests", () => {
         enabled: true,
       });
 
-      const token = AuthService.createUserToken(user.id, user.email);
+      const membershipPersistence = new MembershipPersistence();
+      const memberships = await membershipPersistence.findAllBy({
+        key: "user",
+        value: user.id,
+      });
+
+      const token = AuthService.createUserToken(user.id, user.email, memberships);
 
       const response = await app.request("/api/v1/projects", {
         method: "GET",
@@ -158,7 +164,7 @@ describe("Projects Endpoint Contract Tests", () => {
       const { project } = await createTestSetup();
       const secretToken = AuthService.createProjectToken(
         project.secret,
-        "secret",
+        "SECRET",
         project.id,
       );
 
@@ -746,9 +752,15 @@ describe("Projects Endpoint Contract Tests", () => {
         role: "MEMBER",
       });
 
+      const memberships = await membershipPersistence.findAllBy({
+        key: "user",
+        value: memberUser.id,
+      });
+
       const memberToken = AuthService.createUserToken(
         memberUser.id,
         memberUser.email,
+        memberships,
       );
 
       const updatePayload = {
@@ -881,9 +893,15 @@ describe("Projects Endpoint Contract Tests", () => {
         role: "MEMBER",
       });
 
+      const memberships = await membershipPersistence.findAllBy({
+        key: "user",
+        value: memberUser.id,
+      });
+
       const memberToken = AuthService.createUserToken(
         memberUser.id,
         memberUser.email,
+        memberships,
       );
 
       const response = await app.request(`/api/v1/projects/${project.id}`, {

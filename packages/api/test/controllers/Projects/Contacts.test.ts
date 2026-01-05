@@ -1007,7 +1007,7 @@ describe("Contacts Endpoint Contract Tests", () => {
     test("should allow contact creation with valid secret key", async () => {
       const { project } = await createTestSetup();
 
-      const secretToken = AuthService.createProjectToken(project.secret, "secret", project.id);
+      const secretToken = AuthService.createProjectToken(project.secret, "SECRET", project.id);
 
       const contactPayload = {
         email: "secret-key-contact@example.com",
@@ -1031,7 +1031,7 @@ describe("Contacts Endpoint Contract Tests", () => {
       const { project } = await createTestSetup();
       const contact = await createTestContact(project.id);
 
-      const secretToken = AuthService.createProjectToken(project.secret, "secret", project.id);
+      const secretToken = AuthService.createProjectToken(project.secret, "SECRET", project.id);
 
       const response = await app.request(`/api/v1/projects/${project.id}/contacts/${contact.id}`, {
         method: "GET",
@@ -1053,7 +1053,7 @@ describe("Contacts Endpoint Contract Tests", () => {
         data: {},
       });
 
-      const secretToken = AuthService.createProjectToken(project.secret, "secret", project.id);
+      const secretToken = AuthService.createProjectToken(project.secret, "SECRET", project.id);
 
       const response = await app.request(
         `/api/v1/projects/${project.id}/contacts/${contact.id}/subscribe`,
@@ -1072,7 +1072,7 @@ describe("Contacts Endpoint Contract Tests", () => {
       const { project } = await createTestSetup();
       const contact = await createTestContact(project.id);
 
-      const secretToken = AuthService.createProjectToken(project.secret, "secret", project.id);
+      const secretToken = AuthService.createProjectToken(project.secret, "SECRET", project.id);
 
       const response = await app.request(
         `/api/v1/projects/${project.id}/contacts/${contact.id}/unsubscribe`,

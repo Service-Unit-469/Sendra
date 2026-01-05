@@ -1,4 +1,4 @@
-import { UserPersistence } from "@sendra/lib";
+import { MembershipPersistence, UserPersistence } from "@sendra/lib";
 import { startupDynamoDB, stopDynamoDB } from "@sendra/test";
 import { afterAll, beforeAll, describe, expect, test } from "vitest";
 import { app } from "../../src/app";
@@ -24,7 +24,13 @@ describe("Users Endpoint Contract Tests", () => {
       });
 
       // Create user token
-      const token = AuthService.createUserToken(testUser.id, testUser.email);
+      const membershipPersistence = new MembershipPersistence();
+      const memberships = await membershipPersistence.findAllBy({
+        key: "user",
+        value: testUser.id,
+      });
+
+      const token = AuthService.createUserToken(testUser.id, testUser.email, memberships);
 
       // Make request with authentication
       const response = await app.request("/api/v1/@me", {
@@ -78,7 +84,8 @@ describe("Users Endpoint Contract Tests", () => {
       const nonExistentUserId = "non-existent-user-id";
       const token = AuthService.createUserToken(
         nonExistentUserId,
-        "nonexistent@example.com"
+        "nonexistent@example.com",
+        []
       );
 
       const response = await app.request("/api/v1/@me", {

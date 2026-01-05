@@ -1,6 +1,6 @@
 import { z } from "@hono/zod-openapi";
 import { getAuthConfig, MembershipPersistence, rootLogger, UserPersistence } from "@sendra/lib";
-import type { Project, User, UserCredentials, UserRequestReset, UserVerify } from "@sendra/shared";
+import { type Membership, type MembershipRole, MembershipRoleSchema, type Project, type User, type UserCredentials, type UserRequestReset, type UserVerify } from "@sendra/shared";
 import type { Context, HonoRequest } from "hono";
 import { type JwtPayload, sign, verify } from "jsonwebtoken";
 import type { StringValue } from "ms";
@@ -15,41 +15,73 @@ const logger = rootLogger.child({
   module: "AuthService",
 });
 
-export const authTypes = ["user", "secret", "public"] as const;
-export type AuthType = (typeof authTypes)[number];
+export const PUBLIC_TOKEN_TYPE = "PUBLIC";
+export const SECRET_TOKEN_TYPE = "SECRET";
+export const USER_TOKEN_TYPE = "USER";
+
+export const tokenTypeSchema = z.enum([PUBLIC_TOKEN_TYPE, SECRET_TOKEN_TYPE, USER_TOKEN_TYPE]);
+export type TokenType = z.infer<typeof tokenTypeSchema>;
+
+export const ProjectTokenTypeSchema = z.enum([PUBLIC_TOKEN_TYPE, SECRET_TOKEN_TYPE]);
+export type ProjectTokenType = z.infer<typeof ProjectTokenTypeSchema>;
+
+export const scopeSchema = z.object({
+  type: MembershipRoleSchema.or(ProjectTokenTypeSchema),
+  projectId: z.string(),
+});
+export type Scope = z.infer<typeof scopeSchema>;
+
+const parseScope = (scope: string): Scope => {
+  const [type, projectId] = scope.split("@");
+  return {
+    type: type as MembershipRole | ProjectTokenType,
+    projectId,
+  };
+};
 
 export type Auth = JwtPayload &
   (
     | {
-        type: "secret" | "public";
+        type: typeof SECRET_TOKEN_TYPE | typeof PUBLIC_TOKEN_TYPE;
         sub: string;
         iss: string;
         exp: number;
+        scopes: Scope[];
       }
     | {
-        type: "user";
+        type: typeof USER_TOKEN_TYPE;
         email: string;
         sub: string;
         iss: string;
         exp: number;
+        scopes: Scope[];
       }
   );
 
-const authSchema = z.union([
-  z.object({
-    type: z.enum(["secret", "public"]),
-    sub: z.string(),
-    iss: z.string(),
-    exp: z.number(),
-  }),
-  z.object({
-    type: z.literal("user"),
-    email: z.string(),
-    sub: z.string(),
-    iss: z.string(),
-    exp: z.number(),
-  }),
-]);
+export const authSchema = z
+  .union([
+    z.object({
+      type: z.enum([SECRET_TOKEN_TYPE, PUBLIC_TOKEN_TYPE]),
+      sub: z.string(),
+      iss: z.string(),
+      exp: z.number(),
+      scopes: z.array(z.string()),
+    }),
+    z.object({
+      type: z.literal(USER_TOKEN_TYPE),
+      email: z.string(),
+      sub: z.string(),
+      iss: z.string(),
+      exp: z.number(),
+      scopes: z.array(z.string()),
+    }),
+  ])
+  .transform((auth) => {
+    return {
+      ...auth,
+      scopes: auth.scopes.map(parseScope),
+    };
+  });
 
 export class AuthService {
   private static async checkForMemberships(email: string) {
@@ -64,28 +96,30 @@ export class AuthService {
   private static createCode(email: string) {
     return sign({ email }, JWT_SECRET, { expiresIn: "1h" });
   }
-  public static createProjectToken(key: string, type: "secret" | "public", projectId: string) {
+  public static createProjectToken(key: string, type: ProjectTokenType, projectId: string) {
     const authConfig = getAuthConfig();
     const token = sign(
       {
         type,
+        scopes: [`${type}@${projectId}`],
       },
       `${JWT_SECRET}:${key}`,
       {
-        expiresIn: authConfig.ttl[type] as number | StringValue,
+        expiresIn: authConfig.ttl[type.toLowerCase() as "secret" | "public"] as number | StringValue,
         issuer: authConfig.issuer,
         subject: projectId,
       },
     );
-    return `${type === "secret" ? "s" : "p"}:${token}`;
+    return token;
   }
 
-  public static createUserToken(userId: string, email: string) {
+  public static createUserToken(userId: string, email: string, memberships: Membership[]) {
     const authConfig = getAuthConfig();
     const token = sign(
       {
-        type: "user",
+        type: "USER",
         email,
+        scopes: memberships.map((membership) => `${membership.role}@${membership.project}`),
       },
       JWT_SECRET,
       {
@@ -94,17 +128,35 @@ export class AuthService {
         subject: userId,
       },
     );
-    return `u:${token}`;
+    return token;
   }
 
-  private static getSalt(type: "s" | "p" | "u", project: Project): string {
-    if (type === "s") {
+  private static getSalt(type: TokenType, project: Project): string {
+    if (type === "SECRET") {
       return `${JWT_SECRET}:${project.secret}`;
     }
-    if (type === "p") {
+    if (type === "PUBLIC") {
       return `${JWT_SECRET}:${project.public}`;
     }
     return JWT_SECRET;
+  }
+
+  public static getTokenType(token: string): TokenType {
+    const segments = token.split(".");
+    if (segments.length !== 3) {
+      logger.warn({ segments }, "Invalid authorization token, invalid segments");
+      throw new HttpException(401, "Invalid authorization token");
+    }
+
+    let type: TokenType;
+    try {
+      const body = JSON.parse(Buffer.from(segments[1], "base64").toString("utf-8"));
+      type = tokenTypeSchema.parse(body.type);
+    } catch (err) {
+      logger.warn({ err, expected: token }, "Invalid authorization token, invalid type");
+      throw new HttpException(401, "Invalid authorization token");
+    }
+    return type;
   }
 
   public static async login({ email, password }: UserCredentials): Promise<{
@@ -138,7 +190,13 @@ export class AuthService {
       throw new HttpException(401, "Invalid username or password");
     }
 
-    const token = AuthService.createUserToken(user.id, email);
+    const membershipPersistence = new MembershipPersistence();
+    const memberships = await membershipPersistence.findAllBy({
+      key: "user",
+      value: user.id,
+    });
+
+    const token = AuthService.createUserToken(user.id, email, memberships);
 
     return { email: user.email, id: user.id, token };
   }
@@ -165,31 +223,27 @@ export class AuthService {
     return split[1];
   }
 
-  public static parseToken(c: Context, options?: { type?: AuthType; project?: Project }): Auth {
-    const tokenString = AuthService.parseBearer(c.req);
-    if (!tokenString) {
+  public static parseToken(c: Context, options?: { project?: Project; type?: TokenType }): Auth {
+    const token = AuthService.parseBearer(c.req);
+    if (!token) {
       throw new HttpException(401, "No authorization passed");
     }
 
-    const [prefix, token] = tokenString.split(":");
-    if (!prefix || !["u", "s", "p"].includes(prefix)) {
-      logger.warn({ prefix }, "Invalid authorization token, invalid prefix");
+    const type = AuthService.getTokenType(token);
+    if (options?.type && type !== options.type) {
+      logger.warn({ type, expected: options.type }, "Unexpected token type, invalid authorization token for request");
       throw new HttpException(401, "Invalid authorization token");
     }
 
-    if (!options?.project && prefix !== "u") {
-      logger.warn({ prefix }, "Invalid authorization token, project is required for non-user tokens");
+    if (!options?.project && type !== USER_TOKEN_TYPE) {
+      logger.warn({ type }, "Invalid authorization token, project is required for non-user tokens");
       throw new HttpException(401, "Invalid authorization token");
     }
 
     try {
-      const salt = AuthService.getSalt(prefix as "s" | "p" | "u", options?.project as Project);
+      const salt = AuthService.getSalt(type, options?.project as Project);
       const verified = verify(token, salt);
       const auth = authSchema.parse(verified);
-      if (options?.type && auth.type !== options.type) {
-        logger.warn({ auth, type: options.type }, "Invalid authorization token for request");
-        throw new HttpException(400, "Invalid authorization token for request");
-      }
       return auth;
     } catch (err) {
       logger.warn({ err }, "Invalid authorization token");

@@ -38,7 +38,12 @@ export const createTestSetup = async () => {
     role: "ADMIN",
   });
 
-  const token = AuthService.createUserToken(user.id, user.email);
+  const memberships = await membershipPersistence.findAllBy({
+    key: "user",
+    value: user.id,
+  });
+
+  const token = AuthService.createUserToken(user.id, user.email, memberships);
 
   return { user, project, token };
 };

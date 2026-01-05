@@ -1,5 +1,6 @@
 import {
   GroupPersistence,
+  MembershipPersistence,
   ProjectPersistence,
   UserPersistence
 } from "@sendra/lib";
@@ -603,7 +604,7 @@ describe("Groups Endpoint Contract Tests", () => {
     test("should allow group creation with valid secret key", async () => {
       const { project } = await createTestSetup();
 
-      const secretToken = AuthService.createProjectToken(project.secret, "secret", project.id);
+      const secretToken = AuthService.createProjectToken(project.secret, "SECRET", project.id);
 
       const groupPayload = {
         name: "Secret Key Group",
@@ -629,7 +630,7 @@ describe("Groups Endpoint Contract Tests", () => {
       const { project } = await createTestSetup();
       const group = await createTestGroup(project.id);
 
-      const secretToken = AuthService.createProjectToken(project.secret, "secret", project.id);
+      const secretToken = AuthService.createProjectToken(project.secret, "SECRET", project.id);
 
       const response = await app.request(`/api/v1/projects/${project.id}/groups/${group.id}`, {
         method: "GET",
@@ -655,7 +656,7 @@ describe("Groups Endpoint Contract Tests", () => {
         contacts: [contact.id],
       });
 
-      const secretToken = AuthService.createProjectToken(project.secret, "secret", project.id);
+      const secretToken = AuthService.createProjectToken(project.secret, "SECRET", project.id);
 
       const response = await app.request(
         `/api/v1/projects/${project.id}/groups/${group.id}/contacts`,
@@ -678,7 +679,7 @@ describe("Groups Endpoint Contract Tests", () => {
       const { project } = await createTestSetup();
       const group = await createTestGroup(project.id);
 
-      const secretToken = AuthService.createProjectToken(project.secret, "secret", project.id);
+      const secretToken = AuthService.createProjectToken(project.secret, "SECRET", project.id);
 
       const updatePayload = {
         id: group.id,
@@ -708,7 +709,7 @@ describe("Groups Endpoint Contract Tests", () => {
       const { project } = await createTestSetup();
       const group = await createTestGroup(project.id);
 
-      const secretToken = AuthService.createProjectToken(project.secret, "secret", project.id);
+      const secretToken = AuthService.createProjectToken(project.secret, "SECRET", project.id);
 
       const response = await app.request(
         `/api/v1/projects/${project.id}/groups/${group.id}`,
@@ -736,7 +737,13 @@ describe("Groups Endpoint Contract Tests", () => {
         enabled: true,
       });
 
-      const nonMemberToken = AuthService.createUserToken(nonMemberUser.id, nonMemberUser.email);
+      const membershipPersistence = new MembershipPersistence();
+      const memberships = await membershipPersistence.findAllBy({
+        key: "user",
+        value: nonMemberUser.id,
+      });
+
+      const nonMemberToken = AuthService.createUserToken(nonMemberUser.id, nonMemberUser.email, memberships);
 
       const response = await app.request(`/api/v1/projects/${project.id}/groups`, {
         method: "GET",
@@ -759,12 +766,13 @@ describe("Groups Endpoint Contract Tests", () => {
         public: "other-public",
         secret: "other-secret",
         eventTypes: [],
+        colors: [],
       });
 
       // Try to use other project's secret key
       const wrongSecretToken = AuthService.createProjectToken(
         otherProject.secret,
-        "secret",
+        "SECRET",
         otherProject.id
       );
 
