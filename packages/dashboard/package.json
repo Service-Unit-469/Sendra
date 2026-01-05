@@ -74,7 +74,7 @@
 		"react": "19.2.3",
 		"react-dom": "19.2.3",
 		"react-error-boundary": "^6.0.1",
-		"react-hook-form": "^7.69.0",
+		"react-hook-form": "^7.70.0",
 		"react-router-dom": "^7.9.6",
 		"react-window": "^2.2.3",
 		"recharts": "^3.5.0",
