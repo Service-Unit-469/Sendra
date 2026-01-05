@@ -76,7 +76,7 @@ export const isAuthenticatedProjectMemberOrSecretKey = createMiddleware(async (c
   const auth = AuthService.parseToken(c, { project });
   if (!["USER", "SECRET"].includes(auth.type)) {
     logger.warn({ auth }, "Invalid public authorization token for request");
-    throw new HttpException(404, "You do not have permission to perform this action");
+    throw new HttpException(403, "Forbidden");
   }
   if (!isProjectMember(auth, projectId)) {
     logger.warn({ auth, projectId }, "Token is not a member of the project");
