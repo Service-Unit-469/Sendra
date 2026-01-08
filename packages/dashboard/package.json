@@ -112,7 +112,7 @@
 		"postcss": "^8.4.39",
 		"tailwindcss": "^4.1.16",
 		"typescript": "^5.9.3",
-		"vite": "^7.2.2"
+		"vite": "^7.3.1"
 	},
 	"overrides": {
 		"react": "19.2.3",
