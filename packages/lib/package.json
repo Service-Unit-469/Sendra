@@ -20,7 +20,6 @@
     "zod": "^4.1.11"
   },
   "devDependencies": {
-    "@editorjs/editorjs": "^2.31.0",
     "@sendra/test": "*",
     "typescript": "^5.5.3"
   },

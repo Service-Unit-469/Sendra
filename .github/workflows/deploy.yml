@@ -19,7 +19,11 @@ jobs:
           node-version-file: .nvmrc
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
+      - name: Add SST's bin directory to PATH
+        # Writing to $GITHUB_PATH causes GitHub Actions to prepend this directory to PATH,
+        # ensuring SST's version of Pulumi is found before GitHub Actions' version
+        run: echo "$HOME/.config/sst/bin" >> $GITHUB_PATH
 
       - name: Build
         run: npm run build
