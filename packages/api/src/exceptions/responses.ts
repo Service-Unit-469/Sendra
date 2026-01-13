@@ -18,8 +18,8 @@ const problemTypes = {
   500: "Internal Server Error",
 } as Record<ContentfulStatusCode, string>;
 
-export const sendProblem = <AllowedCodes>(c: Context, httpException: Error & { code?: AllowedCodes; addl?: Record<string, unknown> }, overrideCode?: AllowedCodes) => {
-  const code = overrideCode ?? httpException.code ?? 500;
+export const sendProblem = <AllowedCodes>(c: Context, httpException: Error & { code?: AllowedCodes; status?: ContentfulStatusCode; addl?: Record<string, unknown> }, overrideCode?: AllowedCodes) => {
+  const code = overrideCode ?? httpException.code ?? httpException.status ?? 500;
   return c.json(
     {
       type: `/meta/problem/${code}`,
