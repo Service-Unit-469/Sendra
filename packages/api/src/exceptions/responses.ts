@@ -15,6 +15,7 @@ const problemTypes = {
   401: "Not Authenticated",
   403: "Not Allowed",
   404: "Not Found",
+  429: "Too Many Requests",
   500: "Internal Server Error",
 } as Record<ContentfulStatusCode, string>;
 

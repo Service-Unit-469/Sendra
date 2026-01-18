@@ -1,4 +1,4 @@
-import { dynamo } from "./dynamo";
+import { data } from "./data";
 import { passEnvironmentVariables } from "./env";
 import { router } from "./route";
 
@@ -37,7 +37,7 @@ taskQueue.subscribe(
     logging: {
       retention: "1 week",
     },
-    link: [dynamo, taskQueue, delayedTaskStateMachine],
+    link: [data, taskQueue, delayedTaskStateMachine],
     environment: {
       EMAIL_CONFIGURATION_SET_NAME: `SendraConfigurationSet-${$app.stage}`,
       ...passEnvironmentVariables([

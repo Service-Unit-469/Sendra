@@ -1,13 +1,14 @@
-import { CreateTableCommand, DynamoDBClient, waitUntilTableExists } from "@aws-sdk/client-dynamodb";
+import { CreateTableCommand, DynamoDBClient, UpdateTimeToLiveCommand, waitUntilTableExists } from "@aws-sdk/client-dynamodb";
 import { install, start, stop } from "aws-dynamodb-local";
 import { pickPort } from "pick-port";
 
-const TEST_TABLE_NAME = "test-sendra-table";
+const DATA_TABLE_NAME = "test-sendra-data-table";
+const RATE_LIMIT_TABLE_NAME = "test-sendra-rate-limit-table";
 let port: number;
 
-const initializeDynamoDB = async (client: DynamoDBClient, tableName: string) => {
+const initializeDynamoDB = async (client: DynamoDBClient) => {
   const createTableCommand = new CreateTableCommand({
-    TableName: tableName,
+    TableName: DATA_TABLE_NAME,
     KeySchema: [
       { AttributeName: "type", KeyType: "HASH" },
       { AttributeName: "id", KeyType: "RANGE" },
@@ -89,7 +90,6 @@ const initializeDynamoDB = async (client: DynamoDBClient, tableName: string) => 
   });
 
   await client.send(createTableCommand);
-
   // Wait for table to be active
   await waitUntilTableExists(
     {
@@ -97,8 +97,38 @@ const initializeDynamoDB = async (client: DynamoDBClient, tableName: string) => 
       maxWaitTime: 30,
     },
     {
-      TableName: tableName,
+      TableName: DATA_TABLE_NAME,
     },
+  );
+
+  await client.send(
+    new CreateTableCommand({
+      TableName: RATE_LIMIT_TABLE_NAME,
+      KeySchema: [{ AttributeName: "clientId", KeyType: "HASH" }],
+      AttributeDefinitions: [{ AttributeName: "clientId", AttributeType: "S" }],
+      ProvisionedThroughput: {
+        ReadCapacityUnits: 1,
+        WriteCapacityUnits: 1,
+      },
+    }),
+  );
+  await waitUntilTableExists(
+    {
+      client,
+      maxWaitTime: 30,
+    },
+    {
+      TableName: RATE_LIMIT_TABLE_NAME,
+    },
+  );
+  await client.send(
+    new UpdateTimeToLiveCommand({
+      TableName: RATE_LIMIT_TABLE_NAME,
+      TimeToLiveSpecification: {
+        AttributeName: "ttl",
+        Enabled: true,
+      },
+    }),
   );
 };
 
@@ -112,7 +142,8 @@ export const startupDynamoDB = async () => {
   const { vi } = await import("vitest");
 
   vi.stubEnv("PERSISTENCE_PROVIDER", "local");
-  vi.stubEnv("TABLE_NAME", TEST_TABLE_NAME);
+  vi.stubEnv("DATA_TABLE_NAME", DATA_TABLE_NAME);
+  vi.stubEnv("RATE_LIMIT_TABLE_NAME", RATE_LIMIT_TABLE_NAME);
   vi.stubEnv("AWS_REGION", "us-east-1");
   vi.stubEnv("AWS_ACCESS_KEY_ID", "dummy");
   vi.stubEnv("AWS_SECRET_ACCESS_KEY", "dummy");
@@ -127,7 +158,7 @@ export const startupDynamoDB = async () => {
       secretAccessKey: "dummy",
     },
   });
-  await initializeDynamoDB(client, TEST_TABLE_NAME);
+  await initializeDynamoDB(client);
 
   return {
     port,

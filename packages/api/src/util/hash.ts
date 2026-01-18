@@ -1,9 +1,13 @@
-import { randomBytes, scryptSync, timingSafeEqual } from "node:crypto";
+import { randomBytes, scrypt, timingSafeEqual } from "node:crypto";
+import { promisify } from "node:util";
+
+const pscrypt = promisify(scrypt);
+const RS = "\x1e";
 
 // Pass the password string and get hashed password back
-// ( and store only the hashed string in your database)
-const encryptPassword = (password: string, salt: string) => {
-  return scryptSync(password, salt, 32).toString("hex");
+const encryptPassword = async (password: string, salt: string) => {
+  const hash = await pscrypt(password, salt, 32);
+  return (hash as Buffer).toString("hex");
 };
 
 /**
@@ -12,9 +16,8 @@ const encryptPassword = (password: string, salt: string) => {
  * @param {string} hash The hash
  */
 export const verifyHash = async (pass: string, hash: string) => {
-  const salt = hash.slice(64);
-  const originalPassHash = hash.slice(0, 64);
-  const currentPassHash = encryptPassword(pass, salt);
+  const [originalPassHash, salt] = hash.split(RS);
+  const currentPassHash = await encryptPassword(pass, salt);
   const textEncoder = new TextEncoder();
   return timingSafeEqual(textEncoder.encode(originalPassHash), textEncoder.encode(currentPassHash));
 };
@@ -26,5 +29,6 @@ export const verifyHash = async (pass: string, hash: string) => {
  */
 export const createHash = async (pass: string): Promise<string> => {
   const salt = randomBytes(16).toString("hex");
-  return encryptPassword(pass, salt) + salt;
+  const hash = await encryptPassword(pass, salt);
+  return [hash, salt].join(RS);
 };

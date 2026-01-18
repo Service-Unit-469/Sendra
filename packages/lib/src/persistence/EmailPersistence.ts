@@ -25,7 +25,7 @@ export class EmailPersistence extends UnembeddingBasePersistence<Email> {
       IndexName: GLOBAL_INDEXES.BY_MESSAGE_ID.indexName,
       KeyConditionExpression: "#messageId = :messageId AND begins_with(#type, :typePrefix)",
       Limit: 1,
-      TableName: config.tableName,
+      TableName: config.tableNames.data,
     });
 
     logger.debug(command, "Executing query");

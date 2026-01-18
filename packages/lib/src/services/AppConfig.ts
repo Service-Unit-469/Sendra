@@ -2,18 +2,6 @@ import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { Resource } from "sst";
 import { z } from "zod";
 
-const LocalResource = Resource as unknown as {
-  SendraDatabase: {
-    name: string;
-  };
-  TaskQueue: {
-    url: string;
-  };
-  DelayedTaskStateMachine: {
-    stateMachineArn: string;
-  };
-};
-
 const TTLSchema = z.union([z.number(), z.string().regex(/^\d+ (Y|W|D|H|M|s|Ms)$/)]);
 
 const AssetsConfigSchema = z.object({
@@ -71,22 +59,26 @@ const EmailConfigSchema = z
 export const getEmailConfig = () => EmailConfigSchema.parse(process.env);
 
 const PersistenceConfigSchema = z.object({
-  TABLE_NAME: z.string().optional(),
-  AWS_REGION: z.string().optional(),
   AWS_ACCESS_KEY_ID: z.string().optional(),
-  AWS_SECRET_ACCESS_KEY: z.string().optional(),
   AWS_ENDPOINT: z.string().optional(),
+  AWS_REGION: z.string().optional(),
+  AWS_SECRET_ACCESS_KEY: z.string().optional(),
   PERSISTENCE_PROVIDER: z.enum(["local", "sst"]).default("sst"),
+  DATA_TABLE_NAME: z.string().optional(),
+  RATE_LIMIT_TABLE_NAME: z.string().optional(),
 });
 
 export const getPersistenceConfig = () => {
   const config = PersistenceConfigSchema.parse(process.env);
   if (config.PERSISTENCE_PROVIDER === "local") {
-    if (!config.AWS_ACCESS_KEY_ID || !config.AWS_SECRET_ACCESS_KEY || !config.TABLE_NAME) {
-      throw new Error("TABLE_NAME,AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY are required when PERSISTENCE_PROVIDER is local");
+    if (!config.AWS_ACCESS_KEY_ID || !config.AWS_SECRET_ACCESS_KEY || !config.DATA_TABLE_NAME || !config.RATE_LIMIT_TABLE_NAME) {
+      throw new Error("DATA_TABLE_NAME, RATE_LIMIT_TABLE_NAME, AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY are required when PERSISTENCE_PROVIDER is local");
     }
     return {
-      tableName: config.TABLE_NAME,
+      tableNames: {
+        data: config.DATA_TABLE_NAME,
+        rateLimit: config.RATE_LIMIT_TABLE_NAME,
+      },
       client: new DynamoDBClient({
         region: config.AWS_REGION,
         endpoint: config.AWS_ENDPOINT,
@@ -99,13 +91,35 @@ export const getPersistenceConfig = () => {
   }
   return {
     client: new DynamoDBClient(),
-    tableName: LocalResource.SendraDatabase.name,
+    tableNames: {
+      data: Resource.SendraDatabase.name,
+      rateLimit: Resource.RateLimit.name,
+    },
   };
+};
+
+export const getRateLimitConfig = () => {
+  return z
+    .object({
+      RATE_LIMIT_ENABLED: z.enum(["true", "false"]).default("true"),
+      RATE_LIMIT_AUTH_MAX_REQUESTS: z.string().default("5"),
+      RATE_LIMIT_AUTH_WINDOW_MS: z.string().default(String(900_000)), // 15 minutes in ms
+      RATE_LIMIT_AUTH_CRITICAL_WINDOW_MS: z.string().default(String(3_600_000)), // 1 hour in ms
+      RATE_LIMIT_AUTH_CRITICAL_MAX_REQUESTS: z.string().default("3"),
+    })
+    .transform((env) => ({
+      enabled: env.RATE_LIMIT_ENABLED === "true",
+      authMaxRequests: parseInt(env.RATE_LIMIT_AUTH_MAX_REQUESTS, 10),
+      authWindowMs: parseInt(env.RATE_LIMIT_AUTH_WINDOW_MS, 10),
+      authCriticalWindowMs: parseInt(env.RATE_LIMIT_AUTH_CRITICAL_WINDOW_MS, 10),
+      authCriticalMaxRequests: parseInt(env.RATE_LIMIT_AUTH_CRITICAL_MAX_REQUESTS, 10),
+    }))
+    .parse(process.env);
 };
 
 export const getTaskQueueConfig = () => {
   return {
-    queueUrl: LocalResource.TaskQueue.url,
-    stateMachineArn: LocalResource.DelayedTaskStateMachine.stateMachineArn,
+    queueUrl: Resource.TaskQueue.url,
+    stateMachineArn: Resource.DelayedTaskStateMachine.arn,
   };
 };

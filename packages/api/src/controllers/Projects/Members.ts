@@ -1,11 +1,11 @@
 import { createRoute, z } from "@hono/zod-openapi";
 import { MembershipPersistence, ProjectPersistence, rootLogger, UserPersistence } from "@sendra/lib";
-import { MembershipSchema, MembershipSchemas, ProjectSchema } from "@sendra/shared";
-import type { AppType } from "../app";
-import { NotAllowed, NotFound } from "../exceptions";
-import { getProblemResponseSchema } from "../exceptions/responses";
-import { BearerAuth, isAuthenticatedProjectAdmin, isAuthenticatedProjectMember } from "../middleware/auth";
-import { SystemEmailService } from "../services/SystemEmailService";
+import { MembershipSchema, MembershipSchemas } from "@sendra/shared";
+import type { AppType } from "../../app";
+import { NotAllowed, NotFound } from "../../exceptions";
+import { getProblemResponseSchema } from "../../exceptions/responses";
+import { BearerAuth, isAuthenticatedProjectAdmin, isAuthenticatedProjectMember } from "../../middleware/auth";
+import { SystemEmailService } from "../../services/SystemEmailService";
 
 const logger = rootLogger.child({
   module: "Memberships",
@@ -16,8 +16,11 @@ export const registerMembershipsRoutes = (app: AppType) => {
     createRoute({
       operationId: "invite-member",
       method: "post",
-      path: "/memberships/invite",
+      path: "/projects/{projectId}/members/invite",
       request: {
+        params: z.object({
+          projectId: z.string(),
+        }),
         body: {
           content: {
             "application/json": {
@@ -48,7 +51,8 @@ export const registerMembershipsRoutes = (app: AppType) => {
     }),
     async (c) => {
       const body = await c.req.json();
-      const { projectId, email, role } = MembershipSchemas.invite.parse(body);
+      const { email, role } = MembershipSchemas.invite.parse(body);
+      const { projectId } = c.req.param();
 
       logger.info({ projectId, email, role }, "Inviting user to project");
 
@@ -92,8 +96,11 @@ export const registerMembershipsRoutes = (app: AppType) => {
     createRoute({
       operationId: "kick-member",
       method: "post",
-      path: "/memberships/kick",
+      path: "/projects/{projectId}/members/kick",
       request: {
+        params: z.object({
+          projectId: z.string(),
+        }),
         body: {
           content: {
             "application/json": {
@@ -125,7 +132,8 @@ export const registerMembershipsRoutes = (app: AppType) => {
     }),
     async (c) => {
       const body = await c.req.json();
-      const { projectId, email } = MembershipSchemas.kick.parse(body);
+      const { email } = MembershipSchemas.kick.parse(body);
+      const { projectId } = c.req.param();
 
       const userId = c.get("auth").sub;
       logger.info({ projectId, email }, "Kicking user from project");
@@ -158,17 +166,11 @@ export const registerMembershipsRoutes = (app: AppType) => {
     createRoute({
       operationId: "leave-project",
       method: "post",
-      path: "/memberships/leave",
+      path: "/projects/{projectId}/members/leave",
       request: {
-        body: {
-          content: {
-            "application/json": {
-              schema: z.object({
-                projectId: z.string(),
-              }),
-            },
-          },
-        },
+        params: z.object({
+          projectId: z.string(),
+        }),
       },
       responses: {
         200: {
@@ -176,11 +178,11 @@ export const registerMembershipsRoutes = (app: AppType) => {
             "application/json": {
               schema: z.object({
                 success: z.boolean(),
-                memberships: z.array(ProjectSchema),
+                memberships: z.array(MembershipSchema),
               }),
             },
           },
-          description: "Leave a project",
+          description: "No longer a member of the project",
         },
       },
       ...BearerAuth,
@@ -188,8 +190,7 @@ export const registerMembershipsRoutes = (app: AppType) => {
       hide: true,
     }),
     async (c) => {
-      const body = await c.req.json();
-      const { projectId } = z.object({ projectId: z.string() }).parse(body);
+      const { projectId } = c.req.param();
 
       const userId = c.get("auth").sub;
       logger.info({ projectId, userId }, "Leaving project");
@@ -199,12 +200,11 @@ export const registerMembershipsRoutes = (app: AppType) => {
 
       await Promise.all(memberships.filter((membership) => membership.project === projectId).map((membership) => membershipPersistence.delete(membership.id)));
 
-      const projectPersistence = new ProjectPersistence();
-      const projects = await projectPersistence.batchGet(memberships.filter((membership) => membership.project === projectId).map((membership) => membership.project));
+      const remainingMemberships = memberships.filter((membership) => membership.project !== projectId);
 
-      logger.info({ projectId, userId, projects: projects.length }, "Left project");
+      logger.info({ projectId, userId, remainingMemberships: remainingMemberships.length }, "Left project");
 
-      return c.json({ success: true, memberships: projects }, 200);
+      return c.json({ success: true, memberships: remainingMemberships }, 200);
     },
   );
 };

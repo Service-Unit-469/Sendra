@@ -1,10 +1,32 @@
 import { createRoute, z } from "@hono/zod-openapi";
+import { getRateLimitConfig } from "@sendra/lib";
 import { email, id, UserSchemas } from "@sendra/shared";
 import type { AppType } from "../app";
 import { getProblemResponseSchema } from "../exceptions/responses";
+import { createRateLimitMiddleware } from "../middleware/rateLimit";
 import { AuthService } from "../services/AuthService";
 
 export const registerAuthRoutes = (app: AppType) => {
+  const authRateLimitConfig = getRateLimitConfig();
+
+  const authRateLimit = {
+    maxRequests: authRateLimitConfig.authMaxRequests,
+    windowMs: authRateLimitConfig.authWindowMs,
+  };
+  const criticalRateLimit = {
+    maxRequests: authRateLimitConfig.authCriticalMaxRequests,
+    windowMs: authRateLimitConfig.authCriticalWindowMs,
+  };
+
+  // default: 5 requests per 15 minutes (prevents brute force attacks)
+  const rateLimitLogin = createRateLimitMiddleware(authRateLimit, "auth:login");
+  const rateLimitReset = createRateLimitMiddleware(authRateLimit, "auth:reset");
+  const rateLimitVerify = createRateLimitMiddleware(authRateLimit, "auth:verify");
+
+  // default: 3 requests per hour
+  const rateLimitSignup = createRateLimitMiddleware(criticalRateLimit, "auth:signup");
+  const rateLimitRequestReset = createRateLimitMiddleware(criticalRateLimit, "auth:request-reset");
+
   // login
   app.openapi(
     createRoute({
@@ -36,7 +58,7 @@ export const registerAuthRoutes = (app: AppType) => {
         401: getProblemResponseSchema(401),
         403: getProblemResponseSchema(403),
       },
-      middleware: [],
+      middleware: [rateLimitLogin],
       hide: true,
     }),
     async (c) => {
@@ -79,6 +101,7 @@ export const registerAuthRoutes = (app: AppType) => {
         },
         400: getProblemResponseSchema(400),
       },
+      middleware: [rateLimitSignup],
       hide: true,
     }),
     async (c) => {
@@ -116,6 +139,7 @@ export const registerAuthRoutes = (app: AppType) => {
         403: getProblemResponseSchema(403),
         404: getProblemResponseSchema(404),
       },
+      middleware: [rateLimitRequestReset],
       hide: true,
     }),
     async (c) => {
@@ -154,6 +178,7 @@ export const registerAuthRoutes = (app: AppType) => {
         403: getProblemResponseSchema(403),
         404: getProblemResponseSchema(404),
       },
+      middleware: [rateLimitReset],
       hide: true,
     }),
     async (c) => {
@@ -191,6 +216,7 @@ export const registerAuthRoutes = (app: AppType) => {
         403: getProblemResponseSchema(403),
         404: getProblemResponseSchema(404),
       },
+      middleware: [rateLimitVerify],
       hide: true,
     }),
     async (c) => {
