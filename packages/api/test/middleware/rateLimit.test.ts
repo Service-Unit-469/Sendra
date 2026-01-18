@@ -1,5 +1,5 @@
 import { startupDynamoDB, stopDynamoDB } from "@sendra/test";
-import { afterAll, beforeAll, beforeEach, describe, expect, test } from "vitest";
+import { afterAll, beforeAll, describe, expect, test } from "vitest";
 import { app } from "../../src/app";
 
 describe("Rate Limit Middleware", () => {
