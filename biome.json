@@ -1,7 +1,14 @@
 {
   "$schema": "https://biomejs.dev/schemas/2.2.5/schema.json",
+  "files": {
+    "includes": ["**", "!**/sst-env.d.ts"]
+  },
   "assist": {
-    "actions": { "source": { "organizeImports": "on" } }
+    "actions": {
+      "source": {
+        "organizeImports": "on"
+      }
+    }
   },
   "linter": {
     "enabled": true,
@@ -17,9 +24,9 @@
         "noForEach": "off",
         "noStaticOnlyClass": "off"
       },
-	  "correctness": {
-		"useUniqueElementIds": "off"
-	  }
+      "correctness": {
+        "useUniqueElementIds": "off"
+      }
     }
   },
   "formatter": {

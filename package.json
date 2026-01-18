@@ -41,14 +41,10 @@
     "packages/subscription"
   ],
   "dependencies": {
-    "@aws-sdk/client-dynamodb": "^3.967.0",
-    "aws-embedded-metrics": "^4.2.1",
-    "sst": "^3.17.24",
-    "tar": "^7.5.2"
+    "sst": "^3.17.24"
   },
   "overrides": {
     "hono": "^4.10.4",
-    "uglify-js": "npm:dry-uninstall",
     "zod": "^4.1.11",
     "react": "19.2.3",
 		"react-dom": "19.2.3"
