@@ -16,7 +16,8 @@ async function exportOpenAPI() {
   process.env.DEFAULT_EMAIL = "mock@example.com";
   process.env.EMAIL_CONFIGURATION_SET_NAME = "mock-config-set";
   process.env.PERSISTENCE_PROVIDER = "local";
-  process.env.TABLE_NAME = "mock-table";
+  process.env.DATA_TABLE_NAME = "mock-table";
+  process.env.RATE_LIMIT_TABLE_NAME = "mock-rate-limit-table";
   process.env.AWS_ACCESS_KEY_ID = "mock-key";
   process.env.AWS_SECRET_ACCESS_KEY = "mock-secret";
 

@@ -41,7 +41,7 @@ export class ContactPersistence extends BasePersistence<Contact> {
       Limit: 50,
       ReturnConsumedCapacity: "TOTAL",
       Select: "ALL_PROJECTED_ATTRIBUTES",
-      TableName: config.tableName,
+      TableName: config.tableNames.data,
       ExclusiveStartKey: cursor ? JSON.parse(Buffer.from(cursor, "base64").toString("ascii")) : undefined,
     });
 

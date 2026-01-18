@@ -27,7 +27,8 @@ export const createHash = async (pass: string): Promise<string> => {
 setup("creating E2E user", async ({}) => {
   const outputs = JSON.parse(readFileSync(".sst/outputs.json", "utf8"));
 
-  process.env.TABLE_NAME = outputs.dynamo.table.id;
+  process.env.DATA_TABLE_NAME = outputs.dynamo.table.id;
+  process.env.RATE_LIMIT_TABLE_NAME = outputs.rateLimit.table.id;
   process.env.PERSISTENCE_PROVIDER = "local";
 
   const email = "e2e@example.com";
@@ -58,6 +59,7 @@ setup("creating E2E user", async ({}) => {
       public: "e2e-public-key",
       secret: "e2e-secret-key",
       eventTypes: [],
+      colors: [],
     });
   }
 

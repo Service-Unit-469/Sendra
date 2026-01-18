@@ -1,6 +1,6 @@
 /// <reference path="../.sst/platform/config.d.ts" />
 
-import { dynamo } from "./dynamo";
+import { data } from "./data";
 import { passEnvironmentVariables } from "./env";
 import { router } from "./route";
 import * as aws from "@pulumi/aws";
@@ -11,7 +11,7 @@ export const emailTopic = new sst.aws.SnsTopic("EmailTopic");
 emailTopic.subscribe("EmailTopicSubscriber", {
   handler: "packages/subscribers/src/EmailTopicSubscriber.handler",
   timeout: "15 minutes",
-  link: [dynamo],
+  link: [data],
   logging: {
     retention: "1 week",
   },

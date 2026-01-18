@@ -12,12 +12,10 @@ export const MembershipSchema = BaseSchema.extend({
 
 export const MembershipSchemas = {
   invite: z.object({
-    projectId: id,
     email,
     role: MembershipRoleSchema,
   }),
   kick: z.object({
-    projectId: id,
     email,
   }),
 };

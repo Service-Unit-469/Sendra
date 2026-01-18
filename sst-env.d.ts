@@ -29,6 +29,10 @@ declare module "sst" {
       "type": "sst.sst.Secret"
       "value": string
     }
+    "RateLimit": {
+      "name": string
+      "type": "sst.aws.Dynamo"
+    }
     "SendraDatabase": {
       "name": string
       "type": "sst.aws.Dynamo"

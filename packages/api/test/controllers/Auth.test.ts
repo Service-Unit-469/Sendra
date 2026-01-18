@@ -1,35 +1,40 @@
 import { MembershipPersistence, UserPersistence } from "@sendra/lib";
 import { startupDynamoDB, stopDynamoDB } from "@sendra/test";
 import { afterAll, beforeAll, beforeEach, describe, expect, test, vi } from "vitest";
-import { app } from "../../src/app";
-import { AuthService } from "../../src/services/AuthService";
+import { Auth, AuthService } from "../../src/services/AuthService";
 import { ses } from "../../src/services/SystemEmailService";
 import { createHash } from "../../src/util/hash";
+import { OpenAPIHono } from "@hono/zod-openapi";
+
+let app: OpenAPIHono<{
+  Variables: {
+    auth: Auth;
+  };
+}>;
 
 describe("Auth Endpoint Contract Tests", () => {
   beforeAll(async () => {
     await startupDynamoDB();
-    
-    // Mock AWS SES sendEmail
+    process.env.RATE_LIMIT_ENABLED = "false";
+
     vi.spyOn(ses, "sendEmail").mockImplementation(async () => ({
       MessageId: "test-message-id",
       $metadata: {},
     }));
+
+    app = await import("../../src/app").then(m => m.app);
   });
 
   afterAll(async () => {
     await stopDynamoDB();
     vi.restoreAllMocks();
+    delete process.env.RATE_LIMIT_ENABLED;
   });
 
-  beforeEach(async () => {
-    // Clear mocks between tests
-    vi.clearAllMocks();
-    // Reset DISABLE_SIGNUPS to default
-    delete process.env.DISABLE_SIGNUPS;
-  });
+  beforeEach(() => vi.clearAllMocks());
 
   describe("POST /auth/signup", () => {
+
     test("should successfully create a new user account", async () => {
       const testEmail = "newuser@example.com";
       const testPassword = "password123";

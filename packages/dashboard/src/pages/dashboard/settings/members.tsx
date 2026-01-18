@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { Membership, MembershipInvite, PublicProject } from "@sendra/shared";
+import type { Membership, MembershipInvite } from "@sendra/shared";
 import { MembershipSchemas } from "@sendra/shared";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -39,7 +39,7 @@ export default function MembersPage() {
     watch,
     formState: { errors },
   } = useForm({
-    resolver: zodResolver(MembershipSchemas.invite.omit({ projectId: true })),
+    resolver: zodResolver(MembershipSchemas.invite),
   });
 
   if (!projects || !user || !memberships || !memberships.members) {
@@ -54,10 +54,9 @@ export default function MembersPage() {
           members: Membership[];
         },
         MembershipInvite
-      >("/memberships/invite", {
+      >(`/projects/${project.id}/members/invite`, {
         method: "POST",
         body: {
-          projectId: project.id,
           email: data.email,
           role: data.role,
         },
@@ -80,12 +79,9 @@ export default function MembersPage() {
 
   const kickAccount = (email: string) => {
     void network
-      .fetch<{ success: true; members: Membership[] }, z.infer<typeof MembershipSchemas.kick>>("/memberships/kick", {
+      .fetch<{ success: true; members: Membership[] }, z.infer<typeof MembershipSchemas.kick>>(`/projects/${project.id}/members/kick`, {
         method: "POST",
-        body: {
-          projectId: project.id,
-          email,
-        },
+        body: { email },
       })
       .then(async (res) => {
         await membershipMutate({ members: res.members });
@@ -97,17 +93,15 @@ export default function MembersPage() {
       .fetch<
         {
           success: true;
-          memberships: PublicProject[];
+          memberships: Membership[];
         },
-        { projectId: string }
-      >("/memberships/leave", {
+        void
+      >(`/projects/${project.id}/members/leave`, {
         method: "POST",
-        body: {
-          projectId: project.id,
-        },
       })
       .then(async (res) => {
-        await projectMutate(res.memberships);
+        await membershipMutate({ members: res.memberships });
+        await projectMutate();
         localStorage.removeItem("project");
         navigate("");
         window.location.reload();

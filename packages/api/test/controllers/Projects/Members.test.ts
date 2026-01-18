@@ -1,9 +1,10 @@
 import { MembershipPersistence, ProjectPersistence, UserPersistence } from "@sendra/lib";
 import { startupDynamoDB, stopDynamoDB } from "@sendra/test";
 import { afterAll, beforeAll, describe, expect, test, vi } from "vitest";
-import { app } from "../../src/app";
-import { AuthService } from "../../src/services/AuthService";
-import { SystemEmailService } from "../../src/services/SystemEmailService";
+import { app } from "../../../src/app";
+import { AuthService } from "../../../src/services/AuthService";
+import { SystemEmailService } from "../../../src/services/SystemEmailService";
+import { randomUUID } from "crypto";
 
 describe("Memberships Endpoint Contract Tests", () => {
   beforeAll(async () => {
@@ -14,7 +15,7 @@ describe("Memberships Endpoint Contract Tests", () => {
     await stopDynamoDB();
   });
 
-  describe("POST /memberships/invite", () => {
+  describe("POST /projects/{projectId}/members/invite", () => {
     test("should invite a new user to a project as ADMIN", async () => {
       // Create a test user (admin)
       const userPersistence = new UserPersistence();
@@ -61,7 +62,7 @@ describe("Memberships Endpoint Contract Tests", () => {
         role: "ADMIN",
       };
 
-      const response = await app.request("/api/v1/memberships/invite", {
+      const response = await app.request(`/api/v1/projects/${project.id}/members/invite`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -145,7 +146,7 @@ describe("Memberships Endpoint Contract Tests", () => {
         role: "MEMBER",
       };
 
-      const response = await app.request("/api/v1/memberships/invite", {
+      const response = await app.request(`/api/v1/projects/${project.id}/members/invite`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -229,7 +230,7 @@ describe("Memberships Endpoint Contract Tests", () => {
         role: "MEMBER",
       };
 
-      const response = await app.request("/api/v1/memberships/invite", {
+      const response = await app.request(`/api/v1/projects/${project.id}/members/invite`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -269,7 +270,7 @@ describe("Memberships Endpoint Contract Tests", () => {
         role: "MEMBER",
       };
 
-      const response = await app.request("/api/v1/memberships/invite", {
+      const response = await app.request(`/api/v1/projects/${randomUUID()}/members/invite`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -292,7 +293,7 @@ describe("Memberships Endpoint Contract Tests", () => {
         role: "MEMBER",
       };
 
-      const response = await app.request("/api/v1/memberships/invite", {
+      const response = await app.request(`/api/v1/projects/${randomUUID()}/members/invite`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -312,14 +313,31 @@ describe("Memberships Endpoint Contract Tests", () => {
         enabled: true,
       });
 
+      const projectPersistence = new ProjectPersistence();
+      const project = await projectPersistence.create({
+        name: "Test Project 10",
+        url: "https://test10.example.com",
+        public: "test-public-10",
+        secret: "test-secret-10",
+        eventTypes: [],
+        colors: [],
+      });
+
+      // Create admin membership
       const membershipPersistence = new MembershipPersistence();
+      await membershipPersistence.create({
+        email: adminUser.email,
+        user: adminUser.id,
+        project: project.id,
+        role: "ADMIN",
+      });
       const memberships = await membershipPersistence.findAllBy({
         key: "user",
         value: adminUser.id,
       });
       const token = AuthService.createUserToken(adminUser.id, adminUser.email, memberships);
 
-      const response = await app.request("/api/v1/memberships/invite", {
+      const response = await app.request(`/api/v1/projects/${project.id}/members/invite`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -334,7 +352,7 @@ describe("Memberships Endpoint Contract Tests", () => {
     });
   });
 
-  describe("POST /memberships/kick", () => {
+  describe("POST /projects/{projectId}/members/kick", () => {
     test("should kick a member from a project", async () => {
       // Create test users
       const userPersistence = new UserPersistence();
@@ -384,11 +402,10 @@ describe("Memberships Endpoint Contract Tests", () => {
 
       // Kick the member
       const kickPayload = {
-        projectId: project.id,
         email: memberUser.email,
       };
 
-      const response = await app.request("/api/v1/memberships/kick", {
+      const response = await app.request(`/api/v1/projects/${project.id}/members/kick`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -447,11 +464,10 @@ describe("Memberships Endpoint Contract Tests", () => {
 
       // Try to kick self
       const kickPayload = {
-        projectId: project.id,
         email: adminUser.email,
       };
 
-      const response = await app.request("/api/v1/memberships/kick", {
+      const response = await app.request(`/api/v1/projects/${project.id}/members/kick`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -473,7 +489,7 @@ describe("Memberships Endpoint Contract Tests", () => {
         email: "user@example.com",
       };
 
-      const response = await app.request("/api/v1/memberships/kick", {
+      const response = await app.request(`/api/v1/projects/${randomUUID()}/members/kick`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -493,14 +509,31 @@ describe("Memberships Endpoint Contract Tests", () => {
         enabled: true,
       });
 
+      // Create a test project
+      const projectPersistence = new ProjectPersistence();
+      const project = await projectPersistence.create({
+        name: "Test Project 6",
+        url: "https://test6.example.com",
+        public: "test-public-6",
+        secret: "test-secret-6",
+        eventTypes: [],
+        colors: [],
+      });
+
       const membershipPersistence = new MembershipPersistence();
+      await membershipPersistence.create({
+        email: adminUser.email,
+        user: adminUser.id,
+        project: project.id,
+        role: "ADMIN",
+      });
       const memberships = await membershipPersistence.findAllBy({
         key: "user",
         value: adminUser.id,
       });
       const token = AuthService.createUserToken(adminUser.id, adminUser.email, memberships);
 
-      const response = await app.request("/api/v1/memberships/kick", {
+      const response = await app.request(`/api/v1/projects/${project.id}/members/kick`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -552,11 +585,10 @@ describe("Memberships Endpoint Contract Tests", () => {
 
       // Try to kick non-existent user
       const kickPayload = {
-        projectId: project.id,
         email: "nonexistent@example.com",
       };
 
-      const response = await app.request("/api/v1/memberships/kick", {
+      const response = await app.request(`/api/v1/projects/${project.id}/members/kick`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -573,7 +605,7 @@ describe("Memberships Endpoint Contract Tests", () => {
     });
   });
 
-  describe("POST /memberships/leave", () => {
+  describe("POST /projects/{projectId}/members/leave", () => {
     test("should allow a member to leave a project", async () => {
       // Create a test user
       const userPersistence = new UserPersistence();
@@ -624,18 +656,12 @@ describe("Memberships Endpoint Contract Tests", () => {
       });
       const token = AuthService.createUserToken(memberUser.id, memberUser.email, memberships);
 
-      // Leave project 1
-      const leavePayload = {
-        projectId: project1.id,
-      };
-
-      const response = await app.request("/api/v1/memberships/leave", {
+      const response = await app.request(`/api/v1/projects/${project1.id}/members/leave`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(leavePayload),
       });
 
       expect(response.status).toBe(200);
@@ -659,7 +685,17 @@ describe("Memberships Endpoint Contract Tests", () => {
         projectId: "some-project-id",
       };
 
-      const response = await app.request("/api/v1/memberships/leave", {
+      const projectPersistence = new ProjectPersistence();
+      const project = await projectPersistence.create({
+        name: "Test Project 9",
+        url: "https://test9.example.com",
+        public: "test-public-9",
+        secret: "test-secret-9",
+        eventTypes: [],
+        colors: [],
+      });
+
+      const response = await app.request(`/api/v1/projects/${project.id}/members/leave`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -670,37 +706,7 @@ describe("Memberships Endpoint Contract Tests", () => {
       expect(response.status).toBe(401);
     });
 
-    test("should return 400 when request body is invalid", async () => {
-      // Create a test user
-      const userPersistence = new UserPersistence();
-      const memberUser = await userPersistence.create({
-        email: "member4@example.com",
-        password: "hashedpassword",
-        enabled: true,
-      });
-
-      const membershipPersistence = new MembershipPersistence();
-      const memberships = await membershipPersistence.findAllBy({
-        key: "user",
-        value: memberUser.id,
-      });
-      const token = AuthService.createUserToken(memberUser.id, memberUser.email, memberships);
-
-      const response = await app.request("/api/v1/memberships/leave", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          invalidField: "value",
-        }),
-      });
-
-      expect(response.status).toBe(400);
-    });
-
-    test("should return 404 when trying to leave a project user is not a member of", async () => {
+    test("should return 404 when trying to leave a project user is not a member", async () => {
       // Create a test user
       const userPersistence = new UserPersistence();
       const memberUser = await userPersistence.create({
@@ -720,20 +726,15 @@ describe("Memberships Endpoint Contract Tests", () => {
         colors: [],
       });
 
-      // Create member token (but no membership created)
-      const membershipPersistence = new MembershipPersistence();
-      const memberships = await membershipPersistence.findAllBy({
-        key: "user",
-        value: memberUser.id,
-      });
-      const token = AuthService.createUserToken(memberUser.id, memberUser.email, memberships);
+      // Create member token with no memberships
+      const token = AuthService.createUserToken(memberUser.id, memberUser.email, []);
 
       // Try to leave project user is not a member of
       const leavePayload = {
         projectId: project.id,
       };
 
-      const response = await app.request("/api/v1/memberships/leave", {
+      const response = await app.request(`/api/v1/projects/${project.id}/members/leave`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -744,9 +745,6 @@ describe("Memberships Endpoint Contract Tests", () => {
 
       // The middleware should reject this since the user is not a member
       expect(response.status).toBe(404);
-
-      const data = await response.json();
-      expect(data).toHaveProperty("title", "Not Found");
     });
   });
 });

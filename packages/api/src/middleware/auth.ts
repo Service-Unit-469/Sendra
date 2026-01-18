@@ -18,12 +18,7 @@ const projectCache = new LRUCache<string, Project>({
 });
 
 async function getProjectId(request: HonoRequest): Promise<string> {
-  let projectId = request.param("projectId") || request.query("projectId");
-
-  if (!projectId) {
-    const body = await request.json();
-    projectId = body.projectId as string | undefined;
-  }
+  const projectId = request.param("projectId") || request.query("projectId");
 
   if (!projectId) {
     throw new HttpException(400, "Project ID is required");

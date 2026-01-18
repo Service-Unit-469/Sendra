@@ -1,6 +1,7 @@
 import { assetsBucket } from "./assets";
-import { dynamo } from "./dynamo";
+import { data } from "./data";
 import { passEnvironmentVariables } from "./env";
+import { rateLimitTable } from "./rateLimit";
 import { router } from "./route";
 import { jwtSecret } from "./secrets";
 import { delayedTaskStateMachine, taskQueue } from "./task-queue";
@@ -19,12 +20,27 @@ export const api = new sst.aws.ApiGatewayV2("ApiGateway", {
       "X-Correlation-Id",
     ],
   },
+  transform: {
+    stage: {
+      defaultRouteSettings: {
+        throttlingRateLimit: 1000,
+        throttlingBurstLimit: 2000,
+      }
+    }
+  }
 });
 router.route("/api/v1", api.url);
 
 api.route("ANY /api/v1/{proxy+}", {
   handler: "packages/api/src/app.handler",
-  link: [dynamo, taskQueue, delayedTaskStateMachine, jwtSecret, assetsBucket],
+  link: [
+    assetsBucket,
+    delayedTaskStateMachine,
+    data,
+    jwtSecret,
+    rateLimitTable,
+    taskQueue,
+  ],
   logging: {
     retention: "1 week",
   },
