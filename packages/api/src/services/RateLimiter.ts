@@ -1,5 +1,5 @@
 import { DynamoDBDocumentClient, GetCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
-import { getPersistenceConfig, rootLogger } from "@sendra/lib";
+import { getPersistenceConfig, getRateLimitConfig, rootLogger } from "@sendra/lib";
 
 const logger = rootLogger.child({ module: "rateLimit" });
 
@@ -32,8 +32,9 @@ export class RateLimiter {
    */
   async check(clientId: string): Promise<RateLimitResult> {
     const persistenceConfig = getPersistenceConfig();
-    const tableName = persistenceConfig.tableNames.rateLimit;
+
     const docClient = DynamoDBDocumentClient.from(persistenceConfig.client);
+    const { tableName } = getRateLimitConfig();
 
     const { maxRequests, windowMs } = this.config;
     const now = Date.now();
