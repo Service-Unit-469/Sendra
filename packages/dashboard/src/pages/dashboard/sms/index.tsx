@@ -27,8 +27,11 @@ const GroupButton = ({
 }) => {
   const handleSend = useCallback(() => {
     onGroupClick(group);
-    const phoneNumbers = contacts.map((c) => c.data[phoneField] as string).join(",");
-    window.open(`sms:${phoneNumbers}?&body=${message}`, "_blank");
+    const phoneNumbers = contacts.map((c) => c.data[phoneField] as string)
+      .map((n) => encodeURIComponent(n.replace(/\s-\(\)+/g, "")))
+      .filter((n) => !!n)
+      .join(",");
+    window.open(`sms:${phoneNumbers}?&body=${encodeURIComponent(message)}`, "_blank");
   }, [contacts, phoneField, message, onGroupClick, group]);
 
   if (clicked) {
