@@ -27,7 +27,8 @@ const GroupButton = ({
 }) => {
   const handleSend = useCallback(() => {
     onGroupClick(group);
-    const phoneNumbers = contacts.map((c) => c.data[phoneField] as string)
+    const phoneNumbers = contacts
+      .map((c) => c.data[phoneField] as string)
       .map((n) => encodeURIComponent(n.replace(/\s-\(\)+/g, "")))
       .filter((n) => !!n)
       .join(",");
