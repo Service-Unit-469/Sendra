@@ -112,7 +112,7 @@ export abstract class BasePersistence<T extends BaseItem> {
   ) {
     const config = getPersistenceConfig();
     this.docClient = DynamoDBDocumentClient.from(config.client);
-    this.tableName = config.tableNames.data;
+    this.tableName = config.tableName;
   }
 
   abstract embed(items: T[], embed?: Embeddable[], embedLimit?: EmbedLimit): Promise<EmbeddedObject<T>[]>;

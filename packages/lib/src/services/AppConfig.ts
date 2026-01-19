@@ -71,14 +71,11 @@ const PersistenceConfigSchema = z.object({
 export const getPersistenceConfig = () => {
   const config = PersistenceConfigSchema.parse(process.env);
   if (config.PERSISTENCE_PROVIDER === "local") {
-    if (!config.AWS_ACCESS_KEY_ID || !config.AWS_SECRET_ACCESS_KEY || !config.DATA_TABLE_NAME || !config.RATE_LIMIT_TABLE_NAME) {
-      throw new Error("DATA_TABLE_NAME, RATE_LIMIT_TABLE_NAME, AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY are required when PERSISTENCE_PROVIDER is local");
+    if (!config.AWS_ACCESS_KEY_ID || !config.AWS_SECRET_ACCESS_KEY || !config.DATA_TABLE_NAME) {
+      throw new Error("DATA_TABLE_NAME, AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY are required when PERSISTENCE_PROVIDER is local");
     }
     return {
-      tableNames: {
-        data: config.DATA_TABLE_NAME,
-        rateLimit: config.RATE_LIMIT_TABLE_NAME,
-      },
+      tableName: config.DATA_TABLE_NAME,
       client: new DynamoDBClient({
         region: config.AWS_REGION,
         endpoint: config.AWS_ENDPOINT,
@@ -91,10 +88,7 @@ export const getPersistenceConfig = () => {
   }
   return {
     client: new DynamoDBClient(),
-    tableNames: {
-      data: Resource.SendraDatabase.name,
-      rateLimit: Resource.RateLimit.name,
-    },
+    tableName: Resource.RateLimit.name,
   };
 };
 
@@ -106,6 +100,7 @@ export const getRateLimitConfig = () => {
       RATE_LIMIT_AUTH_WINDOW_MS: z.string().default(String(900_000)), // 15 minutes in ms
       RATE_LIMIT_AUTH_CRITICAL_WINDOW_MS: z.string().default(String(3_600_000)), // 1 hour in ms
       RATE_LIMIT_AUTH_CRITICAL_MAX_REQUESTS: z.string().default("3"),
+      RATE_LIMIT_TABLE_NAME: z.string().optional(),
     })
     .transform((env) => ({
       enabled: env.RATE_LIMIT_ENABLED === "true",
@@ -113,6 +108,7 @@ export const getRateLimitConfig = () => {
       authWindowMs: parseInt(env.RATE_LIMIT_AUTH_WINDOW_MS, 10),
       authCriticalWindowMs: parseInt(env.RATE_LIMIT_AUTH_CRITICAL_WINDOW_MS, 10),
       authCriticalMaxRequests: parseInt(env.RATE_LIMIT_AUTH_CRITICAL_MAX_REQUESTS, 10),
+      tableName: env.RATE_LIMIT_TABLE_NAME,
     }))
     .parse(process.env);
 };
