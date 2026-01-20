@@ -6,7 +6,7 @@
 	"private": true,
 	"dependencies": {
 		"pick-port": "^2.2.0",
-		"aws-dynamodb-local": "^0.0.12"
+		"aws-dynamodb-local": "^0.0.13"
 	},
 	"scripts": {
 		"lint": "biome check src",
