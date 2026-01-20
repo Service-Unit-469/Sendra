@@ -11,18 +11,18 @@ import { useLoginStatus } from "../lib/hooks/users";
 
 const WIDE_LAYOUT_ROUTES = [/\/campaigns\/.*\/edit/, /\/templates\/.*/];
 
-const ErrorFallback = ({ error, resetErrorBoundary }: { error: Error; resetErrorBoundary: () => void }) => {
+const ErrorFallback = ({ error, resetErrorBoundary }: { error: unknown; resetErrorBoundary: () => void }) => {
   return (
     <div className="flex min-h-screen items-center justify-center">
       <div className="mx-auto w-full max-w-md text-center">
         <div>
           <h2 className="mt-6 text-3xl font-extrabold text-neutral-800">Unexpected Error</h2>
           <p className="text-sm text-neutral-500">The following unexpected error occurred:</p>
-          <p className="text-sm text-neutral-500">{error.message}</p>
+          <p className="text-sm text-neutral-500">{(error as Error).message}</p>
           <summary>
             Stack Trace
             <details>
-              <pre className="text-left">{error.stack}</pre>
+              <pre className="text-left">{(error as Error).stack}</pre>
             </details>
           </summary>
           <br />
