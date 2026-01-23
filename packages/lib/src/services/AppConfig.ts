@@ -63,6 +63,7 @@ const PersistenceConfigSchema = z.object({
   AWS_ENDPOINT: z.string().optional(),
   AWS_REGION: z.string().optional(),
   AWS_SECRET_ACCESS_KEY: z.string().optional(),
+  AWS_SESSION_TOKEN: z.string().optional(),
   PERSISTENCE_PROVIDER: z.enum(["local", "sst"]).default("sst"),
   DATA_TABLE_NAME: z.string().optional(),
   RATE_LIMIT_TABLE_NAME: z.string().optional(),
@@ -82,6 +83,7 @@ export const getPersistenceConfig = () => {
         credentials: {
           accessKeyId: config.AWS_ACCESS_KEY_ID,
           secretAccessKey: config.AWS_SECRET_ACCESS_KEY,
+          sessionToken: config.AWS_SESSION_TOKEN,
         },
       }),
     };
