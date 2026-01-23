@@ -1,5 +1,14 @@
 name: Setup
 description: Setup the build environment
+inputs:
+  aws-role:
+    description: The AWS role to assume
+    required: true
+    default: ${{ secrets.GH_TRUST_ROLE }}
+  aws-region:
+    description: The AWS region to use
+    required: true
+    default: ${{ secrets.AWS_REGION }}
 runs:
   using: "composite"
   steps:
@@ -9,9 +18,9 @@ runs:
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v5
       with:
-        role-to-assume: ${{ secrets.GH_TRUST_ROLE }}
+        role-to-assume: ${{ inputs.aws-role }}
         role-duration-seconds: 3600
-        aws-region: ${{ secrets.AWS_REGION }}
+        aws-region: ${{ inputs.aws-region }}
     - name: Install Dependencies
       run: npm ci
       shell: bash
