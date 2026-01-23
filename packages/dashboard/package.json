@@ -44,7 +44,7 @@
 		"@react-email/section": "^0.0.17",
 		"@react-email/tailwind": "^2.0.2",
 		"@react-email/text": "^0.1.5",
-		"@rjsf/core": "^6.1.2",
+		"@rjsf/core": "^6.2.5",
 		"@rjsf/utils": "^6.1.2",
 		"@rjsf/validator-ajv8": "^6.1.2",
 		"@sendra/shared": "1.0.0",
