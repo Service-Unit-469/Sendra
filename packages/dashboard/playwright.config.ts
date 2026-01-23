@@ -1,7 +1,11 @@
 import { defineConfig, devices } from "@playwright/test";
 import { config } from 'dotenv';
+import { getConfig } from "./e2e/util/config";
 
-config();
+config({
+  quiet: true,
+});
+const {domainName} = getConfig();
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -14,10 +18,10 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: "html",
   expect: {
-	timeout: 10_000,
+    timeout: 10_000,
   },
   use: {
-    baseURL: process.env.BASE_URL || "http://localhost:3000",
+    baseURL: process.env.BASE_URL || `https://${domainName}/dashboard`,
     trace: { mode: "retain-on-failure", snapshots: true, screenshots: true, sources: true },
     screenshot: "only-on-failure",
   },
@@ -52,13 +56,4 @@ export default defineConfig({
       dependencies: ["create e2e user"],
     }
   ],
-  webServer: {
-    command: "npm run dev -- --mode=mono",
-	stdout: "pipe",
-    stderr: "pipe",
-    cwd: "../../",
-    url: "http://localhost:3000",
-    reuseExistingServer: !process.env.CI,
-    timeout: 120 * 1000,
-  },
 });

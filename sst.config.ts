@@ -15,7 +15,7 @@ export default $config({
     };
   },
   async run() {
-    const { router, dashboard, subscription } = await import("./infra");
-    return { dashboard, router, subscription };
+    const { router, dashboard, subscription, dataTable, rateLimitTable } = await import("./infra");
+    return { dashboard, router, subscription, dataTable, rateLimitTable };
   },
 });

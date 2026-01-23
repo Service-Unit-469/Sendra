@@ -3,6 +3,7 @@ export * from './assets';
 export * from './dashboard';
 export * from './data';
 export * from './email-topic';
+export * from './rateLimit';
 export * from './route';
 export * from './subscription';
 export * from './secrets';

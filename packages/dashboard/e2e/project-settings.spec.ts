@@ -1,7 +1,7 @@
 import { expect, test } from "./fixtures/dashboard";
 
-test.describe("Contacts", () => {
-  test("should be able to navigate to contacts page", async ({
+test.describe("Project Settings", () => {
+  test("should be able to navigate to project settings page", async ({
     dashboardPage,
     page,
   }) => {

@@ -1,34 +1,19 @@
 import { test as setup } from "@playwright/test";
-import { readFileSync } from "fs";
+import { createHash } from "@sendra/api";
 import {
   MembershipPersistence,
   ProjectPersistence,
   UserPersistence,
 } from "@sendra/lib";
-import { randomUUID, randomBytes, scryptSync, } from "crypto";
+import { randomUUID } from "node:crypto";
 
-// Pass the password string and get hashed password back
-// ( and store only the hashed string in your database)
-const encryptPassword = (password: string, salt: string) => {
-  return scryptSync(password, salt, 32).toString("hex");
-};
+import { getConfig } from "./util/config";
 
-/**
- * Generates a hash from plain text
- * @param {string} pass The password
- * @returns {Promise<string>} Password hash
- */
-export const createHash = async (pass: string): Promise<string> => {
-  const salt = randomBytes(16).toString("hex");
-  return encryptPassword(pass, salt) + salt;
-};
+setup("creating E2E user", async ({ }) => {
+  const { dataTableName, rateLimitTableName } = getConfig();
 
-
-setup("creating E2E user", async ({}) => {
-  const outputs = JSON.parse(readFileSync(".sst/outputs.json", "utf8"));
-
-  process.env.DATA_TABLE_NAME = outputs.dynamo.table.id;
-  process.env.RATE_LIMIT_TABLE_NAME = outputs.rateLimit.table.id;
+  process.env.DATA_TABLE_NAME = dataTableName;
+  process.env.RATE_LIMIT_TABLE_NAME = rateLimitTableName;
   process.env.PERSISTENCE_PROVIDER = "local";
 
   const email = "e2e@example.com";

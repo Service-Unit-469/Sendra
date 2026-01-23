@@ -262,179 +262,179 @@ export const RichTextEditorField: React.FC<RichTextEditorFieldProps> = ({ value 
 
   return (
     <div className="space-y-2">
-      <label htmlFor={id} className="block text-sm text-neutral-800 mb-1">
+      <label className="block text-sm text-neutral-800 mb-1">
         {label ?? "Rich Text"}
-      </label>
 
-      <div className="rich-text-editor-wrapper border border-zinc-300 rounded-lg bg-white">
-        <div className="toolbar border-b border-zinc-300 bg-zinc-50 rounded-t-lg p-2 flex flex-wrap gap-1 items-center">
-          {!showSourceCode && (
-            <>
-              <button type="button" onClick={toggleBold} className={`p-2 rounded hover:bg-zinc-200 ${editor.isActive("bold") ? "bg-zinc-300" : ""}`} title="Bold">
-                <Bold size={16} />
-              </button>
-              <button type="button" onClick={toggleItalic} className={`p-2 rounded hover:bg-zinc-200 ${editor.isActive("italic") ? "bg-zinc-300" : ""}`} title="Italic">
-                <Italic size={16} />
-              </button>
+        <div className="rich-text-editor-wrapper border border-zinc-300 rounded-lg bg-white">
+          <div className="toolbar border-b border-zinc-300 bg-zinc-50 rounded-t-lg p-2 flex flex-wrap gap-1 items-center">
+            {!showSourceCode && (
+              <>
+                <button type="button" onClick={toggleBold} className={`p-2 rounded hover:bg-zinc-200 ${editor.isActive("bold") ? "bg-zinc-300" : ""}`} title="Bold">
+                  <Bold size={16} />
+                </button>
+                <button type="button" onClick={toggleItalic} className={`p-2 rounded hover:bg-zinc-200 ${editor.isActive("italic") ? "bg-zinc-300" : ""}`} title="Italic">
+                  <Italic size={16} />
+                </button>
 
-              <div className="w-px h-6 bg-zinc-300 mx-1" />
+                <div className="w-px h-6 bg-zinc-300 mx-1" />
 
-              <select
-                onChange={(e) => setFontSize(e.target.value)}
-                value={editor.getAttributes("textStyle").fontSize || ""}
-                className="px-2 py-1 text-sm border border-zinc-300 rounded bg-white hover:bg-zinc-100"
-                title="Font Size"
-              >
-                <option value="">Size</option>
-                {fontSizes.map((size) => (
-                  <option key={size} value={size}>
-                    {size}
-                  </option>
-                ))}
-              </select>
-
-              <div className="w-px h-6 bg-zinc-300 mx-1" />
-
-              <div className="flex gap-1">
-                <button
-                  type="button"
-                  onClick={() => setTextAlign("left")}
-                  className={`p-2 rounded hover:bg-zinc-200 ${editor.isActive({ textAlign: "left" }) ? "bg-zinc-300" : ""}`}
-                  title="Align Left"
+                <select
+                  onChange={(e) => setFontSize(e.target.value)}
+                  value={editor.getAttributes("textStyle").fontSize || ""}
+                  className="px-2 py-1 text-sm border border-zinc-300 rounded bg-white hover:bg-zinc-100"
+                  title="Font Size"
                 >
-                  <AlignLeft size={16} />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setTextAlign("center")}
-                  className={`p-2 rounded hover:bg-zinc-200 ${editor.isActive({ textAlign: "center" }) ? "bg-zinc-300" : ""}`}
-                  title="Align Center"
-                >
-                  <AlignCenter size={16} />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setTextAlign("right")}
-                  className={`p-2 rounded hover:bg-zinc-200 ${editor.isActive({ textAlign: "right" }) ? "bg-zinc-300" : ""}`}
-                  title="Align Right"
-                >
-                  <AlignRight size={16} />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setTextAlign("justify")}
-                  className={`p-2 rounded hover:bg-zinc-200 ${editor.isActive({ textAlign: "justify" }) ? "bg-zinc-300" : ""}`}
-                  title="Justify"
-                >
-                  <AlignJustify size={16} />
-                </button>
-              </div>
+                  <option value="">Size</option>
+                  {fontSizes.map((size) => (
+                    <option key={size} value={size}>
+                      {size}
+                    </option>
+                  ))}
+                </select>
 
-              <div className="w-px h-6 bg-zinc-300 mx-1" />
+                <div className="w-px h-6 bg-zinc-300 mx-1" />
 
-              {/* Color */}
-              <div className="relative" ref={colorPickerRef}>
-                <button type="button" onClick={() => setShowColorPicker(!showColorPicker)} className="p-2 rounded hover:bg-zinc-200 flex items-center gap-1" title="Text Color">
-                  <PaintBucket size={16} />
-                  <div
-                    className="w-4 h-4 border border-zinc-300 rounded"
-                    style={{
-                      backgroundColor: editor.getAttributes("textStyle").color || "#000000",
-                    }}
-                  />
-                </button>
-                {showColorPicker && (
-                  <div className="absolute top-full left-0 mt-1 p-2 bg-white border border-zinc-300 rounded shadow-lg z-10 w-24">
-                    <div className="grid grid-cols-6 gap-1">
-                      {colors.map((color) => (
-                        <button
-                          key={color}
-                          type="button"
-                          onClick={() => {
-                            setColor(color);
-                            setShowColorPicker(false);
-                          }}
-                          className="w-6 h-6 border border-zinc-300 rounded hover:scale-110"
-                          style={{ backgroundColor: color }}
-                          title={color}
-                        />
-                      ))}
+                <div className="flex gap-1">
+                  <button
+                    type="button"
+                    onClick={() => setTextAlign("left")}
+                    className={`p-2 rounded hover:bg-zinc-200 ${editor.isActive({ textAlign: "left" }) ? "bg-zinc-300" : ""}`}
+                    title="Align Left"
+                  >
+                    <AlignLeft size={16} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setTextAlign("center")}
+                    className={`p-2 rounded hover:bg-zinc-200 ${editor.isActive({ textAlign: "center" }) ? "bg-zinc-300" : ""}`}
+                    title="Align Center"
+                  >
+                    <AlignCenter size={16} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setTextAlign("right")}
+                    className={`p-2 rounded hover:bg-zinc-200 ${editor.isActive({ textAlign: "right" }) ? "bg-zinc-300" : ""}`}
+                    title="Align Right"
+                  >
+                    <AlignRight size={16} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setTextAlign("justify")}
+                    className={`p-2 rounded hover:bg-zinc-200 ${editor.isActive({ textAlign: "justify" }) ? "bg-zinc-300" : ""}`}
+                    title="Justify"
+                  >
+                    <AlignJustify size={16} />
+                  </button>
+                </div>
+
+                <div className="w-px h-6 bg-zinc-300 mx-1" />
+
+                {/* Color */}
+                <div className="relative" ref={colorPickerRef}>
+                  <button type="button" onClick={() => setShowColorPicker(!showColorPicker)} className="p-2 rounded hover:bg-zinc-200 flex items-center gap-1" title="Text Color">
+                    <PaintBucket size={16} />
+                    <div
+                      className="w-4 h-4 border border-zinc-300 rounded"
+                      style={{
+                        backgroundColor: editor.getAttributes("textStyle").color || "#000000",
+                      }}
+                    />
+                  </button>
+                  {showColorPicker && (
+                    <div className="absolute top-full left-0 mt-1 p-2 bg-white border border-zinc-300 rounded shadow-lg z-10 w-24">
+                      <div className="grid grid-cols-6 gap-1">
+                        {colors.map((color) => (
+                          <button
+                            key={color}
+                            type="button"
+                            onClick={() => {
+                              setColor(color);
+                              setShowColorPicker(false);
+                            }}
+                            className="w-6 h-6 border border-zinc-300 rounded hover:scale-110"
+                            style={{ backgroundColor: color }}
+                            title={color}
+                          />
+                        ))}
+                      </div>
                     </div>
-                  </div>
+                  )}
+                </div>
+
+                <div className="w-px h-6 bg-zinc-300 mx-1" />
+
+                <button type="button" onClick={toggleBulletList} className={`p-2 rounded hover:bg-zinc-200 ${editor.isActive("bulletList") ? "bg-zinc-300" : ""}`} title="Bullet List">
+                  <List size={16} />
+                </button>
+                <button type="button" onClick={toggleOrderedList} className={`p-2 rounded hover:bg-zinc-200 ${editor.isActive("orderedList") ? "bg-zinc-300" : ""}`} title="Numbered List">
+                  <ListOrderedIcon size={16} />
+                </button>
+
+                <div className="w-px h-6 bg-zinc-300 mx-1" />
+
+                {/* Link */}
+                {editor.isActive("link") ? (
+                  <button type="button" onClick={unsetLink} className="p-2 rounded hover:bg-zinc-200 bg-zinc-300" title="Remove Link">
+                    <Link2Off size={16} />
+                  </button>
+                ) : (
+                  <button type="button" onClick={setLink} className="p-2 rounded hover:bg-zinc-200" title="Add Link">
+                    <Link2 size={16} />
+                  </button>
                 )}
-              </div>
 
-              <div className="w-px h-6 bg-zinc-300 mx-1" />
+                <div className="w-px h-6 bg-zinc-300 mx-1" />
 
-              <button type="button" onClick={toggleBulletList} className={`p-2 rounded hover:bg-zinc-200 ${editor.isActive("bulletList") ? "bg-zinc-300" : ""}`} title="Bullet List">
-                <List size={16} />
-              </button>
-              <button type="button" onClick={toggleOrderedList} className={`p-2 rounded hover:bg-zinc-200 ${editor.isActive("orderedList") ? "bg-zinc-300" : ""}`} title="Numbered List">
-                <ListOrderedIcon size={16} />
-              </button>
-
-              <div className="w-px h-6 bg-zinc-300 mx-1" />
-
-              {/* Link */}
-              {editor.isActive("link") ? (
-                <button type="button" onClick={unsetLink} className="p-2 rounded hover:bg-zinc-200 bg-zinc-300" title="Remove Link">
-                  <Link2Off size={16} />
+                {/* Image */}
+                <button type="button" onClick={insertImage} className="p-2 rounded hover:bg-zinc-200" title="Insert Image">
+                  <ImageIcon size={16} />
                 </button>
-              ) : (
-                <button type="button" onClick={setLink} className="p-2 rounded hover:bg-zinc-200" title="Add Link">
-                  <Link2 size={16} />
+
+                <div className="w-px h-6 bg-zinc-300 mx-1" />
+
+                <button type="button" onClick={clearFormatting} className="p-2 rounded hover:bg-zinc-200" title="Clear Formatting">
+                  <RemoveFormatting size={16} />
                 </button>
-              )}
 
-              <div className="w-px h-6 bg-zinc-300 mx-1" />
+                <div className="w-px h-6 bg-zinc-300 mx-1" />
+              </>
+            )}
 
-              {/* Image */}
-              <button type="button" onClick={insertImage} className="p-2 rounded hover:bg-zinc-200" title="Insert Image">
-                <ImageIcon size={16} />
-              </button>
+            <button
+              type="button"
+              onClick={handleToggleSourceCode}
+              className={`p-2 rounded hover:bg-zinc-200 ${showSourceCode ? "bg-zinc-300" : ""}`}
+              title={showSourceCode ? "Visual Editor" : "Source Code"}
+            >
+              <Code size={16} />
+            </button>
+          </div>
 
-              <div className="w-px h-6 bg-zinc-300 mx-1" />
-
-              <button type="button" onClick={clearFormatting} className="p-2 rounded hover:bg-zinc-200" title="Clear Formatting">
-                <RemoveFormatting size={16} />
-              </button>
-
-              <div className="w-px h-6 bg-zinc-300 mx-1" />
-            </>
+          {showSourceCode ? (
+            <textarea
+              value={sourceCode}
+              onChange={(e) => {
+                setSourceCode(e.target.value);
+                const html = e.target.value.trim();
+                if (html === "" || html === "<p></p>") {
+                  onChange(undefined);
+                } else {
+                  onChange(html);
+                }
+              }}
+              className="w-full min-h-[150px] max-h-[400px] p-3 font-mono text-sm border-0 resize-y focus:outline-none"
+              placeholder="Enter HTML here..."
+              style={{ fontFamily: "monospace" }}
+            />
+          ) : (
+            <EditorContent editor={editor} />
           )}
-
-          <button
-            type="button"
-            onClick={handleToggleSourceCode}
-            className={`p-2 rounded hover:bg-zinc-200 ${showSourceCode ? "bg-zinc-300" : ""}`}
-            title={showSourceCode ? "Visual Editor" : "Source Code"}
-          >
-            <Code size={16} />
-          </button>
         </div>
 
-        {showSourceCode ? (
-          <textarea
-            value={sourceCode}
-            onChange={(e) => {
-              setSourceCode(e.target.value);
-              const html = e.target.value.trim();
-              if (html === "" || html === "<p></p>") {
-                onChange(undefined);
-              } else {
-                onChange(html);
-              }
-            }}
-            className="w-full min-h-[150px] max-h-[400px] p-3 font-mono text-sm border-0 resize-y focus:outline-none"
-            placeholder="Enter HTML here..."
-            style={{ fontFamily: "monospace" }}
-          />
-        ) : (
-          <EditorContent editor={editor} />
-        )}
-      </div>
-
-      <input type="hidden" id={id} name={name} value={value} />
+        <input type="hidden" id={id} name={name} value={value} />
+      </label>
     </div>
   );
 };

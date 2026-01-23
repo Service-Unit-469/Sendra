@@ -5,16 +5,22 @@ on:
     branches:
       - main
 
-permissions: write-all
+concurrency: production
+
+permissions: 
+  contents: read
+  deployments: write
+  id-token: write
+
 jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
       - name: Check out the repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v6
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version-file: .nvmrc
 
@@ -35,26 +41,25 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
+    environment: production
     env:
       SST_PRINT_LOGS: 1
       SST_STAGE: production
     needs:
       - validate
     steps:
-      - name: Check out the repo
-        uses: actions/checkout@v2
-
-      - name: Setup Node
-        uses: actions/setup-node@v6
+      - name: Git clone the repository
+        uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
           node-version-file: .nvmrc
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v5
         with:
           role-to-assume: ${{ secrets.GH_TRUST_ROLE }}
           role-duration-seconds: 3600
-          aws-region: us-east-2
+          aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Install Dependencies
         run: npm ci
