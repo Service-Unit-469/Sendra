@@ -1,34 +1,11 @@
 name: Setup
 description: Setup the build environment
-inputs:
-  aws-role:
-    description: The AWS role to assume
-    required: true
-    default: ${{ secrets.GH_TRUST_ROLE }}
-  aws-region:
-    description: The AWS region to use
-    required: true
-    default: ${{ secrets.AWS_REGION }}
 runs:
   using: "composite"
   steps:
     - uses: actions/setup-node@v6
       with:
         node-version-file: .nvmrc
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v5
-      with:
-        role-to-assume: ${{ inputs.aws-role }}
-        role-duration-seconds: 3600
-        aws-region: ${{ inputs.aws-region }}
     - name: Install Dependencies
       run: npm ci
-      shell: bash
-    - name: Add SST's bin directory to PATH
-      # Writing to $GITHUB_PATH causes GitHub Actions to prepend this directory to PATH,
-      # ensuring SST's version of Pulumi is found before GitHub Actions' version
-      run: echo "$HOME/.config/sst/bin" >> $GITHUB_PATH
-      shell: bash
-    - name: Build Dependencies
-      run: npm run build:deps
       shell: bash

@@ -1,0 +1,64 @@
+name: Setup
+description: Setup the build environment
+inputs:
+  aws-role:
+    description: The AWS role to assume
+    required: true
+  aws-region:
+    description: The AWS region to use
+    required: true
+  jwt-secret:
+    description: The JWT secret to use
+    required: true
+outputs:
+  APP_URL:
+    description: The URL of the deployed app
+    value: ${{ steps.deploy-info.outputs.APP_URL }}
+  DATA_TABLE_NAME:
+    description: The name of the data table
+    value: ${{ steps.deploy-info.outputs.DATA_TABLE_NAME }}
+  RATE_LIMIT_TABLE_NAME:
+    description: The name of the rate limit table
+    value: ${{ steps.deploy-info.outputs.RATE_LIMIT_TABLE_NAME }}
+  
+runs:
+  using: "composite"
+  steps:
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v5
+      with:
+        role-to-assume: ${{ inputs.aws-role }}
+        role-duration-seconds: 3600
+        aws-region: ${{ inputs.aws-region }}
+
+    - name: Add SST's bin directory to PATH
+      # Writing to $GITHUB_PATH causes GitHub Actions to prepend this directory to PATH,
+      # ensuring SST's version of Pulumi is found before GitHub Actions' version
+      run: echo "$HOME/.config/sst/bin" >> $GITHUB_PATH
+      shell: bash
+
+    - name: Build Dependencies
+      run: npm run build:deps
+      shell: bash
+
+    - name: Set Secrets
+      run: npm run sst -- secret set JwtSecret ${{ inputs.jwt-secret }}
+      shell: bash
+
+    - name: Deploy app
+      run: npm run deploy
+      shell: bash
+
+    - name: Get Deploy Info
+      id: deploy-info
+      run: |
+        APP_URL=$(cat .sst/outputs.json | jq -r '.router.cdn.distribution.domainName')
+        echo "APP_URL=$APP_URL" >> "$GITHUB_OUTPUT"
+
+        DATA_TABLE_NAME =$(cat .sst/outputs.json | jq -r '.dataTable.table.name')
+        echo "DATA_TABLE_NAME=$DATA_TABLE_NAME" >> "$GITHUB_OUTPUT"
+
+        RATE_LIMIT_TABLE_NAME=$(cat .sst/outputs.json | jq -r '.rateLimitTable.table.name')
+        echo "RATE_LIMIT_TABLE_NAME=$RATE_LIMIT_TABLE_NAME" >> "$GITHUB_OUTPUT"
+      shell: bash

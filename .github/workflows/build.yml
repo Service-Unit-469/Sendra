@@ -36,28 +36,30 @@ jobs:
     runs-on: ubuntu-latest
     environment: 
       name: CI
-      url: ${{ steps.deploy-url.outputs.site_url }}
+      url: ${{ steps.deploy.outputs.APP_URL }}
     env:
       SST_PRINT_LOGS: 1
       SST_STAGE: PR-${{ github.event.number }}
     needs:
       - validate
+    outputs:
+      APP_URL: ${{ steps.deploy.outputs.APP_URL }}
+      DATA_TABLE_NAME: ${{ steps.deploy.outputs.DATA_TABLE_NAME }}
+      RATE_LIMIT_TABLE_NAME: ${{ steps.deploy.outputs.RATE_LIMIT_TABLE_NAME }}
     steps:
       - name: Git clone the repository
         uses: actions/checkout@v6
 
       - name: Setup
         uses: ./.github/actions/setup
+
+      - name: Deploy app
+        uses: ./.github/actions/deploy
+        id: deploy
         with:
           aws-role: ${{ secrets.GH_TRUST_ROLE }}
           aws-region: ${{ secrets.AWS_REGION }}
-
-      - name: Set Secrets
-        run: |
-          npm run sst -- secret set JwtSecret ${{ secrets.JWT_SECRET }}
-
-      - name: Deploy app
-        run: npm run deploy
+          jwt-secret: ${{ secrets.JWT_SECRET }}
         env:
           ALLOW_DUPLICATE_PROJECT_IDENTITIES: ${{ secrets.ALLOW_DUPLICATE_PROJECT_IDENTITIES }}
           APP_URL: ${{ secrets.APP_URL }}
@@ -66,14 +68,31 @@ jobs:
           LOG_LEVEL: ${{ secrets.LOG_LEVEL }}
           METRICS_ENABLED: true
 
-      - name: Get Deploy URL
-        id: deploy-url
-        run: |
-          cat .sst/outputs.json | jq -r '.site'
-          echo SITE_URL=$SITE_URL >> $GITHUB_ENV
+  post-deploy:
+    runs-on: ubuntu-latest
+    env:
+      SST_PRINT_LOGS: 1
+      SST_STAGE: PR-${{ github.event.number }}
+      APP_URL: ${{ steps.deploy.outputs.APP_URL }}
+      DATA_TABLE_NAME: ${{ steps.deploy.outputs.DATA_TABLE_NAME }}
+      RATE_LIMIT_TABLE_NAME: ${{ steps.deploy.outputs.RATE_LIMIT_TABLE_NAME }}
+    needs:
+      - deploy
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v6
 
-      - name: Build API
-        working-directory: packages/api
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v5
+        with:
+          role-to-assume: ${{ secrets.GH_TRUST_ROLE }}
+          role-duration-seconds: 3600
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Build
         run: npm run build
 
       - name: Install Playwright Browsers
