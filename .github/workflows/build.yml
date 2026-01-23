@@ -72,6 +72,10 @@ jobs:
           cat .sst/outputs.json | jq -r '.site'
           echo SITE_URL=$SITE_URL >> $GITHUB_ENV
 
+      - name: Build API
+        working-directory: packages/api
+        run: npm run build
+
       - name: Install Playwright Browsers
         working-directory: packages/dashboard
         run: npx playwright install --with-deps
