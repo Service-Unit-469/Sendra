@@ -16,6 +16,9 @@ jobs:
 
       - name: Setup
         uses: ./.github/actions/setup
+        with:
+          aws-role: ${{ secrets.GH_TRUST_ROLE }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Build
         run: npm run build
@@ -45,6 +48,9 @@ jobs:
 
       - name: Setup
         uses: ./.github/actions/setup
+        with:
+          aws-role: ${{ secrets.GH_TRUST_ROLE }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Set Secrets
         run: |
@@ -76,6 +82,9 @@ jobs:
 
       - name: Setup
         uses: ./.github/actions/setup
+        with:
+          aws-role: ${{ secrets.GH_TRUST_ROLE }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Install Playwright Browsers
         working-directory: packages/dashboard
