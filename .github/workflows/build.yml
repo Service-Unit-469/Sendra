@@ -72,24 +72,10 @@ jobs:
           cat .sst/outputs.json | jq -r '.site'
           echo SITE_URL=$SITE_URL >> $GITHUB_ENV
 
-  post-deploy:
-    runs-on: ubuntu-latest
-    needs:
-      - deploy
-    steps:
-      - name: Git clone the repository
-        uses: actions/checkout@v6
-
-      - name: Setup
-        uses: ./.github/actions/setup
-        with:
-          aws-role: ${{ secrets.GH_TRUST_ROLE }}
-          aws-region: ${{ secrets.AWS_REGION }}
-
       - name: Install Playwright Browsers
         working-directory: packages/dashboard
-
         run: npx playwright install --with-deps
+
       - name: Run Playwright tests
         working-directory: packages/dashboard
         run: npm run test:e2e
