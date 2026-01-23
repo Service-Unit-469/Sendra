@@ -14,13 +14,8 @@ jobs:
       - name: Check out the repo
         uses: actions/checkout@v6
 
-      - name: Setup Node
-        uses: actions/setup-node@v6
-        with:
-          node-version-file: .nvmrc
-
-      - name: Install dependencies
-        run: npm ci
+      - name: Setup
+        uses: ./.github/actions/setup
 
       - name: Build
         run: npm run build
@@ -47,27 +42,9 @@ jobs:
     steps:
       - name: Git clone the repository
         uses: actions/checkout@v6
-      - uses: actions/setup-node@v6
-        with:
-          node-version-file: .nvmrc
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v5
-        with:
-          role-to-assume: ${{ secrets.GH_TRUST_ROLE }}
-          role-duration-seconds: 3600
-          aws-region: ${{ secrets.AWS_REGION }}
-
-      - name: Install Dependencies
-        run: npm ci
-
-      - name: Add SST's bin directory to PATH
-        # Writing to $GITHUB_PATH causes GitHub Actions to prepend this directory to PATH,
-        # ensuring SST's version of Pulumi is found before GitHub Actions' version
-        run: echo "$HOME/.config/sst/bin" >> $GITHUB_PATH
-
-      - name: Build Dependencies
-        run: npm run build:deps
+      - name: Setup
+        uses: ./.github/actions/setup
 
       - name: Set Secrets
         run: |
@@ -94,12 +71,20 @@ jobs:
     needs:
       - deploy
     steps:
+      - name: Git clone the repository
+        uses: actions/checkout@v6
+
+      - name: Setup
+        uses: ./.github/actions/setup
+
       - name: Install Playwright Browsers
-        working-directory: ./packages/dashboard
+        working-directory: packages/dashboard
+
         run: npx playwright install --with-deps
       - name: Run Playwright tests
-        working-directory: ./packages/dashboard
+        working-directory: packages/dashboard
         run: npm run test:e2e
+
       - name: Upload Playwright Report
         uses: actions/upload-artifact@v4
         if: always()
