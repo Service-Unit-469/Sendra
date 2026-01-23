@@ -13,7 +13,7 @@
     "@pulumi/aws": "^7.16.0",
     "@testing-library/dom": "^10.4.1",
     "@types/node": "^24.10.9",
-    "@vitest/coverage-v8": "^4.0.17",
+    "@vitest/coverage-v8": "^4.0.18",
     "jsdom": "^27.2.0",
     "rimraf": "^6.1.0",
     "vitest": "^4.0.15"
