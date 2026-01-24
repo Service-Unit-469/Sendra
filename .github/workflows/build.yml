@@ -73,9 +73,9 @@ jobs:
     env:
       SST_PRINT_LOGS: 1
       SST_STAGE: PR-${{ github.event.number }}
-      APP_URL: ${{ steps.deploy.outputs.APP_URL }}
-      DATA_TABLE_NAME: ${{ steps.deploy.outputs.DATA_TABLE_NAME }}
-      RATE_LIMIT_TABLE_NAME: ${{ steps.deploy.outputs.RATE_LIMIT_TABLE_NAME }}
+      APP_URL: ${{ needs.deploy.outputs.APP_URL }}
+      DATA_TABLE_NAME: ${{ needs.deploy.outputs.DATA_TABLE_NAME }}
+      RATE_LIMIT_TABLE_NAME: ${{ needs.deploy.outputs.RATE_LIMIT_TABLE_NAME }}
     needs:
       - deploy
     steps:
