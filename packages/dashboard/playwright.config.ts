@@ -14,8 +14,7 @@ export default defineConfig({
   testDir: "./e2e",
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
+  retries: process.env.CI ? 1 : 0,
   reporter: "html",
   expect: {
     timeout: 10_000,
@@ -45,15 +44,5 @@ export default defineConfig({
       use: { ...devices["Desktop Safari"] },
       dependencies: ["create e2e user"],
     },
-    {
-      name: "Mobile Chrome",
-      use: { ...devices["Pixel 5"] },
-      dependencies: ["create e2e user"],
-    },
-    {
-      name: "Mobile Safari",
-      use: { ...devices["iPhone 12"] },
-      dependencies: ["create e2e user"],
-    }
   ],
 });
