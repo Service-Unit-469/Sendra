@@ -6,6 +6,8 @@ import {
   UserPersistence,
 } from "@sendra/lib";
 import { randomUUID } from "node:crypto";
+import { writeFileSync } from "node:fs";
+import { join } from "node:path";
 
 import { getConfig } from "./util/config";
 
@@ -61,4 +63,17 @@ setup("creating E2E user", async ({ }) => {
   process.env.E2E_USER_EMAIL = email;
   process.env.E2E_USER_PASSWORD = rawPassword;
   process.env.E2E_PROJECT_ID = project.id;
+
+  // Write credentials to a file so they can be shared across Playwright projects
+  // (environment variables set in setup projects are not available to dependent projects)
+  const credentialsPath = join(__dirname, ".auth-credentials.json");
+  writeFileSync(
+    credentialsPath,
+    JSON.stringify({
+      email,
+      password: rawPassword,
+      projectId: project.id,
+    }),
+    "utf-8",
+  );
 });

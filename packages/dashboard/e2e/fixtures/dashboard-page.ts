@@ -1,15 +1,15 @@
 import type { Page } from "@playwright/test";
+import { getAuthCredentials } from "../util/auth-credentials";
 
 export class DashboardPage {
   constructor(public readonly page: Page, public readonly isMobile: boolean) { }
 
   async login() {
+    const { email, password } = getAuthCredentials();
     await this.page.goto("/dashboard#/auth/login", {});
     await this.page.getByLabel(/email/i).waitFor({ state: "visible" });
-    await this.page.getByLabel(/email/i).fill(process.env.E2E_USER_EMAIL!);
-    await this.page
-      .getByLabel(/password/i)
-      .fill(process.env.E2E_USER_PASSWORD!);
+    await this.page.getByLabel(/email/i).fill(email);
+    await this.page.getByLabel(/password/i).fill(password);
     await this.page.getByRole("button", { name: /login/i }).click();
     await this.page.waitForURL(/\/(?!auth)/);
     await this.waitForReady();
