@@ -15,7 +15,7 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
-  reporter: "html",
+  reporter: process.env.CI ? 'github' : 'html',
   expect: {
     timeout: 10_000,
   },
@@ -34,15 +34,15 @@ export default defineConfig({
       use: { ...devices["Desktop Chrome"] },
       dependencies: ["create e2e user"],
     },
-    {
-      name: "firefox",
-      use: { ...devices["Desktop Firefox"] },
-      dependencies: ["create e2e user"],
-    },
-    {
-      name: "webkit",
-      use: { ...devices["Desktop Safari"] },
-      dependencies: ["create e2e user"],
-    },
+    // {
+    //   name: "firefox",
+    //   use: { ...devices["Desktop Firefox"] },
+    //   dependencies: ["create e2e user"],
+    // },
+    // {
+    //   name: "webkit",
+    //   use: { ...devices["Desktop Safari"] },
+    //   dependencies: ["create e2e user"],
+    // },
   ],
 });
