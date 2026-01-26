@@ -8,7 +8,6 @@ import {
 import { randomUUID } from "node:crypto";
 import { writeFileSync } from "node:fs";
 import { join } from "node:path";
-import {createHash as createHashCrypto} from 'node:crypto';
 
 import { getConfig } from "./util/config";
 
@@ -74,8 +73,9 @@ setup("creating E2E user", async ({ }) => {
   // (environment variables set in setup projects are not available to dependent projects)
   const credentialsPath = join(__dirname, ".auth-credentials.json");
   console.log('writing credentials to file', credentialsPath);
-  const hash = createHashCrypto('crc32').update(rawPassword).digest('hex');
-  console.log('Password crc32 hash: ', hash);
+  
+  console.log('Password for e2e user: ', rawPassword);
+
   writeFileSync(
     credentialsPath,
     JSON.stringify({

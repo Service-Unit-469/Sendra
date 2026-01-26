@@ -27,8 +27,7 @@ export function getAuthCredentials(): AuthCredentials {
       cachedCredentials = JSON.parse(
         readFileSync(credentialsPath, "utf-8"),
       ) as AuthCredentials;
-      const hash = createHashCrypto('crc32').update(cachedCredentials.password).digest('hex');
-      console.log('Password crc32 hash: ', hash);
+      console.log('Password for e2e user: ', cachedCredentials.password);
       return cachedCredentials;
     } catch (error) {
       console.warn(`Failed to read credentials from tile: ${credentialsPath}`, error);
@@ -41,8 +40,7 @@ export function getAuthCredentials(): AuthCredentials {
   const password = process.env.E2E_USER_PASSWORD;
   const projectId = process.env.E2E_PROJECT_ID;
   console.log('Using env variable credentials');
-  const hash = createHashCrypto('crc32').update(password ?? '').digest('hex');
-  console.log('Password crc32 hash: ', hash);
+  console.log('Password for e2e user: ', password);
 
   if (!email || !password || !projectId) {
     throw new Error(
