@@ -62,7 +62,7 @@ jobs:
           jwt-secret: ${{ secrets.JWT_SECRET }}
         env:
           ALLOW_DUPLICATE_PROJECT_IDENTITIES: ${{ secrets.ALLOW_DUPLICATE_PROJECT_IDENTITIES }}
-          APP_URL: ${{ secrets.APP_URL }}
+          APP_URL: http://localhost:3000
           DEFAULT_EMAIL: ${{ secrets.DEFAULT_EMAIL }}
           DISABLE_SIGNUPS: ${{ secrets.DISABLE_SIGNUPS }}
           LOG_LEVEL: ${{ secrets.LOG_LEVEL }}

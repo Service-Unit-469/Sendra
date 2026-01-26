@@ -18,7 +18,7 @@ setup("creating E2E user", async ({ }) => {
   process.env.RATE_LIMIT_TABLE_NAME = rateLimitTableName;
   process.env.PERSISTENCE_PROVIDER = "local";
 
-  console.log('creating e2e user');
+
   const email = "e2e@example.com";
   const rawPassword = randomUUID();
   const password = await createHash(rawPassword);
@@ -72,10 +72,6 @@ setup("creating E2E user", async ({ }) => {
   // Write credentials to a file so they can be shared across Playwright projects
   // (environment variables set in setup projects are not available to dependent projects)
   const credentialsPath = join(__dirname, ".auth-credentials.json");
-  console.log('writing credentials to file', credentialsPath);
-  
-  console.log('Password for e2e user: ', rawPassword);
-
   writeFileSync(
     credentialsPath,
     JSON.stringify({
