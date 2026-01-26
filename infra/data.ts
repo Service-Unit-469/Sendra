@@ -1,4 +1,4 @@
-export const data = new sst.aws.Dynamo("SendraDatabase", {
+export const dataTable = new sst.aws.Dynamo("SendraDatabase", {
   fields: {
     id: "string",
     type: "string",

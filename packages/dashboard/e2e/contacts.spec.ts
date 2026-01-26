@@ -47,9 +47,8 @@ test.describe("Contacts", () => {
         .waitFor({ state: "visible" });
 
       const editContact = page
-        .locator("tr")
-        .filter({ hasText: email })
-        .getByRole("link", { name: "Edit contact" });
+        .locator("a")
+        .filter({ hasText: email });
       await editContact.scrollIntoViewIfNeeded();
       await editContact.click();
     });

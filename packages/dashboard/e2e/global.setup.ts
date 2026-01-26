@@ -1,35 +1,23 @@
 import { test as setup } from "@playwright/test";
-import { readFileSync } from "fs";
+import { createHash } from "@sendra/api";
 import {
   MembershipPersistence,
   ProjectPersistence,
   UserPersistence,
 } from "@sendra/lib";
-import { randomUUID, randomBytes, scryptSync, } from "crypto";
+import { randomUUID } from "node:crypto";
+import { writeFileSync } from "node:fs";
+import { join } from "node:path";
 
-// Pass the password string and get hashed password back
-// ( and store only the hashed string in your database)
-const encryptPassword = (password: string, salt: string) => {
-  return scryptSync(password, salt, 32).toString("hex");
-};
+import { getConfig } from "./util/config";
 
-/**
- * Generates a hash from plain text
- * @param {string} pass The password
- * @returns {Promise<string>} Password hash
- */
-export const createHash = async (pass: string): Promise<string> => {
-  const salt = randomBytes(16).toString("hex");
-  return encryptPassword(pass, salt) + salt;
-};
+setup("creating E2E user", async ({ }) => {
+  const { dataTableName, rateLimitTableName } = getConfig();
 
-
-setup("creating E2E user", async ({}) => {
-  const outputs = JSON.parse(readFileSync(".sst/outputs.json", "utf8"));
-
-  process.env.DATA_TABLE_NAME = outputs.dynamo.table.id;
-  process.env.RATE_LIMIT_TABLE_NAME = outputs.rateLimit.table.id;
+  process.env.DATA_TABLE_NAME = dataTableName;
+  process.env.RATE_LIMIT_TABLE_NAME = rateLimitTableName;
   process.env.PERSISTENCE_PROVIDER = "local";
+
 
   const email = "e2e@example.com";
   const rawPassword = randomUUID();
@@ -37,12 +25,14 @@ setup("creating E2E user", async ({}) => {
   const userPersistence = new UserPersistence();
   let user = await userPersistence.getByEmail(email);
   if (user) {
+    console.log('updating e2e user');
     await userPersistence.put({
       ...user,
       password,
       enabled: true,
     });
   } else {
+    console.log('creating e2e user');
     user = await userPersistence.create({
       email,
       password,
@@ -53,6 +43,7 @@ setup("creating E2E user", async ({}) => {
   const projects = await projectPersistence.listAll();
   let project = projects.find((project) => project.name === "E2E Project");
   if (!project) {
+    console.log('creating e2e project');
     project = await projectPersistence.create({
       name: "E2E Project",
       url: "https://e2e.example.com",
@@ -66,6 +57,7 @@ setup("creating E2E user", async ({}) => {
   const membershipPersistence = new MembershipPersistence();
   const isMember = await membershipPersistence.isMember(project.id, user.id);
   if (!isMember) {
+    console.log('adding e2e user to project');
     await membershipPersistence.create({
       email,
       user: user.id,
@@ -76,4 +68,17 @@ setup("creating E2E user", async ({}) => {
   process.env.E2E_USER_EMAIL = email;
   process.env.E2E_USER_PASSWORD = rawPassword;
   process.env.E2E_PROJECT_ID = project.id;
+
+  // Write credentials to a file so they can be shared across Playwright projects
+  // (environment variables set in setup projects are not available to dependent projects)
+  const credentialsPath = join(__dirname, ".auth-credentials.json");
+  writeFileSync(
+    credentialsPath,
+    JSON.stringify({
+      email,
+      password: rawPassword,
+      projectId: project.id,
+    }),
+    "utf-8",
+  );
 });

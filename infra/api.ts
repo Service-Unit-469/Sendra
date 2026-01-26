@@ -1,5 +1,5 @@
 import { assetsBucket } from "./assets";
-import { data } from "./data";
+import { dataTable } from "./data";
 import { passEnvironmentVariables } from "./env";
 import { rateLimitTable } from "./rateLimit";
 import { router } from "./route";
@@ -36,7 +36,7 @@ api.route("ANY /api/v1/{proxy+}", {
   link: [
     assetsBucket,
     delayedTaskStateMachine,
-    data,
+    dataTable,
     jwtSecret,
     rateLimitTable,
     taskQueue,
