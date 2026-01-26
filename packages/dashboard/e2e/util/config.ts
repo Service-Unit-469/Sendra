@@ -43,5 +43,4 @@ export const getConfig = () => {
         dataTableName: parsedOutputs.dataTable.table.name,
         rateLimitTableName: parsedOutputs.rateLimitTable.table.name,
     }
-
 };

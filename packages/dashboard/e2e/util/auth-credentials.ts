@@ -1,5 +1,6 @@
 import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
+import { createHash as createHashCrypto } from 'node:crypto';
 
 interface AuthCredentials {
   email: string;
@@ -22,11 +23,15 @@ export function getAuthCredentials(): AuthCredentials {
   const credentialsPath = join(__dirname, "..", ".auth-credentials.json");
   if (existsSync(credentialsPath)) {
     try {
+      console.log(`Reading credentials from file: ${credentialsPath}`);
       cachedCredentials = JSON.parse(
         readFileSync(credentialsPath, "utf-8"),
       ) as AuthCredentials;
+      const hash = createHashCrypto('crc32').update(cachedCredentials.password).digest('hex');
+      console.log('Password crc32 hash: ', hash);
       return cachedCredentials;
     } catch (error) {
+      console.warn(`Failed to read credentials from tile: ${credentialsPath}`, error);
       // Fall through to environment variables
     }
   }
@@ -35,6 +40,9 @@ export function getAuthCredentials(): AuthCredentials {
   const email = process.env.E2E_USER_EMAIL;
   const password = process.env.E2E_USER_PASSWORD;
   const projectId = process.env.E2E_PROJECT_ID;
+  console.log('Using env variable credentials');
+  const hash = createHashCrypto('crc32').update(password ?? '').digest('hex');
+  console.log('Password crc32 hash: ', hash);
 
   if (!email || !password || !projectId) {
     throw new Error(

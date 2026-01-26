@@ -8,6 +8,7 @@ import {
 import { randomUUID } from "node:crypto";
 import { writeFileSync } from "node:fs";
 import { join } from "node:path";
+import {createHash as createHashCrypto} from 'node:crypto';
 
 import { getConfig } from "./util/config";
 
@@ -18,18 +19,21 @@ setup("creating E2E user", async ({ }) => {
   process.env.RATE_LIMIT_TABLE_NAME = rateLimitTableName;
   process.env.PERSISTENCE_PROVIDER = "local";
 
+  console.log('creating e2e user');
   const email = "e2e@example.com";
   const rawPassword = randomUUID();
   const password = await createHash(rawPassword);
   const userPersistence = new UserPersistence();
   let user = await userPersistence.getByEmail(email);
   if (user) {
+    console.log('updating e2e user');
     await userPersistence.put({
       ...user,
       password,
       enabled: true,
     });
   } else {
+    console.log('creating e2e user');
     user = await userPersistence.create({
       email,
       password,
@@ -40,6 +44,7 @@ setup("creating E2E user", async ({ }) => {
   const projects = await projectPersistence.listAll();
   let project = projects.find((project) => project.name === "E2E Project");
   if (!project) {
+    console.log('creating e2e project');
     project = await projectPersistence.create({
       name: "E2E Project",
       url: "https://e2e.example.com",
@@ -53,6 +58,7 @@ setup("creating E2E user", async ({ }) => {
   const membershipPersistence = new MembershipPersistence();
   const isMember = await membershipPersistence.isMember(project.id, user.id);
   if (!isMember) {
+    console.log('adding e2e user to project');
     await membershipPersistence.create({
       email,
       user: user.id,
@@ -67,6 +73,9 @@ setup("creating E2E user", async ({ }) => {
   // Write credentials to a file so they can be shared across Playwright projects
   // (environment variables set in setup projects are not available to dependent projects)
   const credentialsPath = join(__dirname, ".auth-credentials.json");
+  console.log('writing credentials to file', credentialsPath);
+  const hash = createHashCrypto('crc32').update(rawPassword).digest('hex');
+  console.log('Password crc32 hash: ', hash);
   writeFileSync(
     credentialsPath,
     JSON.stringify({

@@ -24,13 +24,37 @@ test.describe("Templates", () => {
 
     await test.step("Create new template", async () => {
       await page.getByRole("button", { name: "New" }).click();
-
       await page.getByRole("button", { name: "Create" }).waitFor({ state: "visible" });
       await page.getByRole("textbox", { name: "Subject" }).fill(templateName);
-
-
       await page.getByRole("button", { name: "Create" }).click();
+      await page.getByText("Created new template").waitFor({ state: "visible" });
     });
 
+    await test.step('Verify New Template Created', async () => {
+      await dashboardPage.navigateTo("Templates", "/templates");
+      await page.getByText(templateName).waitFor({state: 'visible'});
+    });
+  });
+
+  test("Can create a quick email template", async ({
+    dashboardPage,
+    page,
+  }) => {
+    await dashboardPage.navigateTo("Templates", "/templates");
+    const templateName = `test-${new Date().getTime()}`;
+
+    await test.step("Create new template", async () => {
+      await page.getByRole("button", { name: "New" }).click();
+      await page.getByRole("button", { name: "Create" }).waitFor({ state: "visible" });
+      await page.getByRole("textbox", { name: "Subject" }).fill(templateName);
+      await page.getByRole('listbox', {name: ''})
+      await page.getByRole("button", { name: "Create" }).click();
+      await page.getByText("Created new template").waitFor({ state: "visible" });
+    });
+
+    await test.step('Verify New Template Created', async () => {
+      await dashboardPage.navigateTo("Templates", "/templates");
+      await page.getByText(templateName).waitFor({state: 'visible'});
+    });
   });
 });

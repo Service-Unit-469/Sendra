@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Check } from "lucide-react";
-import React, { type MutableRefObject, useEffect, useState } from "react";
+import React, { type RefObject, useEffect, useState } from "react";
 import { DropdownIndicator } from "../../../icons/DropdownIndicator";
 
 export interface Dropdownprops {
@@ -32,7 +32,7 @@ export default function Dropdown({ onChange, values, selectedValue, className, w
   const ref = React.createRef<HTMLDivElement>();
 
   useEffect(() => {
-    const mutableRef = ref as MutableRefObject<HTMLDivElement | null>;
+    const mutableRef = ref as RefObject<HTMLDivElement | null>;
 
     const handleClickOutside = (event: MouseEvent) => {
       if (mutableRef.current && !mutableRef.current.contains(event.target as Node) && open) {
