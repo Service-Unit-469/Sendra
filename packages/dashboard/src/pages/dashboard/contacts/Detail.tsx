@@ -13,6 +13,7 @@ import { MenuButton } from "../../../components/Buttons/MenuButton";
 import Card from "../../../components/Card/Card";
 import { ContactForm } from "../../../components/ContactForm/ContactForm";
 import Input from "../../../components/Input/Input/Input";
+import ThreeColMetricsSummary from "../../../components/Metrics/ThreeColMetricsSummary";
 import Modal from "../../../components/Overlay/Modal/Modal";
 import Empty from "../../../components/Utility/Empty/Empty";
 import FullscreenLoader from "../../../components/Utility/FullscreenLoader/FullscreenLoader";
@@ -191,21 +192,14 @@ export default function ContactDetailPage() {
           />
         </div>
       </Card>
-      <Card title={"Metrics Summary"}>
-        <div className="grid grid-cols-3 gap-6">
-          <div>
-            <p className="font-medium text-neutral-600">Emails Sent</p>
-            <p className="text-2xl font-semibold text-neutral-800">{totalEmails}</p>
-          </div>
-          <div>
-            <p className="font-medium text-neutral-600">Open Rate</p>
-            <p className="text-2xl font-semibold text-neutral-800">{openRate.toFixed(2)}%</p>
-          </div>
-          <div>
-            <p className="font-medium text-neutral-600">Click Rate</p>
-            <p className="text-2xl font-semibold text-neutral-800">{clickRate.toFixed(2)}%</p>
-          </div>
-        </div>
+      <Card title="Metrics Summary">
+        <ThreeColMetricsSummary
+          metrics={[
+            { label: "Emails Sent", value: totalEmails },
+            { label: "Open Rate", value: openRate },
+            { label: "Click Rate", value: clickRate },
+          ]}
+        />
       </Card>
       <Card title={"Journey"}>
         {contact._embed.events.length > 0 || contact._embed.emails.length > 0 ? (

@@ -1,39 +1,32 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { CampaignUpdate, Email } from "@sendra/shared";
+import type { Campaign, CampaignUpdate } from "@sendra/shared";
 import { CampaignSchemas } from "@sendra/shared";
-import { Copy, Edit, Eye, FlaskConical, LoaderCircle, Save, Send, Trash } from "lucide-react";
+import { Copy, Edit, FlaskConical, Save, Send, Trash } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { type FieldError, useForm } from "react-hook-form";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { ErrorAlert } from "../../../components/Alert/ErrorAlert";
-import Badge from "../../../components/Badge/Badge";
-import { BlackButton } from "../../../components/Buttons/BlackButton";
-import { MenuButton } from "../../../components/Buttons/MenuButton";
-import { SecondaryButton } from "../../../components/Buttons/SecondaryButton";
-import Card from "../../../components/Card/Card";
-import GroupOrContacts from "../../../components/ContactSelector/GroupOrContacts";
-import Dropdown from "../../../components/Input/Dropdown/Dropdown";
-import { StyledLabel } from "../../../components/Label/StyledLabel";
-import Modal from "../../../components/Overlay/Modal/Modal";
-import Table from "../../../components/Table/Table";
-import FullscreenLoader from "../../../components/Utility/FullscreenLoader/FullscreenLoader";
-import { useCampaign, useCampaignsWithEmails } from "../../../lib/hooks/campaigns";
-import { useEmailsByCampaign } from "../../../lib/hooks/emails";
-import { useCurrentProject } from "../../../lib/hooks/projects";
-import { network } from "../../../lib/network";
+import { ErrorAlert } from "../../../../components/Alert/ErrorAlert";
+import { BlackButton } from "../../../../components/Buttons/BlackButton";
+import { MenuButton } from "../../../../components/Buttons/MenuButton";
+import { SecondaryButton } from "../../../../components/Buttons/SecondaryButton";
+import Card from "../../../../components/Card/Card";
+import GroupOrContacts from "../../../../components/ContactSelector/GroupOrContacts";
+import Dropdown from "../../../../components/Input/Dropdown/Dropdown";
+import { StyledLabel } from "../../../../components/Label/StyledLabel";
+import Modal from "../../../../components/Overlay/Modal/Modal";
+import FullscreenLoader from "../../../../components/Utility/FullscreenLoader/FullscreenLoader";
+import { useCampaignsWithEmails } from "../../../../lib/hooks/campaigns";
+import { useCurrentProject } from "../../../../lib/hooks/projects";
+import { network } from "../../../../lib/network";
 
 /**
  *
  */
-export default function ViewCampaignPage() {
+export default function DraftCampaign({ campaign, mutate: campaignMutate }: { campaign: Campaign; mutate: () => void }) {
   const navigate = useNavigate();
-  const { id } = useParams<{ id: string }>();
   const project = useCurrentProject();
   const { mutate: campaignsMutate } = useCampaignsWithEmails();
-  const { data: campaign, mutate: campaignMutate } = useCampaign(id ?? "");
-
-  const { data: emails } = useEmailsByCampaign(campaign);
 
   const [confirmModal, setConfirmModal] = useState(false);
   const [delay, setDelay] = useState(0);
@@ -230,7 +223,7 @@ export default function ViewCampaignPage() {
         onToggle={() => setConfirmModal(!confirmModal)}
         onAction={handleSubmit(send)}
         type="info"
-        title={"Send campaign"}
+        title="Send campaign"
         description={`Once you start sending this campaign to ${watch("recipients").length} contacts, you can no longer make changes or undo it.`}
       >
         <StyledLabel>
@@ -267,7 +260,7 @@ export default function ViewCampaignPage() {
       </Modal>
 
       <Card
-        title={campaign.status !== "DRAFT" ? "View campaign" : "Update campaign"}
+        title="Update campaign"
         options={
           <>
             <MenuButton onClick={duplicate}>
@@ -285,7 +278,7 @@ export default function ViewCampaignPage() {
           <GroupOrContacts
             onRecipientsChange={(r: string[]) => setValue("recipients", r)}
             onGroupsChange={(g: string[]) => setValue("groups", g)}
-            disabled={campaign.status !== "DRAFT"}
+            disabled={false}
             label="Recipients"
             selectedContacts={campaign.recipients}
             selectedGroups={campaign.groups}
@@ -293,48 +286,19 @@ export default function ViewCampaignPage() {
 
           <ErrorAlert message={(errors.recipients as FieldError | undefined)?.message} />
 
-          {campaign.status !== "DRAFT" &&
-            (emails?.length === 0 ? (
-              <div className={"flex items-center gap-6 rounded-sm border border-neutral-300 px-6 py-3 sm:col-span-6"}>
-                <LoaderCircle size={20} className="animate-spin" />
-                <div>
-                  <h1 className={"text-lg font-semibold text-neutral-800"}>Hang on!</h1>
-                  <p className={"text-sm text-neutral-600"}>We are still sending your campaign. Emails will start appearing here once they are sent.</p>
-                </div>
-              </div>
-            ) : (
-              <div className={"max-h-[400px] overflow-x-hidden overflow-y-scroll rounded-sm border border-neutral-200 sm:col-span-6"}>
-                <Table
-                  values={(emails ?? []).map((e: Email) => {
-                    return {
-                      Email: e.email,
-                      Status: <Badge type={e.status === "DELIVERED" ? "info" : e.status === "OPENED" ? "success" : "danger"}>{e.status.at(0)?.toUpperCase() + e.status.slice(1).toLowerCase()}</Badge>,
-                      View: (
-                        <Link to={`/contacts/${e.contact}`}>
-                          <Eye size={20} />
-                        </Link>
-                      ),
-                    };
-                  })}
-                />
-              </div>
-            ))}
-
           <div className={"sm:col-span-6"}>
             <div className="h-[calc(100vh-550px)] min-h-[600px]">
               <div className="flex justify-between gap-2">
                 <h2 className="text-lg font-semibold text-neutral-800">Preview</h2>
-                {campaign.status === "DRAFT" && (
-                  <BlackButton
-                    onClick={(e) => {
-                      e.preventDefault();
-                      navigate(`/campaigns/${campaign.id}/edit`);
-                    }}
-                  >
-                    <Edit size={18} />
-                    Edit
-                  </BlackButton>
-                )}
+                <BlackButton
+                  onClick={(e) => {
+                    e.preventDefault();
+                    navigate(`/campaigns/${campaign.id}/edit`);
+                  }}
+                >
+                  <Edit size={18} />
+                  Edit
+                </BlackButton>
               </div>
 
               <iframe srcDoc={campaign.body.html} className="w-full h-full" title={campaign.subject ?? "Campaign preview"} />
@@ -342,28 +306,24 @@ export default function ViewCampaignPage() {
             <ErrorAlert message={errors.body?.message} />
           </div>
 
-          <div className={"ml-auto mt-6 sm:flex justify-end sm:gap-x-5 sm:col-span-6"}>
-            {campaign.status === "DRAFT" ? (
-              <>
-                <BlackButton
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setConfirmModal(true);
-                  }}
-                >
-                  <Send />
-                  Send
-                </BlackButton>
-                <SecondaryButton onClick={handleSubmit(sendTest)}>
-                  <FlaskConical size={18} />
-                  Test
-                </SecondaryButton>
-                <SecondaryButton>
-                  <Save strokeWidth={1.5} size={18} />
-                  Save
-                </SecondaryButton>
-              </>
-            ) : null}
+          <div className="ml-auto mt-6 sm:flex justify-end sm:gap-x-5 sm:col-span-6">
+            <BlackButton
+              onClick={(e) => {
+                e.preventDefault();
+                setConfirmModal(true);
+              }}
+            >
+              <Send />
+              Send
+            </BlackButton>
+            <SecondaryButton onClick={handleSubmit(sendTest)}>
+              <FlaskConical size={18} />
+              Test
+            </SecondaryButton>
+            <SecondaryButton>
+              <Save strokeWidth={1.5} size={18} />
+              Save
+            </SecondaryButton>
           </div>
         </form>
       </Card>
