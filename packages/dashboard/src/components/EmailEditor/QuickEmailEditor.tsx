@@ -58,15 +58,15 @@ export default function QuickEmailEditor({ template, initialCampaign, onChange, 
         </StyledLabel>
       </div>
 
-      <div className="flex flex-1 gap-6 overflow-hidden px-6">
-        <div className="flex w-1/2 flex-col gap-4">
+      <div className="flex flex-1 sm:flex-row flex-col gap-6 px-6">
+        <div className="flex w-full sm:w-1/2 flex-col gap-4">
           <div className="rounded-sm border border-neutral-200 bg-white p-6">
             <h2 className="mb-4 text-lg font-semibold text-neutral-800">Campaign Content</h2>
             <RichTextEditorField value={content} onChange={(value) => setContent(value || "")} name="quickBody" id="quickBody" label="Message Content" />
           </div>
         </div>
 
-        <div className="flex w-1/2 flex-col gap-4">
+        <div className="flex w-full sm:w-1/2 flex-col gap-4">
           <div className="flex-1 overflow-hidden rounded-sm border border-neutral-200 bg-white">
             <div className="border-b border-neutral-200 bg-neutral-50 px-4 py-3">
               <h2 className="text-sm font-semibold text-neutral-800">Preview</h2>
