@@ -20,7 +20,7 @@
 		"typescript": "^5.5.3"
 	},
 	"dependencies": {
-		"@aws-sdk/client-sns": "^3.974.0",
+		"@aws-sdk/client-sns": "^3.980.0",
 		"@sendra/lib": "1.0.0"
 	}
 }
