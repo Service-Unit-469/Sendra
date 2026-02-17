@@ -47,6 +47,7 @@ api.route("ANY /api/v1/{proxy+}", {
   environment: {
     EMAIL_CONFIGURATION_SET_NAME: `SendraConfigurationSet-${$app.stage}`,
     ASSETS_BUCKET_NAME: assetsBucket.name,
+    RATE_LIMIT_TABLE_NAME: rateLimitTable.name,
     ...passEnvironmentVariables([
       "ALLOW_DUPLICATE_PROJECT_IDENTITIES",
       "AUTH_ISSUER",

@@ -29,8 +29,11 @@ vi.mock("@sendra/lib", async (importOriginal) => {
   };
 });
 
+vi.stubEnv("LOG_LEVEL", "error");
 vi.stubEnv("DEFAULT_EMAIL", "test@example.com");
 vi.stubEnv("EMAIL_CONFIGURATION_SET_NAME", "test");
 vi.stubEnv("APP_URL", "https://test.com");
 vi.stubEnv("ASSETS_BUCKET_NAME", "test-assets-bucket");
 vi.stubEnv("ASSETS_URL", "https://test.com");
+vi.stubEnv("RATE_LIMIT_ENABLED", "true");
+vi.stubEnv("RATE_LIMIT_TABLE_NAME", "test-rate-limit-table");

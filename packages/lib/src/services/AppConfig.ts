@@ -105,7 +105,7 @@ export const getRateLimitConfig = () => {
       RATE_LIMIT_TABLE_NAME: z.string().optional(),
     })
     .transform((env) => ({
-      enabled: env.RATE_LIMIT_ENABLED === "true",
+      enabled: env.RATE_LIMIT_ENABLED === "true" && Boolean(env.RATE_LIMIT_TABLE_NAME),
       authMaxRequests: parseInt(env.RATE_LIMIT_AUTH_MAX_REQUESTS, 10),
       authWindowMs: parseInt(env.RATE_LIMIT_AUTH_WINDOW_MS, 10),
       authCriticalWindowMs: parseInt(env.RATE_LIMIT_AUTH_CRITICAL_WINDOW_MS, 10),
