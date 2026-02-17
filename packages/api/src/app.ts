@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { OpenAPIHono } from "@hono/zod-openapi";
-import { getEmailConfig, getMetricsLogger, getRequestCapacityUsed, rootLogger, setRequestCapacityUsed, setRequestInfo, withMetrics } from "@sendra/lib";
+import { getEmailConfig, getRequestCapacityUsed, rootLogger, setRequestCapacityUsed, setRequestInfo, withMetrics } from "@sendra/lib";
 import { Unit } from "aws-embedded-metrics";
 import type { Context, Next } from "hono";
 import { handle } from "hono/aws-lambda";
@@ -54,45 +54,30 @@ app.use(
   }),
 );
 
-app.use(
-  "*",
-  createMiddleware((c: Context, next: Next) => {
-    if (c.req.method.toLowerCase() === "options") {
-      return next();
-    }
-    return new Promise<void>((resolve) =>
-      setRequestCapacityUsed({ used: 0 }, async () => {
-        const metricsLogger = getMetricsLogger({ Operation: "ApiRequest" });
-        metricsLogger.setProperty("Method", c.req.method);
-        metricsLogger.setProperty("Path", c.req.path);
-        await next();
-        const { used } = getRequestCapacityUsed();
-        metricsLogger.putMetric("CapacityUsed", used, Unit.Count);
-        resolve();
-      }),
-    );
-  }),
-);
-
 app.use("*", (c: Context, next: Next) => {
   const promise = new Promise<void>((resolve) =>
-    withMetrics(
-      async (metricsLogger) => {
-        metricsLogger.setProperty("Method", c.req.method);
-        metricsLogger.setProperty("Path", c.req.path);
-        await next();
-        resolve();
-        if (c.res.status >= 200 && c.res.status < 300) {
-          metricsLogger.putMetric("ApiSuccess", 1, Unit.Count);
-        } else {
-          metricsLogger.putMetric("ApiStatusCode", c.res.status, Unit.Count);
-          metricsLogger.putMetric("ApiError", 1, Unit.Count);
-        }
-      },
-      {
-        Operation: "ApiRequest",
-        Method: c.req.method,
-      },
+    setRequestCapacityUsed({ used: 0 }, async () =>
+      withMetrics(
+        async (metricsLogger) => {
+          metricsLogger.setProperty("Method", c.req.method);
+          metricsLogger.setProperty("Path", c.req.path);
+
+          await next();
+          const { used } = getRequestCapacityUsed();
+          metricsLogger.putMetric("CapacityUsed", used, Unit.Count);
+          resolve();
+          if (c.res.status >= 200 && c.res.status < 300) {
+            metricsLogger.putMetric("ApiSuccess", 1, Unit.Count);
+          } else {
+            metricsLogger.putMetric("ApiStatusCode", c.res.status, Unit.Count);
+            metricsLogger.putMetric("ApiError", 1, Unit.Count);
+          }
+        },
+        {
+          Operation: "ApiRequest",
+          Method: c.req.method,
+        },
+      ),
     ),
   );
   return promise;
