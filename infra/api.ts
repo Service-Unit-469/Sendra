@@ -25,9 +25,9 @@ export const api = new sst.aws.ApiGatewayV2("ApiGateway", {
       defaultRouteSettings: {
         throttlingRateLimit: 1000,
         throttlingBurstLimit: 2000,
-      }
-    }
-  }
+      },
+    },
+  },
 });
 router.route("/api/v1", api.url);
 
@@ -47,6 +47,7 @@ api.route("ANY /api/v1/{proxy+}", {
   environment: {
     EMAIL_CONFIGURATION_SET_NAME: `SendraConfigurationSet-${$app.stage}`,
     ASSETS_BUCKET_NAME: assetsBucket.name,
+    RATE_LIMIT_ENABLED: $app.stage == "production" ? "true" : "false",
     RATE_LIMIT_TABLE_NAME: rateLimitTable.name,
     ...passEnvironmentVariables([
       "ALLOW_DUPLICATE_PROJECT_IDENTITIES",
