@@ -1,0 +1,25 @@
+name: Cleanup PR Deployments
+on:
+  pull_request:
+    types: [closed]
+
+permissions: write-all
+
+jobs:
+  CleanupPRDeployments:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v6
+      - name: Setup
+        uses: ./.github/actions/setup
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.GH_TRUST_ROLE }}
+          role-duration-seconds: 3600
+          aws-region: us-east-2
+      - name: Cleanup PR Deployment
+        run: npm run sst -- remove --stage PR-${PR_NUMBER}
+        env:
+          PR_NUMBER: ${{ github.event.number }}
