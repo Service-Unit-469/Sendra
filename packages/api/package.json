@@ -31,7 +31,7 @@
 		"ajv": "^8.18.0",
 		"ajv-formats": "^3.0.1",
 		"aws-embedded-metrics": "^4.2.1",
-		"hono": "^4.10.4",
+		"hono": "^4.11.10",
 		"hono-pino": "^0.10.2",
 		"jsonwebtoken": "^9.0.2"
 	}
