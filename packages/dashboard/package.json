@@ -48,7 +48,7 @@
 		"@rjsf/utils": "^6.3.1",
 		"@rjsf/validator-ajv8": "^6.2.5",
 		"@sendra/shared": "1.0.0",
-		"@tailwindcss/postcss": "^4.1.17",
+		"@tailwindcss/postcss": "^4.2.1",
 		"@tippyjs/react": "^4.2.6",
 		"@tiptap/extension-color": "^3.20.0",
 		"@tiptap/extension-image": "^3.20.0",
