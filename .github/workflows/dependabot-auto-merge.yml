@@ -1,0 +1,40 @@
+name: Dependabot Auto-Merge (Dev Dependencies)
+
+on:
+  pull_request_target:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - ready_for_review
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  auto-merge:
+    runs-on: ubuntu-latest
+    # Only process Dependabot PRs
+    if: github.actor == 'dependabot[bot]'
+    steps:
+      - name: Fetch Dependabot metadata
+        id: metadata
+        uses: dependabot/fetch-metadata@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      # Only proceed for dev scope dependencies
+      - name: Auto-merge dev dependency PR
+        if: steps.metadata.outputs.dependency-type == 'direct:development'
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          echo "Approving PR #$PR_NUMBER..."
+          gh pr review $PR_NUMBER --approve
+
+          echo "Adding auto-merge comment..."
+          gh pr comment $PR_NUMBER --body "✅ **Auto-merge**: This PR meets the criteria for automatic merge (Dependabot, dev dependencies only, all CI checks must pass). Merging when CI completes."
+
+          echo "Enabling auto-merge (will merge when all required checks pass)..."
+          gh pr merge $PR_NUMBER --auto --squash
