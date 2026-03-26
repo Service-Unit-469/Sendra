@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { getAuthCredentials } from "./util/auth-credentials";
 
 /**
  * Authentication E2E Tests
@@ -188,3 +189,93 @@ test.describe("Authentication UI", () => {
 	});
 });
 
+/**
+ * Authentication Flow Tests
+ * 
+ * Tests actual login functionality using E2E test credentials.
+ * This is critical - users must be able to log in to access the platform.
+ */
+test.describe("Authentication Flow", () => {
+	test("can successfully log in with valid credentials", async ({ page }) => {
+		const { email, password } = getAuthCredentials();
+		
+		await page.goto("/dashboard#/auth/login");
+		await page.getByLabel(/email/i).waitFor({ state: "visible" });
+		
+		// Fill in credentials
+		await page.getByLabel(/email/i).fill(email);
+		await page.getByLabel(/password/i).fill(password);
+		
+		// Submit login form
+		await page.getByRole("button", { name: /login/i }).click();
+		
+		// Should redirect away from login page
+		await page.waitForURL(/\/(?!auth)/, { timeout: 10000 });
+		
+		// Should be on dashboard (not login page)
+		const currentUrl = page.url();
+		expect(currentUrl).not.toContain("/auth/login");
+		
+		// Should see dashboard content (navigation or main content)
+		// Wait a bit for page to fully load
+		await page.waitForTimeout(1000);
+		const hasDashboardContent = await page.evaluate(() => {
+			return document.body.textContent?.includes("Dashboard") ||
+				   document.body.textContent?.includes("Contacts") ||
+				   document.body.textContent?.includes("Campaigns") ||
+				   document.querySelector("nav") !== null;
+		});
+		
+		expect(hasDashboardContent).toBeTruthy();
+	});
+
+	test("shows error for invalid credentials", async ({ page }) => {
+		await page.goto("/dashboard#/auth/login");
+		await page.getByLabel(/email/i).waitFor({ state: "visible" });
+		
+		// Fill in invalid credentials
+		await page.getByLabel(/email/i).fill("invalid@example.com");
+		await page.getByLabel(/password/i).fill("wrongpassword");
+		
+		// Submit login form
+		await page.getByRole("button", { name: /login/i }).click();
+		
+		// Should show error message
+		// Wait for error to appear (could be toast notification or inline error)
+		await page.waitForTimeout(1000);
+		
+		// Check for error indication (could be error message, toast, or still on login page)
+		const hasError = await page.evaluate(() => {
+			const bodyText = document.body.textContent || "";
+			return bodyText.includes("login failed") ||
+				   bodyText.includes("invalid") ||
+				   bodyText.includes("incorrect") ||
+				   window.location.hash.includes("/auth/login");
+		});
+		
+		// Should either show error or stay on login page
+		expect(hasError).toBeTruthy();
+	});
+
+	test("can log out after successful login", async ({ page }) => {
+		const { email, password } = getAuthCredentials();
+		
+		// Login first
+		await page.goto("/dashboard#/auth/login");
+		await page.getByLabel(/email/i).waitFor({ state: "visible" });
+		await page.getByLabel(/email/i).fill(email);
+		await page.getByLabel(/password/i).fill(password);
+		await page.getByRole("button", { name: /login/i }).click();
+		await page.waitForURL(/\/(?!auth)/, { timeout: 10000 });
+		
+		// Navigate to logout
+		await page.goto("/dashboard#/auth/logout");
+		
+		// Should redirect to login page
+		await page.waitForURL(/\/auth\/login/, { timeout: 5000 });
+		
+		// Verify we're logged out by trying to access protected route
+		await page.goto("/dashboard#/contacts");
+		await page.waitForURL(/\/auth\/login/, { timeout: 5000 });
+	});
+});
