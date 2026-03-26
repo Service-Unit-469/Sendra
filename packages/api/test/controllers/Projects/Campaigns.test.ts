@@ -74,6 +74,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
         template: template.id,
         status: "DRAFT",
         project: project.id,
+        stats: { total: 0, sent: 0, delivered: 0, opened: 0, errors: 0, errorDetails: [] },
         createdAt: expect.any(String),
         updatedAt: expect.any(String),
       });

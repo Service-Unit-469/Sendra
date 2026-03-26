@@ -25,11 +25,14 @@ export const queueCampaign = async (task: QueueCampaignTask, recordId: string) =
     contactId,
     delaySeconds: (delay ?? 0) * 60,
   }));
+  let emailsCreated = 0;
+  const failures: { contact: string; message: string }[] = [];
   for await (const recipient of recipients) {
     try {
       const contact = await contactPersistence.get(recipient.contactId);
       if (!contact) {
         logger.warn({ contactId: recipient.contactId }, "Contact not found");
+        failures.push({ contact: recipient.contactId, message: "Contact not found" });
         continue;
       }
       const createdEmail = await emailPersistence.create({
@@ -43,6 +46,7 @@ export const queueCampaign = async (task: QueueCampaignTask, recordId: string) =
         status: "QUEUED",
         project: projectId,
       });
+      emailsCreated += 1;
 
       await TaskQueue.addTask({
         type: "sendEmail",
@@ -55,8 +59,14 @@ export const queueCampaign = async (task: QueueCampaignTask, recordId: string) =
         delaySeconds: task.delaySeconds,
       });
     } catch (error) {
+      const raw = error instanceof Error ? error.message : String(error);
+      failures.push({
+        contact: recipient.contactId,
+        message: raw.length > 500 ? `${raw.slice(0, 497)}...` : raw,
+      });
       logger.error({ err: error, recipient }, "Error queuing campaign email");
     }
   }
-  logger.info({ campaign: campaign.id, recipients: campaign.recipients.length }, "Campaign emails queued");
+  await campaignPersistence.setStatsAfterQueue(campaign.id, emailsCreated, failures);
+  logger.info({ campaign: campaign.id, recipients: campaign.recipients.length, emailsCreated, queueErrors: failures.length }, "Campaign emails queued");
 };

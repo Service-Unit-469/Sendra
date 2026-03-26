@@ -11,7 +11,7 @@ import ThreeColMetricsSummary from "../../../../components/Metrics/ThreeColMetri
 import { OnPageTabs } from "../../../../components/Navigation/Tabs/OnPageTabs";
 import Table from "../../../../components/Table/Table";
 import FullscreenLoader from "../../../../components/Utility/FullscreenLoader/FullscreenLoader";
-import { useCampaignsWithEmails } from "../../../../lib/hooks/campaigns";
+import { useCampaigns } from "../../../../lib/hooks/campaigns";
 import { useEmailsByCampaign } from "../../../../lib/hooks/emails";
 import { useCurrentProject } from "../../../../lib/hooks/projects";
 import { network } from "../../../../lib/network";
@@ -22,7 +22,7 @@ import { network } from "../../../../lib/network";
 export default function PublishedCampaign({ campaign, mutate: campaignMutate }: { campaign: Campaign; mutate: () => void }) {
   const navigate = useNavigate();
   const project = useCurrentProject();
-  const { mutate: campaignsMutate } = useCampaignsWithEmails();
+  const { mutate: campaignsMutate } = useCampaigns();
 
   const { data: emails } = useEmailsByCampaign(campaign);
   const [activeTab, setActiveTab] = useState<string>("emails");
@@ -30,6 +30,22 @@ export default function PublishedCampaign({ campaign, mutate: campaignMutate }: 
   if (!campaign) {
     return <FullscreenLoader />;
   }
+
+  const stats = campaign.stats ?? { total: 0, sent: 0, delivered: 0, opened: 0, errors: 0, errorDetails: [] };
+  const summaryMetrics =
+    stats.total > 0
+      ? ([
+          { label: "Emails Sent", value: stats.total },
+          { label: "Queued", value: Math.max(stats.total - stats.sent, 0) },
+          { label: "Open Rate", value: stats.sent > 0 ? Math.round((stats.opened / stats.sent) * 100) : 0, suffix: "%" },
+        ] as const)
+      : emails && emails.length > 0
+        ? ([
+            { label: "Emails Sent", value: emails.length },
+            { label: "Queued", value: emails.filter((e) => e.status === "QUEUED").length },
+            { label: "Open Rate", value: Math.round((emails.filter((e) => e.status === "OPENED").length / emails.length) * 100), suffix: "%" },
+          ] as const)
+        : null;
 
   const duplicate = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
@@ -93,14 +109,26 @@ export default function PublishedCampaign({ campaign, mutate: campaignMutate }: 
         }
       >
         <div className="py-4">
-          {emails && emails.length > 0 && (
-            <ThreeColMetricsSummary
-              metrics={[
-                { label: "Emails Sent", value: emails.length },
-                { label: "Queued", value: emails.filter((e) => e.status === "QUEUED").length },
-                { label: "Open Rate", value: emails.filter((e) => e.status === "OPENED").length / emails.length },
-              ]}
-            />
+          {summaryMetrics && <ThreeColMetricsSummary metrics={[...summaryMetrics]} />}
+          {(stats.errorDetails?.length ?? 0) > 0 && (
+            <div className="mt-4 border-t border-neutral-200 pt-4">
+              <p className="text-sm font-medium text-neutral-700">Queue errors</p>
+              {stats.errors > (stats.errorDetails?.length ?? 0) && (
+                <p className="mt-1 text-xs text-neutral-500">
+                  Showing {stats.errorDetails?.length ?? 0} of {stats.errors} failures (log capped).
+                </p>
+              )}
+              <ul className="mt-2 max-h-40 space-y-2 overflow-y-auto text-sm text-neutral-600">
+                {(stats.errorDetails ?? []).map((entry) => (
+                  <li key={entry.contact}>
+                    <Link to={`/contacts/${entry.contact}`} className="font-medium text-neutral-800 hover:underline">
+                      {entry.contact}
+                    </Link>
+                    <span className="text-neutral-500"> — {entry.message}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           )}
         </div>
       </Card>

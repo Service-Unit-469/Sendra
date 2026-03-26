@@ -196,8 +196,8 @@ export default function ContactDetailPage() {
         <ThreeColMetricsSummary
           metrics={[
             { label: "Emails Sent", value: totalEmails },
-            { label: "Open Rate", value: openRate },
-            { label: "Click Rate", value: clickRate },
+            { label: "Open Rate", value: openRate, suffix: "%" },
+            { label: "Click Rate", value: clickRate, suffix: "%" },
           ]}
         />
       </Card>

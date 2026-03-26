@@ -7,8 +7,8 @@ import { BadRequest, NotFound } from "../../exceptions";
 import { getProblemResponseSchema } from "../../exceptions/responses";
 import { BearerAuth, isAuthenticatedProjectMemberOrSecretKey } from "../../middleware/auth";
 
-export type ProjectEntityCreate<T extends BaseItem> = Omit<T, "id" | "type" | "createdAt" | "updatedAt" | "project">;
-export type ProjectEntityUpdate<T extends BaseItem> = Omit<T, "type" | "createdAt" | "updatedAt" | "project">;
+export type ProjectEntityCreate<T extends BaseItem> = Omit<T, "id" | "type" | "createdAt" | "updatedAt" | "project" | "stats">;
+export type ProjectEntityUpdate<T extends BaseItem> = Omit<T, "type" | "createdAt" | "updatedAt" | "project" | "stats">;
 export const EmbedLimitSchema = z.enum(["standard", "extended", "all"]);
 
 export type ProjectEntityConfig<T extends BaseItem> = {

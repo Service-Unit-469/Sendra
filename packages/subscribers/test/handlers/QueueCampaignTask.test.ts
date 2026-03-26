@@ -53,6 +53,14 @@ describe("QueueCampaignTask Handler", () => {
 				recipients: [contact.id],
 				status: "DELIVERED",
 				template: template.id,
+				stats: {
+					total: 0,
+					sent: 0,
+					delivered: 0,
+					opened: 0,
+					errors: 0,
+					errorDetails: [],
+				},
 			});
 
 			const task = {
@@ -65,6 +73,9 @@ describe("QueueCampaignTask Handler", () => {
 			};
 
 			await queueCampaign(task, "test-record-id");
+
+			const campaignAfter = await campaignPersistence.get(campaign.id);
+			expect(campaignAfter?.stats).toEqual({ total: 1, sent: 0, delivered: 0, opened: 0, errors: 0, errorDetails: [] });
 
 			// Verify email record was created
 			const emailPersistence = new EmailPersistence(projectId);
@@ -93,6 +104,62 @@ describe("QueueCampaignTask Handler", () => {
 			});
 		});
 
+		test("should record stats.errors when email create fails", async () => {
+			const contact = await createTestContact(projectId);
+			const template = await createTestTemplate(projectId);
+			const campaignPersistence = new CampaignPersistence(projectId);
+			const campaign = await campaignPersistence.create({
+				project: projectId,
+				subject: "Test Campaign",
+				body: {
+					data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+					html: "<p>Test campaign body</p>",
+					plainText: "Test campaign body",
+				},
+				recipients: [contact.id],
+				status: "DELIVERED",
+				template: template.id,
+				stats: {
+					total: 0,
+					sent: 0,
+					delivered: 0,
+					opened: 0,
+					errors: 0,
+					errorDetails: [],
+				},
+			});
+
+			const createSpy = vi.spyOn(EmailPersistence.prototype, "create").mockRejectedValueOnce(new Error("create failed"));
+
+			const task = {
+				type: "queueCampaign" as const,
+				payload: {
+					campaign: campaign.id,
+					project: projectId,
+					delay: 0,
+				},
+			};
+
+			await queueCampaign(task, "test-record-id");
+
+			createSpy.mockRestore();
+
+			const campaignAfter = await campaignPersistence.get(campaign.id);
+			expect(campaignAfter?.stats).toEqual({
+				total: 0,
+				sent: 0,
+				delivered: 0,
+				opened: 0,
+				errors: 1,
+				errorDetails: [{ contact: contact.id, message: "create failed" }],
+			});
+
+			const emailPersistence = new EmailPersistence(projectId);
+			const emails = await emailPersistence.listAll();
+			expect(emails.length).toBe(0);
+			expect(TaskQueue.addTask).not.toHaveBeenCalled();
+		});
+
 		test("should queue campaign emails for multiple recipients", async () => {
 			const contacts = await Promise.all([
 				createTestContact(projectId),
@@ -112,6 +179,14 @@ describe("QueueCampaignTask Handler", () => {
 				recipients: contacts.map((c) => c.id),
 				status: "DELIVERED",
 				template: template.id,
+				stats: {
+					total: 0,
+					sent: 0,
+					delivered: 0,
+					opened: 0,
+					errors: 0,
+					errorDetails: [],
+				},
 			});
 
 			const task = {
@@ -124,6 +199,9 @@ describe("QueueCampaignTask Handler", () => {
 			};
 
 			await queueCampaign(task, "test-record-id");
+
+			const campaignAfter = await campaignPersistence.get(campaign.id);
+			expect(campaignAfter?.stats).toEqual({ total: 3, sent: 0, delivered: 0, opened: 0, errors: 0, errorDetails: [] });
 
 			// Verify email records were created for all recipients
 			const emailPersistence = new EmailPersistence(projectId);
@@ -159,6 +237,14 @@ describe("QueueCampaignTask Handler", () => {
 				recipients: [contact.id],
 				status: "DELIVERED",
 				template: template.id,
+				stats: {
+					total: 0,
+					sent: 0,
+					delivered: 0,
+					opened: 0,
+					errors: 0,
+					errorDetails: [],
+				},
 			});
 
 			const task = {
@@ -208,6 +294,14 @@ describe("QueueCampaignTask Handler", () => {
 				recipients: [contact1.id, contact2.id],
 				status: "DELIVERED",
 				template: template.id,
+				stats: {
+					total: 0,
+					sent: 0,
+					delivered: 0,
+					opened: 0,
+					errors: 0,
+					errorDetails: [],
+				},
 			});
 
 			const task = {
@@ -269,6 +363,14 @@ describe("QueueCampaignTask Handler", () => {
 				recipients: [],
 				status: "DELIVERED",
 				template: template.id,
+				stats: {
+					total: 0,
+					sent: 0,
+					delivered: 0,
+					opened: 0,
+					errors: 0,
+					errorDetails: [],
+				},
 			});
 
 			const task = {
@@ -306,6 +408,14 @@ describe("QueueCampaignTask Handler", () => {
 				recipients: ["non-existent-contact"],
 				status: "DELIVERED",
 				template: template.id,
+				stats: {
+					total: 0,
+					sent: 0,
+					delivered: 0,
+					opened: 0,
+					errors: 0,
+					errorDetails: [],
+				},
 			});
 
 			const task = {
@@ -326,6 +436,10 @@ describe("QueueCampaignTask Handler", () => {
 
 			// Verify TaskQueue.addTask was not called
 			expect(TaskQueue.addTask).not.toHaveBeenCalled();
+
+			const campaignAfter = await campaignPersistence.get(campaign.id);
+			expect(campaignAfter?.stats.errors).toBe(1);
+			expect(campaignAfter?.stats.errorDetails).toEqual([{ contact: "non-existent-contact", message: "Contact not found" }]);
 		});
 	});
 
@@ -346,6 +460,14 @@ describe("QueueCampaignTask Handler", () => {
 				recipients: [contact.id],
 				status: "DELIVERED",
 				template: template.id,
+				stats: {
+					total: 0,
+					sent: 0,
+					delivered: 0,
+					opened: 0,
+					errors: 0,
+					errorDetails: [],
+				},
 			});
 
 			const task = {

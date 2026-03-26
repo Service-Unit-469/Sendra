@@ -15,7 +15,7 @@ import Modal from "../../../components/Overlay/Modal/Modal";
 import Skeleton from "../../../components/Skeleton/Skeleton";
 import Empty from "../../../components/Utility/Empty/Empty";
 import FullscreenLoader from "../../../components/Utility/FullscreenLoader/FullscreenLoader";
-import { useCampaignsWithEmails } from "../../../lib/hooks/campaigns";
+import { useCampaigns } from "../../../lib/hooks/campaigns";
 import { useCurrentProject } from "../../../lib/hooks/projects";
 import { useTemplates } from "../../../lib/hooks/templates";
 import { network } from "../../../lib/network";
@@ -29,7 +29,7 @@ const createCampaignFormSchema = z.object({
  *
  */
 export default function Index() {
-  const { data: campaigns, mutate: campaignsMutate } = useCampaignsWithEmails();
+  const { data: campaigns, mutate: campaignsMutate } = useCampaigns();
   const { data: templates } = useTemplates();
   const [newCampaignModal, setNewCampaignModal] = useState<boolean>(false);
   const project = useCurrentProject();
@@ -141,6 +141,9 @@ export default function Index() {
           campaigns.length > 0 ? (
             <div className={"grid grid-cols-1 gap-6 sm:grid-cols-2"}>
               {campaigns.map((c) => {
+                const stats = c.stats ?? { total: 0, sent: 0, delivered: 0, opened: 0, errors: 0, errorDetails: [] };
+                const queued = Math.max(stats.total - stats.sent, 0);
+                const openRatePct = stats.sent > 0 ? Math.round((stats.opened / stats.sent) * 100) : 0;
                 return (
                   <div className="col-span-1 divide-y divide-neutral-200 rounded-sm border border-neutral-200 bg-white" key={c.id}>
                     <div className="flex w-full items-center justify-between space-x-6 p-6">
@@ -161,20 +164,27 @@ export default function Index() {
                                     Open rate
                                   </label>
                                   <p className="mt-1 truncate text-sm text-neutral-500" id="open-rate">
-                                    {c._embed.emails?.length && c._embed.emails?.length > 0
-                                      ? Math.round((c._embed.emails.filter((e) => e.status === "OPENED").length / c._embed.emails.filter((e) => e.status !== "QUEUED").length) * 100)
-                                      : 0}
-                                    %
+                                    {openRatePct}%
                                   </p>
                                 </div>
 
-                                {c._embed.emails?.length && c._embed.emails?.length > 0 && (
+                                {stats.total > 0 && (
                                   <div>
                                     <label htmlFor="emails-in-queue" className={"text-xs font-medium text-neutral-500"}>
                                       Emails in queue
                                     </label>
                                     <p className="mt-1 truncate text-sm text-neutral-500" id="emails-in-queue">
-                                      {c._embed.emails.filter((e) => e.status === "QUEUED").length}
+                                      {queued}
+                                    </p>
+                                  </div>
+                                )}
+                                {stats.errors > 0 && (
+                                  <div>
+                                    <label htmlFor="queue-errors" className={"text-xs font-medium text-neutral-500"}>
+                                      Queue errors
+                                    </label>
+                                    <p className="mt-1 truncate text-sm text-neutral-500" id="queue-errors">
+                                      {stats.errors}
                                     </p>
                                   </div>
                                 )}
@@ -190,6 +200,26 @@ export default function Index() {
                               </div>
                             )}
                           </div>
+                          {c.status === "DELIVERED" && (stats.errorDetails?.length ?? 0) > 0 && (
+                            <div className="mt-3 border-t border-neutral-100 pt-3">
+                              <p className="text-xs font-medium text-neutral-500">Queue error details</p>
+                              {stats.errors > (stats.errorDetails?.length ?? 0) && (
+                                <p className="mt-1 text-xs text-neutral-400">
+                                  Showing {stats.errorDetails?.length ?? 0} of {stats.errors} failures (log capped).
+                                </p>
+                              )}
+                              <ul className="mt-2 max-h-28 space-y-1.5 overflow-y-auto text-xs text-neutral-600">
+                                {(stats.errorDetails ?? []).map((entry) => (
+                                  <li key={entry.contact}>
+                                    <Link to={`/contacts/${entry.contact}`} className="font-medium text-neutral-700 hover:underline">
+                                      {entry.contact}
+                                    </Link>
+                                    <span className="text-neutral-500"> — {entry.message}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
                         </div>
                         <div className="my-4">
                           <h2 className="col-span-2 truncate font-semibold text-neutral-700">Properties</h2>

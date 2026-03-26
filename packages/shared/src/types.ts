@@ -5,6 +5,7 @@ import type {
   AssetSchema,
   AssetSchemas,
   BaseSchema,
+  CampaignQueueErrorEntrySchema,
   CampaignSchema,
   CampaignSchemas,
   ContactSchema,
@@ -51,6 +52,7 @@ export type ContactUpdate = z.infer<typeof ContactSchemas.update>;
 export type Campaign = z.infer<typeof CampaignSchema>;
 export type CampaignCreate = z.infer<typeof CampaignSchemas.create>;
 export type CampaignUpdate = z.infer<typeof CampaignSchemas.update>;
+export type CampaignQueueErrorEntry = z.infer<typeof CampaignQueueErrorEntrySchema>;
 
 export type DeliveryEvent = z.infer<typeof DeliveryEventSchema>;
 export type Email = z.infer<typeof EmailSchema>;

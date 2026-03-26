@@ -16,7 +16,7 @@ import Dropdown from "../../../../components/Input/Dropdown/Dropdown";
 import { StyledLabel } from "../../../../components/Label/StyledLabel";
 import Modal from "../../../../components/Overlay/Modal/Modal";
 import FullscreenLoader from "../../../../components/Utility/FullscreenLoader/FullscreenLoader";
-import { useCampaignsWithEmails } from "../../../../lib/hooks/campaigns";
+import { useCampaigns } from "../../../../lib/hooks/campaigns";
 import { useCurrentProject } from "../../../../lib/hooks/projects";
 import { network } from "../../../../lib/network";
 
@@ -26,7 +26,7 @@ import { network } from "../../../../lib/network";
 export default function DraftCampaign({ campaign, mutate: campaignMutate }: { campaign: Campaign; mutate: () => void }) {
   const navigate = useNavigate();
   const project = useCurrentProject();
-  const { mutate: campaignsMutate } = useCampaignsWithEmails();
+  const { mutate: campaignsMutate } = useCampaigns();
 
   const [confirmModal, setConfirmModal] = useState(false);
   const [delay, setDelay] = useState(0);

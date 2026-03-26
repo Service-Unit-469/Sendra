@@ -12,7 +12,15 @@ export function useCampaign(id: string) {
 }
 
 /**
- *
+ * Campaign list without embedded emails (uses denormalized `stats` for aggregates).
+ */
+export function useCampaigns() {
+  const currentProject = useCurrentProject();
+  return useSWR<Campaign[]>(`/projects/${currentProject.id}/campaigns/all`);
+}
+
+/**
+ * @deprecated Prefer `useCampaigns()`; embedding all emails does not scale.
  */
 export function useCampaignsWithEmails() {
   const currentProject = useCurrentProject();

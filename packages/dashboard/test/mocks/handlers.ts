@@ -153,6 +153,27 @@ export const handlers = [
 		]);
 	}),
 
+	http.get(`${API_URL}/projects/:projectId/campaigns/all`, ({ request }) => {
+		const url = new URL(request.url);
+		const embedEmails = url.searchParams.get("embed") === "emails";
+		const base = {
+			id: "campaign-1",
+			subject: "Monthly Newsletter",
+			status: "DRAFT" as const,
+			recipients: [] as string[],
+			template: "template-1",
+			body: { data: "", html: "<p>Hi</p>", plainText: "Hi" },
+			project: "project-1",
+			stats: { total: 0, sent: 0, delivered: 0, opened: 0, errors: 0, errorDetails: [] },
+			createdAt: new Date().toISOString(),
+			updatedAt: new Date().toISOString(),
+		};
+		if (embedEmails) {
+			return HttpResponse.json([{ ...base, _embed: { emails: [] } }]);
+		}
+		return HttpResponse.json([base]);
+	}),
+
 	http.get(`${API_URL}/projects/:projectId/campaigns/:campaignId`, ({ params }) => {
 		return HttpResponse.json({
 			id: params.campaignId,
