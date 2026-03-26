@@ -1,4 +1,4 @@
-import { ActionsService, ContactPersistence, ContactService, EmailPersistence, EventPersistence, ProjectPersistence, rootLogger, withMetrics } from "@sendra/lib";
+import { ActionsService, CampaignPersistence, ContactPersistence, ContactService, EmailPersistence, EventPersistence, ProjectPersistence, rootLogger, withMetrics } from "@sendra/lib";
 import { type DeliveryEvent, DeliveryEventSchema, type Email, OOTB_EVENT_VALUES } from "@sendra/shared";
 import { Unit } from "aws-embedded-metrics";
 import type { SNSEvent, SNSEventRecord } from "aws-lambda";
@@ -115,6 +115,13 @@ async function handleEmailEvent(deliveryEvent: DeliveryEvent, email: Email, logg
         });
         metricsLogger.putMetric("EmailStatusUpdated", 1, Unit.Count);
         metricsLogger.setProperty("NewStatus", newStatus);
+
+        if (email.sourceType === "CAMPAIGN" && email.source) {
+          const campaignStats = newStatus === "DELIVERED" ? { delivered: 1 } : newStatus === "OPENED" ? { opened: 1 } : undefined;
+          if (campaignStats) {
+            await new CampaignPersistence(project.id).incrementStats(email.source, campaignStats);
+          }
+        }
       }
 
       // add the event

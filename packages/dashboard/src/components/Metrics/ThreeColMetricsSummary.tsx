@@ -5,14 +5,17 @@ export type ThreeColMetricsSummaryProps = {
     {
       label: string;
       value: number;
+      suffix?: string;
     },
     {
       label: string;
       value: number;
+      suffix?: string;
     },
     {
       label: string;
       value: number;
+      suffix?: string;
     },
   ];
 };
@@ -22,7 +25,10 @@ const ThreeColMetricsSummary: React.FC<ThreeColMetricsSummaryProps> = ({ metrics
     {metrics.map((metric) => (
       <div key={metric.label}>
         <p className="font-medium text-neutral-600">{metric.label}</p>
-        <p className="text-2xl font-semibold text-neutral-800">{Number.isInteger(metric.value) ? metric.value : metric.value.toFixed(2)}</p>
+        <p className="text-2xl font-semibold text-neutral-800">
+          {Number.isInteger(metric.value) ? metric.value : metric.value.toFixed(2)}
+          {metric.suffix && <span className="text-neutral-500">{metric.suffix}</span>}
+        </p>
       </div>
     ))}
   </div>

@@ -1,9 +1,9 @@
-import { ContactPersistence, EmailPersistence, EventPersistence } from "@sendra/lib";
+import { CampaignPersistence, ContactPersistence, EmailPersistence, EventPersistence } from "@sendra/lib";
 import { startupDynamoDB, stopDynamoDB } from "@sendra/test";
 import type { SNSEvent } from "aws-lambda";
 import { afterAll, beforeAll, beforeEach, describe, expect, test } from "vitest";
 import { handler } from "../src/EmailTopicSubscriber";
-import { createTestContact, createTestEmail, createTestSetup } from "./utils/test-helpers";
+import { createTestCampaign, createTestContact, createTestEmail, createTestSetup } from "./utils/test-helpers";
 
 describe("EmailTopicSubscriber", () => {
 	let projectId: string;
@@ -122,6 +122,63 @@ describe("EmailTopicSubscriber", () => {
 			const events = await eventPersistence.listAll();
 			const openEvent = events.find((e) => e.eventType === "email.open");
 			expect(openEvent).toBeDefined();
+		});
+
+		test("should increment campaign stats.delivered for CAMPAIGN source emails", async () => {
+			const messageId = `test-message-${Date.now()}`;
+			const campaign = await createTestCampaign(projectId);
+			const campaignPersistence = new CampaignPersistence(projectId);
+			await campaignPersistence.setStatsAfterQueue(campaign.id, 1, []);
+
+			const emailPersistence = new EmailPersistence(projectId);
+			const emailRow = await createTestEmail(projectId, contactId, messageId);
+			await emailPersistence.put({
+				...emailRow,
+				sourceType: "CAMPAIGN",
+				source: campaign.id,
+			});
+
+			const event = createSNSEvent(messageId, "Delivery", {
+				delivery: {
+					timestamp: new Date().toISOString(),
+					processingTimeMillis: 500,
+					recipients: [`contact-${contactId}@example.com`],
+					smtpResponse: "250 OK",
+				},
+			});
+
+			await handler(event);
+
+			const updated = await campaignPersistence.get(campaign.id);
+			expect(updated?.stats.delivered).toBe(1);
+		});
+
+		test("should increment campaign stats.opened for CAMPAIGN source emails", async () => {
+			const messageId = `test-message-${Date.now()}`;
+			const campaign = await createTestCampaign(projectId);
+			const campaignPersistence = new CampaignPersistence(projectId);
+			await campaignPersistence.setStatsAfterQueue(campaign.id, 1, []);
+
+			const emailPersistence = new EmailPersistence(projectId);
+			const emailRow = await createTestEmail(projectId, contactId, messageId);
+			await emailPersistence.put({
+				...emailRow,
+				sourceType: "CAMPAIGN",
+				source: campaign.id,
+			});
+
+			const event = createSNSEvent(messageId, "Open", {
+				open: {
+					timestamp: new Date().toISOString(),
+					userAgent: "Mozilla/5.0",
+					ipAddress: "192.168.1.1",
+				},
+			});
+
+			await handler(event);
+
+			const updated = await campaignPersistence.get(campaign.id);
+			expect(updated?.stats.opened).toBe(1);
 		});
 	});
 

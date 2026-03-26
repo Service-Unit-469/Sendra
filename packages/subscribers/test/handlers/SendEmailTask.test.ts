@@ -310,6 +310,14 @@ describe("SendEmailTask Handler", () => {
 				recipients: [contact.id],
 				status: "DRAFT",
 				template: "non-existent-template-id",
+				stats: {
+					total: 0,
+					sent: 0,
+					delivered: 0,
+					opened: 0,
+					errors: 0,
+					errorDetails: [],
+				},
 			});
 
 			const task = {
@@ -344,6 +352,61 @@ describe("SendEmailTask Handler", () => {
 
 			// Verify EmailService.send was NOT called
 			expect(EmailService.send).not.toHaveBeenCalled();
+		});
+
+		test("should increment campaign stats.sent when updating a queued campaign email", async () => {
+			const contact = await createTestContact(projectId);
+			const template = await createTestTemplate(projectId);
+			const campaignPersistence = new CampaignPersistence(projectId);
+			const campaign = await campaignPersistence.create({
+				project: projectId,
+				subject: "Queued send stats",
+				body: {
+					data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+					html: "<p>Body</p>",
+					plainText: "Body",
+				},
+				recipients: [contact.id],
+				status: "DELIVERED",
+				template: template.id,
+				stats: {
+					total: 0,
+					sent: 0,
+					delivered: 0,
+					opened: 0,
+					errors: 0,
+					errorDetails: [],
+				},
+			});
+			await campaignPersistence.setStatsAfterQueue(campaign.id, 1, []);
+
+			const emailPersistence = new EmailPersistence(projectId);
+			const queuedEmail = await emailPersistence.create({
+				project: projectId,
+				contact: contact.id,
+				subject: campaign.subject,
+				body: campaign.body,
+				email: contact.email,
+				source: campaign.id,
+				sourceType: "CAMPAIGN",
+				sendType: "MARKETING",
+				status: "QUEUED",
+			});
+
+			const task = {
+				type: "sendEmail" as const,
+				payload: {
+					project: projectId,
+					contact: contact.id,
+					campaign: campaign.id,
+					email: queuedEmail.id,
+				},
+			};
+
+			await sendEmail(task, "test-record-id");
+
+			const updatedCampaign = await campaignPersistence.get(campaign.id);
+			expect(updatedCampaign?.stats.sent).toBe(1);
 		});
 	});
 

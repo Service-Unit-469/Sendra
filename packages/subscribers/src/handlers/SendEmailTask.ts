@@ -161,6 +161,7 @@ export const sendEmail = async (task: SendEmailTask, recordId: string) => {
     emailItem = await emailPersistence.get(emailId);
   }
   if (emailItem) {
+    const wasQueued = emailItem.status === "QUEUED";
     await emailPersistence.put({
       ...emailItem,
       messageId,
@@ -171,6 +172,9 @@ export const sendEmail = async (task: SendEmailTask, recordId: string) => {
         plainText: compiledPlainText,
       },
     });
+    if (wasQueued && campaignId && emailItem.sourceType === "CAMPAIGN" && emailItem.source) {
+      await new CampaignPersistence(project.id).incrementStats(emailItem.source, { sent: 1 });
+    }
   } else {
     await emailPersistence.create({
       ...emailBase,
