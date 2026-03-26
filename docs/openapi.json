@@ -4167,6 +4167,66 @@
                             ],
                             "default": "DRAFT"
                           },
+                          "stats": {
+                            "type": "object",
+                            "properties": {
+                              "total": {
+                                "type": "integer",
+                                "minimum": 0
+                              },
+                              "sent": {
+                                "type": "integer",
+                                "minimum": 0
+                              },
+                              "delivered": {
+                                "type": "integer",
+                                "minimum": 0
+                              },
+                              "opened": {
+                                "type": "integer",
+                                "minimum": 0
+                              },
+                              "errors": {
+                                "type": "integer",
+                                "minimum": 0
+                              },
+                              "errorDetails": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "contact": {
+                                      "type": "string"
+                                    },
+                                    "message": {
+                                      "type": "string",
+                                      "maxLength": 500
+                                    }
+                                  },
+                                  "required": [
+                                    "contact",
+                                    "message"
+                                  ]
+                                },
+                                "default": []
+                              }
+                            },
+                            "default": {
+                              "total": 0,
+                              "sent": 0,
+                              "delivered": 0,
+                              "opened": 0,
+                              "errors": 0,
+                              "errorDetails": []
+                            },
+                            "required": [
+                              "total",
+                              "sent",
+                              "delivered",
+                              "opened",
+                              "errors"
+                            ]
+                          },
                           "_embed": {
                             "type": "object",
                             "properties": {
@@ -4615,6 +4675,66 @@
                       ],
                       "default": "DRAFT"
                     },
+                    "stats": {
+                      "type": "object",
+                      "properties": {
+                        "total": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "sent": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "delivered": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "opened": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "errors": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "errorDetails": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "contact": {
+                                "type": "string"
+                              },
+                              "message": {
+                                "type": "string",
+                                "maxLength": 500
+                              }
+                            },
+                            "required": [
+                              "contact",
+                              "message"
+                            ]
+                          },
+                          "default": []
+                        }
+                      },
+                      "default": {
+                        "total": 0,
+                        "sent": 0,
+                        "delivered": 0,
+                        "opened": 0,
+                        "errors": 0,
+                        "errorDetails": []
+                      },
+                      "required": [
+                        "total",
+                        "sent",
+                        "delivered",
+                        "opened",
+                        "errors"
+                      ]
+                    },
                     "_embed": {
                       "type": "object",
                       "properties": {
@@ -5031,6 +5151,66 @@
                         ],
                         "default": "DRAFT"
                       },
+                      "stats": {
+                        "type": "object",
+                        "properties": {
+                          "total": {
+                            "type": "integer",
+                            "minimum": 0
+                          },
+                          "sent": {
+                            "type": "integer",
+                            "minimum": 0
+                          },
+                          "delivered": {
+                            "type": "integer",
+                            "minimum": 0
+                          },
+                          "opened": {
+                            "type": "integer",
+                            "minimum": 0
+                          },
+                          "errors": {
+                            "type": "integer",
+                            "minimum": 0
+                          },
+                          "errorDetails": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "contact": {
+                                  "type": "string"
+                                },
+                                "message": {
+                                  "type": "string",
+                                  "maxLength": 500
+                                }
+                              },
+                              "required": [
+                                "contact",
+                                "message"
+                              ]
+                            },
+                            "default": []
+                          }
+                        },
+                        "default": {
+                          "total": 0,
+                          "sent": 0,
+                          "delivered": 0,
+                          "opened": 0,
+                          "errors": 0,
+                          "errorDetails": []
+                        },
+                        "required": [
+                          "total",
+                          "sent",
+                          "delivered",
+                          "opened",
+                          "errors"
+                        ]
+                      },
                       "_embed": {
                         "type": "object",
                         "properties": {
@@ -5437,6 +5617,66 @@
                         "DELIVERED"
                       ],
                       "default": "DRAFT"
+                    },
+                    "stats": {
+                      "type": "object",
+                      "properties": {
+                        "total": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "sent": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "delivered": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "opened": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "errors": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "errorDetails": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "contact": {
+                                "type": "string"
+                              },
+                              "message": {
+                                "type": "string",
+                                "maxLength": 500
+                              }
+                            },
+                            "required": [
+                              "contact",
+                              "message"
+                            ]
+                          },
+                          "default": []
+                        }
+                      },
+                      "default": {
+                        "total": 0,
+                        "sent": 0,
+                        "delivered": 0,
+                        "opened": 0,
+                        "errors": 0,
+                        "errorDetails": []
+                      },
+                      "required": [
+                        "total",
+                        "sent",
+                        "delivered",
+                        "opened",
+                        "errors"
+                      ]
                     },
                     "_embed": {
                       "type": "object",
@@ -5889,6 +6129,66 @@
                         "DELIVERED"
                       ],
                       "default": "DRAFT"
+                    },
+                    "stats": {
+                      "type": "object",
+                      "properties": {
+                        "total": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "sent": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "delivered": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "opened": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "errors": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "errorDetails": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "contact": {
+                                "type": "string"
+                              },
+                              "message": {
+                                "type": "string",
+                                "maxLength": 500
+                              }
+                            },
+                            "required": [
+                              "contact",
+                              "message"
+                            ]
+                          },
+                          "default": []
+                        }
+                      },
+                      "default": {
+                        "total": 0,
+                        "sent": 0,
+                        "delivered": 0,
+                        "opened": 0,
+                        "errors": 0,
+                        "errorDetails": []
+                      },
+                      "required": [
+                        "total",
+                        "sent",
+                        "delivered",
+                        "opened",
+                        "errors"
+                      ]
                     },
                     "_embed": {
                       "type": "object",
