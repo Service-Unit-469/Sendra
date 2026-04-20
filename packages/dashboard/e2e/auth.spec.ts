@@ -1,6 +1,5 @@
 import { expect, test } from "@playwright/test";
 import { getAuthCredentials } from "./util/auth-credentials";
-import { waitFor } from "@testing-library/dom";
 
 /**
  * Authentication E2E Tests
