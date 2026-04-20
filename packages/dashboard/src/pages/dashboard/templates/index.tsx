@@ -4,10 +4,10 @@ import { Edit3, LayoutTemplate, Plus } from "lucide-react";
 import { Link } from "react-router-dom";
 import Badge from "../../../components/Badge/Badge";
 import Card from "../../../components/Card/Card";
+import { ItemCard, ItemCardBody } from "../../../components/Card/ItemCard";
 import Skeleton from "../../../components/Skeleton/Skeleton";
 import Empty from "../../../components/Utility/Empty/Empty";
 import { useTemplates } from "../../../lib/hooks/templates";
-import { ItemCard, ItemCardBody } from "../../../components/Card/ItemCard";
 
 /**
  *
@@ -49,13 +49,18 @@ export default function Index() {
               })
               .map((t) => {
                 return (
-                  <ItemCard key={t.id} id={t.id} name={t.subject} actionButtons={[
-                    {
-                      icon: <Edit3 size={18} />,
-                      label: "Edit",
-                      to: `/templates/${t.id}`,
-                    },
-                  ]}>
+                  <ItemCard
+                    key={t.id}
+                    id={t.id}
+                    name={t.subject}
+                    actionButtons={[
+                      {
+                        icon: <Edit3 size={18} />,
+                        label: "Edit",
+                        to: `/templates/${t.id}`,
+                      },
+                    ]}
+                  >
                     <ItemCardBody icon={<LayoutTemplate size={20} />}>
                       <div className="flex items-center space-x-3">
                         <h3 className="truncate text-sm font-medium text-neutral-800">{t.subject}</h3>

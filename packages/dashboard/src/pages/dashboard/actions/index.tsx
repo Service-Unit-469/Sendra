@@ -1,13 +1,13 @@
 import dayjs from "dayjs";
 import { Edit3, Plus, Workflow } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Badge from "../../../components/Badge/Badge";
 import { BlackButton } from "../../../components/Buttons/BlackButton";
 import Card from "../../../components/Card/Card";
+import { ItemCard, ItemCardBody } from "../../../components/Card/ItemCard";
 import Skeleton from "../../../components/Skeleton/Skeleton";
 import Empty from "../../../components/Utility/Empty/Empty";
 import { useActions } from "../../../lib/hooks/actions";
-import { ItemCard, ItemCardBody } from "../../../components/Card/ItemCard";
 
 export default function ActionsPage() {
   const { data: actions } = useActions();
@@ -41,13 +41,18 @@ export default function ActionsPage() {
               })
               .map((a) => {
                 return (
-                  <ItemCard key={a.id} id={a.id} name={a.name} actionButtons={[
-                    {
-                      icon: <Edit3 size={18} />,
-                      label: "Edit",
-                      to: `/actions/${a.id}`,
-                    }
-                  ]}>
+                  <ItemCard
+                    key={a.id}
+                    id={a.id}
+                    name={a.name}
+                    actionButtons={[
+                      {
+                        icon: <Edit3 size={18} />,
+                        label: "Edit",
+                        to: `/actions/${a.id}`,
+                      },
+                    ]}
+                  >
                     <ItemCardBody icon={<Workflow size={20} />}>
                       <div className="flex items-center space-x-3">
                         <h3 className="truncate text-lg font-bold text-neutral-800">{a.name}</h3>
@@ -74,8 +79,8 @@ export default function ActionsPage() {
                                 .to(
                                   a._embed.events.length > 0
                                     ? a._embed.events.sort((e1, e2) => {
-                                      return e1.createdAt > e2.createdAt ? -1 : 1;
-                                    })[0].createdAt
+                                        return e1.createdAt > e2.createdAt ? -1 : 1;
+                                      })[0].createdAt
                                     : a.createdAt,
                                 )
                                 .toString()}
