@@ -110,3 +110,14 @@ jobs:
           name: playwright-report
           path: ./packages/dashboard/playwright-report/
           retention-days: 7
+  automerge:
+    needs: post-deploy
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: write
+    steps:
+      - uses: fastify/github-action-merge-dependabot@v3
+        with:
+          target: 'minor'
+          target-development: any
