@@ -11,10 +11,10 @@ import ThreeColMetricsSummary from "../../../../components/Metrics/ThreeColMetri
 import { OnPageTabs } from "../../../../components/Navigation/Tabs/OnPageTabs";
 import Table from "../../../../components/Table/Table";
 import FullscreenLoader from "../../../../components/Utility/FullscreenLoader/FullscreenLoader";
+import { campaignOpenRatePercent } from "../../../../lib/campaignStats";
 import { useCampaigns } from "../../../../lib/hooks/campaigns";
 import { useEmailsByCampaign } from "../../../../lib/hooks/emails";
 import { useCurrentProject } from "../../../../lib/hooks/projects";
-import { campaignOpenRatePercent } from "../../../../lib/campaignStats";
 import { network } from "../../../../lib/network";
 
 /**
@@ -51,14 +51,7 @@ export default function PublishedCampaign({ campaign, mutate: campaignMutate }: 
               label: "Open Rate",
               value: Math.min(
                 100,
-                Math.round(
-                  (emails.filter((e) => e.status === "OPENED").length /
-                    Math.max(
-                      emails.filter((e) => e.status === "DELIVERED" || e.status === "OPENED").length,
-                      1,
-                    )) *
-                    100,
-                ),
+                Math.round((emails.filter((e) => e.status === "OPENED").length / Math.max(emails.filter((e) => e.status === "DELIVERED" || e.status === "OPENED").length, 1)) * 100),
               ),
               suffix: "%",
             },
