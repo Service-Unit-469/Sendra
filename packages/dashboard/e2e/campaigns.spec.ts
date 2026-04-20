@@ -114,7 +114,7 @@ test.describe("Campaigns", () => {
     await test.step("Add recipient to campaign", async () => {
       // Wait for campaign page to load
       await page.getByRole("heading", { name: campaignSubject }).waitFor({ state: "visible" });
-      await page.getByRole("heading", { name: "Campaigns" })
+      await page.getByRole("heading", { name: "Campaigns" }).waitFor({ state: "visible" });
       await page.waitForURL(/\/campaigns\/[^/]+/, { timeout: 5000 });
       await dashboardPage.waitForContentLoaded();
       
