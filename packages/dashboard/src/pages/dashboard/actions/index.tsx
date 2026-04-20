@@ -1,9 +1,10 @@
 import dayjs from "dayjs";
 import { Edit3, Plus, Workflow } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Badge from "../../../components/Badge/Badge";
 import { BlackButton } from "../../../components/Buttons/BlackButton";
 import Card from "../../../components/Card/Card";
+import { ItemCard, ItemCardBody } from "../../../components/Card/ItemCard";
 import Skeleton from "../../../components/Skeleton/Skeleton";
 import Empty from "../../../components/Utility/Empty/Empty";
 import { useActions } from "../../../lib/hooks/actions";
@@ -25,7 +26,7 @@ export default function ActionsPage() {
     >
       {actions ? (
         actions.length > 0 ? (
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2" role="list">
             {actions
               .sort((a, b) => {
                 if (a.name < b.name) {
@@ -40,104 +41,96 @@ export default function ActionsPage() {
               })
               .map((a) => {
                 return (
-                  <div className="col-span-1 divide-y divide-neutral-200 rounded-sm border border-neutral-200 bg-white" key={a.id}>
-                    <div className="flex w-full items-center justify-between space-x-6 p-6">
-                      <span className="inline-flex rounded-sm bg-neutral-100 p-3 text-neutral-800 ring-4 ring-white">
-                        <Workflow size={20} />
-                      </span>
-                      <div className="flex-1 truncate">
-                        <div className="flex items-center space-x-3">
-                          <h3 className="truncate text-lg font-bold text-neutral-800">{a.name}</h3>
-                        </div>
-                        <div className="mb-6">
-                          <h2 className="text col-span-2 truncate font-semibold text-neutral-700">Quick stats</h2>
-                          <div className="grid grid-cols-2 gap-3">
-                            <div>
-                              <label className="text-xs font-medium text-neutral-500" htmlFor="total-triggers">
-                                Total events
-                              </label>
-                              <p className="mt-1 truncate text-sm text-neutral-500" id="total-triggers">
-                                {a.events.length}
-                              </p>
-                            </div>
-
-                            <div>
-                              <label className="text-xs font-medium text-neutral-500" htmlFor="last-activity">
-                                Last activity
-                              </label>
-                              <p className="mt-1 truncate text-sm text-neutral-500" id="last-activity">
-                                {a._embed.events.length > 0 ? "Last triggered" : "Created"}{" "}
-                                {dayjs()
-                                  .to(
-                                    a._embed.events.length > 0
-                                      ? a._embed.events.sort((e1, e2) => {
-                                          return e1.createdAt > e2.createdAt ? -1 : 1;
-                                        })[0].createdAt
-                                      : a.createdAt,
-                                  )
-                                  .toString()}
-                              </p>
-                            </div>
-                            <div>
-                              <label className="text-xs font-medium text-neutral-500" htmlFor="open-rate">
-                                Open rate
-                              </label>
-                              <p className="mt-1 truncate text-sm text-neutral-500" id="open-rate">
-                                {a._embed.emails.length > 0 ? Math.round((a._embed.emails.filter((e) => e.status === "OPENED").length / a._embed.emails.length) * 100) : 0}%
-                              </p>
-                            </div>
-                            {a.delay > 0 && (
-                              <div>
-                                <label className={"text-xs font-medium text-neutral-500"} htmlFor="emails-in-queue">
-                                  Emails in queue
-                                </label>
-                                <p className="mt-1 truncate text-sm text-neutral-500" id="emails-in-queue">
-                                  {a._embed.emails.filter((e) => e.status === "QUEUED").length}
-                                </p>
-                              </div>
-                            )}
+                  <ItemCard
+                    key={a.id}
+                    id={a.id}
+                    name={a.name}
+                    actionButtons={[
+                      {
+                        icon: <Edit3 size={18} />,
+                        label: "Edit",
+                        to: `/actions/${a.id}`,
+                      },
+                    ]}
+                  >
+                    <ItemCardBody icon={<Workflow size={20} />}>
+                      <div className="flex items-center space-x-3">
+                        <h3 className="truncate text-lg font-bold text-neutral-800">{a.name}</h3>
+                      </div>
+                      <div className="mb-6">
+                        <h2 className="text col-span-2 truncate font-semibold text-neutral-700">Quick stats</h2>
+                        <div className="grid grid-cols-2 gap-3">
+                          <div>
+                            <label className="text-xs font-medium text-neutral-500" htmlFor="total-triggers">
+                              Total events
+                            </label>
+                            <p className="mt-1 truncate text-sm text-neutral-500" id="total-triggers">
+                              {a.events.length}
+                            </p>
                           </div>
+
+                          <div>
+                            <label className="text-xs font-medium text-neutral-500" htmlFor="last-activity">
+                              Last activity
+                            </label>
+                            <p className="mt-1 truncate text-sm text-neutral-500" id="last-activity">
+                              {a._embed.events.length > 0 ? "Last triggered" : "Created"}{" "}
+                              {dayjs()
+                                .to(
+                                  a._embed.events.length > 0
+                                    ? a._embed.events.sort((e1, e2) => {
+                                        return e1.createdAt > e2.createdAt ? -1 : 1;
+                                      })[0].createdAt
+                                    : a.createdAt,
+                                )
+                                .toString()}
+                            </p>
+                          </div>
+                          <div>
+                            <label className="text-xs font-medium text-neutral-500" htmlFor="open-rate">
+                              Open rate
+                            </label>
+                            <p className="mt-1 truncate text-sm text-neutral-500" id="open-rate">
+                              {a._embed.emails.length > 0 ? Math.round((a._embed.emails.filter((e) => e.status === "OPENED").length / a._embed.emails.length) * 100) : 0}%
+                            </p>
+                          </div>
+                          {a.delay > 0 && (
+                            <div>
+                              <label className={"text-xs font-medium text-neutral-500"} htmlFor="emails-in-queue">
+                                Emails in queue
+                              </label>
+                              <p className="mt-1 truncate text-sm text-neutral-500" id="emails-in-queue">
+                                {a._embed.emails.filter((e) => e.status === "QUEUED").length}
+                              </p>
+                            </div>
+                          )}
                         </div>
-                        <div className="my-4">
-                          <h2 className="col-span-2 truncate font-semibold text-neutral-700">Properties</h2>
-                          <div className={"grid grid-cols-2 gap-3"}>
-                            <div>
-                              <label className={"text-xs font-medium text-neutral-500"} htmlFor="repeats">
-                                Repeats
-                              </label>
-                              <p className="mt-1 truncate text-sm text-neutral-500" id="repeats">
-                                <Badge type={a.runOnce ? "success" : "info"}>{a.runOnce ? "Runs once per user" : "Recurring"}</Badge>
-                              </p>
-                            </div>
-                            <div>
-                              <label className={"text-xs font-medium text-neutral-500"} htmlFor="delay">
-                                Delay
-                              </label>
-                              <p className="mt-1 truncate text-sm text-neutral-500" id="delay">
-                                <Badge type={a.delay === 0 ? "info" : "success"}>
-                                  {a.delay === 0 ? "Instant" : a.delay % 1440 === 0 ? `${a.delay / 1440} day delay` : a.delay % 60 === 0 ? `${a.delay / 60} hour delay` : `${a.delay} minute delay`}
-                                </Badge>
-                              </p>
-                            </div>
+                      </div>
+                      <div className="my-4">
+                        <h2 className="col-span-2 truncate font-semibold text-neutral-700">Properties</h2>
+                        <div className={"grid grid-cols-2 gap-3"}>
+                          <div>
+                            <label className={"text-xs font-medium text-neutral-500"} htmlFor="repeats">
+                              Repeats
+                            </label>
+                            <p className="mt-1 truncate text-sm text-neutral-500" id="repeats">
+                              <Badge type={a.runOnce ? "success" : "info"}>{a.runOnce ? "Runs once per user" : "Recurring"}</Badge>
+                            </p>
+                          </div>
+                          <div>
+                            <label className={"text-xs font-medium text-neutral-500"} htmlFor="delay">
+                              Delay
+                            </label>
+                            <p className="mt-1 truncate text-sm text-neutral-500" id="delay">
+                              <Badge type={a.delay === 0 ? "info" : "success"}>
+                                {a.delay === 0 ? "Instant" : a.delay % 1440 === 0 ? `${a.delay / 1440} day delay` : a.delay % 60 === 0 ? `${a.delay / 60} hour delay` : `${a.delay} minute delay`}
+                              </Badge>
+                            </p>
                           </div>
                         </div>
                       </div>
-                    </div>
-                    <div>
-                      <div className="-mt-px flex divide-x divide-neutral-200">
-                        <div className="flex w-0 flex-1">
-                          <Link
-                            to={`/actions/${a.id}`}
-                            className="relative inline-flex w-0 flex-1 items-center justify-center rounded-bl rounded-br py-4 text-sm font-medium text-neutral-800 transition hover:bg-neutral-50 hover:text-neutral-700"
-                          >
-                            <Edit3 size={18} />
-
-                            <span className="ml-3">Edit</span>
-                          </Link>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                    </ItemCardBody>
+                  </ItemCard>
                 );
               })}
           </div>
