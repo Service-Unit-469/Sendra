@@ -68,7 +68,7 @@ test.describe("Contacts", () => {
       await page.getByRole("heading", { name: "Journey" }).click();
       await page.getByRole("button", { name: "Open options" }).click();
       await page.getByRole("menuitem", { name: "Delete" }).click();
-      await expect(page.getByRole("heading", { name: "Delete contact" })).toBeVisible();
+      await expect(page.getByRole("button", { name: "Delete Contact" })).toBeVisible();
       await page.getByRole("button", { name: "Delete Contact" }).click();
       await page.waitForURL("**/contacts");
       await expect(
