@@ -11,6 +11,7 @@ import ThreeColMetricsSummary from "../../../../components/Metrics/ThreeColMetri
 import { OnPageTabs } from "../../../../components/Navigation/Tabs/OnPageTabs";
 import Table from "../../../../components/Table/Table";
 import FullscreenLoader from "../../../../components/Utility/FullscreenLoader/FullscreenLoader";
+import { campaignOpenRatePercent } from "../../../../lib/campaignStats";
 import { useCampaigns } from "../../../../lib/hooks/campaigns";
 import { useEmailsByCampaign } from "../../../../lib/hooks/emails";
 import { useCurrentProject } from "../../../../lib/hooks/projects";
@@ -35,15 +36,25 @@ export default function PublishedCampaign({ campaign, mutate: campaignMutate }: 
   const summaryMetrics =
     stats.total > 0
       ? ([
-          { label: "Emails Sent", value: stats.total },
-          { label: "Queued", value: Math.max(stats.total - stats.sent, 0) },
-          { label: "Open Rate", value: stats.sent > 0 ? Math.round((stats.opened / stats.sent) * 100) : 0, suffix: "%" },
+          { label: "Recipients", value: stats.total },
+          { label: "Sent", value: stats.sent },
+          { label: "Open Rate", value: campaignOpenRatePercent(stats), suffix: "%" },
         ] as const)
       : emails && emails.length > 0
         ? ([
-            { label: "Emails Sent", value: emails.length },
-            { label: "Queued", value: emails.filter((e) => e.status === "QUEUED").length },
-            { label: "Open Rate", value: Math.round((emails.filter((e) => e.status === "OPENED").length / emails.length) * 100), suffix: "%" },
+            { label: "Recipients", value: emails.length },
+            {
+              label: "Sent",
+              value: emails.filter((e) => e.status !== "QUEUED").length,
+            },
+            {
+              label: "Open Rate",
+              value: Math.min(
+                100,
+                Math.round((emails.filter((e) => e.status === "OPENED").length / Math.max(emails.filter((e) => e.status === "DELIVERED" || e.status === "OPENED").length, 1)) * 100),
+              ),
+              suffix: "%",
+            },
           ] as const)
         : null;
 

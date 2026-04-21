@@ -107,7 +107,7 @@ export abstract class BasePersistence<T extends BaseItem> {
   public readonly tableName: string;
 
   constructor(
-    private readonly type: string,
+    protected readonly type: string,
     private readonly schema: ZodType<T>,
   ) {
     const config = getPersistenceConfig();
@@ -275,7 +275,7 @@ export abstract class BasePersistence<T extends BaseItem> {
   }
 
   @logMethodReturningPromise("BasePersistence")
-  async findBy(params: QueryParams): Promise<QueryResult<EmbeddedObject<T>>> {
+  async findBy(params: QueryParams, opts?: { scanNewestFirst?: boolean }): Promise<QueryResult<EmbeddedObject<T>>> {
     const { key, value, comparator, limit, cursor, embed, embedLimit } = params;
 
     const indexInfo = this.getIndexInfo(key);
@@ -302,6 +302,7 @@ export abstract class BasePersistence<T extends BaseItem> {
 
       Limit: limit,
       ExclusiveStartKey: cursor ? JSON.parse(Buffer.from(cursor, "base64").toString("ascii")) : undefined,
+      ...(opts?.scanNewestFirst ? { ScanIndexForward: false } : {}),
       ReturnConsumedCapacity: "TOTAL",
     } as QueryCommandInput;
     this.logger.debug(config, "Executing query");
@@ -341,17 +342,21 @@ export abstract class BasePersistence<T extends BaseItem> {
 
   @logMethodReturningPromise("BasePersistence")
   async findAllBy(params: Omit<QueryParams, "limit" | "cursor"> & { stop?: StopFn<T> }): Promise<EmbeddedObject<T>[]> {
-    const { embed, embedLimit } = params;
+    const { stop, embed, embedLimit, ...queryParams } = params;
+    const findOpts = stop !== undefined ? ({ scanNewestFirst: true } as const) : undefined;
     let stopped = false;
     const items: EmbeddedObject<T>[] = [];
-    const result = await this.findBy({
-      ...params,
-      limit: undefined,
-      cursor: undefined,
-    });
+    const result = await this.findBy(
+      {
+        ...queryParams,
+        limit: undefined,
+        cursor: undefined,
+      },
+      findOpts,
+    );
 
     for (let i = 0; i < result.items.length; i++) {
-      if (params.stop?.(result.items[i], i)) {
+      if (stop?.(result.items[i], i)) {
         stopped = true;
         break;
       }
@@ -359,12 +364,15 @@ export abstract class BasePersistence<T extends BaseItem> {
     }
 
     while (result.hasMore && !stopped) {
-      const nextResult = await this.findBy({
-        ...params,
-        cursor: result.cursor,
-      });
+      const nextResult = await this.findBy(
+        {
+          ...queryParams,
+          cursor: result.cursor,
+        },
+        findOpts,
+      );
       for (let i = 0; i < nextResult.items.length; i++) {
-        if (params.stop?.(nextResult.items[i], i + result.items.length)) {
+        if (stop?.(nextResult.items[i], items.length + i)) {
           stopped = true;
           break;
         }
@@ -459,11 +467,12 @@ export abstract class BasePersistence<T extends BaseItem> {
         .map((i) => i.data) ?? [];
 
     this.logger.debug({ count: items.length, hasMore: !!result.LastEvaluatedKey }, "Listed items");
+    const embeddedItems = await this.embed(items, embed, embedLimit);
     return {
-      items: await this.embed(items, embed, embedLimit),
+      items: embeddedItems,
       cursor: result.LastEvaluatedKey ? Buffer.from(JSON.stringify(result.LastEvaluatedKey)).toString("base64") : undefined,
       hasMore: !!result.LastEvaluatedKey,
-      count: result.Count ?? 0,
+      count: embeddedItems.length,
     };
   }
 
