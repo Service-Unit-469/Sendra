@@ -15,6 +15,7 @@ import Modal from "../../../components/Overlay/Modal/Modal";
 import Skeleton from "../../../components/Skeleton/Skeleton";
 import Empty from "../../../components/Utility/Empty/Empty";
 import FullscreenLoader from "../../../components/Utility/FullscreenLoader/FullscreenLoader";
+import { campaignOpenRatePercent } from "../../../lib/campaignStats";
 import { useCampaigns } from "../../../lib/hooks/campaigns";
 import { useCurrentProject } from "../../../lib/hooks/projects";
 import { useTemplates } from "../../../lib/hooks/templates";
@@ -143,7 +144,7 @@ export default function Index() {
               {campaigns.map((c) => {
                 const stats = c.stats ?? { total: 0, sent: 0, delivered: 0, opened: 0, errors: 0, errorDetails: [] };
                 const queued = Math.max(stats.total - stats.sent, 0);
-                const openRatePct = stats.sent > 0 ? Math.round((stats.opened / stats.sent) * 100) : 0;
+                const openRatePct = campaignOpenRatePercent(stats);
                 return (
                   <div className="col-span-1 divide-y divide-neutral-200 rounded-sm border border-neutral-200 bg-white" key={c.id}>
                     <div className="flex w-full items-center justify-between space-x-6 p-6">
@@ -171,7 +172,7 @@ export default function Index() {
                                 {stats.total > 0 && (
                                   <div>
                                     <label htmlFor="emails-in-queue" className={"text-xs font-medium text-neutral-500"}>
-                                      Emails in queue
+                                      Pending send
                                     </label>
                                     <p className="mt-1 truncate text-sm text-neutral-500" id="emails-in-queue">
                                       {queued}

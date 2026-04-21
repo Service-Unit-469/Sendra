@@ -1,5 +1,5 @@
 import { QueryCommand } from "@aws-sdk/client-dynamodb";
-import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
+import { DynamoDBDocumentClient, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import { unmarshall } from "@aws-sdk/util-dynamodb";
 import type { Email } from "@sendra/shared";
 import { EmailSchema } from "@sendra/shared";
@@ -59,5 +59,39 @@ export class EmailPersistence extends UnembeddingBasePersistence<Email> {
       i_attr3: item.messageId,
       messageId: item.messageId, // Include messageId for GSI
     };
+  }
+
+  /**
+   * Transition `status` only if it still matches `email.status` from the read (optimistic locking).
+   * Prevents duplicate side effects when concurrent SNS handlers process the same delivery/open event.
+   */
+  async updateStatusIfUnchanged(email: Email, newStatus: Email["status"]): Promise<boolean> {
+    try {
+      const result = await this.docClient.send(
+        new UpdateCommand({
+          TableName: this.tableName,
+          Key: { id: email.id, type: this.type },
+          UpdateExpression: "SET #status = :newSt, #updatedAt = :now",
+          ConditionExpression: "#status = :was",
+          ExpressionAttributeNames: {
+            "#status": "status",
+            "#updatedAt": "updatedAt",
+          },
+          ExpressionAttributeValues: {
+            ":was": email.status,
+            ":newSt": newStatus,
+            ":now": new Date().toISOString(),
+          },
+          ReturnConsumedCapacity: "TOTAL",
+        }),
+      );
+      this.trackConsumedCapacity(result);
+      return true;
+    } catch (e: unknown) {
+      if (e && typeof e === "object" && "name" in e && (e as { name: string }).name === "ConditionalCheckFailedException") {
+        return false;
+      }
+      throw e;
+    }
   }
 }

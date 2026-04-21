@@ -102,8 +102,8 @@ export default function NewTemplatePage() {
         });
         const props = (value.data.root?.props ?? {}) as TemplateFormValues;
         setValue("subject", props.title ?? "");
-        setValue("email", props.email ?? undefined);
-        setValue("from", props.from ?? undefined);
+        setValue("email", props.email);
+        setValue("from", props.from);
         setValue("templateType", props.templateType ?? "MARKETING");
         setValue("quickEmail", props.quickEmail === "true");
       }}

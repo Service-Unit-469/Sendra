@@ -1,4 +1,5 @@
 import type { Config, Fields, WithId, WithPuckProps } from "@measured/puck";
+import { Preview } from "@react-email/components";
 import { Button, Columns, Container, Divider, Heading, Image, Section, Spacer, Text } from "./Fields";
 
 /**
@@ -19,8 +20,9 @@ export const emailEditorConfig = (fields: Fields): Config => ({
   },
   root: {
     fields,
-    render: ({ children, style, backgroundColor }: WithId<WithPuckProps<{ style?: string; title?: string; preview?: string; backgroundColor?: string; children: React.ReactNode }>>) => (
+    render: ({ children, style, backgroundColor, preview }: WithId<WithPuckProps<{ style?: string; title?: string; preview?: string; backgroundColor?: string; children: React.ReactNode }>>) => (
       <>
+        {preview && <Preview>{preview}</Preview>}
         <style>{style}</style>
         <div style={{ backgroundColor: backgroundColor ?? "#fff" }}>{children}</div>
       </>
@@ -48,7 +50,7 @@ export const initialEmailData = {
               level: "h1",
               align: "center",
               color: "#000000",
-              padding: "16 0",
+              padding: "8",
             },
           },
           {
@@ -56,7 +58,7 @@ export const initialEmailData = {
             props: {
               id: "text-1",
               text: "Start building your email by adding and customizing components.",
-              padding: "16 0",
+              padding: "8",
             },
           },
         ],

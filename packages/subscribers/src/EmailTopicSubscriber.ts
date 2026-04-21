@@ -106,13 +106,15 @@ async function handleEmailEvent(deliveryEvent: DeliveryEvent, email: Email, logg
         );
       }
 
-      // update status
+      // update status (conditional write avoids duplicate campaign stats when SNS delivers the same event concurrently)
       const newStatus = eventMap[deliveryEvent.eventType];
       if (newStatus !== email.status && newStatus) {
-        await new EmailPersistence(project.id).put({
-          ...email,
-          status: newStatus,
-        });
+        const emailPersistence = new EmailPersistence(project.id);
+        const applied = await emailPersistence.updateStatusIfUnchanged(email, newStatus);
+        if (!applied) {
+          metricsLogger.putMetric("EmailStatusUpdateSkipped", 1, Unit.Count);
+          return;
+        }
         metricsLogger.putMetric("EmailStatusUpdated", 1, Unit.Count);
         metricsLogger.setProperty("NewStatus", newStatus);
 
