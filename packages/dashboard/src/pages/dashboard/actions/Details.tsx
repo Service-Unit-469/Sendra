@@ -19,6 +19,7 @@ import MultiselectDropdown from "../../../components/Input/MultiselectDropdown/M
 import Toggle from "../../../components/Input/Toggle/Toggle";
 import { ErrorMessage } from "../../../components/Label/ErrorMessage";
 import { StyledLabel } from "../../../components/Label/StyledLabel";
+import Modal from "../../../components/Overlay/Modal/Modal";
 import Empty from "../../../components/Utility/Empty/Empty";
 import FullscreenLoader from "../../../components/Utility/FullscreenLoader/FullscreenLoader";
 import { useAction, useActions, useRelatedActions } from "../../../lib/hooks/actions";
@@ -49,6 +50,7 @@ export default function ActionDetailPage() {
     delay: 0,
     unit: "MINUTES",
   });
+  const [deleteModal, setDeleteModal] = useState(false);
 
   const {
     register,
@@ -124,8 +126,7 @@ export default function ActionDetailPage() {
     );
   };
 
-  const remove = async (e: { preventDefault: () => void }) => {
-    e.preventDefault();
+  const remove = async () => {
     toast.promise(network.fetch(`/projects/${project.id}/actions/${action.id}`, { method: "DELETE" }), {
       loading: "Deleting your action",
       success: () => {
@@ -140,10 +141,19 @@ export default function ActionDetailPage() {
 
   return (
     <>
+      <Modal
+        isOpen={deleteModal}
+        onToggle={() => setDeleteModal(false)}
+        onAction={remove}
+        type="danger"
+        action="Delete Action"
+        title="Delete action"
+        description={`Delete \"${action.name}\"? This action is irreversible and will permanently remove this action.`}
+      />
       <Card
         title={"Edit your action"}
         options={
-          <MenuButton onClick={remove}>
+          <MenuButton onClick={() => setDeleteModal(true)}>
             <Trash size={18} />
             Delete
           </MenuButton>

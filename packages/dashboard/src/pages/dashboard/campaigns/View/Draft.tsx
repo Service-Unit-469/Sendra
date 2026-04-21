@@ -29,6 +29,7 @@ export default function DraftCampaign({ campaign, mutate: campaignMutate }: { ca
   const { mutate: campaignsMutate } = useCampaigns();
 
   const [confirmModal, setConfirmModal] = useState(false);
+  const [deleteModal, setDeleteModal] = useState(false);
   const [delay, setDelay] = useState(0);
 
   const {
@@ -196,8 +197,7 @@ export default function DraftCampaign({ campaign, mutate: campaignMutate }: { ca
     navigate("/campaigns");
   };
 
-  const remove = async (e: { preventDefault: () => void }) => {
-    e.preventDefault();
+  const remove = async () => {
     toast.promise(
       network.fetch(`/projects/${project.id}/campaigns/${campaign.id}`, {
         method: "DELETE",
@@ -258,6 +258,15 @@ export default function DraftCampaign({ campaign, mutate: campaignMutate }: { ca
           />
         </StyledLabel>
       </Modal>
+      <Modal
+        isOpen={deleteModal}
+        onToggle={() => setDeleteModal(false)}
+        onAction={remove}
+        type="danger"
+        action="Delete Campaign"
+        title="Delete campaign"
+        description={`Delete \"${campaign.subject}\"? This action is irreversible and will permanently remove this campaign.`}
+      />
 
       <Card
         title="Update campaign"
@@ -267,7 +276,7 @@ export default function DraftCampaign({ campaign, mutate: campaignMutate }: { ca
               <Copy size={18} />
               Duplicate
             </MenuButton>
-            <MenuButton onClick={remove}>
+            <MenuButton onClick={() => setDeleteModal(true)}>
               <Trash size={18} />
               Delete
             </MenuButton>

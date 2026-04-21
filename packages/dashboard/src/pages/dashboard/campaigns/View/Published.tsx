@@ -9,6 +9,7 @@ import { MenuButton } from "../../../../components/Buttons/MenuButton";
 import Card from "../../../../components/Card/Card";
 import ThreeColMetricsSummary from "../../../../components/Metrics/ThreeColMetricsSummary";
 import { OnPageTabs } from "../../../../components/Navigation/Tabs/OnPageTabs";
+import Modal from "../../../../components/Overlay/Modal/Modal";
 import Table from "../../../../components/Table/Table";
 import FullscreenLoader from "../../../../components/Utility/FullscreenLoader/FullscreenLoader";
 import { campaignOpenRatePercent } from "../../../../lib/campaignStats";
@@ -27,6 +28,7 @@ export default function PublishedCampaign({ campaign, mutate: campaignMutate }: 
 
   const { data: emails } = useEmailsByCampaign(campaign);
   const [activeTab, setActiveTab] = useState<string>("emails");
+  const [deleteModal, setDeleteModal] = useState(false);
 
   if (!campaign) {
     return <FullscreenLoader />;
@@ -81,8 +83,7 @@ export default function PublishedCampaign({ campaign, mutate: campaignMutate }: 
     navigate("/campaigns");
   };
 
-  const remove = async (e: { preventDefault: () => void }) => {
-    e.preventDefault();
+  const remove = async () => {
     toast.promise(
       network.fetch(`/projects/${project.id}/campaigns/${campaign.id}`, {
         method: "DELETE",
@@ -103,6 +104,15 @@ export default function PublishedCampaign({ campaign, mutate: campaignMutate }: 
 
   return (
     <>
+      <Modal
+        isOpen={deleteModal}
+        onToggle={() => setDeleteModal(false)}
+        onAction={remove}
+        type="danger"
+        action="Delete Campaign"
+        title="Delete campaign"
+        description={`Delete \"${campaign.subject}\"? This action is irreversible and will permanently remove this campaign.`}
+      />
       <Card
         title={campaign.subject}
         description={`Sent on ${dayjs(campaign.createdAt).format("MM/DD/YYYY HH:mm A")}`}
@@ -112,7 +122,7 @@ export default function PublishedCampaign({ campaign, mutate: campaignMutate }: 
               <Copy size={18} />
               Duplicate
             </MenuButton>
-            <MenuButton onClick={remove}>
+            <MenuButton onClick={() => setDeleteModal(true)}>
               <Trash size={18} />
               Delete
             </MenuButton>
