@@ -148,7 +148,7 @@ export default function ActionDetailPage() {
         type="danger"
         action="Delete Action"
         title="Delete action"
-        description={`Delete \"${action.name}\"? This action is irreversible and will permanently remove this action.`}
+        description={`Delete "${action.name}"? This action is irreversible and will permanently remove this action.`}
       />
       <Card
         title={"Edit your action"}

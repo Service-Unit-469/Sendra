@@ -142,7 +142,7 @@ export default function EditTemplatePage() {
         type="danger"
         action="Delete Template"
         title="Delete template"
-        description={`Delete \"${template.subject}\"? This action is irreversible and will permanently remove this template.`}
+        description={`Delete "${template.subject}"? This action is irreversible and will permanently remove this template.`}
       />
       <PuckEmailEditor
         initialData={JSON.parse(template.body.data)}

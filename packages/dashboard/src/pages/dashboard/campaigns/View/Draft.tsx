@@ -265,7 +265,7 @@ export default function DraftCampaign({ campaign, mutate: campaignMutate }: { ca
         type="danger"
         action="Delete Campaign"
         title="Delete campaign"
-        description={`Delete \"${campaign.subject}\"? This action is irreversible and will permanently remove this campaign.`}
+        description={`Delete "${campaign.subject}"? This action is irreversible and will permanently remove this campaign.`}
       />
 
       <Card

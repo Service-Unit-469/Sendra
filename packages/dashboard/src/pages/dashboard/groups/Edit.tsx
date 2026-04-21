@@ -45,7 +45,7 @@ export default function EditGroupPage() {
         type="danger"
         action="Delete Group"
         title="Delete group"
-        description={`Delete \"${group.name}\"? This action is irreversible and will permanently remove this group.`}
+        description={`Delete "${group.name}"? This action is irreversible and will permanently remove this group.`}
       />
       <Card
         title={group.name}
