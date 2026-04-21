@@ -167,6 +167,15 @@ export default function EditCampaignPage() {
           ...value,
           data: JSON.stringify(value.data),
         });
+
+        const props = (value.data.root?.props ?? {}) as {
+          title?: string;
+          email?: string;
+          from?: string;
+        };
+        setValue("subject", props.title ?? "");
+        setValue("email", props.email);
+        setValue("from", props.from);
       }}
       fields={fields}
       actions={() => (
