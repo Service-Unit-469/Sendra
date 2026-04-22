@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { IdentitySchemas, type ProjectIdentity } from "@sendra/shared";
 import { Copy, Plus, Unlink } from "lucide-react";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import type z from "zod";
@@ -14,6 +14,7 @@ import Dropdown from "../../../components/Input/Dropdown/Dropdown";
 import Input from "../../../components/Input/Input/Input";
 import { StyledLabel } from "../../../components/Label/StyledLabel";
 import SettingTabs from "../../../components/Navigation/SettingTabs/SettingTabs";
+import Modal from "../../../components/Overlay/Modal/Modal";
 import Table from "../../../components/Table/Table";
 import FullscreenLoader from "../../../components/Utility/FullscreenLoader/FullscreenLoader";
 import { AWS_REGION } from "../../../lib/constants";
@@ -26,6 +27,7 @@ import { network } from "../../../lib/network";
 export default function Index() {
   const project = useCurrentProject();
   const { mutate: projectsMutate } = useProjects();
+  const [unlinkModal, setUnlinkModal] = useState(false);
 
   const { data: projectIdentity, mutate: identityMutate } = useCurrentProjectIdentity();
 
@@ -114,6 +116,7 @@ export default function Index() {
   };
 
   const unlink = async () => {
+    setUnlinkModal(false);
     toast.promise(
       network.fetch(`/projects/${project.id}/identity`, {
         method: "DELETE",
@@ -135,13 +138,22 @@ export default function Index() {
 
   return (
     <>
+      <Modal
+        isOpen={unlinkModal}
+        onToggle={() => setUnlinkModal(false)}
+        onAction={unlink}
+        type="danger"
+        action="Unlink Domain"
+        title="Unlink domain"
+        description="This action is irreversible and will remove your current sending identity from this project."
+      />
       <SettingTabs />
       <Card
         title="Identity"
         description="By sending emails from your own domain you build up domain authority and trust."
         actions={
           project.email && (
-            <DangerButton onClick={unlink}>
+            <DangerButton onClick={() => setUnlinkModal(true)}>
               <Unlink strokeWidth={1.5} size={18} />
               Unlink domain
             </DangerButton>

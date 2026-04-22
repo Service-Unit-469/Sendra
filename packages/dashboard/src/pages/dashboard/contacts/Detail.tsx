@@ -71,6 +71,7 @@ export default function ContactDetailPage() {
   const { id } = useParams<{ id: string }>();
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
   const [eventModal, setEventModal] = useState(false);
+  const [deleteModal, setDeleteModal] = useState(false);
   const project = useCurrentProject();
   const { data: contact, mutate } = useContact(id ?? "");
 
@@ -122,8 +123,7 @@ export default function ContactDetailPage() {
   const openRate = totalEmails > 0 ? (openedEmails / totalEmails) * 100 : 0;
   const clickRate = totalEmails > 0 ? (uniqueClickedEmails / totalEmails) * 100 : 0;
 
-  const remove = async (e: { preventDefault: () => void }) => {
-    e.preventDefault();
+  const remove = async () => {
     toast.promise(
       network.fetch(`/projects/${project.id}/contacts/${contact.id}`, {
         method: "DELETE",
@@ -152,6 +152,15 @@ export default function ContactDetailPage() {
       >
         <Input register={eventRegister("event")} label={"Event"} placeholder={"signup"} error={eventErrors.event} />
       </Modal>
+      <Modal
+        isOpen={deleteModal}
+        onToggle={() => setDeleteModal(false)}
+        onAction={remove}
+        type="danger"
+        action="Delete Contact"
+        title="Delete contact"
+        description={`Delete ${contact.email}? This action is irreversible and will permanently remove this contact.`}
+      />
       <Card
         title={""}
         options={
@@ -160,7 +169,7 @@ export default function ContactDetailPage() {
               <TerminalSquare size={18} />
               Trigger event
             </MenuButton>
-            <MenuButton onClick={remove}>
+            <MenuButton onClick={() => setDeleteModal(true)}>
               <Trash size={18} />
               Delete
             </MenuButton>

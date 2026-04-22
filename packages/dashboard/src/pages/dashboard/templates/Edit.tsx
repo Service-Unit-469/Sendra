@@ -3,13 +3,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import type { TemplateUpdate } from "@sendra/shared";
 import { TemplateSchemas } from "@sendra/shared";
 import { Copy, Save, Trash } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { BlackButton } from "../../../components/Buttons/BlackButton";
 import { MenuButton } from "../../../components/Buttons/MenuButton";
 import PuckEmailEditor from "../../../components/EmailEditor/PuckEmailEditor";
+import Modal from "../../../components/Overlay/Modal/Modal";
 import { Options } from "../../../components/Overlay/Options";
 import FullscreenLoader from "../../../components/Utility/FullscreenLoader/FullscreenLoader";
 import { useCurrentProject } from "../../../lib/hooks/projects";
@@ -22,6 +23,7 @@ export default function EditTemplatePage() {
   const project = useCurrentProject();
   const { mutate } = useTemplates();
   const { data: template } = useTemplate(id ?? "");
+  const [deleteModal, setDeleteModal] = useState(false);
   const { watch, setValue, reset, setError, clearErrors } = useForm({
     resolver: zodResolver(TemplateSchemas.update),
     defaultValues: {
@@ -106,9 +108,7 @@ export default function EditTemplatePage() {
     navigate("/templates");
   };
 
-  const remove = async (e: { preventDefault: () => void }) => {
-    e.preventDefault();
-
+  const remove = async () => {
     if (template._embed.actions.length > 0) {
       return toast.error("You cannot delete a template that is linked to an action!");
     }
@@ -134,58 +134,69 @@ export default function EditTemplatePage() {
   };
 
   return (
-    <PuckEmailEditor
-      initialData={JSON.parse(template.body.data)}
-      fields={fields}
-      onChange={(value) => {
-        setValue("body", {
-          ...value,
-          data: JSON.stringify(value.data),
-        });
-        const props = (value.data.root?.props ?? {}) as TemplateFormValues;
-        setValue("subject", props.title ?? "");
-        setValue("email", props.email ?? undefined);
-        setValue("from", props.from ?? undefined);
-        setValue("templateType", props.templateType ?? "MARKETING");
-        setValue("quickEmail", props.quickEmail === "true");
-      }}
-      actions={() => (
-        <>
-          <BlackButton
-            onClick={() =>
-              update({
-                subject: watch("subject"),
-                email: watch("email"),
-                from: watch("from"),
-                body: {
-                  data: watch("body").data,
-                  html: watch("body").html,
-                  plainText: watch("body").plainText,
-                },
-                templateType: watch("templateType") as "MARKETING" | "TRANSACTIONAL",
-                quickEmail: watch("quickEmail") ?? false,
-              })
-            }
-          >
-            <Save strokeWidth={1.5} size={18} />
-            Save
-          </BlackButton>
-          <Options
-            options={
-              <>
-                <MenuButton onClick={(e) => duplicate(e)}>
-                  <Copy strokeWidth={1.5} size={18} />
-                  Duplicate
-                </MenuButton>
-                <MenuButton onClick={(e) => remove(e)}>
-                  <Trash strokeWidth={1.5} size={18} />
-                  Delete
-                </MenuButton>
-              </>
-            }
-          />
-        </>
-      )}
-    />
+    <>
+      <Modal
+        isOpen={deleteModal}
+        onToggle={() => setDeleteModal(false)}
+        onAction={remove}
+        type="danger"
+        action="Delete Template"
+        title="Delete template"
+        description={`Delete "${template.subject}"? This action is irreversible and will permanently remove this template.`}
+      />
+      <PuckEmailEditor
+        initialData={JSON.parse(template.body.data)}
+        fields={fields}
+        onChange={(value) => {
+          setValue("body", {
+            ...value,
+            data: JSON.stringify(value.data),
+          });
+          const props = (value.data.root?.props ?? {}) as TemplateFormValues;
+          setValue("subject", props.title ?? "");
+          setValue("email", props.email ?? undefined);
+          setValue("from", props.from ?? undefined);
+          setValue("templateType", props.templateType ?? "MARKETING");
+          setValue("quickEmail", props.quickEmail === "true");
+        }}
+        actions={() => (
+          <>
+            <BlackButton
+              onClick={() =>
+                update({
+                  subject: watch("subject"),
+                  email: watch("email"),
+                  from: watch("from"),
+                  body: {
+                    data: watch("body").data,
+                    html: watch("body").html,
+                    plainText: watch("body").plainText,
+                  },
+                  templateType: watch("templateType") as "MARKETING" | "TRANSACTIONAL",
+                  quickEmail: watch("quickEmail") ?? false,
+                })
+              }
+            >
+              <Save strokeWidth={1.5} size={18} />
+              Save
+            </BlackButton>
+            <Options
+              options={
+                <>
+                  <MenuButton onClick={(e) => duplicate(e)}>
+                    <Copy strokeWidth={1.5} size={18} />
+                    Duplicate
+                  </MenuButton>
+                  <MenuButton onClick={() => setDeleteModal(true)}>
+                    <Trash strokeWidth={1.5} size={18} />
+                    Delete
+                  </MenuButton>
+                </>
+              }
+            />
+          </>
+        )}
+      />
+    </>
   );
 }

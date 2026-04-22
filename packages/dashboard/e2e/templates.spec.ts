@@ -27,7 +27,7 @@ test.describe("Templates", () => {
       await page.getByRole("button", { name: "Create" }).waitFor({ state: "visible" });
       await page.getByRole("textbox", { name: "Subject" }).fill(templateName);
       await page.getByRole("button", { name: "Create" }).click();
-      await page.getByText("Created new template").waitFor({ state: "visible" });
+      await page.waitForURL("**/templates");
     });
 
     await test.step('Verify New Template Created', async () => {
@@ -49,7 +49,7 @@ test.describe("Templates", () => {
       await page.getByRole("textbox", { name: "Subject" }).fill(templateName);
       await page.getByRole('listbox', {name: ''})
       await page.getByRole("button", { name: "Create" }).click();
-      await page.getByText("Created new template").waitFor({ state: "visible" });
+      await page.waitForURL("**/templates");
     });
 
     await test.step('Verify New Template Created', async () => {
