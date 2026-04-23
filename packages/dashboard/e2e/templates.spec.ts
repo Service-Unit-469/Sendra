@@ -44,12 +44,23 @@ test.describe("Templates", () => {
     const templateName = `test-${new Date().getTime()}`;
 
     await test.step("Create new template", async () => {
-      await page.getByRole("button", { name: "New" }).click();
-      await page.getByRole("button", { name: "Create" }).waitFor({ state: "visible" });
-      await page.getByRole("textbox", { name: "Subject" }).fill(templateName);
-      await page.getByRole('listbox', {name: ''})
-      await page.getByRole("button", { name: "Create" }).click();
-      await page.getByText("Created new template").waitFor({ state: "visible" });
+      await dashboardPage.createTemplate(templateName, async () => {
+        const previewFrame = dashboardPage.getPreviewFrame();
+        await previewFrame.locator('#frame-root').waitFor({
+          state: 'visible'
+        });
+        await previewFrame.locator('#frame-root').click();
+        await page.locator('#root_select_quickEmail').selectOption({label: 'Yes'});
+        const textEditButton = previewFrame.getByRole('button', {name: 'Start building your email by adding and customizing components.'}).last();
+        await textEditButton.waitFor({state: 'visible'});
+        await textEditButton.hover();
+        await textEditButton.click();
+
+        const editor = page.locator('div[contenteditable=true]');
+        await editor.waitFor({state:'visible'});
+        await editor.selectText();
+        await editor.fill('{{quickEdit}}')
+      });
     });
 
     await test.step('Verify New Template Created', async () => {

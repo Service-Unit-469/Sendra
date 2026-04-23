@@ -1,4 +1,4 @@
-import type { Page } from "@playwright/test";
+import { expect, type Page } from "@playwright/test";
 import { getAuthCredentials } from "../util/auth-credentials";
 
 export class DashboardPage {
@@ -24,6 +24,29 @@ export class DashboardPage {
     await this.page.waitForURL(`**${path}`);
   }
 
+  async createTemplate(templateName: string, beforeSave?: () => Promise<void>) {
+    await this.navigateTo("Templates", "/templates");
+    await this.page.getByRole('heading', {name: 'Templates'}).waitFor({state: 'visible'});
+    await this.page.getByRole("button", { name: "New" }).click();
+    await this.page.getByRole("button", { name: "Create" }).waitFor({ state: "visible" });
+    await this.page.getByRole("textbox", { name: "Subject" }).fill(templateName);
+    await this.page.getByRole('heading', {name:templateName}).waitFor({state: 'visible'});
+    if(beforeSave) {
+      await beforeSave();
+    }
+    const createButton = this.page.getByRole("button", { name: "Create" });
+    await expect(createButton).not.toBeDisabled();
+    await createButton.click();
+    await this.page.waitForURL("**/templates");
+    await this.page.getByText(templateName, { exact: false }).scrollIntoViewIfNeeded();
+    await this.page.getByText(templateName, { exact: false }).waitFor({ state: "attached" });
+    await this.page.getByText('Created new template!').waitFor({state: 'hidden'});
+  };
+
+  getPreviewFrame() {
+    return this.page.locator('#preview-frame').contentFrame();
+  }
+
   async navigateTo(name: string, path: string) {
     if (this.isMobile) {
       const openSidebarButton = this.page.getByRole("button", {
@@ -37,6 +60,18 @@ export class DashboardPage {
     await this.page.waitForURL(`**${path}`);
     await this.waitForReady();
   }
+
+  async selectDropdownItem(dropdownAriaLabel: string, value: string) {
+    const dropdownButton = this.page.getByLabel(dropdownAriaLabel);
+    await expect(dropdownButton).not.toBeDisabled();
+    await dropdownButton.click();
+
+    const dropdown =  dropdownButton.locator('..').getByRole('listbox');
+    await dropdown.waitFor({state:'visible'});
+    const item = dropdown.getByRole('listitem', {name: value});
+    await item.scrollIntoViewIfNeeded();
+    await item.click();
+  } 
 
   async waitForReady() {
     await this.page

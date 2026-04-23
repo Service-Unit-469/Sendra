@@ -250,23 +250,9 @@ test.describe("Authentication Flow", () => {
     // Submit login form
     await page.getByRole("button", { name: /login/i }).click();
 
-    // Should show error message
-    // Wait for error to appear (could be toast notification or inline error)
-    await page.getByText('Invalid email or password').waitFor({ state: "visible" });
-
-    // Check for error indication (could be error message, toast, or still on login page)
-    const hasError = await page.evaluate(() => {
-      const bodyText = document.body.textContent || "";
-      return (
-        bodyText.includes("login failed") ||
-        bodyText.includes("invalid") ||
-        bodyText.includes("incorrect") ||
-        window.location.hash.includes("/auth/login")
-      );
-    });
-
-    // Should either show error or stay on login page
-    expect(hasError).toBeTruthy();
+    // Should remain on login and show an auth error
+    await page.waitForURL(/\/auth\/login/, { timeout: 10000 });
+    await expect(page.getByText(/login failed|invalid|incorrect/i).first()).toBeVisible({ timeout: 10000 });
   });
 
   test("can log out after successful login", async ({ page }) => {

@@ -20,6 +20,7 @@ import { useCampaigns } from "../../../lib/hooks/campaigns";
 import { useCurrentProject } from "../../../lib/hooks/projects";
 import { useTemplates } from "../../../lib/hooks/templates";
 import { network } from "../../../lib/network";
+import { StyledLabel } from "../../../components/Label/StyledLabel";
 
 const createCampaignFormSchema = z.object({
   subject: z.string().min(1, "Subject is required"),
@@ -110,14 +111,14 @@ export default function Index() {
       <Modal isOpen={newCampaignModal} onToggle={() => setNewCampaignModal((s) => !s)} onAction={() => {}} type="info" title={"Create new campaign"} hideActionButtons={true}>
         <form onSubmit={handleCreateSubmit(createCampaign)} className="flex flex-col gap-6">
           <div>
-            <Input className={"sm:col-span-6"} label={"Subject"} placeholder={`Welcome to ${project.name}!`} register={register("subject")} error={errors.subject} />
+            <Input className="sm:col-span-6" label="Subject" placeholder={`Welcome to ${project.name}!`} register={register("subject")} error={errors.subject} />
           </div>
           <div>
-            <label htmlFor="template" className={"text-sm font-medium text-neutral-700"}>
+            <StyledLabel>
               Template
-              <Dropdown className={"w-full"} values={templates.map((t) => ({ name: t.subject, value: t.id }))} selectedValue={watch("template") ?? ""} onChange={(v) => setValue("template", v)} />
+              <Dropdown ariaLabel="Select a Template" className="w-full" disabled={templates.length === 0} values={templates.map((t) => ({ name: t.subject, value: t.id }))} selectedValue={watch("template") ?? ""} onChange={(v) => setValue("template", v)} />
               <ErrorAlert message={errors.template?.message} />
-            </label>
+            </StyledLabel>
           </div>
 
           <div className={"col-span-2 ml-auto flex justify-end gap-x-5"}>

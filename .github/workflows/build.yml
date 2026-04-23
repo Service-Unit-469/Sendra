@@ -7,6 +7,10 @@ permissions:
 on:
   pull_request:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.number }}
+
+
 jobs:
   validate:
     runs-on: ubuntu-latest
@@ -116,6 +120,7 @@ jobs:
     permissions:
       pull-requests: write
       contents: write
+      id-token: write
     steps:
       - uses: fastify/github-action-merge-dependabot@v3
         with:

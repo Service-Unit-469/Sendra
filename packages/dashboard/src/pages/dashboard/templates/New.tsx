@@ -77,8 +77,7 @@ export default function NewTemplatePage() {
     return <FullscreenLoader />;
   }
 
-  const create = async (data: TemplateCreate) => {
-    toast.promise(network.fetch(`/projects/${project.id}/templates`, { method: "POST", body: data }), {
+  const create = async (data: TemplateCreate) => toast.promise(network.fetch(`/projects/${project.id}/templates`, { method: "POST", body: data }), {
       loading: "Creating new template",
       success: () => {
         void mutate();
@@ -88,7 +87,6 @@ export default function NewTemplatePage() {
       },
       error: "Could not create new template!",
     });
-  };
 
   return (
     <PuckEmailEditor
@@ -107,9 +105,10 @@ export default function NewTemplatePage() {
         setValue("templateType", props.templateType ?? "MARKETING");
         setValue("quickEmail", props.quickEmail === "true");
       }}
-      actions={() => (
+      actions={(saving: boolean) => (
         <>
           <BlackButton
+            disabled={saving}
             onClick={() =>
               create({
                 templateType: watch("templateType") as "MARKETING" | "TRANSACTIONAL",

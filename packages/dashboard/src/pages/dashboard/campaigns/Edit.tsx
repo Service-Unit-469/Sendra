@@ -178,13 +178,13 @@ export default function EditCampaignPage() {
         setValue("from", props.from);
       }}
       fields={fields}
-      actions={() => (
+      actions={(saving: boolean) => (
         <>
-          <BlackButton onClick={() => saveCampaign(getValues())}>
+          <BlackButton onClick={() => saveCampaign(getValues())} disabled={saving}>
             <Save strokeWidth={1.5} size={18} />
             Save
           </BlackButton>
-          <button type="button" className="flex items-center gap-x-2 text-sm text-neutral-500" onClick={() => navigate(`/campaigns/${campaign.id}`)}>
+          <button disabled={saving} type="button" className="flex items-center gap-x-2 text-sm text-neutral-500" onClick={() => navigate(`/campaigns/${campaign.id}`)}>
             Back
           </button>
         </>
