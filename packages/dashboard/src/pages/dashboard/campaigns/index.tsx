@@ -11,6 +11,7 @@ import { BlackButton } from "../../../components/Buttons/BlackButton";
 import Card from "../../../components/Card/Card";
 import Dropdown from "../../../components/Input/Dropdown/Dropdown";
 import Input from "../../../components/Input/Input/Input";
+import { StyledLabel } from "../../../components/Label/StyledLabel";
 import Modal from "../../../components/Overlay/Modal/Modal";
 import Skeleton from "../../../components/Skeleton/Skeleton";
 import Empty from "../../../components/Utility/Empty/Empty";
@@ -20,7 +21,6 @@ import { useCampaigns } from "../../../lib/hooks/campaigns";
 import { useCurrentProject } from "../../../lib/hooks/projects";
 import { useTemplates } from "../../../lib/hooks/templates";
 import { network } from "../../../lib/network";
-import { StyledLabel } from "../../../components/Label/StyledLabel";
 
 const createCampaignFormSchema = z.object({
   subject: z.string().min(1, "Subject is required"),
@@ -116,7 +116,14 @@ export default function Index() {
           <div>
             <StyledLabel>
               Template
-              <Dropdown ariaLabel="Select a Template" className="w-full" disabled={templates.length === 0} values={templates.map((t) => ({ name: t.subject, value: t.id }))} selectedValue={watch("template") ?? ""} onChange={(v) => setValue("template", v)} />
+              <Dropdown
+                ariaLabel="Select a Template"
+                className="w-full"
+                disabled={templates.length === 0}
+                values={templates.map((t) => ({ name: t.subject, value: t.id }))}
+                selectedValue={watch("template") ?? ""}
+                onChange={(v) => setValue("template", v)}
+              />
               <ErrorAlert message={errors.template?.message} />
             </StyledLabel>
           </div>

@@ -134,68 +134,70 @@ export default function EditTemplatePage() {
   };
 
   return (
-    <Modal
-      isOpen={deleteModal}
-      onToggle={() => setDeleteModal(false)}
-      onAction={remove}
-      type="danger"
-      action="Delete Template"
-      title="Delete template"
-      description={`Delete "${template.subject}"? This action is irreversible and will permanently remove this template.`}
-    />
-    <PuckEmailEditor
-      initialData={JSON.parse(template.body.data)}
-      fields={fields}
-      onChange={(value) => {
-        setValue("body", {
-          ...value,
-          data: JSON.stringify(value.data),
-        });
-        const props = (value.data.root?.props ?? {}) as TemplateFormValues;
-        setValue("subject", props.title ?? "");
-        setValue("email", props.email ?? undefined);
-        setValue("from", props.from ?? undefined);
-        setValue("templateType", props.templateType ?? "MARKETING");
-        setValue("quickEmail", props.quickEmail === "true");
-      }}
-      actions={(saving: boolean) => (
-        <>
-          <BlackButton
-            disabled={saving}
-            onClick={() =>
-              update({
-                subject: watch("subject"),
-                email: watch("email"),
-                from: watch("from"),
-                body: {
-                  data: watch("body").data,
-                  html: watch("body").html,
-                  plainText: watch("body").plainText,
-                },
-                templateType: watch("templateType") as "MARKETING" | "TRANSACTIONAL",
-                quickEmail: watch("quickEmail") ?? false,
-              })
-            }
-          >
-            <Save strokeWidth={1.5} size={18} />
-            Save
-          </BlackButton>
-          <Options
-            options={
-              <>
-                <MenuButton onClick={(e) => duplicate(e)} disabled={saving}>
-                  <Copy strokeWidth={1.5} size={18} />
-                  Duplicate
-                </MenuButton>
-                <MenuButton onClick={(e) => setDeleteModal(true)} disabled={saving}>
-                  <Trash strokeWidth={1.5} size={18} />
-                  Delete
-                </MenuButton>
-              </>
-            }
-          />
-        </>
-      )}
-    />
+    <>
+      <Modal
+        isOpen={deleteModal}
+        onToggle={() => setDeleteModal(false)}
+        onAction={remove}
+        type="danger"
+        action="Delete Template"
+        title="Delete template"
+        description={`Delete "${template.subject}"? This action is irreversible and will permanently remove this template.`}
+      />
+      <PuckEmailEditor
+        initialData={JSON.parse(template.body.data)}
+        fields={fields}
+        onChange={(value) => {
+          setValue("body", {
+            ...value,
+            data: JSON.stringify(value.data),
+          });
+          const props = (value.data.root?.props ?? {}) as TemplateFormValues;
+          setValue("subject", props.title ?? "");
+          setValue("email", props.email ?? undefined);
+          setValue("from", props.from ?? undefined);
+          setValue("templateType", props.templateType ?? "MARKETING");
+          setValue("quickEmail", props.quickEmail === "true");
+        }}
+        actions={(saving: boolean) => (
+          <>
+            <BlackButton
+              disabled={saving}
+              onClick={() =>
+                update({
+                  subject: watch("subject"),
+                  email: watch("email"),
+                  from: watch("from"),
+                  body: {
+                    data: watch("body").data,
+                    html: watch("body").html,
+                    plainText: watch("body").plainText,
+                  },
+                  templateType: watch("templateType") as "MARKETING" | "TRANSACTIONAL",
+                  quickEmail: watch("quickEmail") ?? false,
+                })
+              }
+            >
+              <Save strokeWidth={1.5} size={18} />
+              Save
+            </BlackButton>
+            <Options
+              options={
+                <>
+                  <MenuButton onClick={(e) => duplicate(e)} disabled={saving}>
+                    <Copy strokeWidth={1.5} size={18} />
+                    Duplicate
+                  </MenuButton>
+                  <MenuButton onClick={() => setDeleteModal(true)} disabled={saving}>
+                    <Trash strokeWidth={1.5} size={18} />
+                    Delete
+                  </MenuButton>
+                </>
+              }
+            />
+          </>
+        )}
+      />
+    </>
   );
 }

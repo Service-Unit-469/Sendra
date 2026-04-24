@@ -10,23 +10,10 @@ export interface PuckEmailEditorProps {
   initialData: Data;
   fields: Fields;
   actions: (saving: boolean) => React.ReactElement;
-  onChange: ({
-    data,
-    html,
-    plainText,
-  }: {
-    data: Data;
-    html: string;
-    plainText: string;
-  }) => void;
+  onChange: ({ data, html, plainText }: { data: Data; html: string; plainText: string }) => void;
 }
 
-export default function PuckEmailEditor({
-  initialData,
-  onChange,
-  actions,
-  fields,
-}: PuckEmailEditorProps) {
+export default function PuckEmailEditor({ initialData, onChange, actions, fields }: PuckEmailEditorProps) {
   const [data, setData] = useState<Data>(initialData);
   const [saving, setSaving] = useState(false);
   const timeout = useRef<NodeJS.Timeout | undefined>(undefined);
@@ -54,24 +41,16 @@ export default function PuckEmailEditor({
         timeout.current = setTimeout(() => setSaving(false), 100);
       }
     },
-    [onChange, fields]
+    [onChange, fields],
   );
 
-  const actualActions = useMemo(
-    () => () => <>{actions(saving)}</>,
-    [actions, saving]
-  );
+  const actualActions = useMemo(() => () => <>{actions(saving)}</>, [actions, saving]);
 
   return (
     <div className="flex flex-col h-full">
       <div className="flex-1 flex gap-4 overflow-hidden">
         <div className="w-full border rounded-lg overflow-hidden bg-white">
-          <Puck
-            config={emailEditorConfig(fields)}
-            data={data}
-            onChange={handleChange}
-            overrides={{ headerActions: actualActions }}
-          />
+          <Puck config={emailEditorConfig(fields)} data={data} onChange={handleChange} overrides={{ headerActions: actualActions }} />
         </div>
       </div>
     </div>
