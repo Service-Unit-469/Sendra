@@ -54,7 +54,7 @@ runs:
       id: deploy-info
       run: |
         APP_URL=$(cat .sst/outputs.json | jq -r '.router.cdn.distribution.domainName')
-        echo "APP_URL=$APP_URL" >> "$GITHUB_OUTPUT"
+        echo "APP_URL=https://${APP_URL}" >> "$GITHUB_OUTPUT"
 
         DATA_TABLE_NAME=$(cat .sst/outputs.json | jq -r '.dataTable.table.name')
         echo "DATA_TABLE_NAME=$DATA_TABLE_NAME" >> "$GITHUB_OUTPUT"

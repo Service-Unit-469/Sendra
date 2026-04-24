@@ -6,6 +6,9 @@ config({
   quiet: true,
 });
 const {domainName} = getConfig();
+const appUrl = domainName.startsWith("http://") || domainName.startsWith("https://")
+  ? domainName
+  : `https://${domainName}`;
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -20,7 +23,7 @@ export default defineConfig({
     timeout: 10_000,
   },
   use: {
-    baseURL: process.env.BASE_URL || `https://${domainName}/dashboard`,
+    baseURL: process.env.BASE_URL || new URL("/dashboard", appUrl).toString(),
     trace: { mode: "retain-on-failure", snapshots: true, screenshots: true, sources: true },
     screenshot: "only-on-failure",
   },
