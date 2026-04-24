@@ -1,9 +1,11 @@
 import { Trash } from "lucide-react";
+import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { MenuButton } from "../../../components/Buttons/MenuButton";
 import Card from "../../../components/Card/Card";
 import { GroupForm } from "../../../components/GroupForm/Form";
+import Modal from "../../../components/Overlay/Modal/Modal";
 import FullscreenLoader from "../../../components/Utility/FullscreenLoader/FullscreenLoader";
 import { useGroup } from "../../../lib/hooks/groups";
 import { useCurrentProject } from "../../../lib/hooks/projects";
@@ -14,9 +16,9 @@ export default function EditGroupPage() {
   const project = useCurrentProject();
   const { id } = useParams<{ id: string }>();
   const { data: group, mutate } = useGroup(id ?? "");
+  const [deleteModal, setDeleteModal] = useState(false);
 
-  const remove = async (e: { preventDefault: () => void }) => {
-    e.preventDefault();
+  const remove = async () => {
     toast.promise(
       network.fetch(`/projects/${project.id}/groups/${group?.id}`, {
         method: "DELETE",
@@ -35,18 +37,29 @@ export default function EditGroupPage() {
   }
 
   return (
-    <Card
-      title={group.name}
-      options={
-        <MenuButton onClick={remove}>
-          <Trash size={18} />
-          Delete
-        </MenuButton>
-      }
-    >
-      <div className="space-y-6">
-        <GroupForm onSuccess={() => void mutate()} initialData={group} groupId={group.id} submitButtonText="Save" />
-      </div>
-    </Card>
+    <>
+      <Modal
+        isOpen={deleteModal}
+        onToggle={() => setDeleteModal(false)}
+        onAction={remove}
+        type="danger"
+        action="Delete Group"
+        title="Delete group"
+        description={`Delete "${group.name}"? This action is irreversible and will permanently remove this group.`}
+      />
+      <Card
+        title={group.name}
+        options={
+          <MenuButton onClick={() => setDeleteModal(true)}>
+            <Trash size={18} />
+            Delete
+          </MenuButton>
+        }
+      >
+        <div className="space-y-6">
+          <GroupForm onSuccess={() => void mutate()} initialData={group} groupId={group.id} submitButtonText="Save" />
+        </div>
+      </Card>
+    </>
   );
 }

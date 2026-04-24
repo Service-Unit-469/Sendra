@@ -8,7 +8,7 @@ on:
   pull_request:
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.number }}
+  group: ${{ github.workflow }}-PR-${{ github.event.number }}
 
 
 jobs:
