@@ -30,6 +30,24 @@ test.describe("Project Settings", () => {
     await expect(page.getByLabel("Project ID")).toBeVisible();
   });
 
+  test("masks secret key with explicit reveal toggle", async ({ dashboardPage, page }) => {
+    await dashboardPage.navigateTo("Project Settings", "/settings/project");
+    await dashboardPage.clickTab("API Access", "/settings/api");
+
+    const secretKeyValue = page.getByTestId("secret-api-key-value");
+    await expect(page.getByTestId("secret-api-key-mask")).toBeVisible();
+    await expect(page.getByRole("button", { name: "Reveal key" })).toBeVisible();
+    await expect(page.getByText("Warning: Never expose this key in client-side code or public repositories.")).toBeVisible();
+
+    await page.getByRole("button", { name: "Reveal key" }).click();
+    await expect(page.getByRole("button", { name: "Hide key" })).toBeVisible();
+    await expect(page.getByTestId("secret-api-key-mask")).toHaveCount(0);
+    await expect(secretKeyValue).not.toContainText("Unavailable");
+
+    await page.getByRole("button", { name: "Hide key" }).click();
+    await expect(page.getByTestId("secret-api-key-mask")).toBeVisible();
+  });
+
   test("can navigate to Verified Identity page", async ({ dashboardPage, page }) => {
     await dashboardPage.navigateTo("Project Settings", "/settings/project");
     await dashboardPage.clickTab("Verified Identity", "/settings/identity");
