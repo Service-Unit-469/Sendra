@@ -59,7 +59,7 @@ test.describe("Templates", () => {
         const editor = page.locator('div[contenteditable=true]');
         await editor.waitFor({state:'visible'});
         await editor.selectText();
-        await editor.fill('{{quickEdit}}')
+        await editor.fill('{{quickEdit}}');
       });
     });
 
