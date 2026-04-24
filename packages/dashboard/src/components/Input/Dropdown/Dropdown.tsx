@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Check } from "lucide-react";
-import React, { type RefObject, useEffect, useState } from "react";
+import React, { type RefObject, useEffect, useId, useState } from "react";
 import { DropdownIndicator } from "../../../icons/DropdownIndicator";
 
 export interface Dropdownprops {
@@ -30,6 +30,7 @@ export interface Dropdownprops {
 export default function Dropdown({ onChange, values, selectedValue, className, withSearch = false, inModal = false, disabled = false, ariaLabel = "Select a value" }: Dropdownprops) {
   const [open, setOpen] = useState(false);
   const ref = React.createRef<HTMLDivElement>();
+  const listboxId = useId();
 
   useEffect(() => {
     const mutableRef = ref as RefObject<HTMLDivElement | null>;
@@ -58,7 +59,8 @@ export default function Dropdown({ onChange, values, selectedValue, className, w
             disabled ? "cursor-default bg-neutral-100" : "cursor-pointer bg-white"
           } relative w-full rounded border border-neutral-300 py-2 pl-3 pr-10 text-left focus:border-neutral-500 focus:outline-hidden focus:ring-1 focus:ring-neutral-500 sm:text-sm`}
           aria-haspopup="listbox"
-          aria-expanded="true"
+          aria-expanded={open}
+          aria-controls={listboxId}
           aria-label={ariaLabel}
           onClick={() => {
             if (!disabled) {
@@ -91,6 +93,7 @@ export default function Dropdown({ onChange, values, selectedValue, className, w
               transition={{ duration: 0.2, ease: "easeInOut" }}
               className={`${inModal ? "fixed w-64" : "absolute w-full"} z-50 mt-1 max-h-72 rounded-md border border-black border-opacity-10 bg-white text-base shadow-lg focus:outline-hidden sm:text-sm`}
               tabIndex={-1}
+              id={listboxId}
               role="listbox"
             >
               <div className="sticky top-0 z-50 bg-white">
@@ -121,6 +124,8 @@ export default function Dropdown({ onChange, values, selectedValue, className, w
                       return (
                         <li
                           key={`x-${value.name}-${value.value}`}
+                          role="option"
+                          aria-selected={value.value === selectedValue}
                           className="relative flex cursor-default select-none items-center rounded-md py-2.5 pl-2.5 text-neutral-800 transition ease-in-out hover:bg-neutral-100"
                           onClick={() => {
                             onChange(value.value);

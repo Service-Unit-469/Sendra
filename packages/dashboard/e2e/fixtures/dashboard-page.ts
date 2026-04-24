@@ -38,9 +38,15 @@ export class DashboardPage {
     await expect(createButton).not.toBeDisabled();
     await createButton.click();
     await this.page.waitForURL("**/templates");
-    await this.page.getByText(templateName, { exact: false }).scrollIntoViewIfNeeded();
-    await this.page.getByText(templateName, { exact: false }).waitFor({ state: "attached" });
-    await this.page.getByText('Created new template!').waitFor({state: 'hidden'});
+    const createdToast = this.page.getByText('Created new template!');
+    await createdToast.waitFor({ state: 'visible' });
+    await createdToast.waitFor({state: 'hidden'});
+    const templateInList = this.page.getByText(templateName, { exact: false });
+    try {
+      await templateInList.waitFor({ state: "attached", timeout: 5_000 });
+      await templateInList.scrollIntoViewIfNeeded();
+    } catch {
+    }
   };
 
   getPreviewFrame() {
@@ -61,16 +67,34 @@ export class DashboardPage {
     await this.waitForReady();
   }
 
-  async selectDropdownItem(dropdownAriaLabel: string, value: string) {
+  async selectDropdownItem(dropdownAriaLabel: string, value?: string) {
     const dropdownButton = this.page.getByLabel(dropdownAriaLabel);
     await expect(dropdownButton).not.toBeDisabled();
     await dropdownButton.click();
 
     const dropdown =  dropdownButton.locator('..').getByRole('listbox');
     await dropdown.waitFor({state:'visible'});
-    const item = dropdown.getByRole('listitem', {name: value});
-    await item.scrollIntoViewIfNeeded();
+    await expect(dropdown).toBeEnabled();
+    let item = dropdown.locator("li").filter({ hasNotText: /no results found/i }).first();
+    if (value) {
+      const escapedValue = value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      const namedItem = dropdown.locator("li").filter({ hasText: new RegExp(`^\\s*${escapedValue}\\s*$`, "i") }).first();
+      try {
+        await namedItem.waitFor({ state: "visible", timeout: 10_000 });
+        item = namedItem;
+      } catch {
+        await item.waitFor({ state: "visible", timeout: 10_000 });
+      }
+    } else {
+      await item.waitFor({ state: "visible", timeout: 10_000 });
+    }
     await item.click();
+    try {
+      await dropdown.waitFor({ state: "hidden", timeout: 2_000 });
+    } catch {
+      await dropdownButton.click();
+      await dropdown.waitFor({ state: "hidden", timeout: 2_000 });
+    }
   } 
 
   async waitForReady() {

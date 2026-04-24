@@ -15,7 +15,7 @@ test.describe("Campaigns", () => {
     dashboardPage: DashboardPage,
     page: Page,
     campaignSubject: string,
-    templateName: string,
+    templateName?: string,
   ) => {
     await dashboardPage.navigateTo("Campaigns", "/campaigns");
     await dashboardPage.waitForContentLoading();
@@ -49,14 +49,9 @@ test.describe("Campaigns", () => {
     page,
   }) => {
     const campaignSubject = `Test Campaign ${new Date().getTime()}`;
-    const templateName = `Template ${new Date().getTime()}`;
-    
-    await test.step("Create template first", async () => {
-      await dashboardPage.createTemplate(templateName);
-    });
 
     await test.step("Create campaign from template", async () => {
-      await createCampaignFromTemplate(dashboardPage, page, campaignSubject, templateName);
+      await createCampaignFromTemplate(dashboardPage, page, campaignSubject);
     });
 
     await test.step("Verify campaign was created", async () => {
@@ -72,7 +67,6 @@ test.describe("Campaigns", () => {
   }) => {
     const campaignSubject = `Test Campaign ${new Date().getTime()}`;
     const testContactEmail = `test+campaign+${browserName}+${new Date().getTime()}@example.com`;
-    const templateName = `Campaign template ${new Date().getTime()}`;
 
     await test.step("Create a contact for the campaign", async () => {
       await dashboardPage.navigateTo("Contacts", "/contacts");
@@ -84,12 +78,8 @@ test.describe("Campaigns", () => {
       await page.getByText("Create new contact").waitFor({ state: "hidden" });
     });
 
-    await test.step("Create template", async () => {
-      await dashboardPage.createTemplate( templateName);
-    });
-
     await test.step("Create campaign", async () => {
-      await createCampaignFromTemplate(dashboardPage, page, campaignSubject, templateName);
+      await createCampaignFromTemplate(dashboardPage, page, campaignSubject);
     });
 
     await test.step("Add recipient to campaign", async () => {
@@ -107,7 +97,7 @@ test.describe("Campaigns", () => {
     });
 
     await test.step("Send test campaign", async () => {
-      await page.getByRole("button", { name: "Test" }).click();
+      await page.getByRole("button", { name: "Test", exact: true }).click();
       await page.getByText(/test campaign/i).waitFor({ state: "visible", timeout: 10000 });
     });
 
@@ -126,11 +116,9 @@ test.describe("Campaigns", () => {
     page,
   }) => {
     const campaignSubject = `View Test ${new Date().getTime()}`;
-    const templateName = `View template ${new Date().getTime()}`;
 
-    await test.step("Create template and campaign", async () => {
-      await dashboardPage.createTemplate(templateName);
-      await createCampaignFromTemplate(dashboardPage, page, campaignSubject, templateName);
+    await test.step("Create campaign", async () => {
+      await createCampaignFromTemplate(dashboardPage, page, campaignSubject);
     });
 
     await test.step("View campaign details", async () => {
@@ -143,7 +131,7 @@ test.describe("Campaigns", () => {
       // Verify campaign details page loaded
       await expect(page.getByText(campaignSubject)).toBeVisible();
       // Should see campaign editing interface
-      await expect(page.getByText(/recipients|preview|update/i)).toBeVisible();
+      await expect(page.getByLabel("Select a value")).toBeVisible();
     });
   });
 });

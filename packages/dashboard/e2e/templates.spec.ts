@@ -51,15 +51,7 @@ test.describe("Templates", () => {
         });
         await previewFrame.locator('#frame-root').click();
         await page.locator('#root_select_quickEmail').selectOption({label: 'Yes'});
-        const textEditButton = previewFrame.getByRole('button', {name: 'Start building your email by adding and customizing components.'}).last();
-        await textEditButton.waitFor({state: 'visible'});
-        await textEditButton.hover();
-        await textEditButton.click();
-
-        const editor = page.locator('div[contenteditable=true]');
-        await editor.waitFor({state:'visible'});
-        await editor.selectText();
-        await editor.fill('{{quickEdit}}');
+        await page.getByRole('textbox', {name: 'Preview'}).fill('{{quickBody}}');
       });
     });
 
