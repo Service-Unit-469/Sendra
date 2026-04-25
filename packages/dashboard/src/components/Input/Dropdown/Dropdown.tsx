@@ -86,7 +86,7 @@ export default function Dropdown({ onChange, values, selectedValue, className, w
 
         <AnimatePresence>
           {open && (
-            <motion.ul
+            <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
@@ -99,7 +99,7 @@ export default function Dropdown({ onChange, values, selectedValue, className, w
               <div className="sticky top-0 z-50 bg-white">
                 {withSearch ? (
                   <>
-                    <li className="relative cursor-default select-none px-3 py-2 text-neutral-800">
+                    <div className="relative cursor-default select-none px-3 py-2 text-neutral-800">
                       <input
                         type="search"
                         name="search"
@@ -108,7 +108,7 @@ export default function Dropdown({ onChange, values, selectedValue, className, w
                         placeholder={"Search"}
                         onChange={(e) => setQuery(e.target.value)}
                       />
-                    </li>
+                    </div>
                     <hr />
                   </>
                 ) : null}
@@ -116,18 +116,28 @@ export default function Dropdown({ onChange, values, selectedValue, className, w
 
               <div className={"scrollbar-w-2 scrollbar scrollbar-thumb-rounded-full scrollbar-thumb-neutral-400 scrollbar-track-neutral-100 max-h-52 overflow-y-scroll p-1"}>
                 {values.filter((value) => value.name.toLowerCase().startsWith(query.toLowerCase())).length === 0 ? (
-                  <li className="relative cursor-default select-none py-2.5 pl-3 pr-9 text-neutral-800">No results found</li>
+                  <div className="relative cursor-default select-none py-2.5 pl-3 pr-9 text-neutral-800">No results found</div>
                 ) : (
                   values
                     .filter((value) => value.name.toLowerCase().startsWith(query.toLowerCase()))
                     .map((value) => {
                       return (
-                        <li
+                        <div
                           key={`x-${value.name}-${value.value}`}
                           role="option"
                           aria-selected={value.value === selectedValue}
-                          className="relative flex cursor-default select-none items-center rounded-md py-2.5 pl-2.5 text-neutral-800 transition ease-in-out hover:bg-neutral-100"
+                          tabIndex={0}
+                          className="relative flex cursor-pointer select-none items-center rounded-md py-2.5 pl-2.5 text-neutral-800 transition ease-in-out hover:bg-neutral-100 focus:outline-hidden focus:ring-2 focus:ring-neutral-500"
                           onClick={() => {
+                            onChange(value.value);
+                            setQuery("");
+                            setOpen(!open);
+                          }}
+                          onKeyDown={(event) => {
+                            if (event.key !== "Enter" && event.key !== " ") {
+                              return;
+                            }
+                            event.preventDefault();
                             onChange(value.value);
                             setQuery("");
                             setOpen(!open);
@@ -139,12 +149,12 @@ export default function Dropdown({ onChange, values, selectedValue, className, w
                               <Check size={18} />
                             </span>
                           ) : null}
-                        </li>
+                        </div>
                       );
                     })
                 )}
               </div>
-            </motion.ul>
+            </motion.div>
           )}
         </AnimatePresence>
       </div>

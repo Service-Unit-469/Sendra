@@ -100,10 +100,10 @@ export class DashboardPage {
     const dropdown =  dropdownButton.locator('..').getByRole('listbox');
     await dropdown.waitFor({state:'visible'});
     await expect(dropdown).toBeEnabled();
-    let item = dropdown.locator("li").filter({ hasNotText: /no results found/i }).first();
+    let item = dropdown.getByRole("option").first();
     if (value) {
       const escapedValue = value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-      const namedItem = dropdown.locator("li").filter({ hasText: new RegExp(`^\\s*${escapedValue}\\s*$`, "i") }).first();
+      const namedItem = dropdown.getByRole("option", { name: new RegExp(`^\\s*${escapedValue}\\s*$`, "i") }).first();
       try {
         await namedItem.waitFor({ state: "visible", timeout: 10_000 });
         item = namedItem;
