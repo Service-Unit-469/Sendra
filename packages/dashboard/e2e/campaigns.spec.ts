@@ -2,6 +2,13 @@ import type { Page } from "@playwright/test";
 import type { DashboardPage } from "./fixtures/dashboard-page";
 import { expect, test } from "./fixtures/dashboard";
 
+const selectTemplate = async (page: Page, dashboardPage: DashboardPage, templateName: string, campaignSubject: string) => {
+  await page.getByRole('heading', {name: 'Campaigns'}).waitFor({state: 'visible'});
+  await page.getByRole("button", { name: "New" }).click();
+  await page.getByRole("textbox", { name: "Subject" }).fill(campaignSubject);
+  await dashboardPage.selectDropdownItem('Select a Template', templateName);
+}
+
 /**
  * Campaigns E2E Tests
  * 
@@ -17,15 +24,18 @@ test.describe("Campaigns", () => {
     campaignSubject: string,
     templateName?: string,
   ) => {
+    const resolvedTemplateName = templateName ?? `Campaign Template ${Date.now()}`;
+    await dashboardPage.createTemplate(resolvedTemplateName);
+
     await dashboardPage.navigateTo("Campaigns", "/campaigns");
     await dashboardPage.waitForContentLoading();
-    await page.getByRole('heading', {name: 'Campaigns'}).waitFor({state: 'visible'});
 
-    await page.getByRole("button", { name: "New" }).click();
-    await page.getByRole("textbox", { name: "Subject" }).fill(campaignSubject);
-    
-    await dashboardPage.selectDropdownItem('Select a Template', templateName);
-
+    try {
+      await selectTemplate(page, dashboardPage, resolvedTemplateName, campaignSubject);
+    } catch (err) {
+      await page.reload();
+      await selectTemplate(page, dashboardPage, resolvedTemplateName, campaignSubject);
+    }
     await page.getByRole("button", { name: "Create Campaign" }).click();
     await page.getByRole("button", { name: "Create Campaign" }).waitFor({ state: "hidden" });
     await page.getByText(campaignSubject).waitFor({ state: "visible" });

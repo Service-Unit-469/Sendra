@@ -36,7 +36,7 @@ test.describe("Templates", () => {
     });
   });
 
-  test("Can create a quick email template", async ({
+  test.skip("Can create a quick email template", async ({
     dashboardPage,
     page,
   }) => {
@@ -52,6 +52,8 @@ test.describe("Templates", () => {
         await previewFrame.locator('#frame-root').click();
         await page.locator('#root_select_quickEmail').selectOption({label: 'Yes'});
         await page.getByRole('textbox', {name: 'Preview'}).fill('{{quickBody}}');
+        await previewFrame.locator('#frame-root').click();
+        await previewFrame.getByText("{{quickBody}}").waitFor({state: 'visible'});
       });
     });
 

@@ -233,10 +233,13 @@ test.describe("Authentication Flow", () => {
     // Submit login form
     await page.getByRole("button", { name: /login/i }).click();
 
-    // Should load the dashboard
-    await page.waitForURL(/\/dashboard#\//, { timeout: 10000 });
+    // Should leave login page and have a token in storage
+    await page.waitForURL(/\/dashboard#\/(?!auth\/login)/, { timeout: 10000 });
+    const token = await page.evaluate(() => localStorage.getItem("sendra.token"));
+    expect(token).toBeTruthy();
 
-    await page.getByText('Dashboard').waitFor({ state: "visible", timeout: 10000 });
+    // Dashboard shell should be visible
+    await expect(page.getByRole("navigation")).toBeVisible({ timeout: 10000 });
   });
 
   test("shows error for invalid credentials", async ({ page }) => {
