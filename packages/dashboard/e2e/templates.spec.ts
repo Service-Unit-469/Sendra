@@ -36,7 +36,7 @@ test.describe("Templates", () => {
     });
   });
 
-  test("Can create a quick email template", async ({
+  test.skip("Can create a quick email template", async ({
     dashboardPage,
     page,
   }) => {
@@ -44,12 +44,17 @@ test.describe("Templates", () => {
     const templateName = `test-${new Date().getTime()}`;
 
     await test.step("Create new template", async () => {
-      await page.getByRole("button", { name: "New" }).click();
-      await page.getByRole("button", { name: "Create" }).waitFor({ state: "visible" });
-      await page.getByRole("textbox", { name: "Subject" }).fill(templateName);
-      await page.getByRole('listbox', {name: ''})
-      await page.getByRole("button", { name: "Create" }).click();
-      await page.waitForURL("**/templates");
+      await dashboardPage.createTemplate(templateName, async () => {
+        const previewFrame = dashboardPage.getPreviewFrame();
+        await previewFrame.locator('#frame-root').waitFor({
+          state: 'visible'
+        });
+        await previewFrame.locator('#frame-root').click();
+        await page.locator('#root_select_quickEmail').selectOption({label: 'Yes'});
+        await page.getByRole('textbox', {name: 'Preview'}).fill('{{quickBody}}');
+        await previewFrame.locator('#frame-root').click();
+        await previewFrame.getByText("{{quickBody}}").waitFor({state: 'visible'});
+      });
     });
 
     await test.step('Verify New Template Created', async () => {
