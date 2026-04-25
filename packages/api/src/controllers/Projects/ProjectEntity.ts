@@ -277,10 +277,11 @@ export const registerProjectEntityCrudRoutes = <T extends BaseItem>(app: AppType
         toCreate = await config.preCreateEntity(projectId, toCreate);
       }
       const persistence = config.getPersistence(projectId);
+      type CreateEntityInput = Parameters<typeof persistence.create>[0];
       const entity = await persistence.create({
         ...toCreate,
         project: projectId,
-      } as Omit<T, "id" | "createdAt" | "updatedAt">);
+      } as unknown as CreateEntityInput);
 
       // biome-ignore lint/suspicious/noTsIgnore: ts-expect-error doesn't work
       // @ts-ignore

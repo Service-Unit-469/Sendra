@@ -65,12 +65,7 @@ function getLogger(module: string, methodName: string, args: any[], options?: Lo
 }
 
 export function logMethodReturningPromise(className: string, options: LogMethodOptions = {}) {
-  return <TThis, TArgs extends unknown[], TResult>(
-    target: (this: TThis, ...args: TArgs) => Promise<TResult>,
-    context: ClassMethodDecoratorContext<TThis, (this: TThis, ...args: TArgs) => Promise<TResult>> | string,
-  ) => {
-    const methodName = typeof context === "string" ? context : String(context.name);
-
+  const wrap = <TThis, TArgs extends unknown[], TResult>(target: (this: TThis, ...args: TArgs) => Promise<TResult>, methodName: string) => {
     return function replacementMethod(this: TThis, ...args: TArgs) {
       const logger = getLogger(className, methodName, args, options);
       const start = Date.now();
@@ -90,4 +85,29 @@ export function logMethodReturningPromise(className: string, options: LogMethodO
       });
     };
   };
+
+  const decorator = ((...args: unknown[]) => {
+    // Legacy decorator signature: (target, propertyKey, descriptor)
+    if (args.length === 3) {
+      const propertyKey = args[1] as string | symbol;
+      const descriptor = args[2] as TypedPropertyDescriptor<(...methodArgs: unknown[]) => Promise<unknown>>;
+      if (!descriptor.value) {
+        return descriptor;
+      }
+      descriptor.value = wrap(descriptor.value, String(propertyKey));
+      return descriptor;
+    }
+
+    // Manual/stage-3-style usage used by tests: (target, contextOrName)
+    if (args.length === 2 && typeof args[0] === "function") {
+      const target = args[0] as (this: unknown, ...methodArgs: unknown[]) => Promise<unknown>;
+      const context = args[1] as ClassMethodDecoratorContext | string;
+      const methodName = typeof context === "string" ? context : String(context.name);
+      return wrap(target, methodName);
+    }
+
+    throw new TypeError("Unsupported decorator signature");
+  }) as MethodDecorator;
+
+  return decorator;
 }

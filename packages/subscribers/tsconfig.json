@@ -1,14 +1,13 @@
 {
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "target": "esnext",
-    "module": "esnext",
-    "moduleResolution": "bundler",
-    "strict": true,
-    "skipLibCheck": true,
-    "declaration": true,
-    "esModuleInterop": true,
-    "outDir": "./dist",
-    "rootDir": "."
+    "rootDir": "src",
+    "outDir": "dist"
   },
-  "include": ["scripts/*", "src/**/*", "test/**/*"]
+  "exclude": [
+    "node_modules",
+    "dist",
+    "test",
+    "vitest.config.ts"
+  ]
 }

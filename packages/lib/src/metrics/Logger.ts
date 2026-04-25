@@ -1,6 +1,6 @@
 import { createMetricsLogger, type MetricsLogger, Unit } from "aws-embedded-metrics";
 import { Resource } from "sst";
-import { getRequestInfo } from "../logging";
+import { getRequestInfo } from "../request-ids";
 import { getLogConfig } from "../services/AppConfig";
 
 export type DimensionsType = {

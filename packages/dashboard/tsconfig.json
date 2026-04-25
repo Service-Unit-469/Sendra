@@ -1,15 +1,25 @@
 {
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "target": "esnext",
-    "module": "esnext",
-    "moduleResolution": "bundler",
-    "strict": true,
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "noEmit": true,
     "jsx": "react-jsx",
-    "skipLibCheck": true,
-    "declaration": true,
-    "esModuleInterop": true,
-    "outDir": "./dist",
-    "rootDir": "."
+    "incremental": true,
+    "types": ["vite/client"]
   },
-  "include": ["scripts/*", "src/**/*", "test/**/*"]
+  "exclude": [
+    "node_modules",
+    "dist",
+    "build",
+    ".next"
+  ],
+  "include": [
+    "src",
+    "src/vite-env.d.ts",
+    "custom.d.ts"
+  ]
 }
