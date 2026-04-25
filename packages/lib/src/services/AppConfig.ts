@@ -2,6 +2,17 @@ import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { Resource } from "sst";
 import { z } from "zod";
 
+type SstResourceLookup = Record<string, { name?: string; url?: string; arn?: string }>;
+const resources = Resource as unknown as SstResourceLookup;
+
+const getResourceProperty = (resourceName: string, key: "name" | "url" | "arn") => {
+  const value = resources[resourceName]?.[key];
+  if (!value) {
+    throw new Error(`Missing SST resource property: ${resourceName}.${key}`);
+  }
+  return value;
+};
+
 const TTLSchema = z.union([z.number(), z.string().regex(/^\d+ (Y|W|D|H|M|s|Ms)$/)]);
 
 const AssetsConfigSchema = z.object({
@@ -90,7 +101,7 @@ export const getPersistenceConfig = () => {
   }
   return {
     client: new DynamoDBClient(),
-    tableName: Resource.SendraDatabase.name,
+    tableName: getResourceProperty("SendraDatabase", "name"),
   };
 };
 
@@ -117,7 +128,7 @@ export const getRateLimitConfig = () => {
 
 export const getTaskQueueConfig = () => {
   return {
-    queueUrl: Resource.TaskQueue.url,
-    stateMachineArn: Resource.DelayedTaskStateMachine.arn,
+    queueUrl: getResourceProperty("TaskQueue", "url"),
+    stateMachineArn: getResourceProperty("DelayedTaskStateMachine", "arn"),
   };
 };

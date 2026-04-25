@@ -135,7 +135,7 @@ export class CampaignPersistence extends BasePersistence<Campaign> {
   /**
    * Ensure `stats` is persisted on create (BasePersistence.put raw item before Zod defaults apply).
    */
-  override async create(item: Omit<Campaign, "id" | "createdAt" | "updatedAt">): Promise<Campaign> {
+  override async create(item: Omit<Campaign, "id" | "createdAt" | "updatedAt" | "stats"> & { stats?: Campaign["stats"] }): Promise<Campaign> {
     const stats = item.stats ?? { total: 0, sent: 0, delivered: 0, opened: 0, errors: 0, errorDetails: [] };
     return super.create({ ...item, stats });
   }

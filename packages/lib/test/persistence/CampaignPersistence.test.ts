@@ -118,6 +118,7 @@ describe("CampaignPersistence", () => {
           recipients: ["rec-1"],
           template: "test-template-id",
           status: "DRAFT",
+          stats: { total: 0, sent: 0, delivered: 0, opened: 0, errors: 0, errorDetails: [] },
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
         };
@@ -141,6 +142,7 @@ describe("CampaignPersistence", () => {
           recipients: ["rec-2"],
           template: "test-template-id",
           status: "DELIVERED",
+          stats: { total: 0, sent: 0, delivered: 0, opened: 0, errors: 0, errorDetails: [] },
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
         };

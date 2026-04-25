@@ -64,19 +64,22 @@ function getLogger(module: string, methodName: string, args: any[], options?: Lo
   return logger;
 }
 
-export function logMethodReturningPromise<TReturn, TFunctionParameters>(className: string, options: LogMethodOptions = {}) {
-  return (target: any, context: ClassMethodDecoratorContext | ClassGetterDecoratorContext | string): TypedPropertyDescriptor<(params: TFunctionParameters) => Promise<TReturn>> => {
-    const methodName = String(typeof context === "string" ? context : context.name);
+export function logMethodReturningPromise(className: string, options: LogMethodOptions = {}) {
+  return <TThis, TArgs extends unknown[], TResult>(
+    target: (this: TThis, ...args: TArgs) => Promise<TResult>,
+    context: ClassMethodDecoratorContext<TThis, (this: TThis, ...args: TArgs) => Promise<TResult>> | string,
+  ) => {
+    const methodName = typeof context === "string" ? context : String(context.name);
 
-    function replacementMethod(this: any, ...args: any[]) {
+    return function replacementMethod(this: TThis, ...args: TArgs) {
       const logger = getLogger(className, methodName, args, options);
       const start = Date.now();
       logger.info(`${methodName}.start`);
       const result = target.call(this, ...args);
 
-      return new Promise<TReturn>((resolve, reject) => {
+      return new Promise<TResult>((resolve, reject) => {
         result
-          .then((value: TReturn) => {
+          .then((value: TResult) => {
             logger.info({ duration: Date.now() - start }, `${methodName}.succeeded`);
             resolve(value);
           })
@@ -85,7 +88,6 @@ export function logMethodReturningPromise<TReturn, TFunctionParameters>(classNam
             reject(error);
           });
       });
-    }
-    return replacementMethod as TypedPropertyDescriptor<(params: TFunctionParameters) => Promise<TReturn>>;
+    };
   };
 }

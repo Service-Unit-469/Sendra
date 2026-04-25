@@ -1,7 +1,5 @@
 import { createRoute, z } from "@hono/zod-openapi";
-import type { BaseItem, BasePersistence, Embeddable, QueryResult } from "@sendra/lib";
-import type { EmbeddedObject } from "lib/dist/persistence/BasePersistence";
-import type { EmbedLimit } from "lib/dist/persistence/utils/EmbedHelper";
+import type { BaseItem, BasePersistence, Embeddable, EmbedLimit, QueryResult } from "@sendra/lib";
 import type { AppType } from "../../app";
 import { BadRequest, NotFound } from "../../exceptions";
 import { getProblemResponseSchema } from "../../exceptions/responses";
@@ -9,6 +7,14 @@ import { BearerAuth, isAuthenticatedProjectMemberOrSecretKey } from "../../middl
 
 export type ProjectEntityCreate<T extends BaseItem> = Omit<T, "id" | "type" | "createdAt" | "updatedAt" | "project" | "stats">;
 export type ProjectEntityUpdate<T extends BaseItem> = Omit<T, "type" | "createdAt" | "updatedAt" | "project" | "stats">;
+type EmbeddedObject<T> = T & {
+  _embed?: {
+    actions?: unknown[];
+    emails?: unknown[];
+    events?: unknown[];
+    templates?: unknown[];
+  };
+};
 export const EmbedLimitSchema = z.enum(["standard", "extended", "all"]);
 
 export type ProjectEntityConfig<T extends BaseItem> = {

@@ -1,5 +1,5 @@
 export { ActionPersistence } from "./ActionPersistence";
-export type { BaseItem, Embeddable, QueryParams, QueryResult } from "./BasePersistence";
+export type { BaseItem, Embeddable, EmbeddedObject, QueryParams, QueryResult } from "./BasePersistence";
 export { BasePersistence } from "./BasePersistence";
 export { CampaignPersistence } from "./CampaignPersistence";
 export { ContactPersistence } from "./ContactPersistence";
