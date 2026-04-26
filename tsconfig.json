@@ -12,11 +12,9 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "react-jsx",
-    "downlevelIteration": true,
     "emitDecoratorMetadata": true,
     "declaration": true,
     "experimentalDecorators": true,
-    "baseUrl": "packages",
     "paths": {
       "@sendra/lib": [
         "./packages/lib/"

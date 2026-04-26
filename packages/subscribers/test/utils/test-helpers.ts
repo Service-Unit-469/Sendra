@@ -28,6 +28,7 @@ export const createTestSetup = async () => {
 		public: `test-public-${Date.now()}`,
 		secret: `test-secret-${Date.now()}`,
 		eventTypes: ["user.signup"],
+		colors: [],
 	});
 
 	const membershipPersistence = new MembershipPersistence();
@@ -143,6 +144,7 @@ export const createTestCampaign = async (projectId: string) => {
 		},
 		recipients: [],
 		status: "DRAFT",
+		stats: { total: 0, sent: 0, delivered: 0, opened: 0, errors: 0, errorDetails: [] },
 		template: template.id,
 	});
 };
@@ -172,4 +174,3 @@ export const createTestEmail = async (projectId: string, contactId: string, mess
 		source: "test-action-id",
 	});
 };
-

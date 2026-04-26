@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Check } from "lucide-react";
-import React, { type RefObject, useEffect, useState } from "react";
+import React, { type RefObject, useEffect, useId, useState } from "react";
 import { DropdownIndicator } from "../../../icons/DropdownIndicator";
 
 export interface Dropdownprops {
@@ -30,6 +30,7 @@ export interface Dropdownprops {
 export default function Dropdown({ onChange, values, selectedValue, className, withSearch = false, inModal = false, disabled = false, ariaLabel = "Select a value" }: Dropdownprops) {
   const [open, setOpen] = useState(false);
   const ref = React.createRef<HTMLDivElement>();
+  const listboxId = useId();
 
   useEffect(() => {
     const mutableRef = ref as RefObject<HTMLDivElement | null>;
@@ -58,7 +59,8 @@ export default function Dropdown({ onChange, values, selectedValue, className, w
             disabled ? "cursor-default bg-neutral-100" : "cursor-pointer bg-white"
           } relative w-full rounded border border-neutral-300 py-2 pl-3 pr-10 text-left focus:border-neutral-500 focus:outline-hidden focus:ring-1 focus:ring-neutral-500 sm:text-sm`}
           aria-haspopup="listbox"
-          aria-expanded="true"
+          aria-expanded={open}
+          aria-controls={listboxId}
           aria-label={ariaLabel}
           onClick={() => {
             if (!disabled) {
@@ -84,19 +86,20 @@ export default function Dropdown({ onChange, values, selectedValue, className, w
 
         <AnimatePresence>
           {open && (
-            <motion.ul
+            <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.2, ease: "easeInOut" }}
               className={`${inModal ? "fixed w-64" : "absolute w-full"} z-50 mt-1 max-h-72 rounded-md border border-black border-opacity-10 bg-white text-base shadow-lg focus:outline-hidden sm:text-sm`}
               tabIndex={-1}
+              id={listboxId}
               role="listbox"
             >
               <div className="sticky top-0 z-50 bg-white">
                 {withSearch ? (
                   <>
-                    <li className="relative cursor-default select-none px-3 py-2 text-neutral-800">
+                    <div className="relative cursor-default select-none px-3 py-2 text-neutral-800">
                       <input
                         type="search"
                         name="search"
@@ -105,7 +108,7 @@ export default function Dropdown({ onChange, values, selectedValue, className, w
                         placeholder={"Search"}
                         onChange={(e) => setQuery(e.target.value)}
                       />
-                    </li>
+                    </div>
                     <hr />
                   </>
                 ) : null}
@@ -113,16 +116,28 @@ export default function Dropdown({ onChange, values, selectedValue, className, w
 
               <div className={"scrollbar-w-2 scrollbar scrollbar-thumb-rounded-full scrollbar-thumb-neutral-400 scrollbar-track-neutral-100 max-h-52 overflow-y-scroll p-1"}>
                 {values.filter((value) => value.name.toLowerCase().startsWith(query.toLowerCase())).length === 0 ? (
-                  <li className="relative cursor-default select-none py-2.5 pl-3 pr-9 text-neutral-800">No results found</li>
+                  <div className="relative cursor-default select-none py-2.5 pl-3 pr-9 text-neutral-800">No results found</div>
                 ) : (
                   values
                     .filter((value) => value.name.toLowerCase().startsWith(query.toLowerCase()))
                     .map((value) => {
                       return (
-                        <li
+                        <div
                           key={`x-${value.name}-${value.value}`}
-                          className="relative flex cursor-default select-none items-center rounded-md py-2.5 pl-2.5 text-neutral-800 transition ease-in-out hover:bg-neutral-100"
+                          role="option"
+                          aria-selected={value.value === selectedValue}
+                          tabIndex={0}
+                          className="relative flex cursor-pointer select-none items-center rounded-md py-2.5 pl-2.5 text-neutral-800 transition ease-in-out hover:bg-neutral-100 focus:outline-hidden focus:ring-2 focus:ring-neutral-500"
                           onClick={() => {
+                            onChange(value.value);
+                            setQuery("");
+                            setOpen(!open);
+                          }}
+                          onKeyDown={(event) => {
+                            if (event.key !== "Enter" && event.key !== " ") {
+                              return;
+                            }
+                            event.preventDefault();
                             onChange(value.value);
                             setQuery("");
                             setOpen(!open);
@@ -134,12 +149,12 @@ export default function Dropdown({ onChange, values, selectedValue, className, w
                               <Check size={18} />
                             </span>
                           ) : null}
-                        </li>
+                        </div>
                       );
                     })
                 )}
               </div>
-            </motion.ul>
+            </motion.div>
           )}
         </AnimatePresence>
       </div>

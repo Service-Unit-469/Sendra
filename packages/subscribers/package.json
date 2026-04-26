@@ -17,7 +17,7 @@
 		"@sendra/test": "*",
 		"@types/aws-lambda": "^8.10.161",
 		"ts-node-dev": "^2.0.0",
-		"typescript": "^5.5.3"
+		"typescript": "^6.0.3"
 	},
 	"dependencies": {
 		"@aws-sdk/client-sns": "^3.980.0",

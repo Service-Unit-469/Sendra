@@ -53,7 +53,7 @@ describe("AssetService", () => {
   describe("constructor", () => {
     it("should throw error when ASSETS_BUCKET_NAME is not set", async () => {
       // Temporarily change the mock to return empty bucket name
-      const { getAssetsConfig } = await import("../../src/services/AppConfig");
+      const { getAssetsConfig } = await import("../../src/services/AppConfig.js");
       vi.mocked(getAssetsConfig).mockReturnValueOnce({
         ASSETS_BUCKET_NAME: "",
         APP_URL: "https://test-bucket.s3.amazonaws.com",

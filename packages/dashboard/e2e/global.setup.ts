@@ -1,13 +1,12 @@
 import { test as setup } from "@playwright/test";
 import { createHash } from "@sendra/api";
-import {
-  MembershipPersistence,
-  ProjectPersistence,
-  UserPersistence,
-} from "@sendra/lib";
+
 import { randomUUID } from "node:crypto";
 import { writeFileSync } from "node:fs";
 import { join } from "node:path";
+import {config} from "dotenv";
+
+config();
 
 import { getConfig } from "./util/config";
 
@@ -18,6 +17,11 @@ setup("creating E2E user", async ({ }) => {
   process.env.RATE_LIMIT_TABLE_NAME = rateLimitTableName;
   process.env.PERSISTENCE_PROVIDER = "local";
 
+  const {
+    MembershipPersistence,
+    ProjectPersistence,
+    UserPersistence
+  } = require("@sendra/lib");
 
   const email = "e2e@example.com";
   const rawPassword = randomUUID();

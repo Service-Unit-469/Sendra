@@ -64,19 +64,17 @@ function getLogger(module: string, methodName: string, args: any[], options?: Lo
   return logger;
 }
 
-export function logMethodReturningPromise<TReturn, TFunctionParameters>(className: string, options: LogMethodOptions = {}) {
-  return (target: any, context: ClassMethodDecoratorContext | ClassGetterDecoratorContext | string): TypedPropertyDescriptor<(params: TFunctionParameters) => Promise<TReturn>> => {
-    const methodName = String(typeof context === "string" ? context : context.name);
-
-    function replacementMethod(this: any, ...args: any[]) {
+export function logMethodReturningPromise(className: string, options: LogMethodOptions = {}) {
+  const wrap = <TThis, TArgs extends unknown[], TResult>(target: (this: TThis, ...args: TArgs) => Promise<TResult>, methodName: string) => {
+    return function replacementMethod(this: TThis, ...args: TArgs) {
       const logger = getLogger(className, methodName, args, options);
       const start = Date.now();
       logger.info(`${methodName}.start`);
       const result = target.call(this, ...args);
 
-      return new Promise<TReturn>((resolve, reject) => {
+      return new Promise<TResult>((resolve, reject) => {
         result
-          .then((value: TReturn) => {
+          .then((value: TResult) => {
             logger.info({ duration: Date.now() - start }, `${methodName}.succeeded`);
             resolve(value);
           })
@@ -85,7 +83,31 @@ export function logMethodReturningPromise<TReturn, TFunctionParameters>(classNam
             reject(error);
           });
       });
-    }
-    return replacementMethod as TypedPropertyDescriptor<(params: TFunctionParameters) => Promise<TReturn>>;
+    };
   };
+
+  const decorator = ((...args: unknown[]) => {
+    // Legacy decorator signature: (target, propertyKey, descriptor)
+    if (args.length === 3) {
+      const propertyKey = args[1] as string | symbol;
+      const descriptor = args[2] as TypedPropertyDescriptor<(...methodArgs: unknown[]) => Promise<unknown>>;
+      if (!descriptor.value) {
+        return descriptor;
+      }
+      descriptor.value = wrap(descriptor.value, String(propertyKey));
+      return descriptor;
+    }
+
+    // Manual/stage-3-style usage used by tests: (target, contextOrName)
+    if (args.length === 2 && typeof args[0] === "function") {
+      const target = args[0] as (this: unknown, ...methodArgs: unknown[]) => Promise<unknown>;
+      const context = args[1] as ClassMethodDecoratorContext | string;
+      const methodName = typeof context === "string" ? context : String(context.name);
+      return wrap(target, methodName);
+    }
+
+    throw new TypeError("Unsupported decorator signature");
+  }) as MethodDecorator;
+
+  return decorator;
 }

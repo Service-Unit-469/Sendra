@@ -98,11 +98,11 @@ export type EmbeddedObject<T> = T & {
   };
 };
 
+type CreateDefaultedKeys<T extends BaseItem> = Extract<keyof T, "stats" | "colors">;
+type CreateInput<T extends BaseItem> = Omit<T, "id" | "createdAt" | "updatedAt" | CreateDefaultedKeys<T>> & Partial<Pick<T, CreateDefaultedKeys<T>>>;
+
 export abstract class BasePersistence<T extends BaseItem> {
-  private readonly logger = rootLogger.child({
-    module: "BasePersistence",
-    type: this.type,
-  });
+  private readonly logger: ReturnType<typeof rootLogger.child>;
   public readonly docClient: DynamoDBDocumentClient;
   public readonly tableName: string;
 
@@ -111,6 +111,10 @@ export abstract class BasePersistence<T extends BaseItem> {
     private readonly schema: ZodType<T>,
   ) {
     const config = getPersistenceConfig();
+    this.logger = rootLogger.child({
+      module: "BasePersistence",
+      type: this.type,
+    });
     this.docClient = DynamoDBDocumentClient.from(config.client);
     this.tableName = config.tableName;
   }
@@ -218,7 +222,7 @@ export abstract class BasePersistence<T extends BaseItem> {
   }
 
   @logMethodReturningPromise("BasePersistence")
-  async create(item: Omit<T, "id" | "createdAt" | "updatedAt">): Promise<T> {
+  async create(item: CreateInput<T>): Promise<T> {
     const newItem = this.projectItem({
       ...item,
       id: uuidv7(),

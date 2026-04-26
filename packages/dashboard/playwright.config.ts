@@ -16,6 +16,7 @@ const appUrl = domainName.startsWith("http://") || domainName.startsWith("https:
 export default defineConfig({
   testDir: "./e2e",
   fullyParallel: true,
+  workers: process.env.CI ? 2 : 4,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
   reporter: 'html',

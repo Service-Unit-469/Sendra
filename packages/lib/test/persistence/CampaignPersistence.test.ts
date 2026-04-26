@@ -1,4 +1,5 @@
 import type { Campaign } from "@sendra/shared";
+import { CAMPAIGN_QUEUE_ERROR_LOG_MAX } from "@sendra/shared";
 import { startupDynamoDB, stopDynamoDB } from "@sendra/test";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { CampaignPersistence } from "../../src/persistence/CampaignPersistence";
@@ -118,6 +119,7 @@ describe("CampaignPersistence", () => {
           recipients: ["rec-1"],
           template: "test-template-id",
           status: "DRAFT",
+          stats: { total: 0, sent: 0, delivered: 0, opened: 0, errors: 0, errorDetails: [] },
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
         };
@@ -141,6 +143,7 @@ describe("CampaignPersistence", () => {
           recipients: ["rec-2"],
           template: "test-template-id",
           status: "DELIVERED",
+          stats: { total: 0, sent: 0, delivered: 0, opened: 0, errors: 0, errorDetails: [] },
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
         };
@@ -421,6 +424,109 @@ describe("CampaignPersistence", () => {
         });
 
         expect(campaign.recipients).toEqual([]);
+      });
+    });
+
+    describe("campaign stats", () => {
+      it("should initialize default stats on create", async () => {
+        const campaign = await persistence.create({
+          project: TEST_PROJECT_ID,
+          subject: "Default Stats Campaign",
+          body: {
+            data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+            html: "<p>Body</p>",
+            plainText: "Body",
+          },
+          recipients: ["rec-default-stats"],
+          template: "test-template-id",
+          status: "DRAFT",
+        });
+
+        expect(campaign.stats).toEqual({
+          total: 0,
+          sent: 0,
+          delivered: 0,
+          opened: 0,
+          errors: 0,
+          errorDetails: [],
+        });
+      });
+
+      it("should set queue stats and cap/truncate error details", async () => {
+        const campaign = await persistence.create({
+          project: TEST_PROJECT_ID,
+          subject: "Queue Stats Campaign",
+          body: {
+            data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+            html: "<p>Body</p>",
+            plainText: "Body",
+          },
+          recipients: ["rec-queue-stats"],
+          template: "test-template-id",
+          status: "DRAFT",
+        });
+
+        const failures = Array.from({ length: CAMPAIGN_QUEUE_ERROR_LOG_MAX + 2 }, (_, index) => ({
+          contact: `contact-${index}`,
+          message: index === 0 ? "x".repeat(600) : `failure-${index}`,
+        }));
+
+        await persistence.setStatsAfterQueue(campaign.id, 120, failures);
+
+        const updated = await persistence.get(campaign.id);
+        expect(updated).toBeDefined();
+        expect(updated?.stats.total).toBe(120);
+        expect(updated?.stats.sent).toBe(0);
+        expect(updated?.stats.delivered).toBe(0);
+        expect(updated?.stats.opened).toBe(0);
+        expect(updated?.stats.errors).toBe(failures.length);
+        expect(updated?.stats.errorDetails).toHaveLength(CAMPAIGN_QUEUE_ERROR_LOG_MAX);
+        expect(updated?.stats.errorDetails[0]?.contact).toBe("contact-2");
+        expect(updated?.stats.errorDetails.at(-1)?.contact).toBe(`contact-${CAMPAIGN_QUEUE_ERROR_LOG_MAX + 1}`);
+      });
+
+      it("should increment only requested stats counters", async () => {
+        const campaign = await persistence.create({
+          project: TEST_PROJECT_ID,
+          subject: "Increment Stats Campaign",
+          body: {
+            data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+            html: "<p>Body</p>",
+            plainText: "Body",
+          },
+          recipients: ["rec-increment-stats"],
+          template: "test-template-id",
+          status: "DRAFT",
+        });
+
+        await persistence.incrementStats(campaign.id, { sent: 3, opened: 2 });
+
+        const updated = await persistence.get(campaign.id);
+        expect(updated).toBeDefined();
+        expect(updated?.stats.sent).toBe(3);
+        expect(updated?.stats.opened).toBe(2);
+        expect(updated?.stats.delivered).toBe(0);
+      });
+
+      it("should no-op when incrementStats receives empty deltas", async () => {
+        const campaign = await persistence.create({
+          project: TEST_PROJECT_ID,
+          subject: "No-op Increment Campaign",
+          body: {
+            data: JSON.stringify({ time: Date.now(), blocks: [], version: "2.28.0" }),
+            html: "<p>Body</p>",
+            plainText: "Body",
+          },
+          recipients: ["rec-noop-stats"],
+          template: "test-template-id",
+          status: "DRAFT",
+        });
+
+        await persistence.incrementStats(campaign.id, {});
+
+        const updated = await persistence.get(campaign.id);
+        expect(updated).toBeDefined();
+        expect(updated?.stats).toEqual(campaign.stats);
       });
     });
   });
