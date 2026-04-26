@@ -22,7 +22,7 @@
   },
   "devDependencies": {
     "@sendra/test": "*",
-    "typescript": "^5.5.3"
+    "typescript": "^6.0.3"
   },
   "scripts": {
     "lint": "biome check src",

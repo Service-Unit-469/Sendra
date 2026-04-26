@@ -27,4 +27,8 @@ export class ProjectPersistence extends UnembeddingBasePersistence<Project> {
   projectItem(item: Project): Project & { i_attr1?: string; i_attr2?: string } {
     return item;
   }
+
+  override async create(item: Omit<Project, "id" | "createdAt" | "updatedAt" | "colors"> & { colors?: Project["colors"] }): Promise<Project> {
+    return super.create({ ...item, colors: item.colors ?? [] });
+  }
 }

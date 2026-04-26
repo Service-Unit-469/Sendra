@@ -47,6 +47,7 @@ describe("ProjectPersistence", () => {
         eventTypes: [],
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
+        colors: []
       };
 
       const projected = persistence.projectItem(project);
@@ -65,6 +66,7 @@ describe("ProjectPersistence", () => {
         public: "public-delete-1",
         url: "https://delete1.example.com",
         eventTypes: [],
+        colors: []
       });
 
       vi.mocked(TaskQueue.addTask).mockClear();
@@ -89,6 +91,7 @@ describe("ProjectPersistence", () => {
         email: "contact@example.com",
         from: "noreply@example.com",
         eventTypes: [],
+        colors: []
       });
 
       vi.mocked(TaskQueue.addTask).mockClear();
@@ -113,6 +116,7 @@ describe("ProjectPersistence", () => {
         public: "public-key-123",
         url: "https://example.com",
         eventTypes: [],
+        colors: []
       };
 
       const created = await persistence.create(projectData);
@@ -130,6 +134,7 @@ describe("ProjectPersistence", () => {
         public: "public-key-456",
         url: "https://retrievable.example.com",
         eventTypes: [],
+        colors: []
       };
 
       const created = await persistence.create(projectData);
@@ -148,6 +153,7 @@ describe("ProjectPersistence", () => {
         public: "public-list-1",
         url: "https://list1.example.com",
         eventTypes: [],
+        colors: []
       });
 
       await persistence.create({
@@ -156,6 +162,7 @@ describe("ProjectPersistence", () => {
         public: "public-list-2",
         url: "https://list2.example.com",
         eventTypes: [],
+        colors: []
       });
 
       const result = await persistence.list({ limit: 10 });
@@ -173,6 +180,7 @@ describe("ProjectPersistence", () => {
         public: "public-update",
         url: "https://original.example.com",
         eventTypes: [],
+        colors: []
       });
 
       const updated = await persistence.put({
@@ -199,6 +207,7 @@ describe("ProjectPersistence", () => {
           eventTypes: [],
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
+          colors: []
         },
       ];
 
@@ -218,6 +227,7 @@ describe("ProjectPersistence", () => {
           eventTypes: [],
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
+          colors: []
         },
       ];
 

@@ -30,6 +30,7 @@ describe("ContactService", () => {
 			public: "test-public",
 			url: "https://test-project.example.com",
 			eventTypes: [],
+			colors: []
 		});
 
 		// Initialize persistence instances with the created project ID

@@ -19,7 +19,7 @@ describe("Decorator", () => {
 
 			const instance = new TestClass();
 			// Apply decorator manually
-			const decorator = logMethodReturningPromise<string, string>("TestClass");
+			const decorator = logMethodReturningPromise("TestClass");
 			instance.testMethod = decorator(instance.testMethod, "testMethod") as typeof instance.testMethod;
 
 			const result = await instance.testMethod("test");
@@ -40,7 +40,7 @@ describe("Decorator", () => {
 			}
 
 			const instance = new TestClass();
-			const decorator = logMethodReturningPromise<void, void>("TestClass");
+			const decorator = logMethodReturningPromise("TestClass");
 			instance.failingMethod = decorator(instance.failingMethod, "failingMethod") as typeof instance.failingMethod;
 
 			await expect(instance.failingMethod()).rejects.toThrow("Test error");
@@ -343,7 +343,7 @@ describe("Decorator", () => {
 			}
 
 			const instance = new TestClass();
-			const decorator = logMethodReturningPromise<number, number>("TestClass");
+			const decorator = logMethodReturningPromise("TestClass");
 			instance.getValue = decorator(instance.getValue, "getValue") as typeof instance.getValue;
 
 			const result = await instance.getValue(21);
@@ -361,7 +361,7 @@ describe("Decorator", () => {
 			}
 
 			const instance = new TestClass();
-			const decorator = logMethodReturningPromise<void, void>("TestClass");
+			const decorator = logMethodReturningPromise("TestClass");
 			instance.throwError = decorator(instance.throwError, "throwError") as typeof instance.throwError;
 
 			await expect(instance.throwError()).rejects.toThrow(customError);
