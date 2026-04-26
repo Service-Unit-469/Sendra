@@ -9,6 +9,7 @@ vi.mock("sst", () => ({
       url: "http://test-queue-url",
     },
     DelayedTaskStateMachine: {
+      arn: "arn:aws:sfn:us-east-1:123456789012:stateMachine:test-state-machine",
       stateMachineArn: "arn:aws:sfn:us-east-1:123456789012:stateMachine:test-state-machine",
     },
   },
