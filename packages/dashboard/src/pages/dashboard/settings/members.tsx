@@ -14,6 +14,7 @@ import SettingTabs from "../../../components/Navigation/SettingTabs/SettingTabs"
 import Modal from "../../../components/Overlay/Modal/Modal";
 import Table from "../../../components/Table/Table";
 import FullscreenLoader from "../../../components/Utility/FullscreenLoader/FullscreenLoader";
+import { settingsDangerActionCopy } from "../../../lib/actionCopy";
 import { useCurrentProject, useCurrentProjectMemberships, useProjects } from "../../../lib/hooks/projects";
 import { useUser } from "../../../lib/hooks/users";
 import { network } from "../../../lib/network";
@@ -45,6 +46,8 @@ export default function MembersPage() {
   if (!projects || !user || !memberships || !memberships.members) {
     return <FullscreenLoader />;
   }
+
+  const leaveProjectCopy = settingsDangerActionCopy.leaveProject(memberships.members?.length === 1);
 
   const inviteAccount = (data: Omit<MembershipInvite, "projectId">) => {
     toast.promise(
@@ -115,12 +118,9 @@ export default function MembersPage() {
         onToggle={() => setShowLeaveModal(!showLeaveModal)}
         onAction={leaveProject}
         type="danger"
-        title="Are you sure?"
-        description={
-          memberships.members?.length === 1
-            ? "You are the last person in this project, if you leave it we will automatically delete it!"
-            : "Leaving a project is permanent, you will lose access to the data and will need to be reinvited again."
-        }
+        action={leaveProjectCopy.action}
+        title={leaveProjectCopy.title}
+        description={leaveProjectCopy.description}
       />
       <Modal
         isOpen={showInviteModal}
