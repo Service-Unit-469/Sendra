@@ -12,6 +12,7 @@ import ColorList from "../../../components/Input/ColorList/ColorList";
 import Input from "../../../components/Input/Input/Input";
 import SettingTabs from "../../../components/Navigation/SettingTabs/SettingTabs";
 import Modal from "../../../components/Overlay/Modal/Modal";
+import { deleteModalCopy } from "../../../lib/actionCopy";
 import { useCurrentProject, useCurrentProjectMemberships, useProjects } from "../../../lib/hooks/projects";
 import { useUser } from "../../../lib/hooks/users";
 import { network } from "../../../lib/network";
@@ -86,6 +87,8 @@ export default function ProjectPage() {
     );
   };
 
+  const projectDeleteCopy = deleteModalCopy("project", project.name);
+
   return (
     <>
       <Modal
@@ -93,8 +96,9 @@ export default function ProjectPage() {
         onToggle={() => setShowDeleteModal(!showDeleteModal)}
         onAction={deleteProject}
         type="danger"
-        title="Are you sure?"
-        description="All data associated with this project will also be permanently deleted. This action cannot be reversed!"
+        action={projectDeleteCopy.action}
+        title={projectDeleteCopy.title}
+        description={projectDeleteCopy.description}
       />
       <SettingTabs />
       <Card title="Project details" description="Manage your project details">
@@ -114,7 +118,7 @@ export default function ProjectPage() {
           <div className="flex">
             <div className="w-2/3">
               <p className="text-sm font-bold text-neutral-500">Delete your project</p>
-              <p className="text-sm text-neutral-400">Deleting your project may have unwanted consequences. All data associated with this project will get deleted and can not be recovered! </p>
+              <p className="text-sm text-neutral-400">Deleting your project permanently removes all associated data. This cannot be undone.</p>
             </div>
             <DangerButton className="ml-auto h-1/2" onClick={() => setShowDeleteModal(true)}>
               <Trash size={18} />

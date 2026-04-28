@@ -107,7 +107,7 @@ test.describe("Campaigns", () => {
     });
 
     await test.step("Send test campaign", async () => {
-      await page.getByRole("button", { name: "Test", exact: true }).click();
+      await page.getByRole("button", { name: "Send test", exact: true }).click();
       await page.getByText(/test campaign/i).waitFor({ state: "visible", timeout: 10000 });
     });
 

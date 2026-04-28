@@ -22,6 +22,7 @@ import { StyledLabel } from "../../../components/Label/StyledLabel";
 import Modal from "../../../components/Overlay/Modal/Modal";
 import Empty from "../../../components/Utility/Empty/Empty";
 import FullscreenLoader from "../../../components/Utility/FullscreenLoader/FullscreenLoader";
+import { deleteModalCopy, editActionCopy } from "../../../lib/actionCopy";
 import { useAction, useActions, useRelatedActions } from "../../../lib/hooks/actions";
 import { useEventTypes } from "../../../lib/hooks/events";
 import { useCurrentProject } from "../../../lib/hooks/projects";
@@ -106,6 +107,8 @@ export default function ActionDetailPage() {
     return <FullscreenLoader />;
   }
 
+  const actionDeleteCopy = deleteModalCopy("action", action.name);
+
   const updateAction = (data: Omit<ActionUpdate, "id">) => {
     toast.promise(
       network.fetch(`/projects/${project.id}/actions/${action.id}`, {
@@ -146,9 +149,9 @@ export default function ActionDetailPage() {
         onToggle={() => setDeleteModal(false)}
         onAction={remove}
         type="danger"
-        action="Delete Action"
-        title="Delete action"
-        description={`Delete "${action.name}"? This action is irreversible and will permanently remove this action.`}
+        action={actionDeleteCopy.action}
+        title={actionDeleteCopy.title}
+        description={actionDeleteCopy.description}
       />
       <Card
         title={"Edit your action"}
@@ -292,7 +295,7 @@ export default function ActionDetailPage() {
 
             <BlackButton type="submit">
               <Save strokeWidth={1.5} size={18} />
-              Save
+              {editActionCopy.saveChanges}
             </BlackButton>
           </div>
         </form>

@@ -17,6 +17,7 @@ import ThreeColMetricsSummary from "../../../components/Metrics/ThreeColMetricsS
 import Modal from "../../../components/Overlay/Modal/Modal";
 import Empty from "../../../components/Utility/Empty/Empty";
 import FullscreenLoader from "../../../components/Utility/FullscreenLoader/FullscreenLoader";
+import { deleteModalCopy, editActionCopy } from "../../../lib/actionCopy";
 import { useContact } from "../../../lib/hooks/contacts";
 import { useCurrentProject } from "../../../lib/hooks/projects";
 import { network } from "../../../lib/network";
@@ -138,6 +139,8 @@ export default function ContactDetailPage() {
     navigate("/contacts");
   };
 
+  const contactDeleteCopy = deleteModalCopy("contact", contact.email);
+
   return (
     <>
       <Modal
@@ -157,9 +160,9 @@ export default function ContactDetailPage() {
         onToggle={() => setDeleteModal(false)}
         onAction={remove}
         type="danger"
-        action="Delete Contact"
-        title="Delete contact"
-        description={`Delete ${contact.email}? This action is irreversible and will permanently remove this contact.`}
+        action={contactDeleteCopy.action}
+        title={contactDeleteCopy.title}
+        description={contactDeleteCopy.description}
       />
       <Card
         title={""}
@@ -197,7 +200,7 @@ export default function ContactDetailPage() {
               data: contact.data,
             }}
             showEmailField={false}
-            submitButtonText="Save"
+            submitButtonText={editActionCopy.saveChanges}
           />
         </div>
       </Card>

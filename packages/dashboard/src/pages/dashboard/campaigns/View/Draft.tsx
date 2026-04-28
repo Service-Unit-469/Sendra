@@ -16,6 +16,7 @@ import Dropdown from "../../../../components/Input/Dropdown/Dropdown";
 import { StyledLabel } from "../../../../components/Label/StyledLabel";
 import Modal from "../../../../components/Overlay/Modal/Modal";
 import FullscreenLoader from "../../../../components/Utility/FullscreenLoader/FullscreenLoader";
+import { campaignActionCopy, deleteModalCopy } from "../../../../lib/actionCopy";
 import { useCampaigns } from "../../../../lib/hooks/campaigns";
 import { useCurrentProject } from "../../../../lib/hooks/projects";
 import { network } from "../../../../lib/network";
@@ -110,6 +111,8 @@ export default function DraftCampaign({ campaign, mutate: campaignMutate }: { ca
   if (!campaign || (watch("body") as object | undefined) === undefined) {
     return <FullscreenLoader />;
   }
+
+  const campaignDeleteCopy = deleteModalCopy("campaign", campaign.subject);
 
   const send = async (data: Omit<CampaignUpdate, "id">) => {
     setConfirmModal(false);
@@ -222,9 +225,10 @@ export default function DraftCampaign({ campaign, mutate: campaignMutate }: { ca
         isOpen={confirmModal}
         onToggle={() => setConfirmModal(!confirmModal)}
         onAction={handleSubmit(send)}
+        action={campaignActionCopy.sendNow}
         type="info"
-        title="Send campaign"
-        description={`Once you start sending this campaign to ${watch("recipients").length} contacts, you can no longer make changes or undo it.`}
+        title={campaignActionCopy.sendModalTitle}
+        description={campaignActionCopy.sendModalDescription(watch("recipients").length)}
       >
         <StyledLabel>
           Delay
@@ -263,9 +267,9 @@ export default function DraftCampaign({ campaign, mutate: campaignMutate }: { ca
         onToggle={() => setDeleteModal(false)}
         onAction={remove}
         type="danger"
-        action="Delete Campaign"
-        title="Delete campaign"
-        description={`Delete "${campaign.subject}"? This action is irreversible and will permanently remove this campaign.`}
+        action={campaignDeleteCopy.action}
+        title={campaignDeleteCopy.title}
+        description={campaignDeleteCopy.description}
       />
 
       <Card
@@ -323,15 +327,15 @@ export default function DraftCampaign({ campaign, mutate: campaignMutate }: { ca
               }}
             >
               <Send />
-              Send
+              {campaignActionCopy.sendNow}
             </BlackButton>
             <SecondaryButton onClick={handleSubmit(sendTest)}>
               <FlaskConical size={18} />
-              Test
+              {campaignActionCopy.sendTest}
             </SecondaryButton>
             <SecondaryButton>
               <Save strokeWidth={1.5} size={18} />
-              Save
+              {campaignActionCopy.saveDraft}
             </SecondaryButton>
           </div>
         </form>
