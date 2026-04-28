@@ -5,31 +5,12 @@ export default defineConfig({
   plugins: [react()],
   base: "/subscription",
   build: {
-    rollupOptions: {
-      output: {
-        chunkFileNames: () => {
-          return `assets/[name]-[hash].js`;
-        },
-      },
-    },
-    
     // Optimize for production
-    minify: "esbuild",
+    minify: "oxc",
     sourcemap: true,
   },
   server: {
     port: 3001,
     open: true,
   },
-  // Optimize dependencies
-  optimizeDeps: {
-    include: [
-      "react",
-      "react-dom",
-      "react-router-dom",
-      "swr",
-      "jotai",
-    ],
-  },
 });
-

@@ -1,190 +1,282 @@
 import { expect, test } from "@playwright/test";
+import { getAuthCredentials } from "./util/auth-credentials";
 
 /**
  * Authentication E2E Tests
- * 
+ *
  * NOTE: These tests focus on UI validation and navigation flows.
  * They do NOT test complete signup/login flows that require email verification
  */
 test.describe("Authentication UI", () => {
-	test.describe("create account Page", () => {
-		test("should display signup form with all required fields", async ({ page }) => {
-			await page.goto("#/auth/signup");
+  test.describe("create account Page", () => {
+    test("should display signup form with all required fields", async ({
+      page,
+    }) => {
+      await page.goto("#/auth/signup");
 
-			// Check for form elements
-			await expect(page.getByLabel(/email/i)).toBeVisible();
-			await expect(page.getByLabel(/password/i)).toBeVisible();
-			await expect(page.getByRole("button", { name: /create account/i })).toBeVisible();
-		});
+      // Check for form elements
+      await expect(page.getByLabel(/email/i)).toBeVisible();
+      await expect(page.getByLabel(/password/i)).toBeVisible();
+      await expect(
+        page.getByRole("button", { name: /create account/i }),
+      ).toBeVisible();
+    });
 
-		test("should show validation error for invalid email format", async ({ page }) => {
-			await page.goto("#/auth/signup");
+    test("should show validation error for invalid email format", async ({
+      page,
+    }) => {
+      await page.goto("#/auth/signup");
 
-			// Fill in invalid email
-			await page.getByLabel(/email/i).fill("invalid-email");
-			await page.getByLabel(/password/i).fill("password123");
+      // Fill in invalid email
+      await page.getByLabel(/email/i).fill("invalid-email");
+      await page.getByLabel(/password/i).fill("password123");
 
-			// Submit form
-			await page.getByRole("button", { name: /create account/i }).click();
+      // Submit form
+      await page.getByRole("button", { name: /create account/i }).click();
 
-			// Should show validation error (client-side validation)
-			// Note: This tests front-end validation only
-			await expect(page.getByLabel(/email/i)).toBeVisible();
-		});
+      // Should show validation error (client-side validation)
+      // Note: This tests front-end validation only
+      await expect(page.getByLabel(/email/i)).toBeVisible();
+    });
 
-		test("should navigate to login page via link", async ({ page }) => {
-			await page.goto("#/auth/signup");
+    test("should navigate to login page via link", async ({ page }) => {
+      await page.goto("#/auth/signup");
 
-			const loginLink = page.getByRole("link", { name: /already have an account/i });
-			await expect(loginLink).toBeVisible();
+      const loginLink = page.getByRole("link", {
+        name: /already have an account/i,
+      });
+      await expect(loginLink).toBeVisible();
 
-			await loginLink.click();
-			await expect(page).toHaveURL(/\/auth\/login/);
-		});
+      await loginLink.click();
+      await expect(page).toHaveURL(/\/auth\/login/);
+    });
 
-		test("should have password input with type=password", async ({ page }) => {
-			await page.goto("#/auth/signup");
+    test("should have password input with type=password", async ({ page }) => {
+      await page.goto("#/auth/signup");
 
-			const passwordInput = page.getByLabel(/password/i);
-			await expect(passwordInput).toHaveAttribute("type", "password");
-		});
-	});
+      const passwordInput = page.getByLabel(/password/i);
+      await expect(passwordInput).toHaveAttribute("type", "password");
+    });
+  });
 
-	test.describe("Login Page", () => {
-		test("should display login form with all required fields", async ({ page }) => {
-			await page.goto("#/auth/login");
+  test.describe("Login Page", () => {
+    test("should display login form with all required fields", async ({
+      page,
+    }) => {
+      await page.goto("#/auth/login");
 
-			// Check for form elements
-			await expect(page.getByLabel(/email/i)).toBeVisible();
-			await expect(page.getByLabel(/password/i)).toBeVisible();
-			await expect(page.getByRole("button", { name: /login/i })).toBeVisible();
-		});
+      // Check for form elements
+      await expect(page.getByLabel(/email/i)).toBeVisible();
+      await expect(page.getByLabel(/password/i)).toBeVisible();
+      await expect(page.getByRole("button", { name: /login/i })).toBeVisible();
+    });
 
-		test("should navigate to signup page via link", async ({ page }) => {
-			await page.goto("#/auth/login");
+    test("should navigate to signup page via link", async ({ page }) => {
+      await page.goto("#/auth/login");
 
-			const signupLink = page.getByRole("link", { name: /create an account/i });
-			await expect(signupLink).toBeVisible();
+      const signupLink = page.getByRole("link", { name: /create an account/i });
+      await expect(signupLink).toBeVisible();
 
-			await signupLink.click();
-			await expect(page).toHaveURL(/\/auth\/signup/);
-		});
+      await signupLink.click();
+      await expect(page).toHaveURL(/\/auth\/signup/);
+    });
 
-		test("should navigate to forgot password page via link", async ({ page }) => {
-			await page.goto("#/auth/login");
+    test("should navigate to forgot password page via link", async ({
+      page,
+    }) => {
+      await page.goto("#/auth/login");
 
-			const forgotLink = page.getByRole("link", { name: /forgot.*password/i });
-			await expect(forgotLink).toBeVisible();
+      const forgotLink = page.getByRole("link", { name: /forgot.*password/i });
+      await expect(forgotLink).toBeVisible();
 
-			await forgotLink.click();
-			await expect(page).toHaveURL(/\/auth\/forgot-password/);
-		});
+      await forgotLink.click();
+      await expect(page).toHaveURL(/\/auth\/forgot-password/);
+    });
 
-		test("should have password input masked", async ({ page }) => {
-			await page.goto("#/auth/login");
+    test("should have password input masked", async ({ page }) => {
+      await page.goto("#/auth/login");
 
-			const passwordInput = page.getByLabel(/password/i);
-			await expect(passwordInput).toHaveAttribute("type", "password");
-		});
+      const passwordInput = page.getByLabel(/password/i);
+      await expect(passwordInput).toHaveAttribute("type", "password");
+    });
 
-		test("should allow form submission with filled fields", async ({ page }) => {
-			await page.goto("#/auth/login");
+    test("should allow form submission with filled fields", async ({
+      page,
+    }) => {
+      await page.goto("#/auth/login");
 
-			// Fill in credentials
-			await page.getByLabel(/email/i).fill("test@example.com");
-			await page.getByLabel(/password/i).fill("password123");
+      // Fill in credentials
+      await page.getByLabel(/email/i).fill("test@example.com");
+      await page.getByLabel(/password/i).fill("password123");
 
-			// Button should be clickable
-			const submitButton = page.getByRole("button", { name: /login/i });
-			await expect(submitButton).toBeEnabled();
-		});
-	});
+      // Button should be clickable
+      const submitButton = page.getByRole("button", { name: /login/i });
+      await expect(submitButton).toBeEnabled();
+    });
+  });
 
-	test.describe("Forgot Password Page", () => {
-		test("should display forgot password form", async ({ page }) => {
-			await page.goto("#/auth/forgot-password");
+  test.describe("Forgot Password Page", () => {
+    test("should display forgot password form", async ({ page }) => {
+      await page.goto("#/auth/forgot-password");
 
-			await expect(page.getByLabel(/email/i)).toBeVisible();
-			await expect(page.getByRole("button", { name: /send|reset/i })).toBeVisible();
-		});
+      await expect(page.getByLabel(/email/i)).toBeVisible();
+      await expect(
+        page.getByRole("button", { name: /send|reset/i }),
+      ).toBeVisible();
+    });
 
-		test("should allow email input for password reset", async ({ page }) => {
-			await page.goto("#/auth/forgot-password");
+    test("should allow email input for password reset", async ({ page }) => {
+      await page.goto("#/auth/forgot-password");
 
-			// Fill in email
-			const emailInput = page.getByLabel(/email/i);
-			await emailInput.fill("user@example.com");
+      // Fill in email
+      const emailInput = page.getByLabel(/email/i);
+      await emailInput.fill("user@example.com");
 
-			// Verify email was filled
-			await expect(emailInput).toHaveValue("user@example.com");
+      // Verify email was filled
+      await expect(emailInput).toHaveValue("user@example.com");
 
-			// Button should be enabled
-			await expect(page.getByRole("button", { name: /send|reset/i })).toBeEnabled();
-		});
+      // Button should be enabled
+      await expect(
+        page.getByRole("button", { name: /send|reset/i }),
+      ).toBeEnabled();
+    });
 
-		test("should navigate back to login from forgot password", async ({ page }) => {
-			await page.goto("#/auth/forgot-password");
+    test("should navigate back to login from forgot password", async ({
+      page,
+    }) => {
+      await page.goto("#/auth/forgot-password");
 
-			// Look for back to login link
-			const loginLink = page.getByRole("link", { name: /back.*login|login/i });
-			if (await loginLink.isVisible()) {
-				await loginLink.click();
-				await expect(page).toHaveURL(/\/auth\/login/);
-			}
-		});
-	});
+      // Look for back to login link
+      const loginLink = page.getByRole("link", { name: /back.*login|login/i });
+      if (await loginLink.isVisible()) {
+        await loginLink.click();
+        await expect(page).toHaveURL(/\/auth\/login/);
+      }
+    });
+  });
 
-	test.describe("Protected Routes", () => {
-		test("should redirect unauthenticated user to login", async ({ page }) => {
-			// Try to access protected route without authentication
-			await page.goto("#/contacts");
+  test.describe("Protected Routes", () => {
+    test("should redirect unauthenticated user to login", async ({ page }) => {
+      // Try to access protected route without authentication
+      await page.goto("#/contacts");
 
-			// Should redirect to login
-			await page.waitForURL(/\/dashboard#\/auth\/login/, { timeout: 5000 });
+      // Should redirect to login
+      await page.waitForURL(/\/dashboard#\/auth\/login/, { timeout: 5000 });
 
-			// At minimum, user should not see the contacts page without auth
-			const isOnLoginOrContactsLoading = await page.evaluate(() => {
-				return window.location.hash.includes("/auth/login") || 
-					   document.body.textContent?.includes("Login")
-			});
+      // At minimum, user should not see the contacts page without auth
+      const isOnLoginOrContactsLoading = await page.evaluate(() => {
+        return (
+          window.location.hash.includes("/auth/login") ||
+          document.body.textContent?.includes("Login")
+        );
+      });
 
-			expect(isOnLoginOrContactsLoading).toBeTruthy();
-		});
-	});
+      expect(isOnLoginOrContactsLoading).toBeTruthy();
+    });
+  });
 
-	test.describe("Form Accessibility", () => {
-		test("login form should have proper labels", async ({ page }) => {
-			await page.goto("#/auth/login");
+  test.describe("Form Accessibility", () => {
+    test("login form should have proper labels", async ({ page }) => {
+      await page.goto("#/auth/login");
 
-			// Check that form fields have proper labels for accessibility
-			const emailInput = page.getByLabel(/email/i);
-			const passwordInput = page.getByLabel(/password/i);
+      // Check that form fields have proper labels for accessibility
+      const emailInput = page.getByLabel(/email/i);
+      const passwordInput = page.getByLabel(/password/i);
 
-			await expect(emailInput).toBeVisible();
-			await expect(passwordInput).toBeVisible();
-		});
+      await expect(emailInput).toBeVisible();
+      await expect(passwordInput).toBeVisible();
+    });
 
-		test("signup form should have proper labels", async ({ page }) => {
-			await page.goto("#/auth/signup");
+    test("signup form should have proper labels", async ({ page }) => {
+      await page.goto("#/auth/signup");
 
-			// Check that form fields have proper labels for accessibility
-			const emailInput = page.getByLabel(/email/i);
-			const passwordInput = page.getByLabel(/password/i);
+      // Check that form fields have proper labels for accessibility
+      const emailInput = page.getByLabel(/email/i);
+      const passwordInput = page.getByLabel(/password/i);
 
-			await expect(emailInput).toBeVisible();
-			await expect(passwordInput).toBeVisible();
-		});
+      await expect(emailInput).toBeVisible();
+      await expect(passwordInput).toBeVisible();
+    });
 
-		test("forms should be keyboard navigable", async ({ page }) => {
-			await page.goto("#/auth/login");
+    test("forms should be keyboard navigable", async ({ page }) => {
+      await page.goto("#/auth/login");
 
-			// Tab through form elements
-			await page.keyboard.press("Tab");
-			let focusedElement = await page.evaluate(() => document.activeElement?.tagName);
-			
-			// Should be able to navigate with keyboard
-			expect(focusedElement).toBeDefined();
-		});
-	});
+      // Tab through form elements
+      await page.keyboard.press("Tab");
+      let focusedElement = await page.evaluate(
+        () => document.activeElement?.tagName,
+      );
+
+      // Should be able to navigate with keyboard
+      expect(focusedElement).toBeDefined();
+    });
+  });
 });
 
+/**
+ * Authentication Flow Tests
+ *
+ * Tests actual login functionality using E2E test credentials.
+ * This is critical - users must be able to log in to access the platform.
+ */
+test.describe("Authentication Flow", () => {
+  test("can successfully log in with valid credentials", async ({ page }) => {
+    const { email, password } = getAuthCredentials();
+
+    await page.goto("/dashboard#/auth/login");
+    await page.getByLabel(/email/i).waitFor({ state: "visible" });
+
+    // Fill in credentials
+    await page.getByLabel(/email/i).fill(email);
+    await page.getByLabel(/password/i).fill(password);
+
+    // Submit login form
+    await page.getByRole("button", { name: /login/i }).click();
+
+    // Should leave login page and have a token in storage
+    await page.waitForURL(/\/dashboard#\/(?!auth\/login)/, { timeout: 10000 });
+    const token = await page.evaluate(() => localStorage.getItem("sendra.token"));
+    expect(token).toBeTruthy();
+
+    // Dashboard shell should be visible
+    await expect(page.getByRole("navigation")).toBeVisible({ timeout: 10000 });
+  });
+
+  test("shows error for invalid credentials", async ({ page }) => {
+    await page.goto("/dashboard#/auth/login");
+    await page.getByLabel(/email/i).waitFor({ state: "visible" });
+
+    // Fill in invalid credentials
+    await page.getByLabel(/email/i).fill("invalid@example.com");
+    await page.getByLabel(/password/i).fill("wrongpassword");
+
+    // Submit login form
+    await page.getByRole("button", { name: /login/i }).click();
+
+    // Should remain on login and show an auth error
+    await page.waitForURL(/\/auth\/login/, { timeout: 10000 });
+    await expect(page.getByText(/login failed|invalid|incorrect/i).first()).toBeVisible({ timeout: 10000 });
+  });
+
+  test("can log out after successful login", async ({ page }) => {
+    const { email, password } = getAuthCredentials();
+
+    // Login first
+    await page.goto("/dashboard#/auth/login");
+    await page.getByLabel(/email/i).waitFor({ state: "visible" });
+    await page.getByLabel(/email/i).fill(email);
+    await page.getByLabel(/password/i).fill(password);
+    await page.getByRole("button", { name: /login/i }).click();
+    await page.waitForURL(/\/(?!auth)/, { timeout: 10000 });
+
+    // Navigate to logout
+    await page.goto("/dashboard#/auth/logout");
+
+    // Should redirect to login page
+    await page.waitForURL(/\/auth\/login/, { timeout: 5000 });
+
+    // Verify we're logged out by trying to access protected route
+    await page.goto("/dashboard#/contacts");
+    await page.waitForURL(/\/auth\/login/, { timeout: 5000 });
+  });
+});

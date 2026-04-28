@@ -6,6 +6,9 @@ config({
   quiet: true,
 });
 const {domainName} = getConfig();
+const appUrl = domainName.startsWith("http://") || domainName.startsWith("https://")
+  ? domainName
+  : `https://${domainName}`;
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -13,6 +16,7 @@ const {domainName} = getConfig();
 export default defineConfig({
   testDir: "./e2e",
   fullyParallel: true,
+  workers: process.env.CI ? 2 : 4,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
   reporter: 'html',
@@ -20,7 +24,7 @@ export default defineConfig({
     timeout: 10_000,
   },
   use: {
-    baseURL: process.env.BASE_URL || `https://${domainName}/dashboard`,
+    baseURL: process.env.BASE_URL || new URL("/dashboard", appUrl).toString(),
     trace: { mode: "retain-on-failure", snapshots: true, screenshots: true, sources: true },
     screenshot: "only-on-failure",
   },

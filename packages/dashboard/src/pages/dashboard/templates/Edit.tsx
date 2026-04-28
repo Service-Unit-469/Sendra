@@ -159,9 +159,10 @@ export default function EditTemplatePage() {
           setValue("templateType", props.templateType ?? "MARKETING");
           setValue("quickEmail", props.quickEmail === "true");
         }}
-        actions={() => (
+        actions={(saving: boolean) => (
           <>
             <BlackButton
+              disabled={saving}
               onClick={() =>
                 update({
                   subject: watch("subject"),
@@ -183,11 +184,11 @@ export default function EditTemplatePage() {
             <Options
               options={
                 <>
-                  <MenuButton onClick={(e) => duplicate(e)}>
+                  <MenuButton onClick={(e) => duplicate(e)} disabled={saving}>
                     <Copy strokeWidth={1.5} size={18} />
                     Duplicate
                   </MenuButton>
-                  <MenuButton onClick={() => setDeleteModal(true)}>
+                  <MenuButton onClick={() => setDeleteModal(true)} disabled={saving}>
                     <Trash strokeWidth={1.5} size={18} />
                     Delete
                   </MenuButton>

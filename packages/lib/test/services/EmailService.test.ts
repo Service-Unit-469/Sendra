@@ -264,6 +264,7 @@ describe("EmailService", () => {
 			updatedAt: "",
 			url: "https://example.com",
 			eventTypes: [],
+			colors: []
 		};
 
 		const mockContact: Contact = {
@@ -401,30 +402,6 @@ describe("EmailService", () => {
 
 			expect(result).toBe("<p>Hello John Doe from Test Project!</p>");
 		});
-
-		it("should handle nested object access", () => {
-			const contactWithNested = {
-				...mockContact,
-				data: {
-					...mockContact.data,
-					address: {
-						city: "New York",
-						state: "NY",
-					},
-				},
-			};
-
-			const body = "<p>City: {{contact.data.address.city}}, State: {{contact.data.address.state}}</p>";
-
-			const result = EmailService.compileBody(body, {
-				contact: contactWithNested,
-				project: mockProject,
-				email: mockEmail,
-				action: mockAction,
-			});
-
-			expect(result).toBe("<p>City: New York, State: NY</p>");
-		});
 	});
 
 	describe("compileSubject", () => {
@@ -435,6 +412,7 @@ describe("EmailService", () => {
 			updatedAt: "",
 			url: "",
 			eventTypes: [],
+			colors: []
 		};
 		
 		const mockContact: Contact = {

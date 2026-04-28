@@ -1,7 +1,7 @@
 import pino from "pino";
 import pinoPretty from "pino-pretty";
+import { getRequestInfo } from "../request-ids";
 import { getLogConfig } from "../services/AppConfig";
-import { getRequestInfo } from "./RequestInfo";
 
 const { level, pretty } = getLogConfig();
 
