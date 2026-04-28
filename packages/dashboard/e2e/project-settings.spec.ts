@@ -49,7 +49,7 @@ test.describe("Project Settings", () => {
   test("can navigate to Verified Identity page", async ({ dashboardPage, page }) => {
     await dashboardPage.navigateTo("Project Settings", "/settings/project");
     await dashboardPage.clickTab("Verified Identity", "/settings/identity");
-    await expect(page.getByRole("heading", { name: "Identity" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Sender" })).toBeVisible();
+    await page.getByRole("heading", { name: "Identity" }).waitFor({state: 'visible'});
+    await page.getByRole("heading", { name: "Sender" }).waitFor({state: 'visible'});
   })
 });

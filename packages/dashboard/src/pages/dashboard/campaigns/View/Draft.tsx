@@ -273,7 +273,8 @@ export default function DraftCampaign({ campaign, mutate: campaignMutate }: { ca
       />
 
       <Card
-        title="Update campaign"
+        title={campaign.subject}
+        description="Draft Campaign"
         options={
           <>
             <MenuButton onClick={duplicate}>
