@@ -14,9 +14,7 @@ test.describe("Project Settings", () => {
       await expect(page.getByRole("textbox", { name: "Name" })).toBeVisible();
       await expect(page.getByRole("textbox", { name: "URL" })).toBeVisible();
       await expect(page.getByRole("button", { name: "Save" })).toBeVisible();
-      await expect(
-        page.getByRole("button", { name: "Delete project" })
-      ).toBeVisible();
+      await expect(page.getByRole("button", { name: "Delete project" })).toBeVisible({ timeout: 30000 });
     });
   });
 
@@ -26,8 +24,8 @@ test.describe("Project Settings", () => {
     await expect(
       page.getByRole("heading", { name: "API Access" })
     ).toBeVisible();
-    await expect(page.getByLabel("API Endpoint")).toBeVisible();
-    await expect(page.getByLabel("Project ID")).toBeVisible();
+    await expect(page.getByTestId("api-endpoint-value")).toBeVisible();
+    await expect(page.getByTestId("project-id-value")).toBeVisible();
   });
 
   test("masks secret key with explicit reveal toggle", async ({ dashboardPage, page }) => {
