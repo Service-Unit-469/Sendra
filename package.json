@@ -43,7 +43,7 @@
     "packages/subscription"
   ],
   "dependencies": {
-    "sst": "^3.18.6"
+    "sst": "^4.12.2"
   },
   "overrides": {
     "hono": "^4.10.4",
