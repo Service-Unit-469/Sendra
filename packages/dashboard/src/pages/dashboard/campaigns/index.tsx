@@ -9,6 +9,7 @@ import { ErrorAlert } from "../../../components/Alert/ErrorAlert";
 import Badge from "../../../components/Badge/Badge";
 import { BlackButton } from "../../../components/Buttons/BlackButton";
 import Card from "../../../components/Card/Card";
+import { ItemCard, ItemCardBody } from "../../../components/Card/ItemCard";
 import Dropdown from "../../../components/Input/Dropdown/Dropdown";
 import Input from "../../../components/Input/Input/Input";
 import { StyledLabel } from "../../../components/Label/StyledLabel";
@@ -21,7 +22,6 @@ import { useCampaigns } from "../../../lib/hooks/campaigns";
 import { useCurrentProject } from "../../../lib/hooks/projects";
 import { useTemplates } from "../../../lib/hooks/templates";
 import { network } from "../../../lib/network";
-import { ItemCard, ItemCardBody } from "../../../components/Card/ItemCard";
 
 const createCampaignFormSchema = z.object({
   subject: z.string().min(1, "Subject is required"),
@@ -55,9 +55,7 @@ export default function Index() {
     return <FullscreenLoader />;
   }
 
-  const createCampaign = async (
-    data: z.infer<typeof createCampaignFormSchema>
-  ) => {
+  const createCampaign = async (data: z.infer<typeof createCampaignFormSchema>) => {
     toast.promise(
       async () => {
         const template = templates.find((t) => t.id === data.template);
@@ -103,7 +101,7 @@ export default function Index() {
           return "Created new campaign";
         },
         error: "Could not create new campaign!",
-      }
+      },
     );
 
     setNewCampaignModal(false);
@@ -111,26 +109,10 @@ export default function Index() {
 
   return (
     <>
-      <Modal
-        isOpen={newCampaignModal}
-        onToggle={() => setNewCampaignModal((s) => !s)}
-        onAction={() => {}}
-        type="info"
-        title={"Create new campaign"}
-        hideActionButtons={true}
-      >
-        <form
-          onSubmit={handleCreateSubmit(createCampaign)}
-          className="flex flex-col gap-6"
-        >
+      <Modal isOpen={newCampaignModal} onToggle={() => setNewCampaignModal((s) => !s)} onAction={() => {}} type="info" title={"Create new campaign"} hideActionButtons={true}>
+        <form onSubmit={handleCreateSubmit(createCampaign)} className="flex flex-col gap-6">
           <div>
-            <Input
-              className="sm:col-span-6"
-              label="Subject"
-              placeholder={`Welcome to ${project.name}!`}
-              register={register("subject")}
-              error={errors.subject}
-            />
+            <Input className="sm:col-span-6" label="Subject" placeholder={`Welcome to ${project.name}!`} register={register("subject")} error={errors.subject} />
           </div>
           <div>
             <StyledLabel>
@@ -184,87 +166,45 @@ export default function Index() {
                 const openRatePct = campaignOpenRatePercent(stats);
                 const button = {
                   to: `/campaigns/${c.id}`,
-                  icon:
-                    c.status === "DELIVERED" ? (
-                      <Eye size={18} />
-                    ) : (
-                      <Edit2 size={18} />
-                    ),
+                  icon: c.status === "DELIVERED" ? <Eye size={18} /> : <Edit2 size={18} />,
                   label: c.status === "DELIVERED" ? "View" : "Edit",
                 };
                 return (
-                  <ItemCard
-                    key={c.id}
-                    actionButtons={[button]}
-                    id={c.id}
-                    name={c.subject}
-                  >
+                  <ItemCard key={c.id} actionButtons={[button]} id={c.id} name={c.subject}>
                     <ItemCardBody icon={<Send size={20} />}>
                       <div className="flex items-center space-x-3">
-                        <h3 className="truncate text-lg font-bold text-neutral-800">
-                          {c.subject}
-                        </h3>
+                        <h3 className="truncate text-lg font-bold text-neutral-800">{c.subject}</h3>
                       </div>
                       <div className="mb-6">
-                        <h2
-                          className={
-                            "text col-span-2 truncate font-semibold text-neutral-700"
-                          }
-                        >
-                          Quick Stats
-                        </h2>
+                        <h2 className={"text col-span-2 truncate font-semibold text-neutral-700"}>Quick Stats</h2>
                         <div className="grid grid-cols-2 gap-3">
                           {c.status === "DELIVERED" ? (
                             <>
                               <div>
-                                <label
-                                  className={
-                                    "text-xs font-medium text-neutral-500"
-                                  }
-                                  htmlFor="open-rate"
-                                >
+                                <label className={"text-xs font-medium text-neutral-500"} htmlFor="open-rate">
                                   Open rate
                                 </label>
-                                <p
-                                  className="mt-1 truncate text-sm text-neutral-500"
-                                  id="open-rate"
-                                >
+                                <p className="mt-1 truncate text-sm text-neutral-500" id="open-rate">
                                   {openRatePct}%
                                 </p>
                               </div>
 
                               {stats.total > 0 && (
                                 <div>
-                                  <label
-                                    htmlFor="emails-in-queue"
-                                    className={
-                                      "text-xs font-medium text-neutral-500"
-                                    }
-                                  >
+                                  <label htmlFor="emails-in-queue" className={"text-xs font-medium text-neutral-500"}>
                                     Pending send
                                   </label>
-                                  <p
-                                    className="mt-1 truncate text-sm text-neutral-500"
-                                    id="emails-in-queue"
-                                  >
+                                  <p className="mt-1 truncate text-sm text-neutral-500" id="emails-in-queue">
                                     {queued}
                                   </p>
                                 </div>
                               )}
                               {stats.errors > 0 && (
                                 <div>
-                                  <label
-                                    htmlFor="queue-errors"
-                                    className={
-                                      "text-xs font-medium text-neutral-500"
-                                    }
-                                  >
+                                  <label htmlFor="queue-errors" className={"text-xs font-medium text-neutral-500"}>
                                     Queue errors
                                   </label>
-                                  <p
-                                    className="mt-1 truncate text-sm text-neutral-500"
-                                    id="queue-errors"
-                                  >
+                                  <p className="mt-1 truncate text-sm text-neutral-500" id="queue-errors">
                                     {stats.errors}
                                   </p>
                                 </div>
@@ -272,91 +212,54 @@ export default function Index() {
                             </>
                           ) : (
                             <div>
-                              <label
-                                className={
-                                  "text-xs font-medium text-neutral-500"
-                                }
-                                htmlFor="open-rate"
-                              >
+                              <label className={"text-xs font-medium text-neutral-500"} htmlFor="open-rate">
                                 Open rate
                               </label>
-                              <p
-                                className="mt-1 truncate text-sm text-neutral-500"
-                                id="open-rate"
-                              >
+                              <p className="mt-1 truncate text-sm text-neutral-500" id="open-rate">
                                 Awaiting delivery
                               </p>
                             </div>
                           )}
                         </div>
-                        {c.status === "DELIVERED" &&
-                          (stats.errorDetails?.length ?? 0) > 0 && (
-                            <div className="mt-3 border-t border-neutral-100 pt-3">
-                              <p className="text-xs font-medium text-neutral-500">
-                                Queue error details
+                        {c.status === "DELIVERED" && (stats.errorDetails?.length ?? 0) > 0 && (
+                          <div className="mt-3 border-t border-neutral-100 pt-3">
+                            <p className="text-xs font-medium text-neutral-500">Queue error details</p>
+                            {stats.errors > (stats.errorDetails?.length ?? 0) && (
+                              <p className="mt-1 text-xs text-neutral-400">
+                                Showing {stats.errorDetails?.length ?? 0} of {stats.errors} failures (log capped).
                               </p>
-                              {stats.errors >
-                                (stats.errorDetails?.length ?? 0) && (
-                                <p className="mt-1 text-xs text-neutral-400">
-                                  Showing {stats.errorDetails?.length ?? 0} of{" "}
-                                  {stats.errors} failures (log capped).
-                                </p>
-                              )}
-                              <ul className="mt-2 max-h-28 space-y-1.5 overflow-y-auto text-xs text-neutral-600">
-                                {(stats.errorDetails ?? []).map((entry) => (
-                                  <li key={entry.contact}>
-                                    <Link
-                                      to={`/contacts/${entry.contact}`}
-                                      className="font-medium text-neutral-700 hover:underline"
-                                    >
-                                      {entry.contact}
-                                    </Link>
-                                    <span className="text-neutral-500">
-                                      {" "}
-                                      — {entry.message}
-                                    </span>
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-                          )}
+                            )}
+                            <ul className="mt-2 max-h-28 space-y-1.5 overflow-y-auto text-xs text-neutral-600">
+                              {(stats.errorDetails ?? []).map((entry) => (
+                                <li key={entry.contact}>
+                                  <Link to={`/contacts/${entry.contact}`} className="font-medium text-neutral-700 hover:underline">
+                                    {entry.contact}
+                                  </Link>
+                                  <span className="text-neutral-500"> — {entry.message}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
                       </div>
                       <div className="my-4">
-                        <h2 className="col-span-2 truncate font-semibold text-neutral-700">
-                          Properties
-                        </h2>
+                        <h2 className="col-span-2 truncate font-semibold text-neutral-700">Properties</h2>
                         <div className="grid grid-cols-2 gap-3">
                           <div>
-                            <label
-                              htmlFor="recipients"
-                              className="text-xs font-medium text-neutral-500"
-                            >
+                            <label htmlFor="recipients" className="text-xs font-medium text-neutral-500">
                               Recipients
                             </label>
-                            <p
-                              id="recipients"
-                              className="mt-1 truncate text-sm text-neutral-500"
-                            >
+                            <p id="recipients" className="mt-1 truncate text-sm text-neutral-500">
                               {c.recipients.length}
                             </p>
                           </div>
 
                           <div>
-                            <label
-                              htmlFor="status"
-                              className="text-xs font-medium text-neutral-500"
-                            >
+                            <label htmlFor="status" className="text-xs font-medium text-neutral-500">
                               Status
                             </label>
-                            <p
-                              id="status"
-                              className="mt-1 truncate text-sm text-neutral-500"
-                            >
-                              {c.status === "DRAFT" ? (
-                                <Badge type="info">Draft</Badge>
-                              ) : (
-                                <Badge type="success">Sent</Badge>
-                              )}
+                            <p id="status" className="mt-1 truncate text-sm text-neutral-500">
+                              {c.status === "DRAFT" ? <Badge type="info">Draft</Badge> : <Badge type="success">Sent</Badge>}
                             </p>
                           </div>
                         </div>
@@ -367,10 +270,7 @@ export default function Index() {
               })}
             </div>
           ) : (
-            <Empty
-              title="No campaigns found"
-              description="Send your contacts emails in bulk with a few clicks"
-            />
+            <Empty title="No campaigns found" description="Send your contacts emails in bulk with a few clicks" />
           )
         ) : (
           <Skeleton type="table" />
