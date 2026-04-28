@@ -133,7 +133,7 @@ test.describe("Campaigns", () => {
 
     await test.step("View campaign details", async () => {
       const campaignCard = page.getByRole('listitem', {name: campaignSubject});
-      await campaignCard.waitFor({state: 'attached'})
+      await campaignCard.waitFor({state: 'attached'});
       await campaignCard.getByRole("link", { name: /edit/i }).click();
 
       await page.waitForURL(/\/campaigns\/[^/]+/, { timeout: 10000 });
