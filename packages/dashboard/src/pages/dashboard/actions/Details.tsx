@@ -134,12 +134,11 @@ export default function ActionDetailPage() {
       loading: "Deleting your action",
       success: () => {
         void mutate();
+        navigate("/actions");
         return "Deleted your action";
       },
       error: "Could not delete your action!",
     });
-
-    navigate("/actions");
   };
 
   return (

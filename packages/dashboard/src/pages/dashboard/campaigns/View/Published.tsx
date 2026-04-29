@@ -77,13 +77,12 @@ export default function PublishedCampaign({ campaign, mutate: campaignMutate }: 
         success: () => {
           void campaignMutate();
           void campaignsMutate();
+          navigate("/campaigns");
           return "Duplicated your campaign";
         },
         error: "Could not duplicate your campaign!",
       },
     );
-
-    navigate("/campaigns");
   };
 
   const remove = async () => {
@@ -96,13 +95,12 @@ export default function PublishedCampaign({ campaign, mutate: campaignMutate }: 
         success: () => {
           void campaignMutate();
           void campaignsMutate();
+          navigate("/campaigns");
           return "Deleted your campaign";
         },
         error: "Could not delete your campaign!",
       },
     );
-
-    navigate("/campaigns");
   };
 
   return (

@@ -26,12 +26,13 @@ export default function EditGroupPage() {
       }),
       {
         loading: "Deleting group",
-        success: "Deleted group",
+        success: () => {
+          navigate("/groups");
+          return "Deleted group";
+        },
         error: "Could not delete group!",
       },
     );
-
-    navigate("/groups");
   };
   if (!group) {
     return <FullscreenLoader />;
