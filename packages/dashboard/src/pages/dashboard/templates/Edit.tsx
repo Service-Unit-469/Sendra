@@ -102,13 +102,12 @@ export default function EditTemplatePage() {
         loading: "Duplicating your template",
         success: () => {
           void mutate();
+          navigate("/templates");
           return "Duplicated your template";
         },
         error: "Could not duplicate your template!",
       },
     );
-
-    navigate("/templates");
   };
 
   const remove = async () => {
@@ -124,6 +123,7 @@ export default function EditTemplatePage() {
         loading: "Deleting your template",
         success: () => {
           void mutate();
+          navigate("/templates");
           return "Deleted your template";
         },
         error: (err) => {
@@ -132,8 +132,6 @@ export default function EditTemplatePage() {
         },
       },
     );
-
-    navigate("/templates");
   };
 
   return (

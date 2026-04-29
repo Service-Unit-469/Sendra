@@ -131,12 +131,13 @@ export default function ContactDetailPage() {
       }),
       {
         loading: "Deleting contact",
-        success: "Deleted contact",
+        success: () => {
+          navigate("/contacts");
+          return "Deleted contact";
+        },
         error: "Could not delete contact!",
       },
     );
-
-    navigate("/contacts");
   };
 
   const contactDeleteCopy = deleteModalCopy("contact", contact.email);
