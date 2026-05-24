@@ -107,7 +107,7 @@ test.describe("Campaigns", () => {
     });
 
     await test.step("Send test campaign", async () => {
-      await page.getByRole("button", { name: "Test", exact: true }).click();
+      await page.getByRole("button", { name: "Send test", exact: true }).click();
       await page.getByText(/test campaign/i).waitFor({ state: "visible", timeout: 10000 });
     });
 
@@ -132,16 +132,18 @@ test.describe("Campaigns", () => {
     });
 
     await test.step("View campaign details", async () => {
-      const campaignCard = page.locator("div.col-span-1").filter({ hasText: campaignSubject }).first();
+      const campaignCard = page.getByRole('listitem', {name: campaignSubject});
+      await campaignCard.waitFor({state: 'attached'});
       await campaignCard.getByRole("link", { name: /edit/i }).click();
 
       await page.waitForURL(/\/campaigns\/[^/]+/, { timeout: 10000 });
       await dashboardPage.waitForContentLoaded();
       
-      // Verify campaign details page loaded
-      await expect(page.getByText(campaignSubject)).toBeVisible();
-      // Should see campaign editing interface
-      await expect(page.getByLabel("Select a value")).toBeVisible();
+      await page.getByRole('heading', {name: campaignSubject}).waitFor({state: 'visible'});
+      await page.getByRole('button', {name: 'Edit'}).waitFor({state: 'visible'});
+      await page.getByRole('button', {name: 'Send now'}).waitFor({state: 'attached'});
+      await page.getByRole('button', {name: 'Send test'}).waitFor({state: 'attached'});
+      await page.getByRole('button', {name: 'Save draft'}).waitFor({state: 'attached'});
     });
   });
 });

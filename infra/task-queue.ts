@@ -2,6 +2,10 @@ import { dataTable } from "./data";
 import { passEnvironmentVariables } from "./env";
 import { router } from "./route";
 
+
+const isPreviewStage = $app.stage.startsWith("PR-");
+const isSqsPollerEnabled = process.env.ENABLE_SQS_POLLER === 'true' || !isPreviewStage;
+
 const deadLetterQueue = new sst.aws.Queue("TaskDeadLetterQueue");
 
 export const taskQueue = new sst.aws.Queue("TaskQueue", {
@@ -30,34 +34,38 @@ export const delayedTaskStateMachine = new sst.aws.StepFunctions(
   }
 );
 
-taskQueue.subscribe(
-  {
-    handler: "packages/subscribers/src/TaskQueueSubscriber.handler",
-    timeout: "15 minutes",
-    logging: {
-      retention: "1 week",
-    },
-    link: [dataTable, taskQueue, delayedTaskStateMachine],
-    environment: {
-      EMAIL_CONFIGURATION_SET_NAME: `SendraConfigurationSet-${$app.stage}`,
-      ...passEnvironmentVariables([
-        "DEFAULT_EMAIL",
-        "LOG_LEVEL",
-        "LOG_PRETTY",
-        "METRICS_ENABLED",
-      ]),
-      APP_URL: process.env.APP_URL ?? router.url,
-    },
-    permissions: [
-      {
-        actions: ["ses:SendEmail", "ses:SendRawEmail"],
-        resources: ["*"],
+if (isSqsPollerEnabled) {
+  taskQueue.subscribe(
+    {
+      handler: "packages/subscribers/src/TaskQueueSubscriber.handler",
+      timeout: "15 minutes",
+      logging: {
+        retention: "1 week",
       },
-    ],
-  },
-  {
-    batch: {
-      partialResponses: true,
+      link: [dataTable, taskQueue, delayedTaskStateMachine],
+      environment: {
+        EMAIL_CONFIGURATION_SET_NAME: `SendraConfigurationSet-${$app.stage}`,
+        ...passEnvironmentVariables([
+          "DEFAULT_EMAIL",
+          "LOG_LEVEL",
+          "LOG_PRETTY",
+          "METRICS_ENABLED",
+        ]),
+        APP_URL: process.env.APP_URL ?? router.url,
+      },
+      permissions: [
+        {
+          actions: ["ses:SendEmail", "ses:SendRawEmail"],
+          resources: ["*"],
+        },
+      ],
     },
-  }
-);
+    {
+      batch: {
+        size: 10,
+        window: "20 seconds",
+        partialResponses: true,
+      },
+    }
+  );
+}

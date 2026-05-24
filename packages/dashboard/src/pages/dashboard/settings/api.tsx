@@ -5,6 +5,7 @@ import { DangerButton } from "../../../components/Buttons/DangerButton";
 import Card from "../../../components/Card/Card";
 import SettingTabs from "../../../components/Navigation/SettingTabs/SettingTabs";
 import Modal from "../../../components/Overlay/Modal/Modal";
+import { settingsDangerActionCopy } from "../../../lib/actionCopy";
 import { API_URI } from "../../../lib/constants";
 import { useCurrentProject, useCurrentProjectKeys } from "../../../lib/hooks/projects";
 import { network } from "../../../lib/network";
@@ -137,8 +138,9 @@ export default function ApiSettingsPage() {
         onToggle={() => setShowRegenerateModal(!showRegenerateModal)}
         onAction={regenerate}
         type="danger"
-        title="Are you sure?"
-        description="Any applications that use your previously generated keys will stop working!"
+        action={settingsDangerActionCopy.regenerateApiKeys.action}
+        title={settingsDangerActionCopy.regenerateApiKeys.title}
+        description={settingsDangerActionCopy.regenerateApiKeys.description}
       />
 
       <SettingTabs />

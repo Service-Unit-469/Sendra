@@ -12,6 +12,7 @@ import { ColorPickerRender } from "../../../components/EmailEditor/Fields";
 import PuckEmailEditor from "../../../components/EmailEditor/PuckEmailEditor";
 import QuickEmailEditor from "../../../components/EmailEditor/QuickEmailEditor";
 import FullscreenLoader from "../../../components/Utility/FullscreenLoader/FullscreenLoader";
+import { campaignActionCopy } from "../../../lib/actionCopy";
 import { useCampaign } from "../../../lib/hooks/campaigns";
 import { useCurrentProject, useCurrentProjectIdentity } from "../../../lib/hooks/projects";
 import { useTemplate } from "../../../lib/hooks/templates";
@@ -147,7 +148,7 @@ export default function EditCampaignPage() {
           <>
             <BlackButton onClick={() => saveCampaign(getValues())}>
               <Save strokeWidth={1.5} size={18} />
-              Save
+              {campaignActionCopy.saveDraft}
             </BlackButton>
             <button type="button" className="flex items-center gap-x-2 text-sm text-neutral-500" onClick={() => navigate(`/campaigns/${campaign.id}`)}>
               Back
@@ -182,7 +183,7 @@ export default function EditCampaignPage() {
         <>
           <BlackButton onClick={() => saveCampaign(getValues())} disabled={saving}>
             <Save strokeWidth={1.5} size={18} />
-            Save
+            {campaignActionCopy.saveDraft}
           </BlackButton>
           <button disabled={saving} type="button" className="flex items-center gap-x-2 text-sm text-neutral-500" onClick={() => navigate(`/campaigns/${campaign.id}`)}>
             Back

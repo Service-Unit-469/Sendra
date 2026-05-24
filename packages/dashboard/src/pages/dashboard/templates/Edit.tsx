@@ -13,6 +13,7 @@ import PuckEmailEditor from "../../../components/EmailEditor/PuckEmailEditor";
 import Modal from "../../../components/Overlay/Modal/Modal";
 import { Options } from "../../../components/Overlay/Options";
 import FullscreenLoader from "../../../components/Utility/FullscreenLoader/FullscreenLoader";
+import { deleteModalCopy, editActionCopy } from "../../../lib/actionCopy";
 import { useCurrentProject } from "../../../lib/hooks/projects";
 import { type TemplateFormValues, useTemplate, useTemplateFields, useTemplates } from "../../../lib/hooks/templates";
 import { network } from "../../../lib/network";
@@ -60,6 +61,8 @@ export default function EditTemplatePage() {
     return <FullscreenLoader />;
   }
 
+  const templateDeleteCopy = deleteModalCopy("template", template.subject);
+
   const update = (data: Omit<TemplateUpdate, "id">) => {
     if (data.email?.trim() === "") {
       delete data.email;
@@ -99,13 +102,12 @@ export default function EditTemplatePage() {
         loading: "Duplicating your template",
         success: () => {
           void mutate();
+          navigate("/templates");
           return "Duplicated your template";
         },
         error: "Could not duplicate your template!",
       },
     );
-
-    navigate("/templates");
   };
 
   const remove = async () => {
@@ -121,6 +123,7 @@ export default function EditTemplatePage() {
         loading: "Deleting your template",
         success: () => {
           void mutate();
+          navigate("/templates");
           return "Deleted your template";
         },
         error: (err) => {
@@ -129,8 +132,6 @@ export default function EditTemplatePage() {
         },
       },
     );
-
-    navigate("/templates");
   };
 
   return (
@@ -140,9 +141,9 @@ export default function EditTemplatePage() {
         onToggle={() => setDeleteModal(false)}
         onAction={remove}
         type="danger"
-        action="Delete Template"
-        title="Delete template"
-        description={`Delete "${template.subject}"? This action is irreversible and will permanently remove this template.`}
+        action={templateDeleteCopy.action}
+        title={templateDeleteCopy.title}
+        description={templateDeleteCopy.description}
       />
       <PuckEmailEditor
         initialData={JSON.parse(template.body.data)}
@@ -179,7 +180,7 @@ export default function EditTemplatePage() {
               }
             >
               <Save strokeWidth={1.5} size={18} />
-              Save
+              {editActionCopy.saveChanges}
             </BlackButton>
             <Options
               options={

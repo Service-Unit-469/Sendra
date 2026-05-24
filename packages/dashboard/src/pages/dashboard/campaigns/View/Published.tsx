@@ -12,6 +12,7 @@ import { OnPageTabs } from "../../../../components/Navigation/Tabs/OnPageTabs";
 import Modal from "../../../../components/Overlay/Modal/Modal";
 import Table from "../../../../components/Table/Table";
 import FullscreenLoader from "../../../../components/Utility/FullscreenLoader/FullscreenLoader";
+import { deleteModalCopy } from "../../../../lib/actionCopy";
 import { campaignOpenRatePercent } from "../../../../lib/campaignStats";
 import { useCampaigns } from "../../../../lib/hooks/campaigns";
 import { useEmailsByCampaign } from "../../../../lib/hooks/emails";
@@ -33,6 +34,8 @@ export default function PublishedCampaign({ campaign, mutate: campaignMutate }: 
   if (!campaign) {
     return <FullscreenLoader />;
   }
+
+  const campaignDeleteCopy = deleteModalCopy("campaign", campaign.subject);
 
   const stats = campaign.stats ?? { total: 0, sent: 0, delivered: 0, opened: 0, errors: 0, errorDetails: [] };
   const summaryMetrics =
@@ -74,13 +77,12 @@ export default function PublishedCampaign({ campaign, mutate: campaignMutate }: 
         success: () => {
           void campaignMutate();
           void campaignsMutate();
+          navigate("/campaigns");
           return "Duplicated your campaign";
         },
         error: "Could not duplicate your campaign!",
       },
     );
-
-    navigate("/campaigns");
   };
 
   const remove = async () => {
@@ -93,13 +95,12 @@ export default function PublishedCampaign({ campaign, mutate: campaignMutate }: 
         success: () => {
           void campaignMutate();
           void campaignsMutate();
+          navigate("/campaigns");
           return "Deleted your campaign";
         },
         error: "Could not delete your campaign!",
       },
     );
-
-    navigate("/campaigns");
   };
 
   return (
@@ -109,9 +110,9 @@ export default function PublishedCampaign({ campaign, mutate: campaignMutate }: 
         onToggle={() => setDeleteModal(false)}
         onAction={remove}
         type="danger"
-        action="Delete Campaign"
-        title="Delete campaign"
-        description={`Delete "${campaign.subject}"? This action is irreversible and will permanently remove this campaign.`}
+        action={campaignDeleteCopy.action}
+        title={campaignDeleteCopy.title}
+        description={campaignDeleteCopy.description}
       />
       <Card
         title={campaign.subject}

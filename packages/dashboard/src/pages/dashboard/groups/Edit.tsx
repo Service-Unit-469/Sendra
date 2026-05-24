@@ -7,6 +7,7 @@ import Card from "../../../components/Card/Card";
 import { GroupForm } from "../../../components/GroupForm/Form";
 import Modal from "../../../components/Overlay/Modal/Modal";
 import FullscreenLoader from "../../../components/Utility/FullscreenLoader/FullscreenLoader";
+import { deleteModalCopy, editActionCopy } from "../../../lib/actionCopy";
 import { useGroup } from "../../../lib/hooks/groups";
 import { useCurrentProject } from "../../../lib/hooks/projects";
 import { network } from "../../../lib/network";
@@ -25,16 +26,19 @@ export default function EditGroupPage() {
       }),
       {
         loading: "Deleting group",
-        success: "Deleted group",
+        success: () => {
+          navigate("/groups");
+          return "Deleted group";
+        },
         error: "Could not delete group!",
       },
     );
-
-    navigate("/groups");
   };
   if (!group) {
     return <FullscreenLoader />;
   }
+
+  const groupDeleteCopy = deleteModalCopy("group", group.name);
 
   return (
     <>
@@ -43,9 +47,9 @@ export default function EditGroupPage() {
         onToggle={() => setDeleteModal(false)}
         onAction={remove}
         type="danger"
-        action="Delete Group"
-        title="Delete group"
-        description={`Delete "${group.name}"? This action is irreversible and will permanently remove this group.`}
+        action={groupDeleteCopy.action}
+        title={groupDeleteCopy.title}
+        description={groupDeleteCopy.description}
       />
       <Card
         title={group.name}
@@ -57,7 +61,7 @@ export default function EditGroupPage() {
         }
       >
         <div className="space-y-6">
-          <GroupForm onSuccess={() => void mutate()} initialData={group} groupId={group.id} submitButtonText="Save" />
+          <GroupForm onSuccess={() => void mutate()} initialData={group} groupId={group.id} submitButtonText={editActionCopy.saveChanges} />
         </div>
       </Card>
     </>

@@ -17,6 +17,7 @@ import SettingTabs from "../../../components/Navigation/SettingTabs/SettingTabs"
 import Modal from "../../../components/Overlay/Modal/Modal";
 import Table from "../../../components/Table/Table";
 import FullscreenLoader from "../../../components/Utility/FullscreenLoader/FullscreenLoader";
+import { settingsDangerActionCopy } from "../../../lib/actionCopy";
 import { AWS_REGION } from "../../../lib/constants";
 import { useCurrentProject, useCurrentProjectIdentity, useProjects } from "../../../lib/hooks/projects";
 import { network } from "../../../lib/network";
@@ -143,9 +144,9 @@ export default function Index() {
         onToggle={() => setUnlinkModal(false)}
         onAction={unlink}
         type="danger"
-        action="Unlink Domain"
-        title="Unlink domain"
-        description="This action is irreversible and will remove your current sending identity from this project."
+        action={settingsDangerActionCopy.unlinkDomain.action}
+        title={settingsDangerActionCopy.unlinkDomain.title}
+        description={settingsDangerActionCopy.unlinkDomain.description}
       />
       <SettingTabs />
       <Card

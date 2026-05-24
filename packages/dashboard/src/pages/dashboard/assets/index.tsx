@@ -9,6 +9,7 @@ import Card from "../../../components/Card/Card";
 import Modal from "../../../components/Overlay/Modal/Modal";
 import Skeleton from "../../../components/Skeleton/Skeleton";
 import Empty from "../../../components/Utility/Empty/Empty";
+import { deleteModalCopy } from "../../../lib/actionCopy";
 import { deleteAsset, uploadAsset, useAssets } from "../../../lib/hooks/assets";
 import { useCurrentProject } from "../../../lib/hooks/projects";
 
@@ -66,6 +67,8 @@ export default function Index() {
     if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
     return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
   };
+
+  const assetDeleteCopy = deleteModalCopy("asset", assetToDelete?.name ?? "this asset");
 
   return (
     <>
@@ -151,8 +154,9 @@ export default function Index() {
         )}
       </Card>
       <Modal
-        title="Delete Asset"
-        description={`Are you sure you want to delete "${assetToDelete?.name}"? This action cannot be undone.`}
+        title={assetDeleteCopy.title}
+        action={assetDeleteCopy.action}
+        description={assetDeleteCopy.description}
         isOpen={deleteModalOpen}
         onAction={() => {
           handleDelete();
