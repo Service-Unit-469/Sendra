@@ -2,37 +2,47 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { rootLogger } from "../../src/logging/Logger";
 import { setRequestInfo } from "../../src/logging/RequestInfo";
 
+const { mockGetLogConfig, mockPinoPretty } = vi.hoisted(() => ({
+	mockGetLogConfig: vi.fn(() => ({
+		level: "info",
+		pretty: false,
+	})),
+	mockPinoPretty: vi.fn(() => process.stdout),
+}));
+
+vi.mock("../../src/services/AppConfig", () => ({
+	getLogConfig: mockGetLogConfig,
+}));
+
+vi.mock("pino-pretty", () => ({
+	default: mockPinoPretty,
+}));
+
 describe("Logger", () => {
 	beforeEach(() => {
 		// Clear any previous environment variables
 		vi.clearAllMocks();
+		mockGetLogConfig.mockReturnValue({
+			level: "info",
+			pretty: false,
+		});
+		mockPinoPretty.mockImplementation(() => process.stdout);
 	});
 
-	describe("Log formatting", () => {
-		it("should use pretty formatting when LOG_PRETTY is true", async () => {
-			try {
-				// Reset modules to clear any cached imports
-				vi.resetModules();
+		describe("Log formatting", () => {
+			it("should use pretty formatting when LOG_PRETTY is true", async () => {
+				try {
+					// Reset modules to clear any cached imports
+					vi.resetModules();
 
-				// Mock getLogConfig to return pretty: true
-				const mockGetLogConfig = vi.fn().mockReturnValue({
-					level: "info",
-					pretty: true,
-				});
+					mockGetLogConfig.mockReturnValue({
+						level: "info",
+						pretty: true,
+					});
 
-				vi.doMock("../../src/services/AppConfig", () => ({
-					getLogConfig: mockGetLogConfig,
-				}));
-
-				// Mock pino-pretty to verify it's being used
-				const mockPinoPretty = vi.fn().mockImplementation(() => process.stdout);
-				vi.doMock("pino-pretty", () => ({
-					default: mockPinoPretty,
-				}));
-
-				// Dynamically import Logger after mocking to get a fresh instance
-				const loggerModule = await import("../../src/logging/Logger");
-				const prettyLogger = loggerModule.rootLogger;
+					// Dynamically import Logger after mocking to get a fresh instance
+					const loggerModule = await import("../../src/logging/Logger");
+					const prettyLogger = loggerModule.rootLogger;
 
 				// Verify getLogConfig was called
 				expect(mockGetLogConfig).toHaveBeenCalled();
@@ -44,16 +54,12 @@ describe("Logger", () => {
 					colorize: true,
 				});
 
-				// Verify logger can log without errors
-				expect(() => prettyLogger.info("test pretty message")).not.toThrow();
-
-				// Clean up
-				vi.doUnmock("../../src/services/AppConfig");
-				vi.doUnmock("pino-pretty");
-			} finally {
-				vi.resetModules();
-			}
-		});
+					// Verify logger can log without errors
+					expect(() => prettyLogger.info("test pretty message")).not.toThrow();
+				} finally {
+					vi.resetModules();
+				}
+			});
 
 		it("should use standard JSON formatting when LOG_PRETTY is false", async () => {
 			const logs: string[] = [];
@@ -71,15 +77,10 @@ describe("Logger", () => {
 				// Reset modules to clear any cached imports
 				vi.resetModules();
 
-				// Mock getLogConfig to return pretty: false
-				const mockGetLogConfig = vi.fn().mockReturnValue({
+				mockGetLogConfig.mockReturnValue({
 					level: "info",
 					pretty: false,
 				});
-
-				vi.doMock("../../src/services/AppConfig", () => ({
-					getLogConfig: mockGetLogConfig,
-				}));
 
 				// Dynamically import Logger after mocking to get a fresh instance
 				const loggerModule = await import("../../src/logging/Logger");
@@ -107,9 +108,6 @@ describe("Logger", () => {
 				expect(parsed).toHaveProperty("level");
 				expect(parsed).toHaveProperty("msg");
 				expect(parsed.msg).toBe("test standard message");
-
-				// Clean up
-				vi.doUnmock("../../src/services/AppConfig");
 			} finally {
 				process.stdout.write = originalWrite;
 				vi.resetModules();
@@ -132,14 +130,10 @@ describe("Logger", () => {
 				// Reset modules to clear any cached imports
 				vi.resetModules();
 
-				const mockGetLogConfig = vi.fn().mockReturnValue({
+				mockGetLogConfig.mockReturnValue({
 					level: "warn",
 					pretty: false,
 				});
-
-				vi.doMock("../../src/services/AppConfig", () => ({
-					getLogConfig: mockGetLogConfig,
-				}));
 
 				// Dynamically import Logger after mocking to get a fresh instance
 				const loggerModule = await import("../../src/logging/Logger");
@@ -161,9 +155,6 @@ describe("Logger", () => {
 				// Should contain the warn message but not the info message
 				expect(logOutput).toContain("should appear");
 				expect(logOutput).not.toContain("should not appear");
-
-				// Clean up
-				vi.doUnmock("../../src/services/AppConfig");
 			} finally {
 				process.stdout.write = originalWrite;
 				vi.resetModules();
@@ -301,4 +292,3 @@ describe("Logger", () => {
 		});
 	});
 });
-
