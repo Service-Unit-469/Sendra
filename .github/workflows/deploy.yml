@@ -60,5 +60,6 @@ jobs:
           APP_URL: ${{ secrets.APP_URL }}
           DEFAULT_EMAIL: ${{ secrets.DEFAULT_EMAIL }}
           DISABLE_SIGNUPS: ${{ secrets.DISABLE_SIGNUPS }}
+          ENABLE_SQS_POLLER: true
           LOG_LEVEL: ${{ secrets.LOG_LEVEL }}
           METRICS_ENABLED: true

@@ -69,6 +69,7 @@ jobs:
           APP_URL: http://localhost:3000
           DEFAULT_EMAIL: ${{ secrets.DEFAULT_EMAIL }}
           DISABLE_SIGNUPS: ${{ secrets.DISABLE_SIGNUPS }}
+          ENABLE_SQS_POLLER: false
           LOG_LEVEL: ${{ secrets.LOG_LEVEL }}
           METRICS_ENABLED: true
 
