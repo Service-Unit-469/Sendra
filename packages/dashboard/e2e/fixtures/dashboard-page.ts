@@ -7,11 +7,14 @@ export class DashboardPage {
   constructor(public readonly page: Page, public readonly isMobile: boolean) { }
 
   async login() {
+    const { email, password, projectId } = getAuthCredentials();
+
     if (cachedAuthToken) {
       await this.page.goto("/dashboard#/auth/login");
-      await this.page.evaluate((token: string) => {
+      await this.page.evaluate(({ token, project }) => {
         localStorage.setItem("sendra.token", token);
-      }, cachedAuthToken);
+        localStorage.setItem("project", project);
+      }, { token: cachedAuthToken, project: projectId });
       await this.page.reload();
       await this.page.goto("/dashboard#/");
       try {
@@ -24,8 +27,10 @@ export class DashboardPage {
       }
     }
 
-    const { email, password } = getAuthCredentials();
     await this.page.goto("/dashboard#/auth/login");
+    await this.page.evaluate((project: string) => {
+      localStorage.setItem("project", project);
+    }, projectId);
     await this.page.getByLabel(/email/i).waitFor({ state: "visible" });
     await this.page.getByLabel(/email/i).fill(email);
     await this.page.getByLabel(/password/i).fill(password);
@@ -36,6 +41,11 @@ export class DashboardPage {
     if (!cachedAuthToken) {
       throw new Error("UI login succeeded but auth token was not found in localStorage");
     }
+
+    await this.page.evaluate((project: string) => {
+      localStorage.setItem("project", project);
+    }, projectId);
+    await this.page.goto("/dashboard#/");
 
     await this.waitForReady();
   }
