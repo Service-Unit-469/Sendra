@@ -381,6 +381,38 @@ describe("Projects Endpoint Contract Tests", () => {
       expect(adminMembership?.role).toBe("ADMIN");
     });
 
+    test("should return a refreshed token with scope for the new project", async () => {
+      const { token } = await createTestSetup();
+
+      const projectPayload = {
+        name: `Scoped Project ${Date.now()}`,
+        url: `https://scoped-${Date.now()}.example.com`,
+      };
+
+      const createResponse = await app.request("/api/v1/projects", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(projectPayload),
+      });
+
+      expect(createResponse.status).toBe(200);
+
+      const createData = await createResponse.json();
+      expect(createData).toHaveProperty("token");
+
+      const projectResponse = await app.request(`/api/v1/projects/${createData.project.id}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${createData.token}`,
+        },
+      });
+
+      expect(projectResponse.status).toBe(200);
+    });
+
     test("should generate unique public and secret keys", async () => {
       const { token } = await createTestSetup();
 
@@ -954,4 +986,3 @@ describe("Projects Endpoint Contract Tests", () => {
     });
   });
 });
-
