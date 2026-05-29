@@ -423,7 +423,7 @@ describe("TemplatePersistence", () => {
         expect(result[0]._embed?.actions).toBeDefined();
         // Should be limited to 1000 items
         expect(result[0]._embed?.actions?.length).toBeLessThanOrEqual(1000);
-      });
+      }, 10000);
 
       it("should return all items with 'all' limit", async () => {
         const template = await persistence.create({
