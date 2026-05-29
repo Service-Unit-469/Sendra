@@ -14,6 +14,7 @@ import FullscreenLoader from "../components/Utility/FullscreenLoader/FullscreenL
 import Redirect from "../components/Utility/Redirect/Redirect";
 import SendraLogo from "../icons/SendraLogo";
 import { atomActiveProjectId } from "../lib/atoms/project";
+import { TOKEN_KEY } from "../lib/constants";
 import { useProjects } from "../lib/hooks/projects";
 import { useLoginStatus } from "../lib/hooks/users";
 import { network } from "../lib/network";
@@ -57,7 +58,7 @@ export default function NewProject() {
     setSubmitted(true);
 
     try {
-      const result = await network.fetch<PublicProject, ProjectCreate>("/projects", {
+      const result = await network.fetch<{ project: PublicProject; token: string }, ProjectCreate>("/projects", {
         method: "POST",
         body: {
           ...data,
@@ -65,9 +66,10 @@ export default function NewProject() {
         },
       });
 
-      await mutate([...projects, result]);
-      localStorage.setItem("project", result.id);
-      setActiveProjectId(result.id);
+      await mutate([...projects, result.project]);
+      localStorage.setItem(TOKEN_KEY, result.token);
+      localStorage.setItem("project", result.project.id);
+      setActiveProjectId(result.project.id);
       navigate("/");
       return;
     } catch (e) {

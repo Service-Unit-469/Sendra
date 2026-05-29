@@ -27,6 +27,12 @@ updates:
       tiptap:
         patterns:
           - "@tiptap/*"
+      react-core:
+        patterns:
+          - "react"
+          - "react-dom"
+          - "@types/react"
+          - "@types/react-dom"
       dev:
         applies-to: version-updates
         dependency-type: "development"

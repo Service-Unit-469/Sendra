@@ -59,13 +59,21 @@ setup("creating E2E user", async ({ }) => {
   }
 
   const membershipPersistence = new MembershipPersistence();
-  const isMember = await membershipPersistence.isMember(project.id, user.id);
-  if (!isMember) {
+  const projectMemberships = await membershipPersistence.getProjectMemberships(project.id);
+  const userMembership = projectMemberships.find((membership) => membership.user === user.id);
+
+  if (!userMembership) {
     console.log('adding e2e user to project');
     await membershipPersistence.create({
       email,
       user: user.id,
       project: project.id,
+      role: "ADMIN",
+    });
+  } else if (userMembership.role !== "ADMIN") {
+    console.log('updating e2e membership role to ADMIN');
+    await membershipPersistence.put({
+      ...userMembership,
       role: "ADMIN",
     });
   }

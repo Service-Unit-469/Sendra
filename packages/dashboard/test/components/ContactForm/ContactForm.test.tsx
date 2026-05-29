@@ -4,6 +4,12 @@ import { ContactForm } from "../../../src/components/ContactForm/ContactForm";
 import { server } from "../../mocks/server";
 import { mockAuthToken, render, screen, userEvent, waitFor, createMockProject } from "../../utils/test-helpers";
 
+vi.mock("lucide-react", () => ({
+	Save: () => null,
+	Plus: () => null,
+	Trash: () => null,
+}));
+
 describe("ContactForm Integration", () => {
 	const mockProject = createMockProject({ id: "project-1" });
 
@@ -199,4 +205,3 @@ describe("ContactForm Integration", () => {
 		});
 	});
 });
-

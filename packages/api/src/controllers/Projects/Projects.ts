@@ -6,6 +6,7 @@ import type { AppType } from "../../app";
 import { NotFound } from "../../exceptions";
 import { getProblemResponseSchema } from "../../exceptions/responses";
 import { BearerAuth, isAuthenticatedProjectAdmin, isAuthenticatedProjectMember, isAuthenticatedProjectMemberOrSecretKey, isAuthenticatedUser } from "../../middleware/auth";
+import { AuthService } from "../../services/AuthService";
 
 export const registerProjectCrudRoutes = (app: AppType) => {
   app.openapi(
@@ -145,6 +146,7 @@ export const registerProjectCrudRoutes = (app: AppType) => {
             "application/json": {
               schema: z.object({
                 project: ProjectSchemas.get,
+                token: z.string(),
               }),
             },
           },
@@ -183,7 +185,11 @@ export const registerProjectCrudRoutes = (app: AppType) => {
         project: project.id,
         role: "ADMIN",
       });
-      return c.json({ project: ProjectSchemas.get.parse(project) }, 200);
+
+      const memberships = await new MembershipPersistence().getUserMemberships(userId);
+      const token = AuthService.createUserToken(userId, user.email, memberships);
+
+      return c.json({ project: ProjectSchemas.get.parse(project), token }, 200);
     },
   );
 
