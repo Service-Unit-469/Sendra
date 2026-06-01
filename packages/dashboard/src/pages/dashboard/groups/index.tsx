@@ -66,7 +66,7 @@ export default function Index() {
               .map((g) => {
                 return {
                   Name: g.name,
-                  Created: dayjs().to(g.updatedAt).toString(),
+                  Updated: dayjs().to(g.updatedAt).toString(),
                   Members: g.contacts.length,
                   Edit: (
                     <Link to={`/groups/${g.id}`} className="transition hover:text-neutral-800">
