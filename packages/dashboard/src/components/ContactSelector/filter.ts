@@ -61,7 +61,7 @@ function matchesMetadataFilter(contact: Contact, filter: MetadataFilterType) {
  */
 function filterContactsByMetadata(contacts: Contact[], filter: MetadataFilterGroupType) {
   return contacts.filter((contact) => {
-    if (!filter.filters || !filter.filters.length) {
+    if (!filter.filters?.length) {
       return true;
     }
 
