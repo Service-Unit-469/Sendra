@@ -137,6 +137,51 @@ describe("ContactForm Integration", () => {
 				expect(onSuccess).toHaveBeenCalled();
 			});
 		});
+
+		it("preserves falsey metadata values when saving", async () => {
+			const user = userEvent.setup();
+			const onSuccess = vi.fn();
+			let requestBody: Record<string, unknown> | undefined;
+
+			server.use(
+				http.put("http://localhost:4000/api/v1/projects/:projectId/contacts/:contactId", async ({ request, params }) => {
+					requestBody = (await request.json()) as Record<string, unknown>;
+					return HttpResponse.json({
+						id: params.contactId,
+						...(requestBody as object),
+						updatedAt: new Date().toISOString(),
+					});
+				}),
+			);
+
+			const initialData = {
+				email: "existing@example.com",
+				subscribed: true,
+				data: {
+					visits: 0,
+					enabled: false,
+					nickname: "",
+				},
+			};
+
+			render(
+				<ContactForm projectId="project-1" contactId="contact-1" initialData={initialData} onSuccess={onSuccess} />,
+				{ project: mockProject },
+			);
+
+			await user.click(screen.getByRole("button", { name: /save/i }));
+
+			await waitFor(() => {
+				expect(onSuccess).toHaveBeenCalled();
+				expect(requestBody).toMatchObject({
+					data: {
+						visits: 0,
+						enabled: false,
+						nickname: "",
+					},
+				});
+			});
+		});
 	});
 
 	describe("API Error Handling", () => {
