@@ -6,6 +6,54 @@
 
 declare module "sst" {
   export interface Resource {
+    "ApiGateway": {
+      "type": "sst.aws.ApiGatewayV2"
+      "url": string
+    }
+    "AssetsBucket": {
+      "name": string
+      "type": "sst.aws.Bucket"
+    }
+    "Dashboard": {
+      "type": "sst.aws.StaticSite"
+      "url": string
+    }
+    "DelayedTaskStateMachine": {
+      "arn": string
+      "type": "sst.aws.StepFunctions"
+    }
+    "EmailTopic": {
+      "arn": string
+      "type": "sst.aws.SnsTopic"
+    }
+    "JwtSecret": {
+      "type": "sst.sst.Secret"
+      "value": string
+    }
+    "RateLimit": {
+      "name": string
+      "type": "sst.aws.Dynamo"
+    }
+    "SendraDatabase": {
+      "name": string
+      "type": "sst.aws.Dynamo"
+    }
+    "SendraRouter": {
+      "type": "sst.aws.Router"
+      "url": string
+    }
+    "Subscription": {
+      "type": "sst.aws.StaticSite"
+      "url": string
+    }
+    "TaskDeadLetterQueue": {
+      "type": "sst.aws.Queue"
+      "url": string
+    }
+    "TaskQueue": {
+      "type": "sst.aws.Queue"
+      "url": string
+    }
   }
 }
 
