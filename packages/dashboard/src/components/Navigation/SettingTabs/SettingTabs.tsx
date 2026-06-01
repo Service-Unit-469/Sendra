@@ -11,7 +11,7 @@ export default function SettingTabs() {
     { to: "/settings/project", text: "Project Settings", active: location.pathname === "/settings/project" },
     { to: "/settings/contact-schema", text: "Contact Schema", active: location.pathname === "/settings/contact-schema" },
     { to: "/settings/api", text: "API Access", active: location.pathname === "/settings/api" },
-    { to: "/settings/identity", text: "Verified Identity", active: location.pathname === "/settings/identity" },
+    { to: "/settings/identity", text: "Identity", active: location.pathname === "/settings/identity" },
     { to: "/settings/members", text: "Members", active: location.pathname === "/settings/members" },
     { to: "/settings/sms", text: "SMS", active: location.pathname === "/settings/sms" },
   ];

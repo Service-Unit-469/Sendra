@@ -70,13 +70,13 @@ export default function Index() {
         },
       }),
       {
-        loading: "Creating new event",
+        loading: "Triggering event",
         success: () => {
           void mutate();
           reset();
-          return "Created new event";
+          return "Triggered event";
         },
-        error: "Could not create new event!",
+        error: "Could not trigger event!",
       },
     );
 
@@ -91,8 +91,8 @@ export default function Index() {
         onAction={handleSubmit(create)}
         type="info"
         action="Trigger"
-        title="Create a new event"
-        description="Trigger a new event to send out emails to your contacts"
+        title="Trigger event"
+        description="Trigger an event to send out emails to your contacts"
         icon={<TerminalSquare />}
       >
         <Input register={register("event")} label={"Event"} placeholder={"user-signup"} error={errors.event} />

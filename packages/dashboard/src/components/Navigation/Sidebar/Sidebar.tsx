@@ -66,7 +66,7 @@ const staticLinks: SidebarLinkType[] = [
   },
   {
     to: "/groups",
-    text: "Contact Groups",
+    text: "Groups",
     icon: <Users2 />,
   },
 ];

@@ -99,13 +99,13 @@ export default function ContactDetailPage() {
         },
       }),
       {
-        loading: "Creating new event",
+        loading: "Triggering event",
         success: () => {
           void mutate();
           eventReset();
-          return "Created new event";
+          return "Triggered event";
         },
-        error: "Could not create new event!",
+        error: "Could not trigger event!",
       },
     );
 

@@ -46,9 +46,9 @@ test.describe("Project Settings", () => {
     await expect(page.getByTestId("secret-api-key-mask")).toBeVisible();
   });
 
-  test("can navigate to Verified Identity page", async ({ dashboardPage, page }) => {
+  test("can navigate to Identity page", async ({ dashboardPage, page }) => {
     await dashboardPage.navigateTo("Project Settings", "/settings/project");
-    await dashboardPage.clickTab("Verified Identity", "/settings/identity");
+    await dashboardPage.clickTab("Identity", "/settings/identity");
     await page.getByRole("heading", { name: "Identity" }).waitFor({state: 'visible'});
     await page.getByRole("heading", { name: "Sender" }).waitFor({state: 'visible'});
   })
