@@ -16,7 +16,7 @@
 		"openapi:validate": "npx -p @seriousme/openapi-schema-validator validate-api ../../docs/openapi.json"
 	},
 	"devDependencies": {
-		"@aws-sdk/client-dynamodb": "^3.1055.0",
+		"@aws-sdk/client-dynamodb": "^3.1057.0",
 		"@sendra/test": "*",
 		"@types/compression": "^1.7.5",
 		"@types/jsonwebtoken": "^9.0.6",
@@ -27,8 +27,8 @@
 		"typescript": "^6.0.3"
 	},
 	"dependencies": {
-		"@aws-sdk/client-ses": "^3.1055.0",
-		"@aws-sdk/lib-dynamodb": "^3.1055.0",
+		"@aws-sdk/client-ses": "^3.1057.0",
+		"@aws-sdk/lib-dynamodb": "^3.1057.0",
 		"@hono/zod-openapi": "^1.2.0",
 		"ajv": "^8.18.0",
 		"ajv-formats": "^3.0.1",
