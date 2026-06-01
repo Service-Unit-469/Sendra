@@ -89,7 +89,7 @@ jobs:
         uses: ./.github/actions/setup
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v6.1.2
+        uses: aws-actions/configure-aws-credentials@6.1.3
         with:
           role-to-assume: ${{ secrets.GH_TRUST_ROLE }}
           role-duration-seconds: 3600
