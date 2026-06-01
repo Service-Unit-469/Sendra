@@ -209,7 +209,7 @@ export class AuthService {
   private static parseBearer(request: HonoRequest): string | undefined {
     const bearer: string | undefined = request.header("Authorization");
 
-    if (!bearer || !bearer.includes("Bearer")) {
+    if (!bearer?.includes("Bearer")) {
       logger.warn({ bearer }, "Invalid authorization token");
       return undefined;
     }

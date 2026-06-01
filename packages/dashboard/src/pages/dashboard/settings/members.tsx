@@ -43,7 +43,7 @@ export default function MembersPage() {
     resolver: zodResolver(MembershipSchemas.invite),
   });
 
-  if (!projects || !user || !memberships || !memberships.members) {
+  if (!projects || !user || !memberships?.members) {
     return <FullscreenLoader />;
   }
 
