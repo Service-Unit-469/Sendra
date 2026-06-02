@@ -80,7 +80,7 @@ export default function Index() {
                     {u.email}
                   </Link>
                 ),
-                Created: dayjs().to(u.updatedAt).toString(),
+                Updated: dayjs().to(u.updatedAt).toString(),
                 Subscribed: u.subscribed,
               };
             })}
