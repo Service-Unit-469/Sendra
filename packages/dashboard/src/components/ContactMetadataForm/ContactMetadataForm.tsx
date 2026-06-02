@@ -22,7 +22,7 @@ export function ContactMetadataForm({ initialData = {}, onDataChange, className 
   watch((data) => {
     const formattedData = data.data?.reduce(
       (acc, field) => {
-        if (field?.value?.key && field?.value?.value) {
+        if (field?.value?.key && field.value.value !== undefined) {
           acc[field.value.key] = field.value.value as string | number | boolean | string[] | null;
         }
         return acc;
