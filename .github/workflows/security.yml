@@ -12,7 +12,7 @@ jobs:
   trivy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v6.0.2
       - name: Run Trivy vulnerability/misconfig/secret scan
         uses: aquasecurity/trivy-action@v0.36.0
         with:
