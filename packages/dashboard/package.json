@@ -71,8 +71,8 @@
 		"p-map": "^7.0.4",
 		"papaparse": "^5.5.3",
 		"prettier": "^3.8.1",
-		"react": "19.2.6",
-		"react-dom": "19.2.6",
+		"react": "19.2.7",
+		"react-dom": "19.2.7",
 		"react-error-boundary": "^6.1.2",
 		"react-hook-form": "^7.76.1",
 		"react-router-dom": "^7.13.1",
@@ -99,7 +99,7 @@
 		"@types/node": "^24.12.4",
 		"@types/nprogress": "^0.2.3",
 		"@types/papaparse": "^5.5.1",
-		"@types/react": "19.2.15",
+		"@types/react": "19.2.16",
 		"@types/to-json-schema": "^0.2.4",
 		"@types/uuid": "^10.0.0",
 		"@vitejs/plugin-react": "^6.0.2",
@@ -114,7 +114,7 @@
 		"vite": "^8.0.14"
 	},
 	"overrides": {
-		"react": "19.2.6",
-		"react-dom": "19.2.6"
+		"react": "19.2.7",
+		"react-dom": "19.2.7"
 	}
 }
