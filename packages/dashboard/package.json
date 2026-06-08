@@ -99,7 +99,7 @@
 		"@types/node": "^24.12.4",
 		"@types/nprogress": "^0.2.3",
 		"@types/papaparse": "^5.5.1",
-		"@types/react": "19.2.16",
+		"@types/react": "19.2.17",
 		"@types/to-json-schema": "^0.2.4",
 		"@types/uuid": "^10.0.0",
 		"@vitejs/plugin-react": "^6.0.2",
