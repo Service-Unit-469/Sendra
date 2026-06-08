@@ -70,7 +70,7 @@
 		"nprogress": "^0.2.0",
 		"p-map": "^7.0.4",
 		"papaparse": "^5.5.3",
-		"prettier": "^3.8.1",
+		"prettier": "^3.8.3",
 		"react": "19.2.7",
 		"react-dom": "19.2.7",
 		"react-error-boundary": "^6.1.2",
