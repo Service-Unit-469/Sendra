@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out the repo
-        uses: actions/checkout@v6.0.2
+        uses: actions/checkout@v6.0.3
 
       - name: Setup
         uses: ./.github/actions/setup
@@ -50,7 +50,7 @@ jobs:
       RATE_LIMIT_TABLE_NAME: ${{ steps.deploy.outputs.RATE_LIMIT_TABLE_NAME }}
     steps:
       - name: Git clone the repository
-        uses: actions/checkout@v6.0.2
+        uses: actions/checkout@v6.0.3
 
       - name: Setup
         uses: ./.github/actions/setup
@@ -83,7 +83,7 @@ jobs:
       - deploy
     steps:
       - name: Check out the repo
-        uses: actions/checkout@v6.0.2
+        uses: actions/checkout@v6.0.3
 
       - name: Setup
         uses: ./.github/actions/setup
@@ -135,7 +135,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out the repo
-        uses: actions/checkout@v6.0.2
+        uses: actions/checkout@v6.0.3
 
       - name: Setup
         uses: ./.github/actions/setup
