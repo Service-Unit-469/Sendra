@@ -19,6 +19,7 @@ import FullscreenLoader from "../../../../components/Utility/FullscreenLoader/Fu
 import { campaignActionCopy, deleteModalCopy } from "../../../../lib/actionCopy";
 import { useCampaigns } from "../../../../lib/hooks/campaigns";
 import { useCurrentProject } from "../../../../lib/hooks/projects";
+import { useModalState } from "../../../../lib/hooks/useModalState";
 import { network } from "../../../../lib/network";
 
 /**
@@ -29,8 +30,8 @@ export default function DraftCampaign({ campaign, mutate: campaignMutate }: { ca
   const project = useCurrentProject();
   const { mutate: campaignsMutate } = useCampaigns();
 
-  const [confirmModal, setConfirmModal] = useState(false);
-  const [deleteModal, setDeleteModal] = useState(false);
+  const confirmModal = useModalState();
+  const deleteModal = useModalState();
   const [delay, setDelay] = useState(0);
 
   const {
@@ -115,7 +116,7 @@ export default function DraftCampaign({ campaign, mutate: campaignMutate }: { ca
   const campaignDeleteCopy = deleteModalCopy("campaign", campaign.subject);
 
   const send = async (data: Omit<CampaignUpdate, "id">) => {
-    setConfirmModal(false);
+    confirmModal.close();
 
     toast.success("Saved your campaign. Starting delivery now, please hold on!");
 
@@ -220,8 +221,8 @@ export default function DraftCampaign({ campaign, mutate: campaignMutate }: { ca
   return (
     <>
       <Modal
-        isOpen={confirmModal}
-        onToggle={() => setConfirmModal(!confirmModal)}
+        isOpen={confirmModal.isOpen}
+        onToggle={confirmModal.toggle}
         onAction={handleSubmit(send)}
         action={campaignActionCopy.sendNow}
         type="info"
@@ -261,8 +262,8 @@ export default function DraftCampaign({ campaign, mutate: campaignMutate }: { ca
         </StyledLabel>
       </Modal>
       <Modal
-        isOpen={deleteModal}
-        onToggle={() => setDeleteModal(false)}
+        isOpen={deleteModal.isOpen}
+        onToggle={deleteModal.close}
         onAction={remove}
         type="danger"
         action={campaignDeleteCopy.action}
@@ -279,7 +280,7 @@ export default function DraftCampaign({ campaign, mutate: campaignMutate }: { ca
               <Copy size={18} />
               Duplicate
             </MenuButton>
-            <MenuButton onClick={() => setDeleteModal(true)}>
+            <MenuButton onClick={deleteModal.open}>
               <Trash size={18} />
               Delete
             </MenuButton>
@@ -322,7 +323,7 @@ export default function DraftCampaign({ campaign, mutate: campaignMutate }: { ca
             <BlackButton
               onClick={(e) => {
                 e.preventDefault();
-                setConfirmModal(true);
+                confirmModal.open();
               }}
             >
               <Send />

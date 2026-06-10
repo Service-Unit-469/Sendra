@@ -9,6 +9,22 @@ import Skeleton from "../../../components/Skeleton/Skeleton";
 import Empty from "../../../components/Utility/Empty/Empty";
 import { useActions } from "../../../lib/hooks/actions";
 
+function formatDelay(delayInMinutes: number) {
+  if (delayInMinutes === 0) {
+    return "Instant";
+  }
+
+  if (delayInMinutes % 1440 === 0) {
+    return `${delayInMinutes / 1440} day delay`;
+  }
+
+  if (delayInMinutes % 60 === 0) {
+    return `${delayInMinutes / 60} hour delay`;
+  }
+
+  return `${delayInMinutes} minute delay`;
+}
+
 export default function ActionsPage() {
   const { data: actions } = useActions();
   const navigate = useNavigate();
@@ -40,6 +56,18 @@ export default function ActionsPage() {
                 return 0;
               })
               .map((a) => {
+                const hasEvents = a._embed.events.length > 0;
+                const hasEmails = a._embed.emails.length > 0;
+                const lastActivityDate = hasEvents
+                  ? a._embed.events.sort((e1, e2) => {
+                      return e1.createdAt > e2.createdAt ? -1 : 1;
+                    })[0].createdAt
+                  : a.createdAt;
+                const openRate = hasEmails ? Math.round((a._embed.emails.filter((e) => e.status === "OPENED").length / a._embed.emails.length) * 100) : 0;
+                const repeatsType = a.runOnce ? "success" : "info";
+                const repeatsLabel = a.runOnce ? "Runs once per user" : "Recurring";
+                const delayType = a.delay === 0 ? "info" : "success";
+
                 return (
                   <ItemCard
                     key={a.id}
@@ -74,16 +102,7 @@ export default function ActionsPage() {
                               Last activity
                             </label>
                             <p className="mt-1 truncate text-sm text-neutral-500" id="last-activity">
-                              {a._embed.events.length > 0 ? "Last triggered" : "Created"}{" "}
-                              {dayjs()
-                                .to(
-                                  a._embed.events.length > 0
-                                    ? a._embed.events.sort((e1, e2) => {
-                                        return e1.createdAt > e2.createdAt ? -1 : 1;
-                                      })[0].createdAt
-                                    : a.createdAt,
-                                )
-                                .toString()}
+                              {hasEvents ? "Last triggered" : "Created"} {dayjs().to(lastActivityDate).toString()}
                             </p>
                           </div>
                           <div>
@@ -91,7 +110,7 @@ export default function ActionsPage() {
                               Open rate
                             </label>
                             <p className="mt-1 truncate text-sm text-neutral-500" id="open-rate">
-                              {a._embed.emails.length > 0 ? Math.round((a._embed.emails.filter((e) => e.status === "OPENED").length / a._embed.emails.length) * 100) : 0}%
+                              {openRate}%
                             </p>
                           </div>
                           {a.delay > 0 && (
@@ -114,7 +133,7 @@ export default function ActionsPage() {
                               Repeats
                             </label>
                             <p className="mt-1 truncate text-sm text-neutral-500" id="repeats">
-                              <Badge type={a.runOnce ? "success" : "info"}>{a.runOnce ? "Runs once per user" : "Recurring"}</Badge>
+                              <Badge type={repeatsType}>{repeatsLabel}</Badge>
                             </p>
                           </div>
                           <div>
@@ -122,9 +141,7 @@ export default function ActionsPage() {
                               Delay
                             </label>
                             <p className="mt-1 truncate text-sm text-neutral-500" id="delay">
-                              <Badge type={a.delay === 0 ? "info" : "success"}>
-                                {a.delay === 0 ? "Instant" : a.delay % 1440 === 0 ? `${a.delay / 1440} day delay` : a.delay % 60 === 0 ? `${a.delay / 60} hour delay` : `${a.delay} minute delay`}
-                              </Badge>
+                              <Badge type={delayType}>{formatDelay(a.delay)}</Badge>
                             </p>
                           </div>
                         </div>
@@ -135,7 +152,7 @@ export default function ActionsPage() {
               })}
           </div>
         ) : (
-          <Empty title="No actions here" description="Set up a new automation in a few clicks" />
+          <Empty title="No actions" description="Create an automation to trigger customer messages." ctaLabel="Create action" ctaTo="/actions/new" />
         )
       ) : (
         <Skeleton type={"table"} />

@@ -1,5 +1,4 @@
 import { Trash } from "lucide-react";
-import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { MenuButton } from "../../../components/Buttons/MenuButton";
@@ -10,6 +9,7 @@ import FullscreenLoader from "../../../components/Utility/FullscreenLoader/Fulls
 import { deleteModalCopy, editActionCopy } from "../../../lib/actionCopy";
 import { useGroup } from "../../../lib/hooks/groups";
 import { useCurrentProject } from "../../../lib/hooks/projects";
+import { useModalState } from "../../../lib/hooks/useModalState";
 import { network } from "../../../lib/network";
 
 export default function EditGroupPage() {
@@ -17,7 +17,7 @@ export default function EditGroupPage() {
   const project = useCurrentProject();
   const { id } = useParams<{ id: string }>();
   const { data: group, mutate } = useGroup(id ?? "");
-  const [deleteModal, setDeleteModal] = useState(false);
+  const deleteModal = useModalState();
 
   const remove = async () => {
     toast.promise(
@@ -43,8 +43,8 @@ export default function EditGroupPage() {
   return (
     <>
       <Modal
-        isOpen={deleteModal}
-        onToggle={() => setDeleteModal(false)}
+        isOpen={deleteModal.isOpen}
+        onToggle={deleteModal.close}
         onAction={remove}
         type="danger"
         action={groupDeleteCopy.action}
@@ -54,7 +54,7 @@ export default function EditGroupPage() {
       <Card
         title={group.name}
         options={
-          <MenuButton onClick={() => setDeleteModal(true)}>
+          <MenuButton onClick={deleteModal.open}>
             <Trash size={18} />
             Delete
           </MenuButton>

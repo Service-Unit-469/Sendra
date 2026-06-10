@@ -8,6 +8,7 @@ import Modal from "../../../components/Overlay/Modal/Modal";
 import { settingsDangerActionCopy } from "../../../lib/actionCopy";
 import { API_URI } from "../../../lib/constants";
 import { useCurrentProject, useCurrentProjectKeys } from "../../../lib/hooks/projects";
+import { useModalState } from "../../../lib/hooks/useModalState";
 import { network } from "../../../lib/network";
 
 const ClipboardButton = ({
@@ -95,7 +96,7 @@ const ClipboardButton = ({
  *
  */
 export default function ApiSettingsPage() {
-  const [showRegenerateModal, setShowRegenerateModal] = useState(false);
+  const showRegenerateModal = useModalState();
   const [isSecretKeyRevealed, setIsSecretKeyRevealed] = useState(false);
 
   const { data: activeProjectKeys, mutate: activeProjectKeysMutate, isLoading: isProjectKeysLoading } = useCurrentProjectKeys();
@@ -110,7 +111,7 @@ export default function ApiSettingsPage() {
   }
 
   const regenerate = () => {
-    setShowRegenerateModal(!showRegenerateModal);
+    showRegenerateModal.close();
     setIsSecretKeyRevealed(false);
 
     toast.promise(
@@ -134,8 +135,8 @@ export default function ApiSettingsPage() {
   return (
     <>
       <Modal
-        isOpen={showRegenerateModal}
-        onToggle={() => setShowRegenerateModal(!showRegenerateModal)}
+        isOpen={showRegenerateModal.isOpen}
+        onToggle={showRegenerateModal.toggle}
         onAction={regenerate}
         type="danger"
         action={settingsDangerActionCopy.regenerateApiKeys.action}
@@ -148,7 +149,7 @@ export default function ApiSettingsPage() {
         title="API Access"
         description={`Manage your API access for ${project.name}.`}
         actions={
-          <DangerButton onClick={() => setShowRegenerateModal(!showRegenerateModal)}>
+          <DangerButton onClick={showRegenerateModal.toggle}>
             <RefreshCw strokeWidth={1.5} size={18} />
             Regenerate
           </DangerButton>

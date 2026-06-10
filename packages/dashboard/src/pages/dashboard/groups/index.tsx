@@ -1,7 +1,8 @@
 import dayjs from "dayjs";
 import { Edit2, Plus } from "lucide-react";
 import { useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import { BlackButton } from "../../../components/Buttons/BlackButton";
 import Card from "../../../components/Card/Card";
 import { GroupForm } from "../../../components/GroupForm/Form";
@@ -10,12 +11,16 @@ import Modal from "../../../components/Overlay/Modal/Modal";
 import Skeleton from "../../../components/Skeleton/Skeleton";
 import Table from "../../../components/Table/Table";
 import Empty from "../../../components/Utility/Empty/Empty";
+import { useAllContacts } from "../../../lib/hooks/contacts";
 import { useAllGroups } from "../../../lib/hooks/groups";
+import { useModalState } from "../../../lib/hooks/useModalState";
 
 export default function Index() {
+  const navigate = useNavigate();
   const { data: groups, mutate: mutateGroups } = useAllGroups();
+  const { data: contacts } = useAllContacts();
+  const createGroupModal = useModalState();
 
-  const [groupModal, setGroupModal] = useState(false);
   const [query, setQuery] = useState<string>("");
 
   const filteredGroups = useMemo(() => {
@@ -24,13 +29,41 @@ export default function Index() {
     return groups.filter((group) => group.name.toLowerCase().includes(query.toLowerCase()));
   }, [groups, query]);
 
+  const hasContacts = (contacts?.length ?? 0) > 0;
+
+  const startCreateGroupFlow = () => {
+    if (contacts && contacts.length === 0) {
+      toast.info("Create a contact before creating a group.");
+      navigate("/contacts");
+      return;
+    }
+
+    createGroupModal.open();
+  };
+
+  let emptyTitle = "No groups";
+  let emptyDescription = "Create a group to organize your contacts.";
+  let emptyCtaLabel = "Create group";
+  let emptyCtaTo: string | undefined;
+  let emptyCtaClick: (() => void) | undefined = startCreateGroupFlow;
+
+  if (query) {
+    emptyDescription = "No groups match your filter.";
+  } else if (!hasContacts) {
+    emptyTitle = "No contacts yet";
+    emptyDescription = "Create a contact first, then organize contacts into groups.";
+    emptyCtaLabel = "Create contact";
+    emptyCtaTo = "/contacts";
+    emptyCtaClick = undefined;
+  }
+
   return (
     <>
       <Modal
-        isOpen={groupModal}
-        onToggle={() => setGroupModal((s) => !s)}
+        isOpen={createGroupModal.isOpen}
+        onToggle={createGroupModal.toggle}
         onAction={() => {
-          setGroupModal(false);
+          createGroupModal.close();
           void mutateGroups();
         }}
         type="info"
@@ -39,7 +72,7 @@ export default function Index() {
       >
         <GroupForm
           onSuccess={() => {
-            setGroupModal(false);
+            createGroupModal.close();
             void mutateGroups();
           }}
         />
@@ -50,7 +83,7 @@ export default function Index() {
         actions={
           <div className="grid w-full gap-3 md:w-fit md:grid-cols-2">
             <StyledInput onChange={(e) => setQuery(e.target.value)} autoComplete="off" type="search" placeholder="Filter groups" value={query} className="" />
-            <BlackButton onClick={() => setGroupModal(true)}>
+            <BlackButton onClick={startCreateGroupFlow}>
               <Plus strokeWidth={1.5} size={18} />
               New
             </BlackButton>
@@ -58,7 +91,7 @@ export default function Index() {
         }
       >
         {!filteredGroups && <Skeleton type={"table"} />}
-        {filteredGroups && filteredGroups.length === 0 && <Empty title="No groups" description={query ? "No groups match your filter" : "Create a new group to start grouping your contacts"} />}
+        {filteredGroups && filteredGroups.length === 0 && <Empty title={emptyTitle} description={emptyDescription} ctaLabel={emptyCtaLabel} ctaTo={emptyCtaTo} onCtaClick={emptyCtaClick} />}
         {filteredGroups && filteredGroups.length > 0 && (
           <Table
             values={filteredGroups

@@ -17,7 +17,20 @@ import { campaignOpenRatePercent } from "../../../../lib/campaignStats";
 import { useCampaigns } from "../../../../lib/hooks/campaigns";
 import { useEmailsByCampaign } from "../../../../lib/hooks/emails";
 import { useCurrentProject } from "../../../../lib/hooks/projects";
+import { useModalState } from "../../../../lib/hooks/useModalState";
 import { network } from "../../../../lib/network";
+
+function getEmailStatusType(status: Email["status"]): "info" | "success" | "danger" {
+  if (status === "DELIVERED") {
+    return "info";
+  }
+
+  if (status === "OPENED") {
+    return "success";
+  }
+
+  return "danger";
+}
 
 /**
  * renders the published campaign view
@@ -29,7 +42,7 @@ export default function PublishedCampaign({ campaign, mutate: campaignMutate }: 
 
   const { data: emails } = useEmailsByCampaign(campaign);
   const [activeTab, setActiveTab] = useState<string>("emails");
-  const [deleteModal, setDeleteModal] = useState(false);
+  const deleteModal = useModalState();
 
   if (!campaign) {
     return <FullscreenLoader />;
@@ -106,8 +119,8 @@ export default function PublishedCampaign({ campaign, mutate: campaignMutate }: 
   return (
     <>
       <Modal
-        isOpen={deleteModal}
-        onToggle={() => setDeleteModal(false)}
+        isOpen={deleteModal.isOpen}
+        onToggle={deleteModal.close}
         onAction={remove}
         type="danger"
         action={campaignDeleteCopy.action}
@@ -123,7 +136,7 @@ export default function PublishedCampaign({ campaign, mutate: campaignMutate }: 
               <Copy size={18} />
               Duplicate
             </MenuButton>
-            <MenuButton onClick={() => setDeleteModal(true)}>
+            <MenuButton onClick={deleteModal.open}>
               <Trash size={18} />
               Delete
             </MenuButton>
@@ -175,9 +188,11 @@ export default function PublishedCampaign({ campaign, mutate: campaignMutate }: 
             <div className="sm:col-span-6">
               <Table
                 values={(emails ?? []).map((e: Email) => {
+                  const emailStatus = `${e.status.at(0)?.toUpperCase()}${e.status.slice(1).toLowerCase()}`;
+
                   return {
                     Email: e.email,
-                    Status: <Badge type={e.status === "DELIVERED" ? "info" : e.status === "OPENED" ? "success" : "danger"}>{e.status.at(0)?.toUpperCase() + e.status.slice(1).toLowerCase()}</Badge>,
+                    Status: <Badge type={getEmailStatusType(e.status)}>{emailStatus}</Badge>,
                     View: (
                       <Link to={`/contacts/${e.contact}`}>
                         <Eye size={20} />
