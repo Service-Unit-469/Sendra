@@ -6,6 +6,7 @@ import {
   EmailService,
   EventPersistence,
   getEmailConfig,
+  getRequestInfo,
   ProjectPersistence,
   rootLogger,
   TemplatePersistence,
@@ -22,6 +23,7 @@ export const sendEmail = async (task: SendEmailTask, recordId: string) => {
   });
   logger.info({ ...task.payload }, "Sending email");
   const { action: actionId, campaign: campaignId, contact: contactId, project: projectId, email: emailId } = task.payload;
+  const appUrl = task.payload.appUrl ?? getRequestInfo().appUrl ?? process.env.APP_URL ?? "http://localhost:3000";
 
   const projectPersistence = new ProjectPersistence();
   const project = await projectPersistence.get(projectId);
@@ -125,6 +127,7 @@ export const sendEmail = async (task: SendEmailTask, recordId: string) => {
   } as const;
   const compiledHtml = EmailService.compileBody(body.html, {
     action,
+    appUrl,
     contact,
     project,
     email: emailBase,
@@ -133,6 +136,7 @@ export const sendEmail = async (task: SendEmailTask, recordId: string) => {
   if (body.plainText) {
     compiledPlainText = EmailService.compileBody(body.plainText, {
       action,
+      appUrl,
       contact,
       project,
       email: emailBase,
@@ -141,6 +145,7 @@ export const sendEmail = async (task: SendEmailTask, recordId: string) => {
 
   logger.info({ subject: compiledSubject, body: compiledHtml.length }, "Sending email");
   const { messageId } = await EmailService.send({
+    appUrl,
     from: {
       name,
       email,

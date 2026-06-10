@@ -38,10 +38,6 @@ declare module "sst" {
       "name": string
       "type": "sst.aws.Dynamo"
     }
-    "SendraRouter": {
-      "type": "sst.aws.Router"
-      "url": string
-    }
     "Subscription": {
       "type": "sst.aws.StaticSite"
       "url": string

@@ -1,7 +1,5 @@
 import { dataTable } from "./data";
 import { passEnvironmentVariables } from "./env";
-import { router } from "./route";
-
 
 const isPreviewStage = $app.stage.startsWith("PR-");
 const isSqsPollerEnabled = process.env.ENABLE_SQS_POLLER === 'true' || !isPreviewStage;
@@ -51,7 +49,7 @@ if (isSqsPollerEnabled) {
           "LOG_PRETTY",
           "METRICS_ENABLED",
         ]),
-        APP_URL: process.env.APP_URL ?? router.url,
+        APP_URL: process.env.APP_URL ?? "http://localhost:3000",
       },
       permissions: [
         {

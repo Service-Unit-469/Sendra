@@ -1,6 +1,7 @@
 import { AsyncLocalStorage } from "node:async_hooks";
 
 export type RequestInfo = {
+  appUrl: string;
   correlationId: string;
   requestId: string;
 };

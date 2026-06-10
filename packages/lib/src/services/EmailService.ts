@@ -12,40 +12,37 @@ const logger = rootLogger.child({
 
 export type CompileProps = {
   action?: Pick<Action, "name">;
+  appUrl: string;
   contact: Pick<Contact, "email" | "data" | "subscribed">;
   email: Pick<Email, "sendType" | "subject">;
   project: Pick<PublicProject, "name" | "id">;
 };
 
+export type SendProps = {
+  appUrl: string;
+  from: {
+    name: string;
+    email: string;
+  };
+  to: string[];
+  content: {
+    subject: string;
+    html: string;
+    plainText?: string;
+  };
+  attachments?: Array<{
+    filename: string;
+    content: string;
+    contentType: string;
+  }> | null;
+  headers?: {
+    [key: string]: string;
+  } | null;
+  reply?: string;
+};
+
 export class EmailService {
-  public static async send({
-    from,
-    to,
-    content,
-    reply,
-    headers,
-    attachments,
-  }: {
-    from: {
-      name: string;
-      email: string;
-    };
-    reply?: string;
-    to: string[];
-    content: {
-      subject: string;
-      html: string;
-      plainText?: string;
-    };
-    headers?: {
-      [key: string]: string;
-    } | null;
-    attachments?: Array<{
-      filename: string;
-      content: string;
-      contentType: string;
-    }> | null;
-  }) {
+  public static async send({ appUrl, from, to, content, reply, headers, attachments }: SendProps) {
     const ses = new SES();
 
     const emailConfig = getEmailConfig();
@@ -86,7 +83,7 @@ export class EmailService {
         });
       });
     }
-    message.headers.set("List-Unsubscribe", `https://${emailConfig.appUrl}/subscription/?email=${to}`);
+    message.headers.set("List-Unsubscribe", `https://${appUrl}/subscription/?email=${to}`);
     Object.entries(headers ?? {}).forEach(([key, value]) => {
       message.headers.set(key, value);
     });
@@ -114,7 +111,7 @@ export class EmailService {
     return { messageId: response.MessageId };
   }
 
-  public static compileBody(body: string, { action, contact, email, project }: CompileProps) {
+  public static compileBody(body: string, { action, appUrl, contact, email, project }: CompileProps) {
     logger.info(
       {
         contact: contact.email,
@@ -122,7 +119,6 @@ export class EmailService {
       },
       "Compiling body",
     );
-    const emailConfig = getEmailConfig();
     Handlebars.registerHelper("default", (value, defaultValue) => {
       return value ?? defaultValue;
     });
@@ -133,13 +129,13 @@ export class EmailService {
       contact,
       email,
       project,
-      APP_URI: emailConfig.appUrl,
+      APP_URI: appUrl,
     });
 
     return templated;
   }
 
-  public static compileSubject(subject: string, { action, contact, project }: Omit<CompileProps, "email">) {
+  public static compileSubject(subject: string, { action, contact, project }: Omit<CompileProps, "email" | "appUrl">) {
     logger.info(
       {
         subject,

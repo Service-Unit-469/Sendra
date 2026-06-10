@@ -3,11 +3,18 @@ import { Unit } from "aws-embedded-metrics";
 import { rootLogger } from "../logging";
 import { withMetrics } from "../metrics/Logger";
 import { ActionPersistence, EventPersistence, ProjectPersistence, TemplatePersistence } from "../persistence";
+import { getRequestInfo } from "../request-info";
 import { TaskQueue } from "./TaskQueue";
 
 const logger = rootLogger.child({
   module: "ActionsService",
 });
+
+export type TriggerActionParams = {
+  contact: Contact;
+  eventType: string;
+  project: Project;
+};
 
 export class ActionsService {
   /**
@@ -16,7 +23,8 @@ export class ActionsService {
    * @param event
    * @param project
    */
-  public static async trigger({ eventType, contact, project }: { eventType: string; contact: Contact; project: Project }) {
+  public static async trigger({ eventType, contact, project }: TriggerActionParams) {
+    const { appUrl } = getRequestInfo();
     return withMetrics(
       async (metricsLogger) => {
         metricsLogger.setProperty("EventType", eventType);
@@ -112,6 +120,7 @@ export class ActionsService {
             delaySeconds: action?.delay ? action.delay * 60 : 0,
             payload: {
               action: action.id,
+              appUrl,
               contact: contact.id,
               project: project.id,
             },

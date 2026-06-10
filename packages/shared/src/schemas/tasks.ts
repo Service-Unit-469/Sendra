@@ -20,6 +20,7 @@ export const BatchDeleteRelatedSchema = baseTaskSchema.extend({
 export const QueueCampaignTaskSchema = baseTaskSchema.extend({
   type: z.literal("queueCampaign"),
   payload: z.object({
+    appUrl: z.url().optional(),
     campaign: id,
     delay: z.number().optional(),
     project: id,
@@ -29,6 +30,7 @@ export const QueueCampaignTaskSchema = baseTaskSchema.extend({
 export const SendEmailTaskSchema = baseTaskSchema.extend({
   type: z.literal("sendEmail"),
   payload: z.object({
+    appUrl: z.url().optional(),
     email: id.optional(),
     action: id.optional(),
     campaign: id.optional(),

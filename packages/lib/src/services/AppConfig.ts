@@ -56,13 +56,11 @@ export const getLogConfig = () => LogConfigSchema.parse(process.env);
 const EmailConfigSchema = z
   .object({
     ALLOW_DUPLICATE_PROJECT_IDENTITIES: z.enum(["true", "false"]).default("false"),
-    APP_URL: z.url(),
     DEFAULT_EMAIL: z.email(),
     EMAIL_CONFIGURATION_SET_NAME: z.string(),
   })
   .transform((env) => ({
     allowDuplicateProjectIdentities: env.ALLOW_DUPLICATE_PROJECT_IDENTITIES === "true",
-    appUrl: env.APP_URL,
     defaultEmail: env.DEFAULT_EMAIL,
     emailConfigurationSetName: env.EMAIL_CONFIGURATION_SET_NAME,
   }));
