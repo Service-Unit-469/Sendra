@@ -12,14 +12,14 @@ const logger = rootLogger.child({
 
 export type CompileProps = {
   action?: Pick<Action, "name">;
-  appUrl: string;
+  appUrl?: string;
   contact: Pick<Contact, "email" | "data" | "subscribed">;
   email: Pick<Email, "sendType" | "subject">;
   project: Pick<PublicProject, "name" | "id">;
 };
 
 export type SendProps = {
-  appUrl: string;
+  appUrl?: string;
   from: {
     name: string;
     email: string;
@@ -83,7 +83,8 @@ export class EmailService {
         });
       });
     }
-    message.headers.set("List-Unsubscribe", `https://${appUrl}/subscription/?email=${to}`);
+    const unsubscribeAppUrl = appUrl ?? emailConfig.appUrl;
+    message.headers.set("List-Unsubscribe", `https://${unsubscribeAppUrl}/subscription/?email=${to}`);
     Object.entries(headers ?? {}).forEach(([key, value]) => {
       message.headers.set(key, value);
     });
@@ -119,6 +120,7 @@ export class EmailService {
       },
       "Compiling body",
     );
+    const emailConfig = getEmailConfig();
     Handlebars.registerHelper("default", (value, defaultValue) => {
       return value ?? defaultValue;
     });
@@ -129,7 +131,7 @@ export class EmailService {
       contact,
       email,
       project,
-      APP_URI: appUrl,
+      APP_URI: appUrl ?? emailConfig.appUrl,
     });
 
     return templated;

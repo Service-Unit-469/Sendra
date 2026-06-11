@@ -26,6 +26,14 @@ export class AssetService {
     this.keyPrefix = "assets";
   }
 
+  private isPrefixedKey(s3Key: string): boolean {
+    return s3Key.startsWith(`${this.keyPrefix}/`);
+  }
+
+  private isProjectAssetKey(projectId: string, s3Key: string): boolean {
+    return s3Key.startsWith(`${projectId}/`) || s3Key.startsWith(`${this.keyPrefix}/${projectId}/`);
+  }
+
   /**
    * Convert S3 key to asset ID
    */
@@ -44,7 +52,8 @@ export class AssetService {
    * Convert S3 object to Asset type
    */
   private s3ObjectToAsset(key: string, response: HeadObjectCommandOutput): Asset {
-    const [, projectId, ...filenameParts] = key.split("/");
+    const keyParts = key.split("/");
+    const [projectId, ...filenameParts] = this.isPrefixedKey(key) ? keyParts.slice(1) : keyParts;
     const filename = filenameParts.join("/");
     const name = filename;
     const mimeType = response.ContentType ?? "application/octet-stream";
@@ -155,7 +164,7 @@ export class AssetService {
     const s3Key = this.idToS3Key(id);
 
     // Verify the asset belongs to this project
-    if (!s3Key.startsWith(`${this.keyPrefix}/${projectId}/`)) {
+    if (!this.isProjectAssetKey(projectId, s3Key)) {
       throw new HttpException(403, "Access denied to this asset");
     }
 
@@ -227,7 +236,7 @@ export class AssetService {
     const s3Key = this.idToS3Key(id);
 
     // Verify the asset belongs to this project
-    if (!s3Key.startsWith(`${projectId}/`)) {
+    if (!this.isProjectAssetKey(projectId, s3Key)) {
       throw new HttpException(403, "Access denied to this asset");
     }
 
