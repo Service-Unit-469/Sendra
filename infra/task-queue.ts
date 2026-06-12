@@ -1,6 +1,5 @@
 import { dataTable } from "./data";
 import { passEnvironmentVariables } from "./env";
-import { router } from "./router";
 import { z } from "zod";
 
 type QueueBatchWindow = `${number} ${"second" | "seconds" | "minute" | "minutes"}`;
@@ -71,7 +70,7 @@ if (isSqsPollerEnabled) {
           "LOG_PRETTY",
           "METRICS_ENABLED",
         ]),
-        APP_URL: process.env.APP_URL ?? router.url,
+        APP_URL: process.env.APP_URL ?? "http://localhost:3000",
       },
       permissions: [
         {
