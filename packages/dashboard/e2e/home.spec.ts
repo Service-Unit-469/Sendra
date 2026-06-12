@@ -32,7 +32,7 @@ test.describe("Home", () => {
     await page.getByRole("button", { name: "New" }).click();
     await page.getByRole("textbox", { name: "Event" }).fill(eventName);
     await page.getByRole("button", { name: "Trigger" }).click();
-    await page.getByText("Created new event").waitFor({ state: "visible" });
+    await page.getByText("Triggered event").waitFor({ state: "visible" });
     await page.reload();
     await dashboardPage.navigateTo("Dashboard", "/");
     await page.getByText(eventName).waitFor({ state: 'visible' });

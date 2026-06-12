@@ -5,6 +5,7 @@ import {
   ContactPersistence,
   EmailService,
   getEmailConfig,
+  getRequestInfo,
   MembershipPersistence,
   ProjectPersistence,
   rootLogger,
@@ -151,9 +152,11 @@ export const registerCampaignsRoutes = (app: AppType) => {
           status: "DELIVERED",
         });
 
+        const { appUrl } = getRequestInfo();
         await TaskQueue.addTask({
           type: "queueCampaign",
           payload: {
+            appUrl,
             campaign: campaign.id,
             project: projectId,
             delay: userDelay,
@@ -181,7 +184,8 @@ export const registerCampaignsRoutes = (app: AppType) => {
           throw new NotFound("template");
         }
 
-        const params = {
+        const { appUrl } = getRequestInfo();
+        const params: CompileProps = {
           contact: {
             email: emailConfig.defaultEmail,
             data: {},
@@ -195,10 +199,12 @@ export const registerCampaignsRoutes = (app: AppType) => {
             name: project.name,
             id: project.id,
           },
+          appUrl,
         };
         const subject = EmailService.compileSubject(`[Campaign Test] ${campaign.subject}`, params);
         params.email.subject = subject;
         await EmailService.send({
+          appUrl,
           from: {
             name: project.from ?? project.name,
             email: project.identity?.verified && project.email ? project.email : emailConfig.defaultEmail, // TODO: Add env variable to configure default email
@@ -206,8 +212,8 @@ export const registerCampaignsRoutes = (app: AppType) => {
           to: users.map((m) => m.email),
           content: {
             subject,
-            html: EmailService.compileBody(campaign.body.html, params as CompileProps),
-            plainText: EmailService.compileBody(campaign.body.plainText, params as CompileProps),
+            html: EmailService.compileBody(campaign.body.html, params),
+            plainText: EmailService.compileBody(campaign.body.plainText, params),
           },
         });
       }

@@ -70,6 +70,7 @@ describe("SendEmailTask Handler", () => {
 			const task = {
 				type: "sendEmail" as const,
 				payload: {
+					appUrl: "https://send.example.com",
 					project: projectId,
 					contact: contact.id,
 					action: action.id,
@@ -509,4 +510,3 @@ describe("SendEmailTask Handler", () => {
 		});
 	});
 });
-

@@ -6,7 +6,7 @@ export default defineConfig({
   resolve: {
     dedupe: ["react", "react-dom"],
   },
-  base: "/dashboard",
+  base: "/",
   build: {
     rollupOptions: {
       output: {

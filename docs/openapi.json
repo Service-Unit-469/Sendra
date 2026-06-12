@@ -3573,7 +3573,7 @@
                       },
                       "updatedAt": {
                         "type": "string",
-                        "format": "date"
+                        "format": "date-time"
                       }
                     },
                     "required": [
@@ -3655,7 +3655,7 @@
                     },
                     "updatedAt": {
                       "type": "string",
-                      "format": "date"
+                      "format": "date-time"
                     }
                   },
                   "required": [
@@ -6988,9 +6988,6 @@
                                 },
                                 {
                                   "nullable": true
-                                },
-                                {
-                                  "nullable": true
                                 }
                               ]
                             }
@@ -7361,9 +7358,6 @@
                         },
                         {
                           "nullable": true
-                        },
-                        {
-                          "nullable": true
                         }
                       ]
                     }
@@ -7422,9 +7416,6 @@
                           },
                           {
                             "type": "boolean"
-                          },
-                          {
-                            "nullable": true
                           },
                           {
                             "nullable": true
@@ -7866,9 +7857,6 @@
                             },
                             {
                               "nullable": true
-                            },
-                            {
-                              "nullable": true
                             }
                           ]
                         }
@@ -8295,9 +8283,6 @@
                           },
                           {
                             "nullable": true
-                          },
-                          {
-                            "nullable": true
                           }
                         ]
                       }
@@ -8671,9 +8656,6 @@
                         },
                         {
                           "nullable": true
-                        },
-                        {
-                          "nullable": true
                         }
                       ]
                     }
@@ -8733,9 +8715,6 @@
                           },
                           {
                             "type": "boolean"
-                          },
-                          {
-                            "nullable": true
                           },
                           {
                             "nullable": true
@@ -9302,9 +9281,6 @@
                           },
                           {
                             "nullable": true
-                          },
-                          {
-                            "nullable": true
                           }
                         ]
                       }
@@ -9542,9 +9518,6 @@
                           },
                           {
                             "type": "boolean"
-                          },
-                          {
-                            "nullable": true
                           },
                           {
                             "nullable": true
@@ -10964,9 +10937,6 @@
                         },
                         {
                           "nullable": true
-                        },
-                        {
-                          "nullable": true
                         }
                       ]
                     }
@@ -10989,9 +10959,6 @@
                         },
                         {
                           "type": "boolean"
-                        },
-                        {
-                          "nullable": true
                         },
                         {
                           "nullable": true
@@ -12685,9 +12652,6 @@
                                 },
                                 {
                                   "type": "boolean"
-                                },
-                                {
-                                  "nullable": true
                                 },
                                 {
                                   "nullable": true

@@ -1,4 +1,4 @@
-import { CampaignPersistence, ContactPersistence, EmailPersistence, rootLogger, TaskQueue } from "@sendra/lib";
+import { CampaignPersistence, ContactPersistence, EmailPersistence, getRequestInfo, rootLogger, TaskQueue } from "@sendra/lib";
 import type { QueueCampaignTaskSchema } from "@sendra/shared";
 import type { z } from "zod";
 
@@ -9,6 +9,7 @@ export const queueCampaign = async (task: QueueCampaignTask, recordId: string) =
     recordId,
   });
   const { project: projectId, campaign: campaignId, delay } = task.payload;
+  const appUrl = task.payload.appUrl ?? getRequestInfo().appUrl ?? process.env.APP_URL ?? "http://localhost:3000";
   const campaignPersistence = new CampaignPersistence(projectId);
   const emailPersistence = new EmailPersistence(projectId);
   const contactPersistence = new ContactPersistence(projectId);
@@ -51,6 +52,7 @@ export const queueCampaign = async (task: QueueCampaignTask, recordId: string) =
       await TaskQueue.addTask({
         type: "sendEmail",
         payload: {
+          appUrl,
           email: createdEmail.id,
           campaign: recipient.campaign,
           contact: recipient.contactId,

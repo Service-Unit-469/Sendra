@@ -12,7 +12,7 @@ jobs:
   trivy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v6.0.3
       - name: Run Trivy vulnerability/misconfig/secret scan
         uses: aquasecurity/trivy-action@v0.36.0
         with:
@@ -23,6 +23,6 @@ jobs:
           severity: "CRITICAL,HIGH"
           ignore-unfixed: true
       - name: Upload SARIF to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v4
+        uses: github/codeql-action/upload-sarif@v4.36.2
         with:
           sarif_file: trivy-results.sarif
