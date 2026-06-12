@@ -21,6 +21,8 @@ export interface SingleDomainCloudFrontArgs {
 const createSingleDomainCloudFrontDistribution = (
   { aliases, certificateArn, enableWaf, name }: SingleDomainCloudFrontArgs,
 ) => {
+  const normalizedStage = $app.stage.toLowerCase().replace(/[^a-z0-9-]/g, "-");
+
   const cloudfrontProvider = new aws.Provider(`${name}CloudFrontRegion`, {
     region: 'us-east-1',
   });
@@ -45,14 +47,14 @@ const createSingleDomainCloudFrontDistribution = (
             visibilityConfig: {
               cloudwatchMetricsEnabled: true,
               sampledRequestsEnabled: true,
-              metricName: `${name}CommonRules`,
+              metricName: `${name}-${normalizedStage}-CommonRules`,
             },
           },
         ],
         visibilityConfig: {
           cloudwatchMetricsEnabled: true,
           sampledRequestsEnabled: true,
-          metricName: `${name}WebAcl`,
+          metricName: `${name}-${normalizedStage}-WebAcl`,
         },
       },
       { provider: cloudfrontProvider },
@@ -60,7 +62,7 @@ const createSingleDomainCloudFrontDistribution = (
     : undefined;
 
   const oac = new aws.cloudfront.OriginAccessControl(`${name}Oac`, {
-    name: `${name.toLowerCase()}-oac`,
+    name: `${name.toLowerCase()}-${normalizedStage}-oac`,
     description: "OAC for S3 origins",
     originAccessControlOriginType: "s3",
     signingBehavior: "always",
