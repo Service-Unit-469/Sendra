@@ -100,7 +100,13 @@ export default function ContactSelector({
                 transition={{ duration: 0.2 }}
                 className="grid gap-6 sm:col-span-6 sm:grid-cols-4 relative z-20 rounded-sm border border-neutral-300 px-6 py-6"
               >
-                <ContactFilterForm contacts={contacts} onSelect={(contacts) => setSelectedContacts(contacts)} />
+                <ContactFilterForm
+                  contacts={contacts}
+                  onSelect={(contacts) => {
+                    setSelectedContacts(contacts);
+                    onChange(contacts.map((contact) => contact.id));
+                  }}
+                />
               </motion.div>
             )}
           </AnimatePresence>

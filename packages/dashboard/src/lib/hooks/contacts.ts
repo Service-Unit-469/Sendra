@@ -14,9 +14,9 @@ export function useContact(id: string) {
   return useSWR<Contact & { _embed: { events: Event[]; emails: Email[] } }>(`/projects/${currentProject.id}/contacts/${id}?embed=events&embed=emails`);
 }
 
-export function useAllContacts() {
+export function useAllContacts(enabled = true) {
   const currentProject = useCurrentProject();
-  return useSWR<Contact[]>(`/projects/${currentProject.id}/contacts/all`);
+  return useSWR<Contact[]>(enabled ? `/projects/${currentProject.id}/contacts/all` : null);
 }
 
 /**
