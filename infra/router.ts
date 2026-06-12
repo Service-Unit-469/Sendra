@@ -2,6 +2,7 @@
 
 import * as aws from "@pulumi/aws";
 import * as pulumi from "@pulumi/pulumi";
+import { z } from 'zod';
 import { api } from "./api";
 import { assetsBucket } from "./assets";
 import { dashboard } from "./dashboard";
@@ -199,9 +200,22 @@ const createSingleDomainCloudFrontDistribution = (
   };
 };
 
+const configSchema = z.object({
+  CLOUDFRONT_ENABLE_WAF: z.string().optional().transform(e => e === "true"),
+  CLOUDFRONT_ALIASES: z.string().optional().transform(a => {
+    if (a) {
+      return a.split(',').map(a => new URL(a).host)
+    }
+  }),
+  CLOUDFRONT_CERT_ARN: z.string().optional(),
+}).transform(c => ({
+  enableWaf: c.CLOUDFRONT_ENABLE_WAF,
+  aliases: c.CLOUDFRONT_ALIASES,
+  certificateArn: c.CLOUDFRONT_CERT_ARN,
+}));
+
+
 export const router = createSingleDomainCloudFrontDistribution({
   name: "Sendra",
-  enableWaf: process.env.ENABLE_WAF === "true",
-  aliases: process.env.API_URL ? [new URL(process.env.API_URL).host] : undefined,
-  certificateArn: process.env.CLOUDFRONT_CERT_ARN,
+  ...configSchema.parse(process.env),
 });
