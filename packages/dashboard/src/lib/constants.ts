@@ -1,5 +1,4 @@
-const apiUrlEnv = import.meta.env.VITE_API_URI
-  ?? (import.meta.env.DEV ? "http://localhost:4000/api/v1" : "/api/v1");
+const apiUrlEnv = import.meta.env.VITE_API_URI ?? (import.meta.env.DEV ? "http://localhost:4000/api/v1" : "/api/v1");
 let apiUrl = apiUrlEnv;
 if (apiUrl.endsWith("/")) {
   apiUrl = apiUrl.slice(0, -1);
