@@ -23,16 +23,16 @@ jobs:
         uses: ./.github/actions/setup
 
       - name: Build
-        run: npm run build
+        run: pnpm run build
 
       - name: Run type checking
-        run: npm run typecheck
+        run: pnpm run typecheck
 
       - name: Run linting
-        run: npm run lint
+        run: pnpm run lint
 
       - name: Run tests
-        run: npm run test
+        run: pnpm run test
 
   deploy:
     runs-on: ubuntu-latest

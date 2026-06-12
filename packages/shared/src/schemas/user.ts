@@ -1,4 +1,4 @@
-import { z } from "@hono/zod-openapi";
+import { z } from "zod";
 import { BaseSchema, email } from "./common";
 
 export const password = z.string().min(6, "Password needs to be at least 6 characters long");

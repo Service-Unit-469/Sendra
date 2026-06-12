@@ -8,17 +8,17 @@ You can greatly support Sendra by contributing to this repository.
 
 ### 2. Install dependencies
 
-- Run `npm install` to install the dependencies.
+- Run `pnpm install` to install the dependencies.
 
 ### 3. Start Sendra
 
-- Run `npm start dev` to start Sendra
+- Run `pnpm run dev` to start Sendra
 
 ### 4. Linting
 
 - Run the following commands to lint Sendra:
 
 ```
-npm run lint
-npm run build
+pnpm run lint
+pnpm run build
 ```

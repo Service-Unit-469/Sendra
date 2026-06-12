@@ -1,5 +1,4 @@
 import { createRoute, z } from "@hono/zod-openapi";
-import { zValidator } from "@hono/zod-validator";
 import { ProjectPersistence } from "@sendra/lib";
 import { SmsConfigSchema } from "@sendra/shared";
 import type { AppType } from "../../app";
@@ -84,7 +83,7 @@ export const registerProjectSmsRoutes = (app: AppType) => {
         409: getProblemResponseSchema(409),
       },
       ...BearerAuth,
-      middleware: [isAuthenticatedProjectAdmin, zValidator("json", SmsConfigSchema)],
+      middleware: [isAuthenticatedProjectAdmin],
       hide: true,
     }),
     async (c) => {

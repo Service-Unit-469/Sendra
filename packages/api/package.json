@@ -4,7 +4,7 @@
 	"main": "dist/index.js",
 	"private": true,
 	"scripts": {
-		"build": "tsc && npm run openapi:export && npm run openapi:validate",
+		"build": "tsc && pnpm run openapi:export && pnpm run openapi:validate",
 		"lint": "biome check src",
 		"lint:fix": "biome check --write src",
 		"lint:fix:unsafe": "biome check --write src --unsafe",
@@ -13,10 +13,10 @@
 		"test": "vitest run",
 		"test:watch": "vitest",
 		"openapi:export": "tsx scripts/export-openapi.ts",
-		"openapi:validate": "npx -p @seriousme/openapi-schema-validator validate-api ../../docs/openapi.json"
+		"openapi:validate": "pnpm --package=@seriousme/openapi-schema-validator dlx validate-api ../../docs/openapi.json"
 	},
 	"devDependencies": {
-		"@sendra/test": "*",
+		"@sendra/test": "workspace:*",
 		"@types/compression": "^1.7.5",
 		"@types/jsonwebtoken": "^9.0.6",
 		"tsx": "^4.22.4",

@@ -47,7 +47,7 @@
 		"@rjsf/core": "^6.6.2",
 		"@rjsf/utils": "^6.6.2",
 		"@rjsf/validator-ajv8": "^6.6.1",
-		"@sendra/shared": "1.0.0",
+		"@sendra/shared": "workspace:*",
 		"@tailwindcss/postcss": "^4.3.0",
 		"@tippyjs/react": "^4.2.6",
 		"@tiptap/extension-color": "^3.26.0",
@@ -89,7 +89,7 @@
 	"devDependencies": {
 		"@babel/core": "^7.29.7",
 		"@playwright/test": "^1.60.0",
-		"@sendra/api": "*",
+		"@sendra/api": "workspace:*",
 		"@tailwindcss/aspect-ratio": "^0.4.2",
 		"@tailwindcss/forms": "^0.5.7",
 		"@tailwindcss/typography": "^0.5.13",

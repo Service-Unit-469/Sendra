@@ -5,7 +5,7 @@ import { getApiUrl } from "./util";
 export const subscription = new sst.aws.StaticSite("Subscription", {
   path: "packages/subscription",
   build: {
-    command: "npm run build",
+    command: "pnpm run build",
     output: "dist",
   },
   router: {

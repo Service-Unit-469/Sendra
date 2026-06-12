@@ -1,4 +1,4 @@
-import { z } from "@hono/zod-openapi";
+import { z } from "zod";
 import { BodySchema, email, id, ProjectEntitySchema } from "./common";
 
 /** Max queue error rows stored on the campaign (newest retained when exceeded). */

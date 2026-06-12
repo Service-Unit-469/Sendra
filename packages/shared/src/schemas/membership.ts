@@ -1,4 +1,4 @@
-import { z } from "@hono/zod-openapi";
+import { z } from "zod";
 import { BaseSchema, email, id } from "./common";
 
 export const MembershipRoleSchema = z.enum(["MEMBER", "ADMIN"]).default("MEMBER");

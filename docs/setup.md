@@ -29,10 +29,10 @@ This guide covers everything you need to deploy Sendra to your AWS account.
 - [ ] Review [Prerequisites](#prerequisites)
 - [ ] Configure AWS CLI with credentials
 - [ ] Clone the repository
-- [ ] Install dependencies (`npm install`)
+- [ ] Install dependencies (`pnpm install`)
 - [ ] Set up [environment variables](#environment-variables)
 - [ ] Generate and set [JWT secret](#jwt-secret)
-- [ ] Deploy to AWS (`npm run deploy`)
+- [ ] Deploy to AWS (`pnpm run deploy`)
 - [ ] Setup Sendra
 
 
@@ -43,7 +43,7 @@ Before deploying Sendra, ensure you have the following:
 ### Required Software
 
 - **Node.js**: Version 20.x or higher
-- **npm**: Version 9.8.x or higher
+- **pnpm**: Version 10.x or higher
 - **AWS CLI**: Version 2.x configured with credentials
 - **AWS Account**: Active AWS account with appropriate permissions
 
@@ -106,7 +106,7 @@ cd Sendra
 Install all dependencies for the monorepo:
 
 ```bash
-npm install
+pnpm install
 ```
 
 This will install dependencies for all packages in the workspace.
@@ -116,7 +116,7 @@ This will install dependencies for all packages in the workspace.
 Build the shared packages that other packages depend on:
 
 ```bash
-npm run build:deps
+pnpm run build:deps
 ```
 
 This builds the `@sendra/shared` and `@sendra/lib` packages.
@@ -200,7 +200,7 @@ Sendra uses SST's Secret feature for the JWT signing key. During deployment, you
 
 ```bash
 # Set the JWT secret (replace with your own strong secret)
-npx sst secret set JwtSecret "your-strong-random-secret-key-here"
+pnpm sst secret set JwtSecret "your-strong-random-secret-key-here"
 ```
 
 ## Deployment
@@ -216,7 +216,7 @@ SST supports multiple stages (environments) for your deployment. By default, it 
 For development deployment:
 
 ```bash
-npm run dev
+pnpm run dev
 ```
 
 This command:
@@ -231,13 +231,13 @@ For production deployment:
 
 ```bash
 # Set the stage explicitly
-npx sst deploy --stage production
+pnpm sst deploy --stage production
 ```
 
-Or use the npm script:
+Or use the pnpm script:
 
 ```bash
-npm run deploy
+pnpm run deploy
 ```
 
 
@@ -282,8 +282,8 @@ Now you can start using Sendra!
 **Solution**: Ensure dependencies are built:
 
 ```bash
-npm run build:deps
-npm run deploy
+pnpm run build:deps
+pnpm run deploy
 ```
 
 #### Issue: AWS credentials not found
@@ -316,7 +316,7 @@ LOG_LEVEL=debug
 Then redeploy:
 
 ```bash
-npx sst deploy --stage production
+pnpm sst deploy --stage production
 ```
 
 ### Remove Deployment
@@ -325,10 +325,10 @@ To completely remove a deployment:
 
 ```bash
 # Remove specific stage
-npx sst remove --stage staging
+pnpm sst remove --stage staging
 
-# Or use npm script (removes current stage)
-npm run remove
+# Or use pnpm script (removes current stage)
+pnpm run remove
 ```
 
 **Warning**: This will delete all resources including the DynamoDB table and all data. Production stages are protected by default.
@@ -338,7 +338,7 @@ npm run remove
 For local development with live Lambda reloading:
 
 ```bash
-npm run dev
+pnpm run dev
 ```
 
 This provides:
@@ -358,17 +358,17 @@ To update an existing deployment:
 
 2. Update dependencies:
    ```bash
-   npm install
+   pnpm install
    ```
 
 3. Rebuild dependencies:
    ```bash
-   npm run build:deps
+   pnpm run build:deps
    ```
 
 4. Deploy the update:
    ```bash
-   npx sst deploy --stage production
+   pnpm sst deploy --stage production
    ```
 
 ## Next Steps
@@ -382,4 +382,3 @@ To update an existing deployment:
 - **GitHub Issues**: [Report bugs or request features](https://github.com/Service-Unit-469/Sendra/issues)
 - **Discussions**: Ask questions in GitHub Discussions
 - **Contributing**: See [CONTRIBUTING.html](../CONTRIBUTING.html)
-

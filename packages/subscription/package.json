@@ -13,7 +13,7 @@
 		"clean": "rimraf dist node_modules .turbo .vite"
 	},
 	"dependencies": {
-		"@sendra/shared": "1.0.0",
+		"@sendra/shared": "workspace:*",
 		"@tailwindcss/postcss": "^4.3.0",
 		"framer-motion": "^12.40.0",
 		"lucide-react": "^1.17.0",
