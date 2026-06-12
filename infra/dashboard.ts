@@ -1,5 +1,3 @@
-import { api } from "./api";
-
 export const dashboard = new sst.aws.StaticSite("Dashboard", {
   path: "packages/dashboard",
   build: {
@@ -11,6 +9,6 @@ export const dashboard = new sst.aws.StaticSite("Dashboard", {
   },
   environment: {
     VITE_AWS_REGION: "us-east-2",
-    VITE_API_URI: api.url.apply((url) => `${url}/api/v1`),
+    VITE_API_URI: "/api/v1",
   },
 });
