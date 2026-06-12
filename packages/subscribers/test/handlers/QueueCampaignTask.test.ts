@@ -66,6 +66,7 @@ describe("QueueCampaignTask Handler", () => {
 			const task = {
 				type: "queueCampaign" as const,
 				payload: {
+					appUrl: "https://queued.example.com",
 					campaign: campaign.id,
 					project: projectId,
 					delay: 0,
@@ -95,6 +96,7 @@ describe("QueueCampaignTask Handler", () => {
 			expect(TaskQueue.addTask).toHaveBeenCalledWith({
 				type: "sendEmail",
 				payload: {
+					appUrl: expect.any(String),
 					email: emailRecord.id,
 					campaign: campaign.id,
 					contact: contact.id,
@@ -269,6 +271,7 @@ describe("QueueCampaignTask Handler", () => {
 			expect(TaskQueue.addTask).toHaveBeenCalledWith({
 				type: "sendEmail",
 				payload: {
+					appUrl: expect.any(String),
 					email: emails[0].id,
 					campaign: campaign.id,
 					contact: contact.id,
@@ -494,4 +497,3 @@ describe("QueueCampaignTask Handler", () => {
 		});
 	});
 });
-

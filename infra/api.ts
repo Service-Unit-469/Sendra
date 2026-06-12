@@ -2,7 +2,6 @@ import { assetsBucket } from "./assets";
 import { dataTable } from "./data";
 import { passEnvironmentVariables } from "./env";
 import { rateLimitTable } from "./rateLimit";
-import { router } from "./route";
 import { jwtSecret } from "./secrets";
 import { delayedTaskStateMachine, taskQueue } from "./task-queue";
 
@@ -29,7 +28,6 @@ export const api = new sst.aws.ApiGatewayV2("ApiGateway", {
     },
   },
 });
-router.route("/api/v1", api.url);
 
 api.route("ANY /api/v1/{proxy+}", {
   handler: "packages/api/src/app.handler",
@@ -61,7 +59,7 @@ api.route("ANY /api/v1/{proxy+}", {
       "LOG_PRETTY",
       "METRICS_ENABLED",
     ]),
-    APP_URL: process.env.APP_URL ?? router.url,
+    APP_URL: process.env.APP_URL ?? 'http://localhost:3000',
   },
   nodejs: {
     loader: {

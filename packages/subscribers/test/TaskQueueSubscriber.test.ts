@@ -13,7 +13,12 @@ vi.mock("../src/handlers/DeleteTask", () => ({
 	handleDelete: vi.fn().mockResolvedValue(undefined),
 }));
 
+vi.mock("../src/handlers/QueueCampaignTask", () => ({
+	queueCampaign: vi.fn().mockResolvedValue(undefined),
+}));
+
 import { handleDelete } from "../src/handlers/DeleteTask";
+import { queueCampaign } from "../src/handlers/QueueCampaignTask";
 import { sendEmail } from "../src/handlers/SendEmailTask";
 
 describe("TaskQueueSubscriber", () => {
@@ -152,6 +157,27 @@ describe("TaskQueueSubscriber", () => {
 		});
 	});
 
+	describe("QueueCampaign Task", () => {
+		test("should process queueCampaign task successfully", async () => {
+			const task = {
+				type: "queueCampaign",
+				payload: {
+					project: projectId,
+					campaign: `campaign-${Date.now()}`,
+					delay: 0,
+				},
+			};
+
+			const event = createSQSEvent(task);
+			const context = createContext();
+
+			const result = await handler(event, context);
+
+			expect(queueCampaign).toHaveBeenCalledWith(task, event.Records[0].messageId);
+			expect(result.batchItemFailures).toEqual([]);
+		});
+	});
+
 	describe("Error Handling", () => {
 		test("should handle task processing errors and return batch failures", async () => {
 			vi.mocked(sendEmail).mockRejectedValueOnce(new Error("Processing failed"));
@@ -284,9 +310,9 @@ describe("TaskQueueSubscriber", () => {
 
 			expect(sendEmail).not.toHaveBeenCalled();
 			expect(handleDelete).not.toHaveBeenCalled();
+			expect(queueCampaign).not.toHaveBeenCalled();
 			// Should return batch failure since invalid task format
 			expect(result.batchItemFailures.length).toBe(1);
 		});
 	});
 });
-
