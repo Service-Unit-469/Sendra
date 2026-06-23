@@ -31,7 +31,8 @@
     "remove": "sst remove",
     "sst": "sst",
     "test": "npm run test --workspaces --if-present",
-    "typecheck": "npm run typecheck --workspaces"
+    "typecheck": "npm run typecheck --workspaces",
+    "wait:deployment": "node scripts/wait-for-deployment-readiness.mjs"
   },
   "workspaces": [
     "packages/test",
