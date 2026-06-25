@@ -93,6 +93,17 @@ const createSingleDomainCloudFrontDistribution = (
 function handler(event) {
   var request = event.request;
   var uri = request.uri || "/";
+
+  if (uri === "/") {
+    return {
+      statusCode: 302,
+      statusDescription: "Found",
+      headers: {
+        location: { value: "/dashboard" },
+      },
+    };
+  }
+
   var rewritten = rewrite(uri, "/dashboard") || rewrite(uri, "/subscription");
 
   if (rewritten) {
@@ -216,6 +227,10 @@ function handler(event) {
       cachedMethods: ["GET", "HEAD"],
       compress: true,
       cachePolicyId: MANAGED_CACHING_OPTIMIZED,
+      functionAssociations: [{
+        eventType: "viewer-request",
+        functionArn: spaRewriteFunction.arn,
+      }],
     },
     orderedCacheBehaviors,
     restrictions: {
