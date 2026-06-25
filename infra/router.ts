@@ -69,6 +69,40 @@ const createSingleDomainCloudFrontDistribution = (
     signingProtocol: "sigv4",
   });
 
+  const spaRewriteFunction = new aws.cloudfront.Function(`${name}SpaRewrite`, {
+    name: `${name.toLowerCase()}-${normalizedStage}-spa-rewrite`,
+    runtime: "cloudfront-js-2.0",
+    publish: true,
+    code: `function rewrite(uri, prefix) {
+  if (uri === prefix || uri === prefix + "/") {
+    return prefix + "/index.html";
+  }
+
+  if (!uri.startsWith(prefix + "/")) {
+    return null;
+  }
+
+  var lastSegment = uri.substring(uri.lastIndexOf("/") + 1);
+  if (lastSegment && lastSegment.indexOf(".") === -1) {
+    return prefix + "/index.html";
+  }
+
+  return null;
+}
+
+function handler(event) {
+  var request = event.request;
+  var uri = request.uri || "/";
+  var rewritten = rewrite(uri, "/dashboard") || rewrite(uri, "/subscription");
+
+  if (rewritten) {
+    request.uri = rewritten;
+  }
+
+  return request;
+}`,
+  }, { provider: cloudfrontProvider });
+
   const apiDomainName = pulumi.output(api.url).apply((url) => new URL(url).host);
 
   const origins: pulumi.Input<aws.types.input.cloudfront.DistributionOrigin>[] = [
@@ -135,6 +169,10 @@ const createSingleDomainCloudFrontDistribution = (
         cachedMethods: ["GET", "HEAD"],
         compress: true,
         cachePolicyId: MANAGED_CACHING_OPTIMIZED,
+        functionAssociations: [{
+          eventType: "viewer-request",
+          functionArn: spaRewriteFunction.arn,
+        }],
       })
   }
   if (subscription.nodes.assets) {
@@ -156,6 +194,10 @@ const createSingleDomainCloudFrontDistribution = (
         cachedMethods: ["GET", "HEAD"],
         compress: true,
         cachePolicyId: MANAGED_CACHING_OPTIMIZED,
+        functionAssociations: [{
+          eventType: "viewer-request",
+          functionArn: spaRewriteFunction.arn,
+        }],
       },)
   }
 
