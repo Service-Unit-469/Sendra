@@ -88,7 +88,7 @@
 	},
 	"devDependencies": {
 		"@babel/core": "^7.29.7",
-		"@playwright/test": "^1.60.0",
+		"@playwright/test": "^1.61.1",
 		"@sendra/api": "*",
 		"@tailwindcss/aspect-ratio": "^0.4.2",
 		"@tailwindcss/forms": "^0.5.7",
@@ -102,8 +102,8 @@
 		"@types/react": "19.2.17",
 		"@types/to-json-schema": "^0.2.4",
 		"@types/uuid": "^10.0.0",
-		"@vitejs/plugin-react": "^6.0.2",
-		"autoprefixer": "^10.5.0",
+		"@vitejs/plugin-react": "^6.0.3",
+		"autoprefixer": "^10.5.1",
 		"dotenv": "^17.4.2",
 		"jest-axe": "^10.0.0",
 		"jsdom": "^29.1.1",
@@ -111,7 +111,7 @@
 		"postcss": "^8.5.15",
 		"tailwindcss": "^4.1.16",
 		"typescript": "^6.0.3",
-		"vite": "^8.0.14"
+		"vite": "^8.1.0"
 	},
 	"overrides": {
 		"react": "19.2.7",
