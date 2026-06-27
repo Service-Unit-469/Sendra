@@ -36,8 +36,11 @@ test.describe("Campaigns", () => {
       await page.reload();
       await selectTemplate(page, dashboardPage, resolvedTemplateName, campaignSubject);
     }
-    await page.getByRole("button", { name: "Create Campaign" }).click();
-    await page.getByRole("button", { name: "Create Campaign" }).waitFor({ state: "hidden" });
+    const createCampaignModal = page.getByRole("dialog");
+    const createCampaignButton = createCampaignModal.getByRole("button", { name: "Create Campaign" });
+
+    await createCampaignButton.click();
+    await createCampaignModal.waitFor({ state: "hidden" });
     await page.getByText(campaignSubject).waitFor({ state: "visible" });
   };
 
