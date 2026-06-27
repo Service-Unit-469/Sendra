@@ -9,6 +9,15 @@
         "dist/**"
       ]
     },
+    "build:deps": {
+      "dependsOn": [
+        "^build:deps"
+      ],
+      "outputs": [
+        "dist/**"
+      ]
+
+    },
     "typecheck": {
       "dependsOn": [
         "^typecheck"
@@ -29,10 +38,6 @@
       "outputs": []
     },
     "dev": {
-      "cache": false,
-      "persistent": true
-    },
-    "sst:dev": {
       "cache": false,
       "persistent": true,
       "with": [

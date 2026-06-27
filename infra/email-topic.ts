@@ -2,7 +2,6 @@
 
 import { dataTable } from "./data";
 import { passEnvironmentVariables } from "./env";
-import { router } from "./route";
 import * as aws from "@pulumi/aws";
 import * as pulumi from "@pulumi/pulumi";
 
@@ -23,7 +22,7 @@ emailTopic.subscribe("EmailTopicSubscriber", {
       "LOG_PRETTY",
       "METRICS_ENABLED",
     ]),
-    APP_URL: process.env.APP_URL ?? router.url,
+    APP_URL: process.env.APP_URL ?? "http://localhost:3000",
   },
 });
 

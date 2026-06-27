@@ -1,5 +1,16 @@
 import { createRoute, z } from "@hono/zod-openapi";
-import { ActionsService, ContactPersistence, ContactService, EmailPersistence, EmailService, EventPersistence, getEmbedLimitFunction, ProjectPersistence, rootLogger } from "@sendra/lib";
+import {
+  ActionsService,
+  ContactPersistence,
+  ContactService,
+  EmailPersistence,
+  EmailService,
+  EventPersistence,
+  getEmbedLimitFunction,
+  getRequestInfo,
+  ProjectPersistence,
+  rootLogger,
+} from "@sendra/lib";
 import { type Contact, type ContactSchemas, type Event, EventSchema, EventSchemas, id, OOTB_EVENT_VALUES } from "@sendra/shared";
 import type { AppType } from "../../app";
 import { BadRequest, HttpException, NotFound } from "../../exceptions";
@@ -167,11 +178,13 @@ export const registerEventsRoutes = (app: AppType) => {
             });
           }
         }
+        const { appUrl } = getRequestInfo();
         const compiledSubject = EmailService.compileSubject(subject, {
           contact,
           project,
         });
         const compiledHtml = EmailService.compileBody(body.html, {
+          appUrl,
           contact,
           project,
           email: {
@@ -182,6 +195,7 @@ export const registerEventsRoutes = (app: AppType) => {
         let compiledPlainText: string | undefined;
         if (body.plainText) {
           compiledPlainText = EmailService.compileBody(body.plainText, {
+            appUrl,
             contact,
             project,
             email: {
@@ -192,6 +206,7 @@ export const registerEventsRoutes = (app: AppType) => {
         }
 
         const { messageId } = await EmailService.send({
+          appUrl,
           from: {
             name: name ?? project.from ?? project.name,
             email: from ?? project.email,

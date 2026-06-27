@@ -1,16 +1,35 @@
 import { dataTable } from "./data";
 import { passEnvironmentVariables } from "./env";
-import { router } from "./route";
+import { z } from "zod";
 
+type QueueBatchWindow = `${number} ${"second" | "seconds" | "minute" | "minutes"}`;
 
 const isPreviewStage = $app.stage.startsWith("PR-");
-const isSqsPollerEnabled = process.env.ENABLE_SQS_POLLER === 'true' || !isPreviewStage;
+const taskQueueEnv = z
+  .object({
+    ENABLE_SQS_POLLER: z.enum(["true", "false"]).optional(),
+    SQS_BATCH_WINDOW: z
+      .string()
+      .regex(/^\d+ (second|seconds|minute|minutes)$/)
+      .default("2 minutes")
+      .transform((value) => value as QueueBatchWindow),
+    SQS_MAX_CONCURRENCY: z.coerce.number().int().positive().default(2).catch(2),
+  })
+  .parse(process.env);
+const isSqsPollerEnabled = taskQueueEnv.ENABLE_SQS_POLLER === "true" || !isPreviewStage;
+const sqsBatchWindow = taskQueueEnv.SQS_BATCH_WINDOW;
+const sqsMaximumConcurrency = taskQueueEnv.SQS_MAX_CONCURRENCY;
 
 const deadLetterQueue = new sst.aws.Queue("TaskDeadLetterQueue");
 
 export const taskQueue = new sst.aws.Queue("TaskQueue", {
   dlq: deadLetterQueue.arn,
   visibilityTimeout: "15 minutes",
+  transform: {
+    queue: {
+      receiveWaitTimeSeconds: 20,
+    },
+  },
 });
 
 const wait = sst.aws.StepFunctions.wait({
@@ -51,7 +70,7 @@ if (isSqsPollerEnabled) {
           "LOG_PRETTY",
           "METRICS_ENABLED",
         ]),
-        APP_URL: process.env.APP_URL ?? router.url,
+        APP_URL: process.env.APP_URL ?? "http://localhost:3000",
       },
       permissions: [
         {
@@ -63,8 +82,15 @@ if (isSqsPollerEnabled) {
     {
       batch: {
         size: 10,
-        window: "20 seconds",
+        window: sqsBatchWindow,
         partialResponses: true,
+      },
+      transform: {
+        eventSourceMapping: {
+          scalingConfig: {
+            maximumConcurrency: sqsMaximumConcurrency,
+          },
+        },
       },
     }
   );

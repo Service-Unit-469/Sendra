@@ -13,6 +13,7 @@ export class AssetService {
   private s3Client: S3Client;
   private bucketName: string;
   private appUrl: string;
+  private keyPrefix: string;
 
   constructor() {
     const assetsConfig = getAssetsConfig();
@@ -22,6 +23,15 @@ export class AssetService {
       throw new Error("ASSETS_BUCKET_NAME environment variable is not set");
     }
     this.appUrl = assetsConfig.APP_URL;
+    this.keyPrefix = "assets";
+  }
+
+  private isPrefixedKey(s3Key: string): boolean {
+    return s3Key.startsWith(`${this.keyPrefix}/`);
+  }
+
+  private isProjectAssetKey(projectId: string, s3Key: string): boolean {
+    return s3Key.startsWith(`${projectId}/`) || s3Key.startsWith(`${this.keyPrefix}/${projectId}/`);
   }
 
   /**
@@ -42,11 +52,12 @@ export class AssetService {
    * Convert S3 object to Asset type
    */
   private s3ObjectToAsset(key: string, response: HeadObjectCommandOutput): Asset {
-    const [projectId, ...filenameParts] = key.split("/");
+    const keyParts = key.split("/");
+    const [projectId, ...filenameParts] = this.isPrefixedKey(key) ? keyParts.slice(1) : keyParts;
     const filename = filenameParts.join("/");
     const name = filename;
     const mimeType = response.ContentType ?? "application/octet-stream";
-    const url = `${this.appUrl}/assets/${key}`;
+    const url = `${this.appUrl}/${key}`;
 
     return {
       id: this.s3KeyToId(key),
@@ -102,7 +113,7 @@ export class AssetService {
       throw new HttpException(400, `File type ${mimeType} is not allowed`);
     }
 
-    const s3Key = `${projectId}/${name}`;
+    const s3Key = `${this.keyPrefix}/${projectId}/${name}`;
     const id = this.s3KeyToId(s3Key);
 
     let existingAsset: Asset | undefined;
@@ -153,7 +164,7 @@ export class AssetService {
     const s3Key = this.idToS3Key(id);
 
     // Verify the asset belongs to this project
-    if (!s3Key.startsWith(`${projectId}/`)) {
+    if (!this.isProjectAssetKey(projectId, s3Key)) {
       throw new HttpException(403, "Access denied to this asset");
     }
 
@@ -184,7 +195,7 @@ export class AssetService {
   async listAssets(projectId: string): Promise<Asset[]> {
     const command = new ListObjectsV2Command({
       Bucket: this.bucketName,
-      Prefix: `${projectId}/`,
+      Prefix: `${this.keyPrefix}/${projectId}/`,
     });
     const response = await this.s3Client.send(command);
     const assets: Asset[] = [];
@@ -225,7 +236,7 @@ export class AssetService {
     const s3Key = this.idToS3Key(id);
 
     // Verify the asset belongs to this project
-    if (!s3Key.startsWith(`${projectId}/`)) {
+    if (!this.isProjectAssetKey(projectId, s3Key)) {
       throw new HttpException(403, "Access denied to this asset");
     }
 

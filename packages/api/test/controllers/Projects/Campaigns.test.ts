@@ -835,6 +835,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
       expect(TaskQueue.addTask).toHaveBeenCalledWith({
         type: "queueCampaign",
         payload: {
+          appUrl: expect.any(String),
           campaign: campaign.id,
           project: project.id,
           delay: 0,
@@ -882,6 +883,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
       expect(TaskQueue.addTask).toHaveBeenCalledWith({
         type: "queueCampaign",
         payload: {
+          appUrl: expect.any(String),
           campaign: campaign.id,
           project: project.id,
           delay: 5,
@@ -933,6 +935,7 @@ describe("Campaigns Endpoint Contract Tests", () => {
       expect(TaskQueue.addTask).toHaveBeenCalledWith({
         type: "queueCampaign",
         payload: {
+          appUrl: expect.any(String),
           campaign: campaign.id,
           project: project.id,
           delay: 1,
@@ -1154,4 +1157,3 @@ describe("Campaigns Endpoint Contract Tests", () => {
     });
   });
 });
-

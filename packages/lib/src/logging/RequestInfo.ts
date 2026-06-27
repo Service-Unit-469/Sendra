@@ -1,1 +1,1 @@
-export { getRequestInfo, type RequestInfo, setRequestInfo } from "../request-ids";
+export { getRequestInfo, type RequestInfo, setRequestInfo } from "../request-info";

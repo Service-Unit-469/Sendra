@@ -45,6 +45,7 @@ export const handler = async (event: SQSEvent, _context: Context) => {
           {
             requestId: record.messageId,
             correlationId: _context.awsRequestId,
+            appUrl: process.env.APP_URL ?? "http://localhost:3000",
           },
           () => handleRecord(record).then(resolve).catch(reject),
         ),

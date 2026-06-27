@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { OpenAPIHono } from "@hono/zod-openapi";
-import { getEmailConfig, getRequestCapacityUsed, rootLogger, setRequestCapacityUsed, setRequestInfo, withMetrics } from "@sendra/lib";
+import { getRequestCapacityUsed, rootLogger, setRequestCapacityUsed, setRequestInfo, withMetrics } from "@sendra/lib";
 import { Unit } from "aws-embedded-metrics";
 import type { Context, Next } from "hono";
 import { handle } from "hono/aws-lambda";
@@ -17,6 +17,7 @@ import { registerUserRoutes } from "./controllers/Users";
 import { sendProblem } from "./exceptions/responses";
 import { errorWrapper } from "./middleware/error";
 import type { Auth } from "./services/AuthService";
+import { getAppUrl } from "./util/config";
 
 export type AppType = OpenAPIHono<{
   Variables: {
@@ -45,8 +46,9 @@ app.use(
   createMiddleware((c: Context, next: Next) => {
     const requestId = c.req.header("x-request-id") ?? randomUUID();
     const correlationId = c.req.header("x-correlation-id") ?? randomUUID();
+    const appUrl = getAppUrl(c);
     return new Promise<void>((resolve) =>
-      setRequestInfo({ requestId, correlationId }, async () => {
+      setRequestInfo({ appUrl, requestId, correlationId }, async () => {
         await next();
         resolve();
       }),
@@ -117,7 +119,7 @@ app.doc("/doc", {
   },
   servers: [
     {
-      url: `${getEmailConfig().appUrl}/api/v1`,
+      url: `${process.env.APP_URL ?? ""}/api/v1`,
     },
   ],
 });
