@@ -6,7 +6,7 @@ export default defineConfig({
   resolve: {
     dedupe: ["react", "react-dom"],
   },
-  base: "/subscription",
+  base: "/subscription/",
   build: {
     // Optimize for production
     minify: "oxc",
