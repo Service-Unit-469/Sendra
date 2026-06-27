@@ -46,7 +46,7 @@
 		"@react-email/text": "^0.1.5",
 		"@rjsf/core": "^6.6.2",
 		"@rjsf/utils": "^6.6.2",
-		"@rjsf/validator-ajv8": "^6.6.1",
+		"@rjsf/validator-ajv8": "^6.6.2",
 		"@sendra/shared": "1.0.0",
 		"@tailwindcss/postcss": "^4.3.0",
 		"@tippyjs/react": "^4.2.6",
