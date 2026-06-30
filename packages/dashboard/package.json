@@ -21,7 +21,7 @@
 	},
 	"dependencies": {
 		"@codemirror/lang-json": "^6.0.2",
-		"@hookform/resolvers": "^5.2.2",
+		"@hookform/resolvers": "^5.4.0",
 		"@measured/puck": "^0.20.2",
 		"@react-email/body": "^0.2.0",
 		"@react-email/button": "^0.2.0",
