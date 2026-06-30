@@ -63,7 +63,7 @@
 		"dayjs": "^1.11.21",
 		"dompurify": "^3.4.11",
 		"es-toolkit": "^1.49.0",
-		"framer-motion": "^12.40.0",
+		"framer-motion": "^12.42.0",
 		"html-to-text": "^10.0.0",
 		"jotai": "^2.20.0",
 		"lucide-react": "^1.17.0",
