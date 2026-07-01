@@ -64,3 +64,6 @@ jobs:
           ENABLE_SQS_POLLER: true
           LOG_LEVEL: ${{ secrets.LOG_LEVEL }}
           METRICS_ENABLED: true
+          CLOUDFRONT_ENABLE_WAF: true
+          CLOUDFRONT_ALIASES: ${{ secrets.APP_URL }}
+          CLOUDFRONT_CERT_ARN: ${{ SECRETS.CLOUDFRONT_CERT_ARN }}

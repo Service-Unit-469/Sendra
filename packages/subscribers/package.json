@@ -14,14 +14,20 @@
 		"test:watch": "vitest"
 	},
 	"devDependencies": {
-		"@aws-sdk/client-dynamodb": "^3.1075.0",
+		"@aws-sdk/client-dynamodb": "catalog:",
 		"@sendra/test": "workspace:*",
-		"@types/aws-lambda": "^8.10.162",
-		"ts-node-dev": "^2.0.0",
-		"typescript": "^6.0.3"
+		"@types/aws-lambda": "catalog:",
+		"sst": "catalog:",
+		"ts-node-dev": "catalog:",
+		"typescript": "catalog:",
+		"vitest": "catalog:"
 	},
 	"dependencies": {
-		"@aws-sdk/client-sns": "^3.1075.0",
-		"@sendra/lib": "workspace:*"
+		"@aws-sdk/client-sns": "catalog:",
+		"@sendra/lib": "workspace:*",
+		"@sendra/shared": "workspace:*",
+		"aws-embedded-metrics": "catalog:",
+		"pino": "catalog:",
+		"zod": "catalog:"
 	}
 }

@@ -9,15 +9,6 @@
         "dist/**"
       ]
     },
-    "build:deps": {
-      "dependsOn": [
-        "^build:deps"
-      ],
-      "outputs": [
-        "dist/**"
-      ]
-
-    },
     "typecheck": {
       "dependsOn": [
         "^typecheck"
@@ -33,14 +24,14 @@
     },
     "test": {
       "dependsOn": [
-        "^build"
+        "build"
       ],
-      "outputs": []
+      "outputs": ["coverage/**"]
     },
     "dev": {
       "cache": false,
       "persistent": true,
-      "with": [
+      "dependsOn": [
         "@sendra/test#dev",
         "@sendra/shared#dev",
         "@sendra/lib#dev"
