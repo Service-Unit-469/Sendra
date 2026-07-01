@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { IdentitySchemas, type ProjectIdentity } from "@sendra/shared";
 import { Copy, Plus, Unlink } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import type z from "zod";
@@ -20,6 +20,7 @@ import FullscreenLoader from "../../../components/Utility/FullscreenLoader/Fulls
 import { settingsDangerActionCopy } from "../../../lib/actionCopy";
 import { AWS_REGION } from "../../../lib/constants";
 import { useCurrentProject, useCurrentProjectIdentity, useProjects } from "../../../lib/hooks/projects";
+import { useModalState } from "../../../lib/hooks/useModalState";
 import { network } from "../../../lib/network";
 
 /**
@@ -28,7 +29,7 @@ import { network } from "../../../lib/network";
 export default function Index() {
   const project = useCurrentProject();
   const { mutate: projectsMutate } = useProjects();
-  const [unlinkModal, setUnlinkModal] = useState(false);
+  const unlinkModal = useModalState();
 
   const { data: projectIdentity, mutate: identityMutate } = useCurrentProjectIdentity();
 
@@ -117,7 +118,7 @@ export default function Index() {
   };
 
   const unlink = async () => {
-    setUnlinkModal(false);
+    unlinkModal.close();
     toast.promise(
       network.fetch(`/projects/${project.id}/identity`, {
         method: "DELETE",
@@ -140,8 +141,8 @@ export default function Index() {
   return (
     <>
       <Modal
-        isOpen={unlinkModal}
-        onToggle={() => setUnlinkModal(false)}
+        isOpen={unlinkModal.isOpen}
+        onToggle={unlinkModal.close}
         onAction={unlink}
         type="danger"
         action={settingsDangerActionCopy.unlinkDomain.action}
@@ -154,7 +155,7 @@ export default function Index() {
         description="By sending emails from your own domain you build up domain authority and trust."
         actions={
           project.email && (
-            <DangerButton onClick={() => setUnlinkModal(true)}>
+            <DangerButton onClick={unlinkModal.open}>
               <Unlink strokeWidth={1.5} size={18} />
               Unlink domain
             </DangerButton>

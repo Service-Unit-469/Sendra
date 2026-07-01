@@ -15,6 +15,7 @@ import Table from "../../../components/Table/Table";
 import Empty from "../../../components/Utility/Empty/Empty";
 import { useContacts } from "../../../lib/hooks/contacts";
 import { useCurrentProject } from "../../../lib/hooks/projects";
+import { useModalState } from "../../../lib/hooks/useModalState";
 
 export default function Index() {
   const [query, setQuery] = useState<string>();
@@ -51,17 +52,17 @@ export default function Index() {
     mutateContacts();
   }, [mutateContacts]);
 
-  const [contactModal, setContactModal] = useState(false);
-  const [importModal, setImportModal] = useState(false);
+  const createContactModal = useModalState();
+  const importContactsModal = useModalState();
 
   const handleContactSuccess = () => {
     resetContacts();
-    setContactModal(false);
+    createContactModal.close();
   };
 
   const handleImportSuccess = () => {
     resetContacts();
-    setImportModal(false);
+    importContactsModal.close();
   };
 
   const renderContacts = () => {
@@ -98,15 +99,15 @@ export default function Index() {
         </>
       );
     }
-    return <Empty title="No contacts" description="New contacts will automatically be added when they trigger an event" />;
+    return <Empty title="No contacts" description="Create a contact to start building your audience." ctaLabel="Create contact" onCtaClick={createContactModal.open} />;
   };
 
   return (
     <>
-      <Modal isOpen={contactModal} onToggle={() => setContactModal((s) => !s)} onAction={() => {}} type="info" title={"Create new contact"} hideActionButtons={true}>
+      <Modal isOpen={createContactModal.isOpen} onToggle={createContactModal.toggle} onAction={() => {}} type="info" title={"Create new contact"} hideActionButtons={true}>
         <ContactForm projectId={project.id} showEmailField={true} submitButtonText="Create" onSuccess={handleContactSuccess} />
       </Modal>
-      <Modal isOpen={importModal} type="info" title="Import contacts from CSV" action="Import" hideActionButtons={true}>
+      <Modal isOpen={importContactsModal.isOpen} onToggle={importContactsModal.toggle} type="info" title="Import contacts from CSV" action="Import" hideActionButtons={true}>
         <ContactImport projectId={project.id} onClose={handleImportSuccess} />
       </Modal>
       <Card
@@ -125,11 +126,11 @@ export default function Index() {
               ]}
               selectedValue={statusFilter}
             />
-            <BlackButton onClick={() => setImportModal(true)}>
+            <BlackButton onClick={importContactsModal.open}>
               <Upload strokeWidth={1.5} size={18} />
               Import
             </BlackButton>
-            <BlackButton onClick={() => setContactModal(true)}>
+            <BlackButton onClick={createContactModal.open}>
               <Plus strokeWidth={1.5} size={18} />
               New
             </BlackButton>

@@ -1,7 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { Membership, MembershipInvite } from "@sendra/shared";
 import { MembershipSchemas } from "@sendra/shared";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -16,6 +15,7 @@ import Table from "../../../components/Table/Table";
 import FullscreenLoader from "../../../components/Utility/FullscreenLoader/FullscreenLoader";
 import { settingsDangerActionCopy } from "../../../lib/actionCopy";
 import { useCurrentProject, useCurrentProjectMemberships, useProjects } from "../../../lib/hooks/projects";
+import { useModalState } from "../../../lib/hooks/useModalState";
 import { useUser } from "../../../lib/hooks/users";
 import { network } from "../../../lib/network";
 
@@ -23,8 +23,8 @@ import { network } from "../../../lib/network";
  *
  */
 export default function MembersPage() {
-  const [showInviteModal, setShowInviteModal] = useState(false);
-  const [showLeaveModal, setShowLeaveModal] = useState(false);
+  const showInviteModal = useModalState();
+  const showLeaveModal = useModalState();
 
   const navigate = useNavigate();
 
@@ -68,7 +68,7 @@ export default function MembersPage() {
         loading: "Adding new member",
         success: async (result) => {
           await membershipMutate({ members: result.members });
-          setShowInviteModal(false);
+          showInviteModal.close();
 
           return "Added new member";
         },
@@ -114,8 +114,8 @@ export default function MembersPage() {
   return (
     <>
       <Modal
-        isOpen={showLeaveModal}
-        onToggle={() => setShowLeaveModal(!showLeaveModal)}
+        isOpen={showLeaveModal.isOpen}
+        onToggle={showLeaveModal.toggle}
         onAction={leaveProject}
         type="danger"
         action={leaveProjectCopy.action}
@@ -123,8 +123,8 @@ export default function MembersPage() {
         description={leaveProjectCopy.description}
       />
       <Modal
-        isOpen={showInviteModal}
-        onToggle={() => setShowInviteModal(!showInviteModal)}
+        isOpen={showInviteModal.isOpen}
+        onToggle={showInviteModal.toggle}
         onAction={handleSubmit(inviteAccount)}
         type="info"
         title="Invite a new member"
@@ -151,7 +151,7 @@ export default function MembersPage() {
 
               Manage:
                 membership.user === user.id ? (
-                  <button className="mb-2 text-sm text-neutral-400 underline transition ease-in-out hover:text-neutral-700" onClick={() => setShowLeaveModal(true)}>
+                  <button className="mb-2 text-sm text-neutral-400 underline transition ease-in-out hover:text-neutral-700" onClick={showLeaveModal.open}>
                     Leave
                   </button>
                 ) : memberships.members?.find((membership) => membership.user === user.id)?.role === "ADMIN" ? (
@@ -170,7 +170,7 @@ export default function MembersPage() {
             <p className={"text-sm text-neutral-400"}>By adding someone to your project you give them access to all data present in your project including emails and your API key.</p>
           </div>
 
-          <BlackButton onClick={() => setShowInviteModal(true)} className="ml-auto mt-4 self-end">
+          <BlackButton onClick={showInviteModal.open} className="ml-auto mt-4 self-end">
             Invite user
           </BlackButton>
         </div>

@@ -19,6 +19,7 @@ import Empty from "../../../components/Utility/Empty/Empty";
 import { useAllContacts } from "../../../lib/hooks/contacts";
 import { type EventType, useEventTypesWithEvents } from "../../../lib/hooks/events";
 import { useCurrentProject } from "../../../lib/hooks/projects";
+import { useModalState } from "../../../lib/hooks/useModalState";
 import { useUser } from "../../../lib/hooks/users";
 import { network } from "../../../lib/network";
 
@@ -37,7 +38,7 @@ export default function Index() {
   const { data: eventTypeData, mutate, isLoading } = useEventTypesWithEvents(embedLimit);
   const eventTypes = useMemo(() => eventTypeData?.eventTypes ?? [], [eventTypeData]);
 
-  const [eventModal, setEventModal] = useState(false);
+  const eventModal = useModalState();
 
   const {
     register,
@@ -80,14 +81,14 @@ export default function Index() {
       },
     );
 
-    setEventModal(false);
+    eventModal.close();
   };
 
   return (
     <>
       <Modal
-        isOpen={eventModal}
-        onToggle={() => setEventModal(!eventModal)}
+        isOpen={eventModal.isOpen}
+        onToggle={eventModal.toggle}
         onAction={handleSubmit(create)}
         type="info"
         action="Trigger"
@@ -112,7 +113,7 @@ export default function Index() {
               selectedValue={embedLimit}
               onChange={(v) => setEmbedLimit(v as EmbedLimit)}
             />
-            <BlackButton onClick={() => setEventModal(true)}>
+            <BlackButton onClick={eventModal.open}>
               <Plus strokeWidth={1.5} size={18} />
               New
             </BlackButton>
@@ -230,7 +231,7 @@ export default function Index() {
               />
             </>
           ) : (
-            <Empty title={"No events"} description={"You have not yet posted an event to Sendra"} />
+            <Empty title="No events yet" description="Trigger an event to test your automations." ctaLabel="Trigger event" onCtaClick={eventModal.open} />
           )
         ) : (
           <Skeleton type={"table"} />

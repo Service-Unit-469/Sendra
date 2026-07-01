@@ -20,6 +20,7 @@ import FullscreenLoader from "../../../components/Utility/FullscreenLoader/Fulls
 import { deleteModalCopy, editActionCopy } from "../../../lib/actionCopy";
 import { useContact } from "../../../lib/hooks/contacts";
 import { useCurrentProject } from "../../../lib/hooks/projects";
+import { useModalState } from "../../../lib/hooks/useModalState";
 import { network } from "../../../lib/network";
 
 type JourneyItemProps = {
@@ -71,8 +72,8 @@ export default function ContactDetailPage() {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
-  const [eventModal, setEventModal] = useState(false);
-  const [deleteModal, setDeleteModal] = useState(false);
+  const eventModal = useModalState();
+  const deleteModal = useModalState();
   const project = useCurrentProject();
   const { data: contact, mutate } = useContact(id ?? "");
 
@@ -109,7 +110,7 @@ export default function ContactDetailPage() {
       },
     );
 
-    setEventModal(false);
+    eventModal.close();
   };
 
   const handleContactUpdateSuccess = () => {
@@ -145,8 +146,8 @@ export default function ContactDetailPage() {
   return (
     <>
       <Modal
-        isOpen={eventModal}
-        onToggle={() => setEventModal(!eventModal)}
+        isOpen={eventModal.isOpen}
+        onToggle={eventModal.toggle}
         onAction={eventHandleSubmit(create)}
         type="info"
         action="Trigger"
@@ -157,8 +158,8 @@ export default function ContactDetailPage() {
         <Input register={eventRegister("event")} label={"Event"} placeholder={"signup"} error={eventErrors.event} />
       </Modal>
       <Modal
-        isOpen={deleteModal}
-        onToggle={() => setDeleteModal(false)}
+        isOpen={deleteModal.isOpen}
+        onToggle={deleteModal.close}
         onAction={remove}
         type="danger"
         action={contactDeleteCopy.action}
@@ -169,11 +170,11 @@ export default function ContactDetailPage() {
         title={""}
         options={
           <>
-            <MenuButton onClick={() => setEventModal(true)}>
+            <MenuButton onClick={eventModal.open}>
               <TerminalSquare size={18} />
               Trigger event
             </MenuButton>
-            <MenuButton onClick={() => setDeleteModal(true)}>
+            <MenuButton onClick={deleteModal.open}>
               <Trash size={18} />
               Delete
             </MenuButton>

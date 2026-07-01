@@ -1,7 +1,7 @@
 import type { Asset } from "@sendra/shared";
 import dayjs from "dayjs";
 import { FileImage, FileText, Plus, Trash2, Upload } from "lucide-react";
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { toast } from "sonner";
 import Badge from "../../../components/Badge/Badge";
 import { BlackButton } from "../../../components/Buttons/BlackButton";
@@ -12,6 +12,7 @@ import Empty from "../../../components/Utility/Empty/Empty";
 import { deleteModalCopy } from "../../../lib/actionCopy";
 import { deleteAsset, uploadAsset, useAssets } from "../../../lib/hooks/assets";
 import { useCurrentProject } from "../../../lib/hooks/projects";
+import { useModalState } from "../../../lib/hooks/useModalState";
 
 /**
  * Assets management page
@@ -19,9 +20,14 @@ import { useCurrentProject } from "../../../lib/hooks/projects";
 export default function Index() {
   const { data: assets, mutate } = useAssets();
   const [uploading, setUploading] = useState(false);
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const deleteModalOpen = useModalState();
   const [assetToDelete, setAssetToDelete] = useState<Asset | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const currentProject = useCurrentProject();
+
+  const openUploadDialog = useCallback(() => {
+    fileInputRef.current?.click();
+  }, []);
 
   const handleFileUpload = useCallback(
     async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -55,12 +61,12 @@ export default function Index() {
       await deleteAsset(currentProject.id, assetToDelete.id);
       toast.success("Asset deleted successfully");
       await mutate();
-      setDeleteModalOpen(false);
+      deleteModalOpen.close();
       setAssetToDelete(null);
     } catch (error) {
       toast.error(`Failed to delete asset: ${error instanceof Error ? error.message : "Unknown error"}`);
     }
-  }, [assetToDelete, mutate, currentProject.id]);
+  }, [assetToDelete, mutate, currentProject.id, deleteModalOpen.close]);
 
   const formatFileSize = (bytes: number): string => {
     if (bytes < 1024) return `${bytes} B`;
@@ -76,13 +82,13 @@ export default function Index() {
         title={"Assets"}
         description={"Images and attachments for your emails"}
         actions={
-          <label htmlFor="file-upload">
-            <BlackButton disabled={uploading} onClick={() => document.getElementById("file-upload")?.click()}>
+          <>
+            <BlackButton disabled={uploading} onClick={openUploadDialog}>
               {uploading ? <Upload strokeWidth={1.5} size={18} className="animate-pulse" /> : <Plus strokeWidth={1.5} size={18} />}
               {uploading ? "Uploading..." : "Upload"}
             </BlackButton>
-            <input id="file-upload" type="file" multiple accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.txt,.csv" className="hidden" onChange={handleFileUpload} disabled={uploading} />
-          </label>
+            <input ref={fileInputRef} id="file-upload" type="file" multiple accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.txt,.csv" className="hidden" onChange={handleFileUpload} disabled={uploading} />
+          </>
         }
       >
         {assets ? (
@@ -132,7 +138,7 @@ export default function Index() {
                           <button
                             onClick={() => {
                               setAssetToDelete(asset);
-                              setDeleteModalOpen(true);
+                              deleteModalOpen.open();
                             }}
                             className="relative inline-flex w-0 flex-1 items-center justify-center rounded-br border border-transparent py-4 text-sm font-medium text-red-600 transition hover:bg-red-50 hover:text-red-700"
                           >
@@ -147,7 +153,7 @@ export default function Index() {
               })}
             </div>
           ) : (
-            <Empty title={"No assets yet"} description={"Upload images and attachments to use in your email templates"} />
+            <Empty title={"No assets yet"} description={"Upload files to use in your templates and campaigns."} ctaLabel="Upload assets" onCtaClick={openUploadDialog} />
           )
         ) : (
           <Skeleton type={"table"} />
@@ -157,14 +163,14 @@ export default function Index() {
         title={assetDeleteCopy.title}
         action={assetDeleteCopy.action}
         description={assetDeleteCopy.description}
-        isOpen={deleteModalOpen}
+        isOpen={deleteModalOpen.isOpen}
         onAction={() => {
           handleDelete();
-          setDeleteModalOpen(false);
+          deleteModalOpen.close();
         }}
         type="danger"
         onToggle={() => {
-          setDeleteModalOpen(false);
+          deleteModalOpen.close();
           setAssetToDelete(null);
         }}
       />

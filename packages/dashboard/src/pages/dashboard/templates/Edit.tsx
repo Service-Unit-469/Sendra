@@ -3,7 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import type { TemplateUpdate } from "@sendra/shared";
 import { TemplateSchemas } from "@sendra/shared";
 import { Copy, Save, Trash } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
@@ -16,6 +16,7 @@ import FullscreenLoader from "../../../components/Utility/FullscreenLoader/Fulls
 import { deleteModalCopy, editActionCopy } from "../../../lib/actionCopy";
 import { useCurrentProject } from "../../../lib/hooks/projects";
 import { type TemplateFormValues, useTemplate, useTemplateFields, useTemplates } from "../../../lib/hooks/templates";
+import { useModalState } from "../../../lib/hooks/useModalState";
 import { network } from "../../../lib/network";
 
 export default function EditTemplatePage() {
@@ -24,7 +25,7 @@ export default function EditTemplatePage() {
   const project = useCurrentProject();
   const { mutate } = useTemplates();
   const { data: template } = useTemplate(id ?? "");
-  const [deleteModal, setDeleteModal] = useState(false);
+  const deleteModal = useModalState();
   const { watch, setValue, reset, setError, clearErrors } = useForm({
     resolver: zodResolver(TemplateSchemas.update),
     defaultValues: {
@@ -137,8 +138,8 @@ export default function EditTemplatePage() {
   return (
     <>
       <Modal
-        isOpen={deleteModal}
-        onToggle={() => setDeleteModal(false)}
+        isOpen={deleteModal.isOpen}
+        onToggle={deleteModal.close}
         onAction={remove}
         type="danger"
         action={templateDeleteCopy.action}
@@ -189,7 +190,7 @@ export default function EditTemplatePage() {
                     <Copy strokeWidth={1.5} size={18} />
                     Duplicate
                   </MenuButton>
-                  <MenuButton onClick={() => setDeleteModal(true)} disabled={saving}>
+                  <MenuButton onClick={deleteModal.open} disabled={saving}>
                     <Trash strokeWidth={1.5} size={18} />
                     Delete
                   </MenuButton>

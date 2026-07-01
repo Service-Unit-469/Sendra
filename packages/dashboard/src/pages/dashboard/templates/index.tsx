@@ -73,7 +73,7 @@ export default function Index() {
               })}
           </div>
         ) : (
-          <Empty title="No templates here" description="Try creating a new email template" />
+          <Empty title="No templates" description="Create a reusable template for future emails." ctaLabel="Create template" ctaTo="/templates/new" />
         )
       ) : (
         <Skeleton type="table" />
