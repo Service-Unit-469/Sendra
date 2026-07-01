@@ -101,6 +101,7 @@
 		"@types/nprogress": "catalog:",
 		"@types/papaparse": "catalog:",
 		"@types/react": "catalog:",
+		"@types/react-dom": "^19.2.3",
 		"@types/to-json-schema": "catalog:",
 		"@types/uuid": "catalog:",
 		"@vitejs/plugin-react": "catalog:",
