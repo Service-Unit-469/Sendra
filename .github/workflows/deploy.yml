@@ -23,16 +23,16 @@ jobs:
         uses: ./.github/actions/setup
 
       - name: Build
-        run: npm run build
+        run: pnpm run build
 
       - name: Run type checking
-        run: npm run typecheck
+        run: pnpm run typecheck
 
       - name: Run linting
-        run: npm run lint
+        run: pnpm run lint
 
       - name: Run tests
-        run: npm run test
+        run: pnpm run test
 
   deploy:
     runs-on: ubuntu-latest
@@ -64,3 +64,6 @@ jobs:
           ENABLE_SQS_POLLER: true
           LOG_LEVEL: ${{ secrets.LOG_LEVEL }}
           METRICS_ENABLED: true
+          CLOUDFRONT_ENABLE_WAF: true
+          CLOUDFRONT_ALIASES: ${{ secrets.APP_URL }}
+          CLOUDFRONT_CERT_ARN: ${{ SECRETS.CLOUDFRONT_CERT_ARN }}

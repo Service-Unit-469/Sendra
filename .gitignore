@@ -8,6 +8,7 @@ dist
 .next
 .out
 build
+.turbo
 .DS_Store
 .yarn/install-state.gz
 .open-next/

@@ -20,6 +20,6 @@ jobs:
           role-duration-seconds: 3600
           aws-region: us-east-2
       - name: Cleanup PR Deployment
-        run: npm run sst -- remove --stage PR-${PR_NUMBER}
+        run: pnpm run sst -- remove --stage PR-${PR_NUMBER}
         env:
           PR_NUMBER: ${{ github.event.number }}

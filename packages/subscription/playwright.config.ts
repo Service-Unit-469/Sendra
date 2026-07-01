@@ -53,7 +53,7 @@ export default defineConfig({
     }
   ],
   webServer: {
-    command: "npm run dev -- --mode=mono",
+    command: "pnpm run dev -- --mode=mono",
 	stdout: "pipe",
     stderr: "pipe",
     cwd: "../../",

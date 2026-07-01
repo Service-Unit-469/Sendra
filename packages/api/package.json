@@ -4,7 +4,7 @@
 	"main": "dist/index.js",
 	"private": true,
 	"scripts": {
-		"build": "tsc && npm run openapi:export && npm run openapi:validate",
+		"build": "tsc && pnpm run openapi:export && pnpm run openapi:validate",
 		"lint": "biome check src",
 		"lint:fix": "biome check --write src",
 		"lint:fix:unsafe": "biome check --write src --unsafe",
@@ -13,25 +13,36 @@
 		"test": "vitest run",
 		"test:watch": "vitest",
 		"openapi:export": "tsx scripts/export-openapi.ts",
-		"openapi:validate": "npx -p @seriousme/openapi-schema-validator validate-api ../../docs/openapi.json"
+		"openapi:validate": "pnpm --package=@seriousme/openapi-schema-validator dlx validate-api ../../docs/openapi.json"
 	},
 	"devDependencies": {
-		"@sendra/test": "*",
-		"@types/compression": "^1.7.5",
-		"@types/jsonwebtoken": "^9.0.6",
-		"tsx": "^4.22.4",
-		"typescript": "^6.0.3"
+		"@sendra/test": "workspace:*",
+		"@types/compression": "catalog:",
+		"@types/jsonwebtoken": "catalog:",
+		"@types/ms": "^2.1.0",
+		"sst": "catalog:",
+		"tsx": "catalog:",
+		"typescript": "catalog:",
+		"vitest": "catalog:"
 	},
 	"dependencies": {
-		"@aws-sdk/client-dynamodb": "^3.1075.0",
-		"@aws-sdk/client-ses": "^3.1075.0",
-		"@aws-sdk/lib-dynamodb": "^3.1075.0",
-		"@hono/zod-openapi": "^1.4.0",
-		"ajv": "^8.18.0",
-		"ajv-formats": "^3.0.1",
-		"aws-embedded-metrics": "^4.2.1",
-		"hono": "^4.12.27",
-		"hono-pino": "^0.10.2",
-		"jsonwebtoken": "^9.0.2"
+		"@aws-sdk/client-dynamodb": "catalog:",
+		"@aws-sdk/client-s3": "catalog:",
+		"@aws-sdk/client-ses": "catalog:",
+		"@aws-sdk/lib-dynamodb": "catalog:",
+		"@aws-sdk/s3-request-presigner": "catalog:",
+		"@hono/zod-openapi": "catalog:",
+		"@sendra/lib": "workspace:*",
+		"@sendra/shared": "workspace:*",
+		"ajv": "catalog:",
+		"ajv-formats": "catalog:",
+		"aws-embedded-metrics": "catalog:",
+		"dayjs": "catalog:",
+		"hono": "catalog:",
+		"hono-pino": "catalog:",
+		"jsonwebtoken": "catalog:",
+		"lru-cache": "^11.5.1",
+		"ms": "^2.1.3",
+		"zod": "catalog:"
 	}
 }

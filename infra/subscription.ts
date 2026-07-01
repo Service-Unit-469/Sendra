@@ -3,7 +3,7 @@ import { api } from "./api";
 export const subscription = new sst.aws.StaticSite("Subscription", {
   path: "packages/subscription",
   build: {
-    command: "npm run build",
+    command: "pnpm run build",
     output: "dist",
   },
   assets: {

@@ -171,7 +171,7 @@ function getPrNumbersFromKvStoreNames(kvStoreNames, appPrefix) {
 }
 
 function removeStage(stage) {
-  execFileSync("npm", ["run", "sst", "--", "remove", "--print-logs", "--stage", stage], {
+  execFileSync("pnpm", ["run", "sst", "--", "remove", "--print-logs", "--stage", stage], {
     stdio: "inherit",
   });
 }

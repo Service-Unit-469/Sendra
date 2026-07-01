@@ -1,7 +1,7 @@
 export const dashboard = new sst.aws.StaticSite("Dashboard", {
   path: "packages/dashboard",
   build: {
-    command: "npm run build",
+    command: "pnpm run build",
     output: "dist",
   },
   assets: {

@@ -36,7 +36,6 @@ export default function Table({ values }: TableProps) {
               <tbody>
                 {values.map((row, rowIndex) => {
                   return (
-                    // biome-ignore lint/suspicious/noArrayIndexKey: Table rows don't have unique IDs and order is stable
                     <tr key={rowIndex} className="border-t border-neutral-100 bg-white transition ease-in-out hover:bg-neutral-50">
                       {Object.entries(row).map((value) => {
                         if (value[1] === null || value[1] === undefined) {
