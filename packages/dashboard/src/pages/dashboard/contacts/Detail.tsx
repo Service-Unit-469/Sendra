@@ -246,7 +246,6 @@ export default function ContactDetailPage() {
                               label="Body"
                               value={
                                 <div
-                                  // biome-ignore lint/security/noDangerouslySetInnerHtml: Content is sanitized with DOMPurify
                                   dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(t.body.html) }}
                                   className="rounded-sm bg-white p-3 text-neutral-800 whitespace-pre-line max-h-64 overflow-y-auto w-full"
                                 />

@@ -17,22 +17,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out the repo
-        uses: actions/checkout@v6.0.3
+        uses: actions/checkout@v7.0.0
 
       - name: Setup
         uses: ./.github/actions/setup
 
       - name: Build
-        run: npm run build
+        run: pnpm run build
 
       - name: Run type checking
-        run: npm run typecheck
+        run: pnpm run typecheck
 
       - name: Run linting
-        run: npm run lint
+        run: pnpm run lint
 
       - name: Run tests
-        run: npm run test
+        run: pnpm run test
 
   deploy:
     runs-on: ubuntu-latest
@@ -45,7 +45,7 @@ jobs:
       - validate
     steps:
       - name: Git clone the repository
-        uses: actions/checkout@v6.0.3
+        uses: actions/checkout@v7.0.0
 
       - name: Setup
         uses: ./.github/actions/setup
@@ -64,3 +64,6 @@ jobs:
           ENABLE_SQS_POLLER: true
           LOG_LEVEL: ${{ secrets.LOG_LEVEL }}
           METRICS_ENABLED: true
+          CLOUDFRONT_ENABLE_WAF: true
+          CLOUDFRONT_ALIASES: ${{ secrets.APP_URL }}
+          CLOUDFRONT_CERT_ARN: ${{ SECRETS.CLOUDFRONT_CERT_ARN }}

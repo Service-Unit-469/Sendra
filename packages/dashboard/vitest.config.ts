@@ -47,15 +47,13 @@ export default defineConfig({
 			"@/lib": path.resolve(__dirname, "./src/lib"),
 			"@/pages": path.resolve(__dirname, "./src/pages"),
 			"@/layouts": path.resolve(__dirname, "./src/layouts"),
-			// Ensure React resolves correctly - React is hoisted to root in monorepo
-			react: path.resolve(__dirname, "../../node_modules/react"),
-			"react-dom": path.resolve(__dirname, "../../node_modules/react-dom"),
-			"react/jsx-dev-runtime": path.resolve(__dirname, "../../node_modules/react/jsx-dev-runtime.js"),
-			"react/jsx-runtime": path.resolve(__dirname, "../../node_modules/react/jsx-runtime.js"),
+			react: path.resolve(__dirname, "./node_modules/react"),
+			"react-dom": path.resolve(__dirname, "./node_modules/react-dom"),
+			"react/jsx-dev-runtime": path.resolve(__dirname, "./node_modules/react/jsx-dev-runtime.js"),
+			"react/jsx-runtime": path.resolve(__dirname, "./node_modules/react/jsx-runtime.js"),
 		},
 	},
 	optimizeDeps: {
 		include: ["react", "react-dom", "react-router-dom"],
 	},
 });
-

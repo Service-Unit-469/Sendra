@@ -39,15 +39,15 @@ runs:
       shell: bash
 
     - name: Build Dependencies
-      run: npm run build:deps
+      run: pnpm run build:deps
       shell: bash
 
     - name: Set Secrets
-      run: npm run sst -- secret set JwtSecret ${{ inputs.jwt-secret }}
+      run: pnpm run sst -- secret set JwtSecret ${{ inputs.jwt-secret }}
       shell: bash
 
     - name: Deploy app
-      run: npm run deploy
+      run: pnpm run deploy
       shell: bash
 
     - name: Get Deploy Info

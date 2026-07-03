@@ -41,9 +41,9 @@ The easiest way to self-host Sendra is to fork the project and run it in your AW
 ### Quick Start
 
 1. **Prerequisites**: Node.js 20+, AWS CLI configured, AWS account
-2. **Install**: `npm install`
+2. **Install**: `pnpm install`
 3. **Configure**: Set up environment variables (see [deployment guide](https://service-unit-469.github.io/Sendra/docs/setup.html))
-4. **Deploy**: `npm run deploy`
+4. **Deploy**: `pnpm run deploy`
 
 A complete guide on how to deploy Sendra can be found in the [deployment documentation](https://service-unit-469.github.io/Sendra/docs/setup.html).
 

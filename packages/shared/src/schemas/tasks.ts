@@ -1,4 +1,4 @@
-import { z } from "@hono/zod-openapi";
+import { z } from "zod";
 import { id } from "./common";
 
 export const baseTaskSchema = z.object({

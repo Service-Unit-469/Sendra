@@ -5,8 +5,9 @@
 	"types": "dist/index.d.ts",
 	"private": true,
 	"dependencies": {
-		"pick-port": "^2.2.0",
-		"aws-dynamodb-local": "^0.0.14"
+		"@aws-sdk/client-dynamodb": "catalog:",
+		"aws-dynamodb-local": "catalog:",
+		"pick-port": "catalog:"
 	},
 	"scripts": {
 		"lint": "biome check src",
@@ -17,5 +18,8 @@
 		"dev": "tsc && tsc -w",
 		"clean": "rimraf dist",
 		"test": "echo 'No tests'"
+	},
+	"devDependencies": {
+		"sst": "catalog:"
 	}
 }

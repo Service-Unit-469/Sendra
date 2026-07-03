@@ -40,10 +40,7 @@ export const Text: ComponentConfig<TextProps> = {
     );
     return (
       <div style={{ padding: toStyle(padding) }}>
-        <div
-          // biome-ignore lint/security/noDangerouslySetInnerHtml: Content is sanitized with DOMPurify
-          dangerouslySetInnerHTML={{ __html: html }}
-        />
+        <div dangerouslySetInnerHTML={{ __html: html }} />
       </div>
     );
   },

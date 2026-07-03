@@ -1,4 +1,4 @@
-import { z } from "@hono/zod-openapi";
+import { z } from "zod";
 import { ProjectEntitySchema } from "./common";
 
 export const ASSET_TYPES = ["IMAGE", "ATTACHMENT"] as const;

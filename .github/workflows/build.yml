@@ -17,22 +17,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out the repo
-        uses: actions/checkout@v6.0.3
+        uses: actions/checkout@v7.0.0
 
       - name: Setup
         uses: ./.github/actions/setup
 
       - name: Build
-        run: npm run build
+        run: pnpm run build
 
       - name: Run type checking
-        run: npm run typecheck
+        run: pnpm run typecheck
 
       - name: Run linting
-        run: npm run lint
+        run: pnpm run lint
 
       - name: Run tests
-        run: npm run test
+        run: pnpm run test
 
   deploy:
     runs-on: ubuntu-latest
@@ -50,7 +50,7 @@ jobs:
       RATE_LIMIT_TABLE_NAME: ${{ steps.deploy.outputs.RATE_LIMIT_TABLE_NAME }}
     steps:
       - name: Git clone the repository
-        uses: actions/checkout@v6.0.3
+        uses: actions/checkout@v7.0.0
 
       - name: Setup
         uses: ./.github/actions/setup
@@ -83,31 +83,31 @@ jobs:
       - deploy
     steps:
       - name: Check out the repo
-        uses: actions/checkout@v6.0.3
+        uses: actions/checkout@v7.0.0
 
       - name: Setup
         uses: ./.github/actions/setup
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v6.2.0
+        uses: aws-actions/configure-aws-credentials@v6.2.1
         with:
           role-to-assume: ${{ secrets.GH_TRUST_ROLE }}
           role-duration-seconds: 3600
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Build
-        run: npm run build
+        run: pnpm run build
 
       - name: Install Playwright Browsers
         working-directory: packages/dashboard
-        run: npx playwright install --with-deps
+        run: pnpm exec playwright install --with-deps
 
       - name: Wait for deployment readiness
         run: npm run wait:deployment -- --base-url "${APP_URL}" --path /api/v1/health --path /dashboard --timeout-seconds 900 --interval-seconds 10
 
       - name: Run Playwright tests
         working-directory: packages/dashboard
-        run: npm run test:e2e
+        run: pnpm run test:e2e
 
       - name: Upload Playwright Report
         uses: actions/upload-artifact@v7
@@ -138,19 +138,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out the repo
-        uses: actions/checkout@v6.0.3
+        uses: actions/checkout@v7.0.0
 
       - name: Setup
         uses: ./.github/actions/setup
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v6.2.0
+        uses: aws-actions/configure-aws-credentials@v6.2.1
         with:
           role-to-assume: ${{ secrets.GH_TRUST_ROLE }}
           role-duration-seconds: 3600
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Cleanup PR Deployment
-        run: npm run sst -- remove --stage PR-${PR_NUMBER}
+        run: pnpm run sst -- remove --stage PR-${PR_NUMBER}
         env:
           PR_NUMBER: ${{ github.event.number }}

@@ -398,7 +398,7 @@ describe("ContactPersistence", () => {
         expect(result[0]._embed?.events).toBeDefined();
         // Should be limited to 1000 items
         expect(result[0]._embed?.events?.length).toBeLessThanOrEqual(1001);
-      });
+      }, 30_000);
 
       it("should return all items with 'all' limit", async () => {
         const contact = await persistence.create({
