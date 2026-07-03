@@ -64,7 +64,7 @@ catalog:
   '@types/aws-lambda': ^8.10.162
   '@types/compression': ^1.7.5
   '@types/jsonwebtoken': ^9.0.6
-  '@types/node': ^24.13.1
+  '@types/node': ^26.0.1
   '@types/nprogress': ^0.2.3
   '@types/papaparse': ^5.5.1
   '@types/react': 19.2.17
