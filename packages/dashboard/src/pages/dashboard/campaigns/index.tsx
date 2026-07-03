@@ -1,8 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Edit2, Eye, Plus, Save, Send } from "lucide-react";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import z from "zod";
 import { ErrorAlert } from "../../../components/Alert/ErrorAlert";
@@ -15,12 +14,14 @@ import Input from "../../../components/Input/Input/Input";
 import { StyledLabel } from "../../../components/Label/StyledLabel";
 import Modal from "../../../components/Overlay/Modal/Modal";
 import Skeleton from "../../../components/Skeleton/Skeleton";
+import type { EmptyProps } from "../../../components/Utility/Empty/Empty";
 import Empty from "../../../components/Utility/Empty/Empty";
 import FullscreenLoader from "../../../components/Utility/FullscreenLoader/FullscreenLoader";
 import { campaignOpenRatePercent } from "../../../lib/campaignStats";
 import { useCampaigns } from "../../../lib/hooks/campaigns";
 import { useCurrentProject } from "../../../lib/hooks/projects";
 import { useTemplates } from "../../../lib/hooks/templates";
+import { useModalState } from "../../../lib/hooks/useModalState";
 import { network } from "../../../lib/network";
 
 const createCampaignFormSchema = z.object({
@@ -32,9 +33,10 @@ const createCampaignFormSchema = z.object({
  *
  */
 export default function Index() {
+  const navigate = useNavigate();
   const { data: campaigns, mutate: campaignsMutate } = useCampaigns();
   const { data: templates } = useTemplates();
-  const [newCampaignModal, setNewCampaignModal] = useState<boolean>(false);
+  const newCampaignModal = useModalState();
   const project = useCurrentProject();
 
   const {
@@ -53,6 +55,32 @@ export default function Index() {
 
   if (!templates) {
     return <FullscreenLoader />;
+  }
+
+  const startCreateCampaignFlow = () => {
+    if (templates.length === 0) {
+      toast.info("Create a template before starting a campaign.");
+      navigate("/templates/new");
+      return;
+    }
+
+    newCampaignModal.open();
+  };
+
+  const campaignEmptyState: Pick<EmptyProps, "title" | "description" | "ctaLabel" | "ctaTo" | "onCtaClick"> = {
+    title: "No campaigns",
+    description: "Create a campaign to send your first email.",
+    ctaLabel: "Create campaign",
+    ctaTo: undefined as string | undefined,
+    onCtaClick: startCreateCampaignFlow,
+  };
+
+  if (templates.length === 0) {
+    campaignEmptyState.title = "No templates yet";
+    campaignEmptyState.description = "Create a template first, then launch your first campaign.";
+    campaignEmptyState.ctaLabel = "Create template";
+    campaignEmptyState.ctaTo = "/templates/new";
+    campaignEmptyState.onCtaClick = undefined;
   }
 
   const createCampaign = async (data: z.infer<typeof createCampaignFormSchema>) => {
@@ -104,12 +132,12 @@ export default function Index() {
       },
     );
 
-    setNewCampaignModal(false);
+    newCampaignModal.close();
   };
 
   return (
     <>
-      <Modal isOpen={newCampaignModal} onToggle={() => setNewCampaignModal((s) => !s)} onAction={() => {}} type="info" title={"Create new campaign"} hideActionButtons={true}>
+      <Modal isOpen={newCampaignModal.isOpen} onToggle={newCampaignModal.toggle} onAction={() => {}} type="info" title={"Create new campaign"} hideActionButtons={true}>
         <form onSubmit={handleCreateSubmit(createCampaign)} className="flex flex-col gap-6">
           <div>
             <Input className="sm:col-span-6" label="Subject" placeholder={`Welcome to ${project.name}!`} register={register("subject")} error={errors.subject} />
@@ -144,7 +172,7 @@ export default function Index() {
         title="Campaigns"
         description="Send your contacts emails in bulk with a few clicks"
         actions={
-          <BlackButton onClick={() => setNewCampaignModal(true)}>
+          <BlackButton onClick={startCreateCampaignFlow}>
             <Plus strokeWidth={1.5} size={18} />
             New
           </BlackButton>
@@ -270,7 +298,13 @@ export default function Index() {
               })}
             </div>
           ) : (
-            <Empty title="No campaigns found" description="Send your contacts emails in bulk with a few clicks" />
+            <Empty
+              title={campaignEmptyState.title}
+              description={campaignEmptyState.description}
+              ctaLabel={campaignEmptyState.ctaLabel}
+              ctaTo={campaignEmptyState.ctaTo}
+              onCtaClick={campaignEmptyState.onCtaClick}
+            />
           )
         ) : (
           <Skeleton type="table" />

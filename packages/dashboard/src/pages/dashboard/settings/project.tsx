@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ProjectSchemas, type ProjectUpdate } from "@sendra/shared";
 import { Trash } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -14,6 +14,7 @@ import SettingTabs from "../../../components/Navigation/SettingTabs/SettingTabs"
 import Modal from "../../../components/Overlay/Modal/Modal";
 import { deleteModalCopy } from "../../../lib/actionCopy";
 import { useCurrentProject, useCurrentProjectMemberships, useProjects } from "../../../lib/hooks/projects";
+import { useModalState } from "../../../lib/hooks/useModalState";
 import { useUser } from "../../../lib/hooks/users";
 import { network } from "../../../lib/network";
 
@@ -41,7 +42,7 @@ export default function ProjectPage() {
     },
   });
 
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const showDeleteModal = useModalState();
 
   useEffect(() => {
     reset(project);
@@ -67,7 +68,7 @@ export default function ProjectPage() {
   };
 
   const deleteProject = async () => {
-    setShowDeleteModal(!showDeleteModal);
+    showDeleteModal.close();
 
     toast.promise(
       network
@@ -92,8 +93,8 @@ export default function ProjectPage() {
   return (
     <>
       <Modal
-        isOpen={showDeleteModal}
-        onToggle={() => setShowDeleteModal(!showDeleteModal)}
+        isOpen={showDeleteModal.isOpen}
+        onToggle={showDeleteModal.toggle}
         onAction={deleteProject}
         type="danger"
         action={projectDeleteCopy.action}
@@ -120,7 +121,7 @@ export default function ProjectPage() {
               <p className="text-sm font-bold text-neutral-500">Delete your project</p>
               <p className="text-sm text-neutral-400">Deleting your project permanently removes all associated data. This cannot be undone.</p>
             </div>
-            <DangerButton className="ml-auto h-1/2" onClick={() => setShowDeleteModal(true)}>
+            <DangerButton className="ml-auto h-1/2" onClick={showDeleteModal.open}>
               <Trash size={18} />
               Delete project
             </DangerButton>

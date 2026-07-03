@@ -27,6 +27,7 @@ import { useAction, useActions, useRelatedActions } from "../../../lib/hooks/act
 import { useEventTypes } from "../../../lib/hooks/events";
 import { useCurrentProject } from "../../../lib/hooks/projects";
 import { useTemplates } from "../../../lib/hooks/templates";
+import { useModalState } from "../../../lib/hooks/useModalState";
 import { network } from "../../../lib/network";
 
 /**
@@ -51,7 +52,7 @@ export default function ActionDetailPage() {
     delay: 0,
     unit: "MINUTES",
   });
-  const [deleteModal, setDeleteModal] = useState(false);
+  const deleteModal = useModalState();
 
   const {
     register,
@@ -144,8 +145,8 @@ export default function ActionDetailPage() {
   return (
     <>
       <Modal
-        isOpen={deleteModal}
-        onToggle={() => setDeleteModal(false)}
+        isOpen={deleteModal.isOpen}
+        onToggle={deleteModal.close}
         onAction={remove}
         type="danger"
         action={actionDeleteCopy.action}
@@ -155,7 +156,7 @@ export default function ActionDetailPage() {
       <Card
         title={"Edit your action"}
         options={
-          <MenuButton onClick={() => setDeleteModal(true)}>
+          <MenuButton onClick={deleteModal.open}>
             <Trash size={18} />
             Delete
           </MenuButton>
