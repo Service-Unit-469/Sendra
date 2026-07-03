@@ -11,7 +11,7 @@ catalog:
   '@aws-sdk/client-sqs': ^3.1075.0
   '@aws-sdk/lib-dynamodb': ^3.1075.0
   '@aws-sdk/s3-request-presigner': 3.1077.0
-  '@babel/core': ^7.29.7
+  '@babel/core': ^8.0.1
   '@biomejs/biome': ^2.5.1
   '@codemirror/lang-json': ^6.0.2
   '@hono/zod-openapi': ^1.4.0
