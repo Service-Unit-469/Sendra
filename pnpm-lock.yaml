@@ -103,8 +103,8 @@ catalogs:
       specifier: ^0.0.14
       version: 0.0.14
     '@react-email/render':
-      specifier: ^2.0.9
-      version: 2.0.9
+      specifier: ^2.1.0
+      version: 2.1.0
     '@react-email/row':
       specifier: ^0.0.13
       version: 0.0.13
@@ -569,7 +569,7 @@ importers:
         version: 0.0.14(react@19.2.7)
       '@react-email/render':
         specifier: 'catalog:'
-        version: 2.0.9(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+        version: 2.1.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@react-email/row':
         specifier: 'catalog:'
         version: 0.0.13(react@19.2.7)
@@ -2112,8 +2112,8 @@ packages:
       react: ^18.0 || ^19.0 || ^19.0.0-rc
       react-dom: ^18.0 || ^19.0 || ^19.0.0-rc
 
-  '@react-email/render@2.0.9':
-    resolution: {integrity: sha512-M89LiXy2q+9tmQ4VMR0rYGuEe6NJ6HhZsSxBMoLwIia5fVOLcZQcZe2GEO0nAkLZspDjEhn7mtMRPmeMKECEdQ==}
+  '@react-email/render@2.1.0':
+    resolution: {integrity: sha512-F+zE3O6d6sW6Aj2UjvZAA17R7tJKM7kcq2mgV6k4HCT8jeLLFaVP2txMtH1lgqYFRMZ0Gxsd37q2PRyiXLXXxA==}
     engines: {node: '>=20.0.0'}
     peerDependencies:
       react: ^18.0 || ^19.0 || ^19.0.0-rc
@@ -3556,6 +3556,9 @@ packages:
   html-to-text@9.0.5:
     resolution: {integrity: sha512-qY60FjREgVZL03vJU6IfMV4GDjGBIoOyvuFdpBDIX9yTlDw0TjxVBQp+P8NvpdIXNJvfWBTNul7fsAQJq2FNpg==}
     engines: {node: '>=14'}
+
+  html5parser@3.0.0:
+    resolution: {integrity: sha512-iNpSopa+4YHX50UOk825tBy7MghmXHo/ZpLskBYN0kAr1xhH8GlIMk5bLRXcZlfP3AnLUcSuFMu8C4MdOUxA8A==}
 
   htmlparser2@10.1.0:
     resolution: {integrity: sha512-VTZkM9GWRAtEpveh7MSF6SjjrpNVNNVJfFup7xTY3UpFtm67foy9HDVXneLtFVt4pMz5kZtgNcvCniNFb1hlEQ==}
@@ -6441,9 +6444,11 @@ snapshots:
       react: 19.2.7
       react-dom: 19.2.7(react@19.2.7)
 
-  '@react-email/render@2.0.9(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
+  '@react-email/render@2.1.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
     dependencies:
+      entities: 4.5.0
       html-to-text: 9.0.5
+      html5parser: 3.0.0
       prettier: 3.9.4
       react: 19.2.7
       react-dom: 19.2.7(react@19.2.7)
@@ -7818,6 +7823,8 @@ snapshots:
       dom-serializer: 2.0.0
       htmlparser2: 8.0.2
       selderee: 0.11.0
+
+  html5parser@3.0.0: {}
 
   htmlparser2@10.1.0:
     dependencies:
