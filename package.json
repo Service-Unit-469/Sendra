@@ -12,7 +12,7 @@
     "@biomejs/biome": "catalog:",
     "@playwright/test": "catalog:",
     "@pulumi/aws": "catalog:",
-    "@pulumi/pulumi": "^3.249.0",
+    "@pulumi/pulumi": "^3.251.0",
     "@testing-library/dom": "catalog:",
     "@types/node": "catalog:",
     "@vitest/coverage-v8": "catalog:",
