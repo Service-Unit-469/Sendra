@@ -12,7 +12,7 @@ catalog:
   '@aws-sdk/lib-dynamodb': ^3.1085.0
   '@aws-sdk/s3-request-presigner': 3.1085.0
   '@babel/core': ^8.0.1
-  '@biomejs/biome': ^2.5.1
+  '@biomejs/biome': ^2.5.3
   '@codemirror/lang-json': ^6.0.2
   '@hono/zod-openapi': ^1.4.0
   '@hookform/resolvers': ^5.4.0
