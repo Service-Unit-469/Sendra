@@ -3,14 +3,14 @@ packages:
   - packages/*
 
 catalog:
-  '@aws-sdk/client-dynamodb': 3.1077.0
-  '@aws-sdk/client-s3': 3.1077.0
-  '@aws-sdk/client-ses': ^3.1075.0
-  '@aws-sdk/client-sfn': ^3.1075.0
-  '@aws-sdk/client-sns': ^3.1075.0
-  '@aws-sdk/client-sqs': ^3.1075.0
-  '@aws-sdk/lib-dynamodb': ^3.1075.0
-  '@aws-sdk/s3-request-presigner': 3.1077.0
+  '@aws-sdk/client-dynamodb': 3.1085.0
+  '@aws-sdk/client-s3': 3.1085.0
+  '@aws-sdk/client-ses': ^3.1085.0
+  '@aws-sdk/client-sfn': ^3.1085.0
+  '@aws-sdk/client-sns': ^3.1085.0
+  '@aws-sdk/client-sqs': ^3.1085.0
+  '@aws-sdk/lib-dynamodb': ^3.1085.0
+  '@aws-sdk/s3-request-presigner': 3.1085.0
   '@babel/core': ^8.0.1
   '@biomejs/biome': ^2.5.1
   '@codemirror/lang-json': ^6.0.2

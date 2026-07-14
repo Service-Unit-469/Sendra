@@ -12,7 +12,7 @@
     "@aws-sdk/client-sqs": "catalog:",
     "@aws-sdk/lib-dynamodb": "catalog:",
     "@aws-sdk/s3-request-presigner": "catalog:",
-    "@aws-sdk/util-dynamodb": "^3.996.5",
+    "@aws-sdk/util-dynamodb": "^3.996.6",
     "@sendra/shared": "workspace:*",
     "aws-embedded-metrics": "catalog:",
     "handlebars": "catalog:",
