@@ -250,8 +250,8 @@ catalogs:
       specifier: ^4.7.9
       version: 4.7.9
     hono:
-      specifier: 4.12.27
-      version: 4.12.27
+      specifier: 4.12.30
+      version: 4.12.30
     hono-pino:
       specifier: ^0.10.2
       version: 0.10.3
@@ -445,7 +445,7 @@ importers:
         version: 3.1085.0
       '@hono/zod-openapi':
         specifier: 'catalog:'
-        version: 1.4.0(hono@4.12.27)(zod@4.4.3)
+        version: 1.4.0(hono@4.12.30)(zod@4.4.3)
       '@sendra/lib':
         specifier: workspace:*
         version: link:../lib
@@ -466,10 +466,10 @@ importers:
         version: 1.11.21
       hono:
         specifier: 'catalog:'
-        version: 4.12.27
+        version: 4.12.30
       hono-pino:
         specifier: 'catalog:'
-        version: 0.10.3(hono@4.12.27)(pino@10.3.1)
+        version: 0.10.3(hono@4.12.30)(pino@10.3.1)
       jsonwebtoken:
         specifier: 'catalog:'
         version: 9.0.3
@@ -3531,8 +3531,8 @@ packages:
       hono: '>=4.0.0'
       pino: '>=7.1.0'
 
-  hono@4.12.27:
-    resolution: {integrity: sha512-1yrb/+w6HWQJrUCLkJ2IF5jNIPvvFkblV5RNOYl6bV+OA6p9GLcMpHFFGTosSvHvcAUibuUukRqhlYI4z32C7Q==}
+  hono@4.12.30:
+    resolution: {integrity: sha512-emn+JoJjrN9YTpRDS5it/UI2SO9BAE37T6I3d963RxcZ81G9A4pr2SZTEiiaiKbzx+NKRg5BZ89fCL7gCJCUog==}
     engines: {node: '>=16.9.0'}
 
   hosted-git-info@7.0.2:
@@ -5888,17 +5888,17 @@ snapshots:
       protobufjs: 7.6.5
       yargs: 17.7.3
 
-  '@hono/zod-openapi@1.4.0(hono@4.12.27)(zod@4.4.3)':
+  '@hono/zod-openapi@1.4.0(hono@4.12.30)(zod@4.4.3)':
     dependencies:
       '@asteasolutions/zod-to-openapi': 8.5.0(zod@4.4.3)
-      '@hono/zod-validator': 0.8.0(hono@4.12.27)(zod@4.4.3)
-      hono: 4.12.27
+      '@hono/zod-validator': 0.8.0(hono@4.12.30)(zod@4.4.3)
+      hono: 4.12.30
       openapi3-ts: 4.6.0
       zod: 4.4.3
 
-  '@hono/zod-validator@0.8.0(hono@4.12.27)(zod@4.4.3)':
+  '@hono/zod-validator@0.8.0(hono@4.12.30)(zod@4.4.3)':
     dependencies:
-      hono: 4.12.27
+      hono: 4.12.30
       zod: 4.4.3
 
   '@hookform/resolvers@5.4.0(react-hook-form@7.80.0(react@19.2.7))':
@@ -7794,13 +7794,13 @@ snapshots:
 
   help-me@5.0.0: {}
 
-  hono-pino@0.10.3(hono@4.12.27)(pino@10.3.1):
+  hono-pino@0.10.3(hono@4.12.30)(pino@10.3.1):
     dependencies:
       defu: 6.1.7
-      hono: 4.12.27
+      hono: 4.12.30
       pino: 10.3.1
 
-  hono@4.12.27: {}
+  hono@4.12.30: {}
 
   hosted-git-info@7.0.2:
     dependencies:
