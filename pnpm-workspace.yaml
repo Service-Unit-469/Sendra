@@ -93,7 +93,7 @@ catalog:
   jsonwebtoken: ^9.0.2
   lucide-react: 1.22.0
   mail-mime-builder: ^1.0.1
-  msw: ^2.14.6
+  msw: ^2.15.0
   nprogress: ^0.2.0
   p-map: ^7.0.4
   papaparse: ^5.5.3
