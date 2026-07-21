@@ -1,0 +1,36 @@
+name: Prune Stale SST Stages
+
+on:
+  schedule:
+    - cron: "0 3 * * 0"
+  workflow_dispatch:
+
+concurrency:
+  group: prune-stale-sst-stages
+
+permissions:
+  contents: read
+  id-token: write
+  pull-requests: read
+
+jobs:
+  prune:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v7.0.0
+
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v6.2.1
+        with:
+          role-to-assume: ${{ secrets.GH_TRUST_ROLE }}
+          role-duration-seconds: 3600
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Prune stale SST stages
+        run: pnpm dlx sst-stage-prune@1.0.2 cleanup-pr-stages --pkg-mgr pnpm --sst-script sst
+        env:
+          GH_TOKEN: ${{ github.token }}
