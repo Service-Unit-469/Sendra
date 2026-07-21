@@ -29,10 +29,10 @@ Sendra is a fork of [Plunk](https://useplunk.com/) with a focus on a lighter foo
 
 Comprehensive documentation is available to help you get started with Sendra:
 
-- **[Deployment Guide](https://service-unit-469.github.io/Sendra/docs/setup.html)** - Step-by-step instructions for deploying Sendra to AWS
-- **[Entities Reference](https://service-unit-469.github.io/Sendra/docs/entities.html)** - Understanding Sendra's data model and key entities
-- **[API Documentation](https://service-unit-469.github.io/Sendra/docs/api.html)** - Complete guide to the Sendra API with examples
-- **[User Guide](https://service-unit-469.github.io/Sendra/docs/user-guide.html)** - How to use the Sendra application
+- **[Deployment Guide](https://service-unit-469.github.io/Sendra/setup.html)** - Step-by-step instructions for deploying Sendra to AWS
+- **[Entities Reference](https://service-unit-469.github.io/Sendra/entities.html)** - Understanding Sendra's data model and key entities
+- **[API Documentation](https://service-unit-469.github.io/Sendra/api.html)** - Complete guide to the Sendra API with examples
+- **[User Guide](https://service-unit-469.github.io/Sendra/user-guide.html)** - How to use the Sendra application
 
 ## Self-hosting Sendra
 
@@ -42,10 +42,10 @@ The easiest way to self-host Sendra is to fork the project and run it in your AW
 
 1. **Prerequisites**: Node.js 20+, AWS CLI configured, AWS account
 2. **Install**: `pnpm install`
-3. **Configure**: Set up environment variables (see [deployment guide](https://service-unit-469.github.io/Sendra/docs/setup.html))
+3. **Configure**: Set up environment variables (see [deployment guide](https://service-unit-469.github.io/Sendra/setup.html))
 4. **Deploy**: `pnpm run deploy`
 
-A complete guide on how to deploy Sendra can be found in the [deployment documentation](https://service-unit-469.github.io/Sendra/docs/setup.html).
+A complete guide on how to deploy Sendra can be found in the [deployment documentation](https://service-unit-469.github.io/Sendra/setup.html).
 
 ## Contributing
 
