@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out the repo
-        uses: actions/checkout@v7.0.0
+        uses: actions/checkout@v7.0.1
       - name: Setup
         uses: ./.github/actions/setup
       - name: Configure AWS credentials
