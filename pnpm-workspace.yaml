@@ -52,15 +52,15 @@ catalog:
   '@testing-library/react': ^16.3.2
   '@testing-library/user-event': ^14.5.0
   '@tippyjs/react': ^4.2.6
-  '@tiptap/extension-color': ^3.27.3
-  '@tiptap/extension-image': ^3.27.3
-  '@tiptap/extension-link': ^3.27.3
-  '@tiptap/extension-list-item': ^3.27.3
-  '@tiptap/extension-text-align': ^3.27.3
-  '@tiptap/extension-text-style': ^3.27.3
-  '@tiptap/extension-underline': ^3.27.3
-  '@tiptap/react': ^3.27.3
-  '@tiptap/starter-kit': ^3.27.3
+  '@tiptap/extension-color': ^3.28.0
+  '@tiptap/extension-image': ^3.28.0
+  '@tiptap/extension-link': ^3.28.0
+  '@tiptap/extension-list-item': ^3.28.0
+  '@tiptap/extension-text-align': ^3.28.0
+  '@tiptap/extension-text-style': ^3.28.0
+  '@tiptap/extension-underline': ^3.28.0
+  '@tiptap/react': ^3.28.0
+  '@tiptap/starter-kit': ^3.28.0
   '@types/aws-lambda': ^8.10.162
   '@types/compression': ^1.7.5
   '@types/jsonwebtoken': ^9.0.6
