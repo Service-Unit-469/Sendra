@@ -40,7 +40,7 @@ catalog:
   '@react-email/section': ^0.0.17
   '@react-email/tailwind': ^2.0.2
   '@react-email/text': ^0.1.5
-  '@rjsf/core': ^6.6.2
+  '@rjsf/core': ^6.7.0
   '@rjsf/utils': ^6.6.2
   '@rjsf/validator-ajv8': ^6.6.2
   '@tailwindcss/aspect-ratio': ^0.4.2
