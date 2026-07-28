@@ -24,9 +24,9 @@ test.describe("Templates", () => {
 
     await test.step("Create new template", async () => {
       await page.getByRole("button", { name: "New" }).click();
-      await page.getByRole("button", { name: "Create" }).waitFor({ state: "visible" });
+      await page.getByRole("button", { name: "Create", exact: true }).waitFor({ state: "visible" });
       await page.getByRole("textbox", { name: "Subject" }).fill(templateName);
-      await page.getByRole("button", { name: "Create" }).click();
+      await page.getByRole("button", { name: "Create", exact: true }).click();
       await page.waitForURL("**/templates");
     });
 
