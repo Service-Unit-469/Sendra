@@ -118,8 +118,8 @@ catalogs:
       specifier: ^0.1.5
       version: 0.1.6
     '@rjsf/core':
-      specifier: ^6.6.2
-      version: 6.6.2
+      specifier: ^6.7.0
+      version: 6.7.0
     '@rjsf/utils':
       specifier: ^6.6.2
       version: 6.6.2
@@ -584,7 +584,7 @@ importers:
         version: 0.1.6(react@19.2.7)
       '@rjsf/core':
         specifier: 'catalog:'
-        version: 6.6.2(@rjsf/utils@6.6.2(react@19.2.7))(react@19.2.7)
+        version: 6.7.0(@rjsf/utils@6.6.2(react@19.2.7))(react@19.2.7)
       '@rjsf/utils':
         specifier: 'catalog:'
         version: 6.6.2(react@19.2.7)
@@ -2180,11 +2180,11 @@ packages:
       react-redux:
         optional: true
 
-  '@rjsf/core@6.6.2':
-    resolution: {integrity: sha512-rmckOHIc0N3Vu0egcjrm4aRnw4ETW1i4fGdm0m63qd/298zHfF7x2md2rDh8F5HLgoxW3X/LdvrCHcsD1lxbGw==}
+  '@rjsf/core@6.7.0':
+    resolution: {integrity: sha512-TdiiRf9H6R7mYXyRq1TQHhTSdX9lpvYHsfn1obWksICbZEg4jBFBh7BuyrcHhzGos6976GsLO4TTYw11fQUbpQ==}
     engines: {node: '>=20'}
     peerDependencies:
-      '@rjsf/utils': ^6.6.x
+      '@rjsf/utils': ^6.7.0
       react: '>=18'
 
   '@rjsf/utils@6.6.2':
@@ -6493,7 +6493,7 @@ snapshots:
       react: 19.2.7
       react-redux: 9.3.0(@types/react@19.2.17)(react@19.2.7)(redux@5.0.1)
 
-  '@rjsf/core@6.6.2(@rjsf/utils@6.6.2(react@19.2.7))(react@19.2.7)':
+  '@rjsf/core@6.7.0(@rjsf/utils@6.6.2(react@19.2.7))(react@19.2.7)':
     dependencies:
       '@rjsf/utils': 6.6.2(react@19.2.7)
       lodash: 4.18.1
