@@ -19,6 +19,7 @@ import Empty from "../../../components/Utility/Empty/Empty";
 import FullscreenLoader from "../../../components/Utility/FullscreenLoader/FullscreenLoader";
 import { deleteModalCopy, editActionCopy } from "../../../lib/actionCopy";
 import { useContact } from "../../../lib/hooks/contacts";
+import { useAllGroups } from "../../../lib/hooks/groups";
 import { useCurrentProject } from "../../../lib/hooks/projects";
 import { useModalState } from "../../../lib/hooks/useModalState";
 import { network } from "../../../lib/network";
@@ -76,6 +77,7 @@ export default function ContactDetailPage() {
   const deleteModal = useModalState();
   const project = useCurrentProject();
   const { data: contact, mutate } = useContact(id ?? "");
+  const { data: groups } = useAllGroups();
 
   const {
     register: eventRegister,
@@ -124,6 +126,7 @@ export default function ContactDetailPage() {
   const uniqueClickedEmails = new Set(clickEvents.filter((event) => event.email).map((event) => event.email)).size;
   const openRate = totalEmails > 0 ? (openedEmails / totalEmails) * 100 : 0;
   const clickRate = totalEmails > 0 ? (uniqueClickedEmails / totalEmails) * 100 : 0;
+  const contactGroups = groups?.filter((group) => group.contacts.includes(contact.id)).sort((a, b) => a.name.localeCompare(b.name));
 
   const remove = async () => {
     toast.promise(
@@ -205,6 +208,25 @@ export default function ContactDetailPage() {
             submitButtonText={editActionCopy.saveChanges}
           />
         </div>
+      </Card>
+      <Card title="Groups">
+        {contactGroups && contactGroups.length > 0 ? (
+          <ul className="divide-y divide-neutral-200">
+            {contactGroups.map((group) => (
+              <li key={group.id} className="py-3 first:pt-0 last:pb-0">
+                <Link to={`/groups/${group.id}`} className="font-medium text-neutral-800 transition hover:text-neutral-600">
+                  {group.name}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        ) : groups ? (
+          <Empty title="No groups" description="This contact does not belong to any groups" />
+        ) : (
+          <div role="status" className="py-6 text-center text-sm text-neutral-500">
+            Loading groups...
+          </div>
+        )}
       </Card>
       <Card title="Metrics Summary">
         <ThreeColMetricsSummary
