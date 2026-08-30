@@ -258,7 +258,7 @@ function handler(event) {
 
 export const router = createSingleDomainCloudFrontDistribution({
   name: "Sendra",
-  enableWaf: $app.stage === "production" || process.env.ENABLE_WAF === "true",
+  enableWaf: false,
   aliases: process.env.API_URL ? [new URL(process.env.API_URL).host] : undefined,
   certificateArn: process.env.CLOUDFRONT_CERT_ARN,
 });
