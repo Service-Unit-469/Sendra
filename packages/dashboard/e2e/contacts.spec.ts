@@ -35,7 +35,7 @@ test.describe("Contacts", () => {
       await page.getByRole("textbox", { name: "Key" }).fill("browser");
       await page.getByRole("textbox", { name: "Value" }).fill(browserName);
 
-      await page.getByRole("button", { name: "Create" }).click();
+      await page.getByRole("button", { name: "Create", exact: true }).click();
     });
 
     await test.step("Verify contact is created", async () => {
