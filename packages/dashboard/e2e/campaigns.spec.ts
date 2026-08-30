@@ -86,7 +86,7 @@ test.describe("Campaigns", () => {
       await page.getByRole("button", { name: "New" }).click();
       await page.getByRole("textbox", { name: "Email" }).fill(testContactEmail);
       await page.getByRole("button", { name: "Add" }).click();
-      await page.getByRole("button", { name: "Create" }).click();
+      await page.getByRole("button", { name: "Create", exact: true }).click();
       await page.getByText("Created new contact").waitFor({ state: "visible" });
       await page.getByText("Create new contact").waitFor({ state: "hidden" });
     });

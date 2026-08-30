@@ -63,13 +63,13 @@ export class DashboardPage {
     await this.navigateTo("Templates", "/templates");
     await this.page.getByRole('heading', {name: 'Templates'}).waitFor({state: 'visible'});
     await this.page.getByRole("button", { name: "New" }).click();
-    await this.page.getByRole("button", { name: "Create" }).waitFor({ state: "visible" });
+    await this.page.getByRole("button", { name: "Create", exact: true }).waitFor({ state: "visible" });
     await this.page.getByRole("textbox", { name: "Subject" }).fill(templateName);
     await this.page.getByRole('heading', {name:templateName}).waitFor({state: 'visible'});
     if(beforeSave) {
       await beforeSave();
     }
-    const createButton = this.page.getByRole("button", { name: "Create" });
+    const createButton = this.page.getByRole("button", { name: "Create", exact: true });
     await expect(createButton).not.toBeDisabled();
     await createButton.click();
     await this.page.waitForURL("**/templates");
