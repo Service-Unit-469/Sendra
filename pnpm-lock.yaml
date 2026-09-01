@@ -232,8 +232,8 @@ catalogs:
       specifier: 4.2.1
       version: 4.2.1
     dayjs:
-      specifier: 1.11.21
-      version: 1.11.21
+      specifier: 1.11.23
+      version: 1.11.23
     dompurify:
       specifier: ^3.4.13
       version: 3.4.14
@@ -463,7 +463,7 @@ importers:
         version: 4.2.1
       dayjs:
         specifier: 'catalog:'
-        version: 1.11.21
+        version: 1.11.23
       hono:
         specifier: 'catalog:'
         version: 4.12.34
@@ -635,7 +635,7 @@ importers:
         version: 4.25.10(@babel/runtime@7.29.7)(@codemirror/autocomplete@6.20.3)(@codemirror/language@6.12.4)(@codemirror/lint@6.9.7)(@codemirror/search@6.7.1)(@codemirror/state@6.7.0)(@codemirror/theme-one-dark@6.1.3)(@codemirror/view@6.43.4)(codemirror@6.0.2)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       dayjs:
         specifier: 'catalog:'
-        version: 1.11.21
+        version: 1.11.23
       dompurify:
         specifier: 'catalog:'
         version: 3.4.14
@@ -3232,8 +3232,8 @@ packages:
   dateformat@4.6.3:
     resolution: {integrity: sha512-2P0p0pFGzHS5EMnhdxQi7aJN+iMheud0UhG4dlE1DLAlvL8JHjJJTX/CSm4JXwV0Ka5nGk3zC5mcb5bUQUxxMA==}
 
-  dayjs@1.11.21:
-    resolution: {integrity: sha512-98IT+HOahAisibz/yjKbzuOBwYcjJ7BCLPzARyHiyEBmRz4fatF+KPJszEHXsGYjUG234aH/cOjW1wwTbKUZlA==}
+  dayjs@1.11.23:
+    resolution: {integrity: sha512-QDTCU0M0MxR3hQfnlDJfwekQiaanm1ubOD231u73WBckQ/fsamwRLiE2GBz6D3a/xF1NgfiDLJjXBa1hYOYTtQ==}
 
   debug@4.4.3:
     resolution: {integrity: sha512-RGwwWnwQvkVfavKVt22FGLw+xYSdzARwm0ru6DhTVA3umU5hZc28V3kO4stgYryrTlLpuvgI9GiijltAjNbcqA==}
@@ -7600,7 +7600,7 @@ snapshots:
 
   dateformat@4.6.3: {}
 
-  dayjs@1.11.21: {}
+  dayjs@1.11.23: {}
 
   debug@4.4.3:
     dependencies:

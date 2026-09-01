@@ -78,7 +78,7 @@ catalog:
   autoprefixer: ^10.5.2
   aws-dynamodb-local: ^0.0.14
   aws-embedded-metrics: 4.2.1
-  dayjs: 1.11.21
+  dayjs: 1.11.23
   dompurify: ^3.4.13
   dotenv: ^17.4.2
   es-toolkit: ^1.49.0
