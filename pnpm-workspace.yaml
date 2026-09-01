@@ -111,7 +111,7 @@ catalog:
   recharts: ^3.10.1
   rimraf: ^6.1.3
   sonner: ^2.0.7
-  sst: 4.17.0
+  sst: 4.17.1
   swr: ^2.4.1
   tailwind-scrollbar: ^4.0.2
   tailwindcss: 4.3.2
