@@ -358,8 +358,8 @@ catalogs:
       specifier: ^6.0.3
       version: 6.0.3
     uuid:
-      specifier: ^14.0.0
-      version: 14.0.1
+      specifier: ^14.0.2
+      version: 14.0.2
     uuidv7:
       specifier: ^1.2.1
       version: 1.2.1
@@ -704,7 +704,7 @@ importers:
         version: 0.2.5
       uuid:
         specifier: 'catalog:'
-        version: 14.0.1
+        version: 14.0.2
       zod:
         specifier: 'catalog:'
         version: 4.4.3
@@ -5030,8 +5030,8 @@ packages:
   util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
 
-  uuid@14.0.1:
-    resolution: {integrity: sha512-6ZxzVpzDXDa3bJWaHilVayA+BH/1zmxCJoVgvmqJnid/gPoKHxUrS/aC/T6LGQtNHT+XHG9fXPJB4d+IrU30Ew==}
+  uuid@14.0.2:
+    resolution: {integrity: sha512-xZe/16rV4aa+HGSOCiY2YeLT1OybRLrrkL/Rqaq7p7GMVXjFh+6wN4oMYgjFmnSnhY8t6Xpdl2l9qmnHYuMHwQ==}
     hasBin: true
 
   uuidv7@1.2.1:
@@ -6068,7 +6068,7 @@ snapshots:
       react: 19.2.8
       react-hotkeys-hook: 4.6.2(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       use-debounce: 9.0.4(react@19.2.8)
-      uuid: 14.0.1
+      uuid: 14.0.2
       zustand: 5.0.14(@types/react@19.2.18)(immer@11.1.8)(react@19.2.8)(use-sync-external-store@1.6.0(react@19.2.8))
     transitivePeerDependencies:
       - '@types/react'
@@ -9352,7 +9352,7 @@ snapshots:
 
   util-deprecate@1.0.2: {}
 
-  uuid@14.0.1: {}
+  uuid@14.0.2: {}
 
   uuidv7@1.2.1: {}
 
