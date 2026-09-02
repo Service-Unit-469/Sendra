@@ -107,7 +107,7 @@ catalog:
   react-error-boundary: ^6.1.2
   react-hook-form: ^7.78.0
   react-router-dom: ^7.17.0
-  react-window: ^2.2.7
+  react-window: ^2.3.0
   recharts: ^3.10.1
   rimraf: ^6.1.3
   sonner: ^2.0.7
