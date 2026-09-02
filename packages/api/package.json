@@ -41,7 +41,7 @@
 		"hono": "catalog:",
 		"hono-pino": "catalog:",
 		"jsonwebtoken": "catalog:",
-		"lru-cache": "^11.5.1",
+		"lru-cache": "^11.5.2",
 		"ms": "^2.1.3",
 		"zod": "catalog:"
 	}
