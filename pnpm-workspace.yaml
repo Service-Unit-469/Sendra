@@ -75,7 +75,7 @@ catalog:
   '@vitest/coverage-v8': ^4.0.15
   ajv: ^8.18.0
   ajv-formats: ^3.0.1
-  autoprefixer: ^10.5.2
+  autoprefixer: ^10.5.5
   aws-dynamodb-local: ^0.0.14
   aws-embedded-metrics: 4.2.1
   dayjs: 1.11.23
