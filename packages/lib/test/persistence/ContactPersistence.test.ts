@@ -335,9 +335,9 @@ describe("ContactPersistence", () => {
 
         const emailPersistence = new EmailPersistence(TEST_PROJECT_ID);
         
-        // Create 300 emails (more than the standard limit of 250)
+        // Create one more email than the standard limit of 250.
         const emailPromises = [];
-        for (let i = 0; i < 300; i++) {
+        for (let i = 0; i <= 250; i++) {
           emailPromises.push(
             emailPersistence.create({
               project: TEST_PROJECT_ID,
