@@ -118,14 +118,14 @@ catalogs:
       specifier: ^0.1.5
       version: 0.1.6
     '@rjsf/core':
-      specifier: ^6.6.2
-      version: 6.6.2
+      specifier: ^6.8.0
+      version: 6.8.0
     '@rjsf/utils':
-      specifier: ^6.6.2
-      version: 6.6.2
+      specifier: ^6.8.0
+      version: 6.8.0
     '@rjsf/validator-ajv8':
-      specifier: ^6.6.2
-      version: 6.6.2
+      specifier: ^6.8.0
+      version: 6.8.0
     '@tailwindcss/aspect-ratio':
       specifier: ^0.4.2
       version: 0.4.2
@@ -584,13 +584,13 @@ importers:
         version: 0.1.6(react@19.2.8)
       '@rjsf/core':
         specifier: 'catalog:'
-        version: 6.6.2(@rjsf/utils@6.6.2(react@19.2.8))(react@19.2.8)
+        version: 6.8.0(@rjsf/utils@6.8.0(react@19.2.8))(react@19.2.8)
       '@rjsf/utils':
         specifier: 'catalog:'
-        version: 6.6.2(react@19.2.8)
+        version: 6.8.0(react@19.2.8)
       '@rjsf/validator-ajv8':
         specifier: 'catalog:'
-        version: 6.6.2(@rjsf/utils@6.6.2(react@19.2.8))
+        version: 6.8.0(@rjsf/utils@6.8.0(react@19.2.8))
       '@sendra/lib':
         specifier: workspace:*
         version: link:../lib
@@ -1029,6 +1029,9 @@ importers:
       sst:
         specifier: 'catalog:'
         version: 4.17.1
+      typescript:
+        specifier: 'catalog:'
+        version: 6.0.3
 
 packages:
 
@@ -2186,24 +2189,24 @@ packages:
       react-redux:
         optional: true
 
-  '@rjsf/core@6.6.2':
-    resolution: {integrity: sha512-rmckOHIc0N3Vu0egcjrm4aRnw4ETW1i4fGdm0m63qd/298zHfF7x2md2rDh8F5HLgoxW3X/LdvrCHcsD1lxbGw==}
+  '@rjsf/core@6.8.0':
+    resolution: {integrity: sha512-HZ2e/l/QNcz8PTslBXyGWkiycMe3LgIfwgXo0qO3DPgyFKj4G+obJTKBq/W+DaIUmz1HicvH5WtOdXWWqK+gbA==}
     engines: {node: '>=20'}
     peerDependencies:
-      '@rjsf/utils': ^6.6.x
+      '@rjsf/utils': ^6.8.0
       react: '>=18'
 
-  '@rjsf/utils@6.6.2':
-    resolution: {integrity: sha512-npqdWuuFmCkiXETrDLRx8a4EwDJoUdTTnGhJA/774bwDgT99u4nAEyXbJd75VuobunewcLm2FOS2cErD3e28cg==}
+  '@rjsf/utils@6.8.0':
+    resolution: {integrity: sha512-gHcqPFSHdOz29tZiLlzDvD+Gfq21zVIFBufprSYTiHpUdcVNJEK6+V5aw++FtQncHdDWnTf2YCky/e1Bol2NEQ==}
     engines: {node: '>=20'}
     peerDependencies:
       react: '>=18'
 
-  '@rjsf/validator-ajv8@6.6.2':
-    resolution: {integrity: sha512-pi+CBfkXxyR1JhEveuwi7qA9NcqYvFSvadY8LkQDC6wP89bZS8TYXzolirvXC7okDdI3WCtPjx/FYnxYpXbj7Q==}
+  '@rjsf/validator-ajv8@6.8.0':
+    resolution: {integrity: sha512-F36I952/miMFZzWSlupwFHbl+j+5bVQ3tR6HtBS+vXV10kY5dT3OwTjbFRo4fQM1KpqrUZC0t3/E5CZRX1o1jA==}
     engines: {node: '>=20'}
     peerDependencies:
-      '@rjsf/utils': ^6.6.x
+      '@rjsf/utils': ^6.8.0
 
   '@rolldown/binding-android-arm-eabi@1.2.6':
     resolution: {integrity: sha512-b+jTcARdTiFLI6jB4a5XjTm0RWd6KcRfQj/I2356fxUZemiho9zQLxo0RtCuMDAyKcLo6cEltkgbQp6d1+sjjQ==}
@@ -3429,6 +3432,9 @@ packages:
 
   fast-uri@3.1.3:
     resolution: {integrity: sha512-i70LwGWUduXqzicKXWshooq+sWL1K3WUU5rKZNG/0i3a1OSoX3HqhH5WbWwTmqWfor4urUakGPiRQcleRZTwOg==}
+
+  fast-uri@4.1.4:
+    resolution: {integrity: sha512-dODXrIxlS9JSdgAnhIUKOosKV1oMtU2VtVw87QRaHzyl5jxO290Ii5tEZfCfzfWNHi3jKWwBSdQj0qIyshdZdQ==}
 
   fast-wrap-ansi@0.2.2:
     resolution: {integrity: sha512-7F2Fl+TjRSenLqlU3UjSH0iyqopqoZIu7eZVpEirP2g1GtWa2G/ecEmBdgz31+Mxr+ELclgg6sokpSFIQiZ02Q==}
@@ -6610,9 +6616,9 @@ snapshots:
       react: 19.2.8
       react-redux: 9.3.0(@types/react@19.2.18)(react@19.2.8)(redux@5.0.1)
 
-  '@rjsf/core@6.6.2(@rjsf/utils@6.6.2(react@19.2.8))(react@19.2.8)':
+  '@rjsf/core@6.8.0(@rjsf/utils@6.8.0(react@19.2.8))(react@19.2.8)':
     dependencies:
-      '@rjsf/utils': 6.6.2(react@19.2.8)
+      '@rjsf/utils': 6.8.0(react@19.2.8)
       lodash: 4.18.1
       lodash-es: 4.18.1
       markdown-to-jsx: 9.8.2(react@19.2.8)
@@ -6623,20 +6629,20 @@ snapshots:
       - solid-js
       - vue
 
-  '@rjsf/utils@6.6.2(react@19.2.8)':
+  '@rjsf/utils@6.8.0(react@19.2.8)':
     dependencies:
       '@x0k/json-schema-merge': 1.0.4
       fast-equals: 6.0.0
-      fast-uri: 3.1.3
+      fast-uri: 4.1.4
       jsonpointer: 5.0.1
       lodash: 4.18.1
       lodash-es: 4.18.1
       react: 19.2.8
       react-is: 18.3.1
 
-  '@rjsf/validator-ajv8@6.6.2(@rjsf/utils@6.6.2(react@19.2.8))':
+  '@rjsf/validator-ajv8@6.8.0(@rjsf/utils@6.8.0(react@19.2.8))':
     dependencies:
-      '@rjsf/utils': 6.6.2(react@19.2.8)
+      '@rjsf/utils': 6.8.0(react@19.2.8)
       ajv: 8.20.0
       ajv-formats: 2.1.1(ajv@8.20.0)
       lodash: 4.18.1
@@ -7806,6 +7812,8 @@ snapshots:
       fast-string-truncated-width: 3.0.3
 
   fast-uri@3.1.3: {}
+
+  fast-uri@4.1.4: {}
 
   fast-wrap-ansi@0.2.2:
     dependencies:
