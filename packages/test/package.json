@@ -20,6 +20,7 @@
 		"test": "echo 'No tests'"
 	},
 	"devDependencies": {
-		"sst": "catalog:"
+		"sst": "catalog:",
+		"typescript": "catalog:"
 	}
 }
