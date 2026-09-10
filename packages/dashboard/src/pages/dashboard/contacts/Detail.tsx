@@ -15,10 +15,12 @@ import { ContactForm } from "../../../components/ContactForm/ContactForm";
 import Input from "../../../components/Input/Input/Input";
 import ThreeColMetricsSummary from "../../../components/Metrics/ThreeColMetricsSummary";
 import Modal from "../../../components/Overlay/Modal/Modal";
+import Skeleton from "../../../components/Skeleton/Skeleton";
 import Empty from "../../../components/Utility/Empty/Empty";
 import FullscreenLoader from "../../../components/Utility/FullscreenLoader/FullscreenLoader";
 import { deleteModalCopy, editActionCopy } from "../../../lib/actionCopy";
 import { useContact } from "../../../lib/hooks/contacts";
+import { useAllGroups } from "../../../lib/hooks/groups";
 import { useCurrentProject } from "../../../lib/hooks/projects";
 import { useModalState } from "../../../lib/hooks/useModalState";
 import { network } from "../../../lib/network";
@@ -76,6 +78,7 @@ export default function ContactDetailPage() {
   const deleteModal = useModalState();
   const project = useCurrentProject();
   const { data: contact, mutate } = useContact(id ?? "");
+  const { data: groups, error: groupsError, mutate: mutateGroups } = useAllGroups();
 
   const {
     register: eventRegister,
@@ -124,6 +127,7 @@ export default function ContactDetailPage() {
   const uniqueClickedEmails = new Set(clickEvents.filter((event) => event.email).map((event) => event.email)).size;
   const openRate = totalEmails > 0 ? (openedEmails / totalEmails) * 100 : 0;
   const clickRate = totalEmails > 0 ? (uniqueClickedEmails / totalEmails) * 100 : 0;
+  const contactGroups = groups?.filter((group) => group.contacts.includes(contact.id)) ?? [];
 
   const remove = async () => {
     toast.promise(
@@ -205,6 +209,27 @@ export default function ContactDetailPage() {
             submitButtonText={editActionCopy.saveChanges}
           />
         </div>
+      </Card>
+      <Card title="Groups" description="Groups this contact belongs to">
+        {groupsError ? (
+          <Empty title="Could not load groups" description="Try again to see this contact's groups" ctaLabel="Retry" onCtaClick={() => void mutateGroups()} />
+        ) : !groups ? (
+          <Skeleton type="table" />
+        ) : contactGroups.length > 0 ? (
+          <ul className="divide-y divide-neutral-200">
+            {contactGroups
+              .sort((a, b) => a.name.localeCompare(b.name))
+              .map((group) => (
+                <li key={group.id} className="py-3 first:pt-0 last:pb-0">
+                  <Link to={`/groups/${group.id}`} className="font-medium text-neutral-800 transition hover:text-neutral-500">
+                    {group.name}
+                  </Link>
+                </li>
+              ))}
+          </ul>
+        ) : (
+          <Empty title="No groups" description="This contact does not belong to any groups" />
+        )}
       </Card>
       <Card title="Metrics Summary">
         <ThreeColMetricsSummary
