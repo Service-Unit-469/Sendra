@@ -61,7 +61,7 @@ catalog:
   '@tiptap/extension-underline': ^3.31.3
   '@tiptap/react': ^3.31.3
   '@tiptap/starter-kit': ^3.31.3
-  '@types/aws-lambda': ^8.10.162
+  '@types/aws-lambda': ^8.10.163
   '@types/compression': ^1.7.5
   '@types/jsonwebtoken': ^9.0.6
   '@types/node': ^26.0.1
