@@ -121,8 +121,8 @@ catalogs:
       specifier: ^6.8.0
       version: 6.8.0
     '@rjsf/utils':
-      specifier: ^6.8.0
-      version: 6.8.0
+      specifier: ^6.10.0
+      version: 6.10.0
     '@rjsf/validator-ajv8':
       specifier: ^6.8.0
       version: 6.8.0
@@ -584,13 +584,13 @@ importers:
         version: 0.1.6(react@19.2.8)
       '@rjsf/core':
         specifier: 'catalog:'
-        version: 6.8.0(@rjsf/utils@6.8.0(react@19.2.8))(react@19.2.8)
+        version: 6.8.0(@rjsf/utils@6.10.0(react@19.2.8))(react@19.2.8)
       '@rjsf/utils':
         specifier: 'catalog:'
-        version: 6.8.0(react@19.2.8)
+        version: 6.10.0(react@19.2.8)
       '@rjsf/validator-ajv8':
         specifier: 'catalog:'
-        version: 6.8.0(@rjsf/utils@6.8.0(react@19.2.8))
+        version: 6.8.0(@rjsf/utils@6.10.0(react@19.2.8))
       '@sendra/lib':
         specifier: workspace:*
         version: link:../lib
@@ -2193,8 +2193,8 @@ packages:
       '@rjsf/utils': ^6.8.0
       react: '>=18'
 
-  '@rjsf/utils@6.8.0':
-    resolution: {integrity: sha512-gHcqPFSHdOz29tZiLlzDvD+Gfq21zVIFBufprSYTiHpUdcVNJEK6+V5aw++FtQncHdDWnTf2YCky/e1Bol2NEQ==}
+  '@rjsf/utils@6.10.0':
+    resolution: {integrity: sha512-GQa+dr28FgGOaRRhIOX3QEv1GkzoklrZYf4f1bTEDNuAWWWyO1oznw62ryZBj4FI/XKPaE/VyJQlssOSbD5KiQ==}
     engines: {node: '>=20'}
     peerDependencies:
       react: '>=18'
@@ -6609,9 +6609,9 @@ snapshots:
       react: 19.2.8
       react-redux: 9.3.0(@types/react@19.2.18)(react@19.2.8)(redux@5.0.1)
 
-  '@rjsf/core@6.8.0(@rjsf/utils@6.8.0(react@19.2.8))(react@19.2.8)':
+  '@rjsf/core@6.8.0(@rjsf/utils@6.10.0(react@19.2.8))(react@19.2.8)':
     dependencies:
-      '@rjsf/utils': 6.8.0(react@19.2.8)
+      '@rjsf/utils': 6.10.0(react@19.2.8)
       lodash: 4.18.1
       lodash-es: 4.18.1
       markdown-to-jsx: 9.8.2(react@19.2.8)
@@ -6622,20 +6622,18 @@ snapshots:
       - solid-js
       - vue
 
-  '@rjsf/utils@6.8.0(react@19.2.8)':
+  '@rjsf/utils@6.10.0(react@19.2.8)':
     dependencies:
       '@x0k/json-schema-merge': 1.0.4
       fast-equals: 6.0.0
       fast-uri: 4.1.4
       jsonpointer: 5.0.1
-      lodash: 4.18.1
-      lodash-es: 4.18.1
       react: 19.2.8
       react-is: 18.3.1
 
-  '@rjsf/validator-ajv8@6.8.0(@rjsf/utils@6.8.0(react@19.2.8))':
+  '@rjsf/validator-ajv8@6.8.0(@rjsf/utils@6.10.0(react@19.2.8))':
     dependencies:
-      '@rjsf/utils': 6.8.0(react@19.2.8)
+      '@rjsf/utils': 6.10.0(react@19.2.8)
       ajv: 8.20.0
       ajv-formats: 2.1.1(ajv@8.20.0)
       lodash: 4.18.1
