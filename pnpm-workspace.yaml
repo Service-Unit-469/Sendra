@@ -91,7 +91,7 @@ catalog:
   jotai: ^2.20.3
   jsdom: ^29.1.1
   jsonwebtoken: ^9.0.2
-  lucide-react: 1.22.0
+  lucide-react: 1.45.0
   mail-mime-builder: ^1.0.4
   msw: ^2.15.0
   nprogress: ^0.2.0
