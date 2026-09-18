@@ -86,7 +86,7 @@ catalog:
   handlebars: ^4.7.9
   hono: 4.13.5
   hono-pino: ^0.10.2
-  html-to-text: ^10.0.0
+  html-to-text: ^10.0.1
   jest-axe: ^10.0.0
   jotai: ^2.20.3
   jsdom: ^29.1.1
