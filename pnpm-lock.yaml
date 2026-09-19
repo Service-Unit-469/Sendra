@@ -241,8 +241,8 @@ catalogs:
       specifier: ^17.4.2
       version: 17.4.2
     es-toolkit:
-      specifier: ^1.49.0
-      version: 1.49.0
+      specifier: ^1.52.0
+      version: 1.52.0
     framer-motion:
       specifier: ^12.40.0
       version: 12.42.2
@@ -641,7 +641,7 @@ importers:
         version: 3.4.14
       es-toolkit:
         specifier: 'catalog:'
-        version: 1.49.0
+        version: 1.52.0
       framer-motion:
         specifier: 'catalog:'
         version: 12.42.2(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
@@ -3374,8 +3374,8 @@ packages:
   es-module-lexer@3.0.2:
     resolution: {integrity: sha512-BuIB67FngDSyQ/dpQNOZybwdEBDUGJQvOqwWr4ha/ufYiqzuEwPkKO2zLhRAgay28tStRIHUeWmszZAJo3GCOg==}
 
-  es-toolkit@1.49.0:
-    resolution: {integrity: sha512-G5iZ6Pc/FNRY/soKZHC+TxGDD83rHUDXxzaWhGCX44vAv/tMs56WMusnm/KMNK+luUPsgA9U28cGr4RDlSzL2g==}
+  es-toolkit@1.52.0:
+    resolution: {integrity: sha512-XTNEJQh1tY1ZJVcf6ayP/2n4ZPyaHlW2FWs7xvw5ddPuhUVjLD3olQVQS7kf58JbAB48iL0uL/jerTrjtV3lDA==}
 
   esbuild@0.28.1:
     resolution: {integrity: sha512-HrJrvZv5ayxBzPfwphOoNzkzOIIlifzk0KJrGK2c8R4+LKpMtpYLQeUdjnwjWv/LZlkH2laZk+4w78pi99D4Vw==}
@@ -7743,7 +7743,7 @@ snapshots:
 
   es-module-lexer@3.0.2: {}
 
-  es-toolkit@1.49.0: {}
+  es-toolkit@1.52.0: {}
 
   esbuild@0.28.1:
     optionalDependencies:
@@ -8949,7 +8949,7 @@ snapshots:
       '@reduxjs/toolkit': 2.12.0(react-redux@9.3.0(@types/react@19.3.0)(react@19.3.0)(redux@5.0.1))(react@19.3.0)
       clsx: 2.1.1
       decimal.js-light: 2.5.1
-      es-toolkit: 1.49.0
+      es-toolkit: 1.52.0
       eventemitter3: 5.0.4
       immer: 11.1.8
       react: 19.3.0
