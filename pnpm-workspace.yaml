@@ -81,7 +81,7 @@ catalog:
   dayjs: 1.11.23
   dompurify: ^3.4.13
   dotenv: ^17.4.2
-  es-toolkit: ^1.49.0
+  es-toolkit: ^1.52.0
   framer-motion: ^12.40.0
   handlebars: ^4.7.9
   hono: 4.13.5
