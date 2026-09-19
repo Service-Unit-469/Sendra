@@ -209,7 +209,7 @@ function handler(event) {
           eventType: "viewer-request",
           functionArn: spaRewriteFunction.arn,
         }],
-      })
+      });
   }
 
 
