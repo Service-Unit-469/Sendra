@@ -161,7 +161,7 @@ function handler(event) {
 
   let defaultTargetOriginId = "api-origin";
   if (dashboard.nodes.assets) {
-    defaultTargetOriginId = 'dashboard-origin';
+    defaultTargetOriginId = "dashboard-origin";
     origins.push(
       {
         originId: "dashboard-origin",
