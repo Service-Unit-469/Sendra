@@ -184,7 +184,7 @@ function handler(event) {
           eventType: "viewer-request",
           functionArn: spaRewriteFunction.arn,
         }],
-      })
+      });
   }
   if (subscription.nodes.assets) {
     origins.push(
