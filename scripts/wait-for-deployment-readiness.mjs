@@ -124,19 +124,18 @@ async function waitForReadiness({ targetUrls, timeoutSeconds, intervalSeconds })
       }),
     );
 
-    if (results.every((result) => result.isReady)) {
+    const failedUrls = results.filter((result) => !result.isReady).map((result) => result.url);
+    if (failedUrls.length === 0) {
       return;
     }
 
     const elapsedSeconds = Math.floor((Date.now() - startedAt) / 1000);
     if (elapsedSeconds >= timeoutSeconds) {
-      const failedUrls = results.filter((result) => !result.isReady).map((result) => result.url);
       throw new Error(
         `Timed out after ${timeoutSeconds}s waiting for deployment readiness. Failed URLs: ${failedUrls.join(", ")}`,
       );
     }
 
-    const failedUrls = results.filter((result) => !result.isReady).map((result) => result.url);
     console.log(
       `Deployment not ready after ${elapsedSeconds}s. Retrying in ${intervalSeconds}s. Pending: ${failedUrls.join(", ")}`,
     );
