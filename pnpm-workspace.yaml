@@ -71,7 +71,7 @@ catalog:
   '@types/to-json-schema': ^0.2.4
   '@types/uuid': ^10.0.0
   '@uiw/react-codemirror': ^4.25.11
-  '@vitejs/plugin-react': ^6.0.3
+  '@vitejs/plugin-react': ^6.1.1
   '@vitest/coverage-v8': ^4.0.15
   ajv: ^8.18.0
   ajv-formats: ^3.0.1
