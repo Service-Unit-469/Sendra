@@ -340,8 +340,8 @@ catalogs:
       specifier: ^4.0.2
       version: 4.0.2
     tailwindcss:
-      specifier: 4.3.2
-      version: 4.3.2
+      specifier: 4.3.3
+      version: 4.3.3
     to-json-schema:
       specifier: ^0.2.5
       version: 0.2.5
@@ -695,10 +695,10 @@ importers:
         version: 2.4.2(react@19.3.0)
       tailwind-scrollbar:
         specifier: 'catalog:'
-        version: 4.0.2(react@19.3.0)(tailwindcss@4.3.2)
+        version: 4.0.2(react@19.3.0)(tailwindcss@4.3.3)
       tailwindcss:
         specifier: 'catalog:'
-        version: 4.3.2
+        version: 4.3.3
       to-json-schema:
         specifier: 'catalog:'
         version: 0.2.5
@@ -720,13 +720,13 @@ importers:
         version: link:../api
       '@tailwindcss/aspect-ratio':
         specifier: 'catalog:'
-        version: 0.4.2(tailwindcss@4.3.2)
+        version: 0.4.2(tailwindcss@4.3.3)
       '@tailwindcss/forms':
         specifier: 'catalog:'
-        version: 0.5.11(tailwindcss@4.3.2)
+        version: 0.5.11(tailwindcss@4.3.3)
       '@tailwindcss/typography':
         specifier: 'catalog:'
-        version: 0.5.20(tailwindcss@4.3.2)
+        version: 0.5.20(tailwindcss@4.3.3)
       '@testing-library/jest-dom':
         specifier: 'catalog:'
         version: 6.9.1
@@ -945,7 +945,7 @@ importers:
         version: 2.0.8(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       tailwind-scrollbar:
         specifier: 'catalog:'
-        version: 4.0.2(react@19.3.0)(tailwindcss@4.3.2)
+        version: 4.0.2(react@19.3.0)(tailwindcss@4.3.3)
       zod:
         specifier: 'catalog:'
         version: 4.4.3
@@ -955,13 +955,13 @@ importers:
         version: 1.61.1
       '@tailwindcss/aspect-ratio':
         specifier: 'catalog:'
-        version: 0.4.2(tailwindcss@4.3.2)
+        version: 0.4.2(tailwindcss@4.3.3)
       '@tailwindcss/forms':
         specifier: 'catalog:'
-        version: 0.5.11(tailwindcss@4.3.2)
+        version: 0.5.11(tailwindcss@4.3.3)
       '@tailwindcss/typography':
         specifier: 'catalog:'
-        version: 0.5.20(tailwindcss@4.3.2)
+        version: 0.5.20(tailwindcss@4.3.3)
       '@testing-library/jest-dom':
         specifier: 'catalog:'
         version: 6.9.1
@@ -1003,7 +1003,7 @@ importers:
         version: 4.17.1
       tailwindcss:
         specifier: 'catalog:'
-        version: 4.3.2
+        version: 4.3.3
       typescript:
         specifier: 'catalog:'
         version: 6.0.3
@@ -4889,9 +4889,6 @@ packages:
     peerDependencies:
       tailwindcss: 4.x
 
-  tailwindcss@4.3.2:
-    resolution: {integrity: sha512-WtctNNSH8A9jlMIqxzuYumOHU5uGZyRv0Q5svQl+oEPy5w84YpBxdb7MdqyiSPQge5jTJ6zFQLq0PFygdccSBA==}
-
   tailwindcss@4.3.3:
     resolution: {integrity: sha512-gOhV3P7ufE62QDGg1zVaTgCR+EtPv92k2nIhVcVKcLmxT1sUBsQGhnZj175j+MqRt4zLF7ic+sCYjfhxMxj7YQ==}
 
@@ -6576,7 +6573,7 @@ snapshots:
     dependencies:
       '@react-email/text': 0.1.6(react@19.3.0)
       react: 19.3.0
-      tailwindcss: 4.3.2
+      tailwindcss: 4.3.3
     optionalDependencies:
       '@react-email/body': 0.2.1(react@19.3.0)
       '@react-email/button': 0.2.1(react@19.3.0)
@@ -6593,7 +6590,7 @@ snapshots:
     dependencies:
       '@react-email/text': 0.1.6(react@19.3.0)
       react: 19.3.0
-      tailwindcss: 4.3.2
+      tailwindcss: 4.3.3
     optionalDependencies:
       '@react-email/body': 0.3.0(react@19.3.0)
       '@react-email/button': 0.2.1(react@19.3.0)
@@ -6781,14 +6778,14 @@ snapshots:
 
   '@standard-schema/utils@0.3.0': {}
 
-  '@tailwindcss/aspect-ratio@0.4.2(tailwindcss@4.3.2)':
+  '@tailwindcss/aspect-ratio@0.4.2(tailwindcss@4.3.3)':
     dependencies:
-      tailwindcss: 4.3.2
+      tailwindcss: 4.3.3
 
-  '@tailwindcss/forms@0.5.11(tailwindcss@4.3.2)':
+  '@tailwindcss/forms@0.5.11(tailwindcss@4.3.3)':
     dependencies:
       mini-svg-data-uri: 1.4.4
-      tailwindcss: 4.3.2
+      tailwindcss: 4.3.3
 
   '@tailwindcss/node@4.3.3':
     dependencies:
@@ -6859,10 +6856,10 @@ snapshots:
       postcss: 8.5.28
       tailwindcss: 4.3.3
 
-  '@tailwindcss/typography@0.5.20(tailwindcss@4.3.2)':
+  '@tailwindcss/typography@0.5.20(tailwindcss@4.3.3)':
     dependencies:
       postcss-selector-parser: 6.0.10
-      tailwindcss: 4.3.2
+      tailwindcss: 4.3.3
 
   '@testing-library/dom@10.4.1':
     dependencies:
@@ -9230,14 +9227,12 @@ snapshots:
 
   tagged-tag@1.0.0: {}
 
-  tailwind-scrollbar@4.0.2(react@19.3.0)(tailwindcss@4.3.2):
+  tailwind-scrollbar@4.0.2(react@19.3.0)(tailwindcss@4.3.3):
     dependencies:
       prism-react-renderer: 2.4.1(react@19.3.0)
-      tailwindcss: 4.3.2
+      tailwindcss: 4.3.3
     transitivePeerDependencies:
       - react
-
-  tailwindcss@4.3.2: {}
 
   tailwindcss@4.3.3: {}
 
