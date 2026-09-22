@@ -313,8 +313,8 @@ catalogs:
       specifier: ^6.1.2
       version: 6.1.2
     react-hook-form:
-      specifier: ^7.78.0
-      version: 7.80.0
+      specifier: ^7.88.0
+      version: 7.88.0
     react-router-dom:
       specifier: ^7.17.0
       version: 7.18.1
@@ -515,7 +515,7 @@ importers:
         version: 6.0.2
       '@hookform/resolvers':
         specifier: 'catalog:'
-        version: 5.4.0(react-hook-form@7.80.0(react@19.3.0))
+        version: 5.4.0(react-hook-form@7.88.0(react@19.3.0))
       '@measured/puck':
         specifier: 'catalog:'
         version: 0.20.2(@types/react@19.3.0)(immer@11.1.8)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(use-sync-external-store@1.6.0(react@19.3.0))
@@ -677,7 +677,7 @@ importers:
         version: 6.1.2(react@19.3.0)
       react-hook-form:
         specifier: 'catalog:'
-        version: 7.80.0(react@19.3.0)
+        version: 7.88.0(react@19.3.0)
       react-router-dom:
         specifier: 'catalog:'
         version: 7.18.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
@@ -933,7 +933,7 @@ importers:
         version: 19.3.0(react@19.3.0)
       react-hook-form:
         specifier: 'catalog:'
-        version: 7.80.0(react@19.3.0)
+        version: 7.88.0(react@19.3.0)
       react-router-dom:
         specifier: 'catalog:'
         version: 7.18.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
@@ -4525,8 +4525,8 @@ packages:
     peerDependencies:
       react: ^18.0.0 || ^19.0.0
 
-  react-hook-form@7.80.0:
-    resolution: {integrity: sha512-4P+fk6oXsxY+6xSj7Euhc2sumQD8zQqCuVHoJwoyp9EchP+IUW9OESB7uHFJOKsIBQ4MQqYE84INJFqUCYNoOg==}
+  react-hook-form@7.88.0:
+    resolution: {integrity: sha512-QRaLOWhX93YCnMiRfnOFRSwWXZNt8qhm2JTZwypoDvKpSffTJHmpzMXt8U6PV5UThvL3IiiLDUWe2nHMtz6Mmw==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       react: ^16.8.0 || ^17 || ^18 || ^19
@@ -6000,10 +6000,10 @@ snapshots:
       hono: 4.13.5
       zod: 4.4.3
 
-  '@hookform/resolvers@5.4.0(react-hook-form@7.80.0(react@19.3.0))':
+  '@hookform/resolvers@5.4.0(react-hook-form@7.88.0(react@19.3.0))':
     dependencies:
       '@standard-schema/utils': 0.3.0
-      react-hook-form: 7.80.0(react@19.3.0)
+      react-hook-form: 7.88.0(react@19.3.0)
 
   '@inquirer/ansi@2.0.7': {}
 
@@ -8890,7 +8890,7 @@ snapshots:
     dependencies:
       react: 19.3.0
 
-  react-hook-form@7.80.0(react@19.3.0):
+  react-hook-form@7.88.0(react@19.3.0):
     dependencies:
       react: 19.3.0
 
