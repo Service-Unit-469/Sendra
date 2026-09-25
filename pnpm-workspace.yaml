@@ -82,7 +82,7 @@ catalog:
   dompurify: ^3.4.13
   dotenv: ^18.0.2
   es-toolkit: ^1.52.0
-  framer-motion: ^12.40.0
+  framer-motion: ^13.4.1
   handlebars: ^4.7.9
   hono: 4.13.5
   hono-pino: ^0.10.2
