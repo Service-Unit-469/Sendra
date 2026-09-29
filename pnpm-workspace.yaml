@@ -124,7 +124,7 @@ catalog:
   uuidv7: ^1.2.1
   vite: ^8.3.0
   vitest: 4.1.11
-  zod: 4.4.3
+  zod: 4.6.5
 
 overrides:
   '@opentelemetry/core@<2.8.0': '>=2.8.0'
