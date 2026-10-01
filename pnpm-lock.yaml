@@ -121,8 +121,8 @@ catalogs:
       specifier: ^6.8.0
       version: 6.8.0
     '@rjsf/utils':
-      specifier: ^6.10.0
-      version: 6.10.0
+      specifier: ^6.11.0
+      version: 6.11.0
     '@rjsf/validator-ajv8':
       specifier: ^6.8.0
       version: 6.8.0
@@ -584,13 +584,13 @@ importers:
         version: 0.1.6(react@19.3.0)
       '@rjsf/core':
         specifier: 'catalog:'
-        version: 6.8.0(@rjsf/utils@6.10.0(react@19.3.0))(react@19.3.0)
+        version: 6.8.0(@rjsf/utils@6.11.0(react@19.3.0))(react@19.3.0)
       '@rjsf/utils':
         specifier: 'catalog:'
-        version: 6.10.0(react@19.3.0)
+        version: 6.11.0(react@19.3.0)
       '@rjsf/validator-ajv8':
         specifier: 'catalog:'
-        version: 6.8.0(@rjsf/utils@6.10.0(react@19.3.0))
+        version: 6.8.0(@rjsf/utils@6.11.0(react@19.3.0))
       '@sendra/lib':
         specifier: workspace:*
         version: link:../lib
@@ -2195,8 +2195,8 @@ packages:
       '@rjsf/utils': ^6.8.0
       react: '>=18'
 
-  '@rjsf/utils@6.10.0':
-    resolution: {integrity: sha512-GQa+dr28FgGOaRRhIOX3QEv1GkzoklrZYf4f1bTEDNuAWWWyO1oznw62ryZBj4FI/XKPaE/VyJQlssOSbD5KiQ==}
+  '@rjsf/utils@6.11.0':
+    resolution: {integrity: sha512-jWYFXmPR5OVehb66Z2RDJFEgI7b7YSXe0FIco5kb7noqaDmjMOMFu4MnDKXPJLLdOW6YRd3MYZCbIPWvJeua4g==}
     engines: {node: '>=20'}
     peerDependencies:
       react: '>=18'
@@ -2945,8 +2945,8 @@ packages:
   '@vitest/utils@4.1.9':
     resolution: {integrity: sha512-A51o8ymO5PpqlWNnBP9ZHPXDIpuMtTLlGSjN7la4US+LJzoUMyhwjA5QXlm39JexgwHKW4Xjs8Z2d3dLCXOeuA==}
 
-  '@x0k/json-schema-merge@1.0.4':
-    resolution: {integrity: sha512-KvmMgAftbVzATq4IRnkno/SKSu+gjaR2ZUPJG5JUlY4W3twRJo03sk2914u8scmosibBZ0m7s6euZlJuqpv8Ww==}
+  '@x0k/json-schema-merge@1.1.0':
+    resolution: {integrity: sha512-QA8fHqP7e+Lvi4ih8X9r1ZnITC2Lo0uhh5qpP8yM7l6HYs7KljtMfoljSRh52jfU55oXSyO4/GhMyjqh8rQjWQ==}
 
   abbrev@4.0.0:
     resolution: {integrity: sha512-a1wflyaL0tHtJSmLSOVybYhy22vRih4eduhhrkcjgrWGnRfrZtovJ2FRjxuTtkkj47O/baf0R86QU5OuYpz8fA==}
@@ -6638,9 +6638,9 @@ snapshots:
       react: 19.3.0
       react-redux: 9.3.0(@types/react@19.3.0)(react@19.3.0)(redux@5.0.1)
 
-  '@rjsf/core@6.8.0(@rjsf/utils@6.10.0(react@19.3.0))(react@19.3.0)':
+  '@rjsf/core@6.8.0(@rjsf/utils@6.11.0(react@19.3.0))(react@19.3.0)':
     dependencies:
-      '@rjsf/utils': 6.10.0(react@19.3.0)
+      '@rjsf/utils': 6.11.0(react@19.3.0)
       lodash: 4.18.1
       lodash-es: 4.18.1
       markdown-to-jsx: 9.8.2(react@19.3.0)
@@ -6651,18 +6651,18 @@ snapshots:
       - solid-js
       - vue
 
-  '@rjsf/utils@6.10.0(react@19.3.0)':
+  '@rjsf/utils@6.11.0(react@19.3.0)':
     dependencies:
-      '@x0k/json-schema-merge': 1.0.4
+      '@x0k/json-schema-merge': 1.1.0
       fast-equals: 6.0.0
       fast-uri: 4.1.4
       jsonpointer: 5.0.1
       react: 19.3.0
       react-is: 18.3.1
 
-  '@rjsf/validator-ajv8@6.8.0(@rjsf/utils@6.10.0(react@19.3.0))':
+  '@rjsf/validator-ajv8@6.8.0(@rjsf/utils@6.11.0(react@19.3.0))':
     dependencies:
-      '@rjsf/utils': 6.10.0(react@19.3.0)
+      '@rjsf/utils': 6.11.0(react@19.3.0)
       ajv: 8.20.0
       ajv-formats: 2.1.1(ajv@8.20.0)
       lodash: 4.18.1
@@ -7381,7 +7381,7 @@ snapshots:
       convert-source-map: 2.0.0
       tinyrainbow: 3.1.0
 
-  '@x0k/json-schema-merge@1.0.4':
+  '@x0k/json-schema-merge@1.1.0':
     dependencies:
       '@types/json-schema': 7.0.15
 
