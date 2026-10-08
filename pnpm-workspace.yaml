@@ -83,7 +83,7 @@ catalog:
   dotenv: ^18.0.2
   es-toolkit: ^1.52.0
   framer-motion: ^12.40.0
-  handlebars: ^4.7.9
+  handlebars: ^4.7.10
   hono: 4.13.9
   hono-pino: ^0.10.2
   html-to-text: ^10.0.1
