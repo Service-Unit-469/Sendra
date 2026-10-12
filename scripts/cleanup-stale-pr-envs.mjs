@@ -132,7 +132,7 @@ function getKvStoreNames() {
 }
 
 function escapeRegex(value) {
-  return value.replace(/[.*+?^${}()|[\\]\\]/g, "\\$&");
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
 function getAppPrefixesFromKvStoreNames(kvStoreNames) {
@@ -222,22 +222,15 @@ function resolveAppPrefix(options) {
 
 function main() {
   const options = parseArgs(process.argv.slice(2));
-  const appPrefix = resolveAppPrefix(options);
 
   const openPrNumbers = getOpenPrNumbers(options.repository);
   const kvStoreNames = getKvStoreNames();
-  const prNumbersWithKvStores = getPrNumbersFromKvStoreNames(kvStoreNames, appPrefix);
   const appPrefixes = getAppPrefixesFromKvStoreNames(kvStoreNames);
-
-  const stalePrNumbers = prNumbersWithKvStores
-    .filter((prNumber) => !openPrNumbers.has(prNumber))
-    .slice(0, options.limit);
 
   console.log(`Open PRs: ${openPrNumbers.size}`);
   if (options.repository) {
     console.log(`Repository used for PR lookup: ${options.repository}`);
   }
-  console.log(`App prefix used for KV matching: ${appPrefix}`);
   if (options.listAppPrefixes) {
     if (appPrefixes.length === 0) {
       console.log("App prefixes detected from CloudFront KV stores: none");
@@ -247,7 +240,17 @@ function main() {
         console.log(`- ${prefix}`);
       }
     }
+    return;
   }
+
+  const appPrefix = resolveAppPrefix(options);
+  const prNumbersWithKvStores = getPrNumbersFromKvStoreNames(kvStoreNames, appPrefix);
+
+  const stalePrNumbers = prNumbersWithKvStores
+    .filter((prNumber) => !openPrNumbers.has(prNumber))
+    .slice(0, options.limit);
+
+  console.log(`App prefix used for KV matching: ${appPrefix}`);
   console.log(`PR stages detected from CloudFront KV stores: ${prNumbersWithKvStores.length}`);
   console.log(`Stale PR stages: ${stalePrNumbers.length}`);
 
