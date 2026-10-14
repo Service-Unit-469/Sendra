@@ -24,7 +24,7 @@ const createSingleDomainCloudFrontDistribution = (
   const normalizedStage = $app.stage.toLowerCase().replace(/[^a-z0-9-]/g, "-");
 
   const cloudfrontProvider = new aws.Provider(`${name}CloudFrontRegion`, {
-    region: 'us-east-1',
+    region: "us-east-1",
   });
 
   const waf = enableWaf
@@ -161,7 +161,7 @@ function handler(event) {
 
   let defaultTargetOriginId = "api-origin";
   if (dashboard.nodes.assets) {
-    defaultTargetOriginId = 'dashboard-origin';
+    defaultTargetOriginId = "dashboard-origin";
     origins.push(
       {
         originId: "dashboard-origin",
@@ -184,7 +184,7 @@ function handler(event) {
           eventType: "viewer-request",
           functionArn: spaRewriteFunction.arn,
         }],
-      })
+      });
   }
   if (subscription.nodes.assets) {
     origins.push(
@@ -209,7 +209,7 @@ function handler(event) {
           eventType: "viewer-request",
           functionArn: spaRewriteFunction.arn,
         }],
-      },)
+      });
   }
 
 
