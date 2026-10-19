@@ -271,8 +271,8 @@ catalogs:
       specifier: ^9.0.2
       version: 9.0.3
     lucide-react:
-      specifier: 1.45.0
-      version: 1.45.0
+      specifier: 1.59.0
+      version: 1.59.0
     mail-mime-builder:
       specifier: ^1.0.4
       version: 1.0.4
@@ -653,7 +653,7 @@ importers:
         version: 2.20.3(@babel/core@8.0.1)(@babel/template@8.0.0)(@types/react@19.3.0)(react@19.3.1)
       lucide-react:
         specifier: 'catalog:'
-        version: 1.45.0(react@19.3.1)
+        version: 1.59.0(@types/react@19.3.0)(react@19.3.1)
       nprogress:
         specifier: 'catalog:'
         version: 0.2.0
@@ -924,7 +924,7 @@ importers:
         version: 14.1.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       lucide-react:
         specifier: 'catalog:'
-        version: 1.45.0(react@19.3.1)
+        version: 1.59.0(@types/react@19.3.0)(react@19.3.1)
       react:
         specifier: 'catalog:'
         version: 19.3.1
@@ -4034,10 +4034,14 @@ packages:
     resolution: {integrity: sha512-Jo6dJ04CmSjuznwJSS3pUeWmd/H0ffTlkXXgwZi+eq1UCmqQwCh+eLsYOYCwY991i2Fah4h1BEMCx4qThGbsiA==}
     engines: {node: '>=10'}
 
-  lucide-react@1.45.0:
-    resolution: {integrity: sha512-yH1ubCAduho9UR7oJhRXIQXogksRILBiTuZC4/bQIGeB9JOkxMlSuEHyyZpo1Z3S0yWJO2KTSUZbjiNvVxeOUw==}
+  lucide-react@1.59.0:
+    resolution: {integrity: sha512-5qgMyyCPU6OvnKpLS2t693+ZtiqA8oaSweWoUows0BLFKFf6V75m4+CptpmohZHpD5IuOVIBXHBBiv2vpLJmtw==}
     peerDependencies:
+      '@types/react': '*'
       react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
 
   lz-string@1.5.0:
     resolution: {integrity: sha512-h5bgJWpxJNswbU7qCrV0tIKQCaS3blPDrqKWx+QxzuzL1zGUzij9XCWLrSLsJPu5t+eWA/ycetzYAO5IOMcWAQ==}
@@ -8347,9 +8351,11 @@ snapshots:
     dependencies:
       yallist: 4.0.0
 
-  lucide-react@1.45.0(react@19.3.1):
+  lucide-react@1.59.0(@types/react@19.3.0)(react@19.3.1):
     dependencies:
       react: 19.3.1
+    optionalDependencies:
+      '@types/react': 19.3.0
 
   lz-string@1.5.0: {}
 
