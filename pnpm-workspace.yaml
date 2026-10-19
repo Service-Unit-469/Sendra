@@ -80,7 +80,7 @@ catalog:
   aws-embedded-metrics: 4.2.1
   dayjs: 1.11.23
   dompurify: ^3.4.16
-  dotenv: ^18.0.2
+  dotenv: ^18.0.8
   es-toolkit: ^1.52.0
   framer-motion: ^14.1.0
   handlebars: ^4.7.10
