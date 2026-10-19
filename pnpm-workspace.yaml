@@ -102,8 +102,8 @@ catalog:
   pino-pretty: ^13.2.0
   postcss: ^8.5.30
   prettier: ^3.8.4
-  react: 19.3.0
-  react-dom: 19.3.0
+  react: 19.3.1
+  react-dom: 19.3.1
   react-error-boundary: ^6.1.6
   react-hook-form: ^7.88.0
   react-router-dom: ^7.17.0
