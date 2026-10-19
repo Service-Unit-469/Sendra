@@ -103,8 +103,8 @@ catalogs:
       specifier: ^0.0.14
       version: 0.0.14
     '@react-email/render':
-      specifier: ^2.1.0
-      version: 2.1.0
+      specifier: ^2.1.1
+      version: 2.1.1
     '@react-email/row':
       specifier: ^0.0.13
       version: 0.0.13
@@ -569,7 +569,7 @@ importers:
         version: 0.0.14(react@19.3.1)
       '@react-email/render':
         specifier: 'catalog:'
-        version: 2.1.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+        version: 2.1.1(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       '@react-email/row':
         specifier: 'catalog:'
         version: 0.0.13(react@19.3.1)
@@ -2107,8 +2107,8 @@ packages:
       react: ^18.0 || ^19.0 || ^19.0.0-rc
       react-dom: ^18.0 || ^19.0 || ^19.0.0-rc
 
-  '@react-email/render@2.1.0':
-    resolution: {integrity: sha512-F+zE3O6d6sW6Aj2UjvZAA17R7tJKM7kcq2mgV6k4HCT8jeLLFaVP2txMtH1lgqYFRMZ0Gxsd37q2PRyiXLXXxA==}
+  '@react-email/render@2.1.1':
+    resolution: {integrity: sha512-DvVx4k6XjJ9cYBigd37+7SK2E89emUH32Lcn6COsMickQchXdvXa+ZA04BF7475Kg+8ikaIpus+zQYUwVVyjBg==}
     engines: {node: '>=20.0.0'}
     peerDependencies:
       react: ^18.0 || ^19.0 || ^19.0.0-rc
@@ -6571,7 +6571,7 @@ snapshots:
       react: 19.3.1
       react-dom: 19.3.1(react@19.3.1)
 
-  '@react-email/render@2.1.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1)':
+  '@react-email/render@2.1.1(react-dom@19.3.1(react@19.3.1))(react@19.3.1)':
     dependencies:
       entities: 4.5.0
       html-to-text: 9.0.5
