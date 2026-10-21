@@ -250,8 +250,8 @@ catalogs:
       specifier: ^4.7.10
       version: 4.7.10
     hono:
-      specifier: 4.13.9
-      version: 4.13.9
+      specifier: 4.13.11
+      version: 4.13.11
     hono-pino:
       specifier: ^0.10.2
       version: 0.10.3
@@ -445,7 +445,7 @@ importers:
         version: 3.1152.0
       '@hono/zod-openapi':
         specifier: 'catalog:'
-        version: 1.4.0(hono@4.13.9)(zod@4.6.5)
+        version: 1.4.0(hono@4.13.11)(zod@4.6.5)
       '@sendra/lib':
         specifier: workspace:*
         version: link:../lib
@@ -466,10 +466,10 @@ importers:
         version: 1.11.23
       hono:
         specifier: 'catalog:'
-        version: 4.13.9
+        version: 4.13.11
       hono-pino:
         specifier: 'catalog:'
-        version: 0.10.3(hono@4.13.9)(pino@10.3.1)
+        version: 0.10.3(hono@4.13.11)(pino@10.3.1)
       jsonwebtoken:
         specifier: 'catalog:'
         version: 9.0.3
@@ -1903,12 +1903,14 @@ packages:
   '@opentelemetry/sdk-trace-base@2.12.0':
     resolution: {integrity: sha512-JOERgZCxRM06FEJ5kEWxlSRChah6MmXDx3KwCruqEv/iEyLkTokCSemf2y1w8oIHtfrr8EVTpzebq/31vn2Cpg==}
     engines: {node: ^18.19.0 || >=20.6.0}
+    deprecated: Use @opentelemetry/sdk-trace package
     peerDependencies:
       '@opentelemetry/api': '>=1.3.0 <1.10.0'
 
   '@opentelemetry/sdk-trace-node@2.12.0':
     resolution: {integrity: sha512-9DufH1IlmQMoKAfot5y/FhTP1RnmhLb5K6eKmJO/bvzPjYwPAazoiAUbTZFdPbqxOXN0FEbhZx/e6SB1Og4jmg==}
     engines: {node: ^18.19.0 || >=20.6.0}
+    deprecated: Use @opentelemetry/sdk-trace package
     peerDependencies:
       '@opentelemetry/api': '>=1.0.0 <1.10.0'
 
@@ -3551,8 +3553,8 @@ packages:
       hono: '>=4.0.0'
       pino: '>=7.1.0'
 
-  hono@4.13.9:
-    resolution: {integrity: sha512-7dMkQmZoC4E6F7AtaQSPhlWAdnBti+j7rreMZl8QB4jFiEhP9TWbGWUMi8WYzBCgmgulxuvLQupKqo+Co6Omyg==}
+  hono@4.13.11:
+    resolution: {integrity: sha512-/SMX/RQNJn7oNmFwH6DtwDqcrzZU2otm1FD6OJe2cWF6cfy/F8hq0XVBv7xW3FTJshRQwuBnXHDq2kNsdZnshg==}
     engines: {node: '>=16.9.0'}
 
   hosted-git-info@7.0.2:
@@ -5998,17 +6000,17 @@ snapshots:
       protobufjs: 7.6.6
       yargs: 17.7.3
 
-  '@hono/zod-openapi@1.4.0(hono@4.13.9)(zod@4.6.5)':
+  '@hono/zod-openapi@1.4.0(hono@4.13.11)(zod@4.6.5)':
     dependencies:
       '@asteasolutions/zod-to-openapi': 8.5.0(zod@4.6.5)
-      '@hono/zod-validator': 0.8.0(hono@4.13.9)(zod@4.6.5)
-      hono: 4.13.9
+      '@hono/zod-validator': 0.8.0(hono@4.13.11)(zod@4.6.5)
+      hono: 4.13.11
       openapi3-ts: 4.6.0
       zod: 4.6.5
 
-  '@hono/zod-validator@0.8.0(hono@4.13.9)(zod@4.6.5)':
+  '@hono/zod-validator@0.8.0(hono@4.13.11)(zod@4.6.5)':
     dependencies:
-      hono: 4.13.9
+      hono: 4.13.11
       zod: 4.6.5
 
   '@hookform/resolvers@5.4.0(react-hook-form@7.88.0(react@19.3.1))':
@@ -7927,13 +7929,13 @@ snapshots:
 
   help-me@5.0.0: {}
 
-  hono-pino@0.10.3(hono@4.13.9)(pino@10.3.1):
+  hono-pino@0.10.3(hono@4.13.11)(pino@10.3.1):
     dependencies:
       defu: 6.1.7
-      hono: 4.13.9
+      hono: 4.13.11
       pino: 10.3.1
 
-  hono@4.13.9: {}
+  hono@4.13.11: {}
 
   hosted-git-info@7.0.2:
     dependencies:

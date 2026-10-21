@@ -84,7 +84,7 @@ catalog:
   es-toolkit: ^1.52.0
   framer-motion: ^14.1.0
   handlebars: ^4.7.10
-  hono: 4.13.9
+  hono: 4.13.11
   hono-pino: ^0.10.2
   html-to-text: ^10.0.1
   jest-axe: ^10.0.0
