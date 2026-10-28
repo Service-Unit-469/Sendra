@@ -101,7 +101,7 @@ catalog:
   pino: 10.3.1
   pino-pretty: ^13.2.0
   postcss: ^8.5.30
-  prettier: ^3.8.4
+  prettier: ^3.9.10
   react: 19.3.1
   react-dom: 19.3.1
   react-error-boundary: ^6.1.6
