@@ -301,8 +301,8 @@ catalogs:
       specifier: ^8.5.30
       version: 8.5.30
     prettier:
-      specifier: ^3.8.4
-      version: 3.9.4
+      specifier: ^3.9.10
+      version: 3.9.10
     react:
       specifier: 19.3.1
       version: 19.3.1
@@ -665,7 +665,7 @@ importers:
         version: 5.7.0
       prettier:
         specifier: 'catalog:'
-        version: 3.9.4
+        version: 3.9.10
       react:
         specifier: 'catalog:'
         version: 19.3.1
@@ -4413,8 +4413,8 @@ packages:
     resolution: {integrity: sha512-zkd+e9S1AQHhmaBKye9zlFHWjOwVgqXl1q3ECYy8561K7qxR2cREf/STLskulBFd78k6AOFeA+ff1TtEzk9bAA==}
     engines: {node: ^10 || ^12 || >=14}
 
-  prettier@3.9.4:
-    resolution: {integrity: sha512-yWG/o/4oJfo036EKAfK6ACAoDOfHeRHx4tuxkfBZiauURiaSmYwlpOr5LQqKtIkRD2z1PLteme2WoxEnj4tHTg==}
+  prettier@3.9.10:
+    resolution: {integrity: sha512-skGHTH1Yb9QvaTC4hWnRTzEYtCpApF0UMBPz+t/0ZPzP8ihefo/btKd+QA7pUE0fEwA1SbS/NmhyEcstdXOIdA==}
     engines: {node: '>=14'}
     hasBin: true
 
@@ -6567,7 +6567,7 @@ snapshots:
   '@react-email/render@2.0.6(react-dom@19.3.1(react@19.3.1))(react@19.3.1)':
     dependencies:
       html-to-text: 9.0.5
-      prettier: 3.9.4
+      prettier: 3.9.10
       react: 19.3.1
       react-dom: 19.3.1(react@19.3.1)
 
@@ -6576,7 +6576,7 @@ snapshots:
       entities: 4.5.0
       html-to-text: 9.0.5
       html5parser: 3.0.0
-      prettier: 3.9.4
+      prettier: 3.9.10
       react: 19.3.1
       react-dom: 19.3.1(react@19.3.1)
 
@@ -8724,7 +8724,7 @@ snapshots:
       picocolors: 1.1.1
       source-map-js: 1.2.2
 
-  prettier@3.9.4: {}
+  prettier@3.9.10: {}
 
   pretty-format@27.5.1:
     dependencies:
