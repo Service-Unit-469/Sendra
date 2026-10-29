@@ -9,7 +9,7 @@ if (!apiUrl.endsWith("/api/v1")) {
 }
 
 export const API_URI = apiUrl;
-export const AWS_REGION = import.meta.env.VITE_AWS_REGION;
+export const AWS_REGION = import.meta.env.VITE_AWS_REGION ?? "us-east-1";
 
 export const TOKEN_KEY = "sendra.token";
 
