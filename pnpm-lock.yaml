@@ -331,8 +331,8 @@ catalogs:
       specifier: ^2.0.8
       version: 2.0.8
     sst:
-      specifier: 4.17.1
-      version: 4.17.1
+      specifier: 4.17.2
+      version: 4.17.2
     swr:
       specifier: ^2.4.1
       version: 2.4.2
@@ -387,7 +387,7 @@ importers:
     dependencies:
       sst:
         specifier: 'catalog:'
-        version: 4.17.1
+        version: 4.17.2
       zod:
         specifier: 'catalog:'
         version: 4.6.7
@@ -497,7 +497,7 @@ importers:
         version: 2.1.0
       sst:
         specifier: 'catalog:'
-        version: 4.17.1
+        version: 4.17.2
       tsx:
         specifier: 'catalog:'
         version: 4.23.1
@@ -780,7 +780,7 @@ importers:
         version: 8.5.30
       sst:
         specifier: 'catalog:'
-        version: 4.17.1
+        version: 4.17.2
       typescript:
         specifier: 'catalog:'
         version: 6.0.3
@@ -847,7 +847,7 @@ importers:
         version: link:../test
       sst:
         specifier: 'catalog:'
-        version: 4.17.1
+        version: 4.17.2
       typescript:
         specifier: 'catalog:'
         version: 6.0.3
@@ -863,7 +863,7 @@ importers:
     devDependencies:
       sst:
         specifier: 'catalog:'
-        version: 4.17.1
+        version: 4.17.2
       typescript:
         specifier: 'catalog:'
         version: 6.0.3
@@ -900,7 +900,7 @@ importers:
         version: 8.10.164
       sst:
         specifier: 'catalog:'
-        version: 4.17.1
+        version: 4.17.2
       ts-node-dev:
         specifier: 'catalog:'
         version: 2.0.0(@types/node@26.6.5)(typescript@6.0.3)
@@ -1000,7 +1000,7 @@ importers:
         version: 8.5.30
       sst:
         specifier: 'catalog:'
-        version: 4.17.1
+        version: 4.17.2
       tailwindcss:
         specifier: 'catalog:'
         version: 4.3.3
@@ -1028,7 +1028,7 @@ importers:
     devDependencies:
       sst:
         specifier: 'catalog:'
-        version: 4.17.1
+        version: 4.17.2
       typescript:
         specifier: 'catalog:'
         version: 6.0.3
@@ -4776,48 +4776,48 @@ packages:
     resolution: {integrity: sha512-QUiRf1+u9wPTL/76GTYlKttDEBWV1ga9ZXW8BG6kfdeyyM8LGPix9gROyg9V2+P0xNyF3X2Go526xKFdMZrHSQ==}
     engines: {node: ^20.17.0 || >=22.9.0}
 
-  sst-darwin-arm64@4.17.1:
-    resolution: {integrity: sha512-Y9qZTBk4Fcwba+td+Dz3lz0wT9pQIbkJ5JqNfU4UwaVQtA58kz02F/BluhACi0vpI7PJULY7Tp1orHg86iy9+w==}
+  sst-darwin-arm64@4.17.2:
+    resolution: {integrity: sha512-b0VnDsLEu0IfliBC4o5psGayj8H3Xy2Gy+3CrPsxRRdZCVq8rwEMJurMK2iinq80u6iEsISyJgbg7/PPgk4WMQ==}
     cpu: [arm64]
     os: [darwin]
 
-  sst-darwin-x64@4.17.1:
-    resolution: {integrity: sha512-TCU/H51vhQo+5QwsPIsiODlM54OS3Xai8FThcmX9H4git9Z/gPRLdWGKO+KSRB5Mrbm4z1R+pLqWyuuoNA4W6g==}
+  sst-darwin-x64@4.17.2:
+    resolution: {integrity: sha512-Zywxje6eng7H187O6x48cViT2VBhZLLctXURxnA1UqbNnUVZ29UWRzyarWx3FLTBbS4wjTophTBOrfBNwHYzGw==}
     cpu: [x64]
     os: [darwin]
 
-  sst-linux-arm64@4.17.1:
-    resolution: {integrity: sha512-LwSl1hOEuRx1nODr9QRKZAo8hrTOS/BBhZdGoAIwsVArmZurqbY1VKaVk6DSbP+qUnGPPgdEMpb1PpfdJfX/Xw==}
+  sst-linux-arm64@4.17.2:
+    resolution: {integrity: sha512-KIZi+br/j51Y5mvJp0eOajuh8uB1XYbZbqlK6P4DjDcDOgBf0QBTE1nyaHtQGnIpHzzq2Uxy9n5yV5SVqQGYzA==}
     cpu: [arm64]
     os: [linux]
 
-  sst-linux-x64@4.17.1:
-    resolution: {integrity: sha512-DtIm3XkpzWb9yS4ZSgxg5KuOHRHhBk66y9lzVw6E/GBfUDdVOES2pbQUuFHuAq2tPJpbzuxGH7trdylAGD+TxA==}
+  sst-linux-x64@4.17.2:
+    resolution: {integrity: sha512-4SlWmfMJLaD1j8jlDPxYpoRiopTJyY57wdNAurVa3afhl1hKYeKukH440HvNxv7JgF6m698QQ0T+4t89KD7osQ==}
     cpu: [x64]
     os: [linux]
 
-  sst-linux-x86@4.17.1:
-    resolution: {integrity: sha512-I2dMWy9zU2V1H6NX3TE1ckl8BbXm/1rcPyxRJCe2TBYUgucqhT1q4je3OAOjBfUnBSv7arxm5tSrYZ0Z9I3bYQ==}
+  sst-linux-x86@4.17.2:
+    resolution: {integrity: sha512-NvEiRaoy6+fuGSSDfC2Uh6HNdR42x9DPtcXckc0UUwcGKK2GjfnjsH471UuW3Z4wleU1Kmr9Scrr2BZRyPZZ3Q==}
     cpu: [x86]
     os: [linux]
 
-  sst-win32-arm64@4.17.1:
-    resolution: {integrity: sha512-iGWZC6vCI2verOnjLxRLeXNsZdxvVKJlgXO0zI4vtw3cbd+PbCU2Q7uj6miu0nlNHhsy+v0C3eL/aKu3Sk7V0A==}
+  sst-win32-arm64@4.17.2:
+    resolution: {integrity: sha512-/2R0BMREFEYO/oWzrY09akdHcvnT2PNQqFAbhKHwLjcv1NacDrB7Tv8fm2PkqaOot8ndlX5jQnB15fpIVVX6+w==}
     cpu: [arm64]
     os: [win32]
 
-  sst-win32-x64@4.17.1:
-    resolution: {integrity: sha512-S9vpQwF24syg2A2+Sb+STejN8pfVv/l2LIZTFHeQOrMeLPIld3Uz9fQPakXCa3FrT1/i+m/UWWORXIJUeNBe+g==}
+  sst-win32-x64@4.17.2:
+    resolution: {integrity: sha512-uGFNzNX4pnR9qyg8pjTKfyOQGKqDOk6qxGUfdWvQDzjB5H61YZcxphFfun25M4EhXgC1gJYvMdTm59FktSVMVQ==}
     cpu: [x64]
     os: [win32]
 
-  sst-win32-x86@4.17.1:
-    resolution: {integrity: sha512-CTniRCdMGKVBZ4RB4cJbwJS1YH2d9vmCEzrbETr8a6BtlZ7gD4DDHf3RuG7oZ9MumVerbTuxhi7faz7uJ0UjVw==}
+  sst-win32-x86@4.17.2:
+    resolution: {integrity: sha512-lPjQUe9VmtIv1TETHaOIB2YhDx9DBIkNZMO/KeSJmHcDU5ytwv8nzyQBws5kNu8OSjIpCPEbLrPil7uO2y9iXA==}
     cpu: [x86]
     os: [win32]
 
-  sst@4.17.1:
-    resolution: {integrity: sha512-06z0R8MICyvlsMAnPhQSga0JyijwlxwFXatnPtPA1h38PjSafrVR7bUhVIHFmUAtDLNC8hTlR/KMbKBlKGrRnQ==}
+  sst@4.17.2:
+    resolution: {integrity: sha512-r62HyE6KMpmeIXx1pDPehE9pZMLWKL79WLa9+qWgljPkzqX6+Kayiro9JlrIqlJ8eBUzgil09qmx7ZZw90e5gA==}
     hasBin: true
 
   std-env@4.3.0:
@@ -9109,45 +9109,45 @@ snapshots:
     dependencies:
       minipass: 7.1.3
 
-  sst-darwin-arm64@4.17.1:
+  sst-darwin-arm64@4.17.2:
     optional: true
 
-  sst-darwin-x64@4.17.1:
+  sst-darwin-x64@4.17.2:
     optional: true
 
-  sst-linux-arm64@4.17.1:
+  sst-linux-arm64@4.17.2:
     optional: true
 
-  sst-linux-x64@4.17.1:
+  sst-linux-x64@4.17.2:
     optional: true
 
-  sst-linux-x86@4.17.1:
+  sst-linux-x86@4.17.2:
     optional: true
 
-  sst-win32-arm64@4.17.1:
+  sst-win32-arm64@4.17.2:
     optional: true
 
-  sst-win32-x64@4.17.1:
+  sst-win32-x64@4.17.2:
     optional: true
 
-  sst-win32-x86@4.17.1:
+  sst-win32-x86@4.17.2:
     optional: true
 
-  sst@4.17.1:
+  sst@4.17.2:
     dependencies:
       '@aws/durable-execution-sdk-js': 1.0.2
       aws4fetch: 1.0.18
       jose: 5.2.3
       openid-client: 5.6.4
     optionalDependencies:
-      sst-darwin-arm64: 4.17.1
-      sst-darwin-x64: 4.17.1
-      sst-linux-arm64: 4.17.1
-      sst-linux-x64: 4.17.1
-      sst-linux-x86: 4.17.1
-      sst-win32-arm64: 4.17.1
-      sst-win32-x64: 4.17.1
-      sst-win32-x86: 4.17.1
+      sst-darwin-arm64: 4.17.2
+      sst-darwin-x64: 4.17.2
+      sst-linux-arm64: 4.17.2
+      sst-linux-x64: 4.17.2
+      sst-linux-x86: 4.17.2
+      sst-win32-arm64: 4.17.2
+      sst-win32-x64: 4.17.2
+      sst-win32-x86: 4.17.2
 
   std-env@4.3.0: {}
 
