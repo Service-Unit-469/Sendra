@@ -313,8 +313,8 @@ catalogs:
       specifier: ^6.1.6
       version: 6.1.6
     react-hook-form:
-      specifier: ^7.88.0
-      version: 7.88.0
+      specifier: ^7.91.0
+      version: 7.91.0
     react-router-dom:
       specifier: ^7.17.0
       version: 7.18.1
@@ -515,7 +515,7 @@ importers:
         version: 6.0.2
       '@hookform/resolvers':
         specifier: 'catalog:'
-        version: 7.0.3(@standard-schema/spec@1.1.0)(ajv-formats@2.1.1(ajv@8.20.0))(ajv@8.20.0)(react-hook-form@7.88.0(react@19.3.1))(zod@4.6.7)
+        version: 7.0.3(@standard-schema/spec@1.1.0)(ajv-formats@2.1.1(ajv@8.20.0))(ajv@8.20.0)(react-hook-form@7.91.0(@types/react@19.3.0)(react@19.3.1))(zod@4.6.7)
       '@measured/puck':
         specifier: 'catalog:'
         version: 0.20.2(@types/react@19.3.0)(immer@11.1.8)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(use-sync-external-store@1.6.0(react@19.3.1))
@@ -677,7 +677,7 @@ importers:
         version: 6.1.6(@types/react@19.3.0)(react@19.3.1)
       react-hook-form:
         specifier: 'catalog:'
-        version: 7.88.0(react@19.3.1)
+        version: 7.91.0(@types/react@19.3.0)(react@19.3.1)
       react-router-dom:
         specifier: 'catalog:'
         version: 7.18.1(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
@@ -933,7 +933,7 @@ importers:
         version: 19.3.1(react@19.3.1)
       react-hook-form:
         specifier: 'catalog:'
-        version: 7.88.0(react@19.3.1)
+        version: 7.91.0(@types/react@19.3.0)(react@19.3.1)
       react-router-dom:
         specifier: 'catalog:'
         version: 7.18.1(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
@@ -4306,11 +4306,15 @@ packages:
       '@types/react':
         optional: true
 
-  react-hook-form@7.88.0:
-    resolution: {integrity: sha512-QRaLOWhX93YCnMiRfnOFRSwWXZNt8qhm2JTZwypoDvKpSffTJHmpzMXt8U6PV5UThvL3IiiLDUWe2nHMtz6Mmw==}
+  react-hook-form@7.91.0:
+    resolution: {integrity: sha512-5BEBUnCBwa28AFXYTYmOaB/+CSpJ/+CWVASHEvIGUzFdHyUiPHeRhG7r5hOZ8nZi0yP7pbHdFNXO/p31EKTJFQ==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
+      '@types/react': '*'
       react: ^16.8.0 || ^17 || ^18 || ^19
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
 
   react-hotkeys-hook@4.6.2:
     resolution: {integrity: sha512-FmP+ZriY3EG59Ug/lxNfrObCnW9xQShgk7Nb83+CkpfkcCpfS95ydv+E9JuXA5cp8KtskU7LGlIARpkc92X22Q==}
@@ -5733,10 +5737,10 @@ snapshots:
       hono: 4.13.14
       zod: 4.6.7
 
-  '@hookform/resolvers@7.0.3(@standard-schema/spec@1.1.0)(ajv-formats@2.1.1(ajv@8.20.0))(ajv@8.20.0)(react-hook-form@7.88.0(react@19.3.1))(zod@4.6.7)':
+  '@hookform/resolvers@7.0.3(@standard-schema/spec@1.1.0)(ajv-formats@2.1.1(ajv@8.20.0))(ajv@8.20.0)(react-hook-form@7.91.0(@types/react@19.3.0)(react@19.3.1))(zod@4.6.7)':
     dependencies:
       '@standard-schema/utils': 0.3.0
-      react-hook-form: 7.88.0(react@19.3.1)
+      react-hook-form: 7.91.0(@types/react@19.3.0)(react@19.3.1)
     optionalDependencies:
       '@standard-schema/spec': 1.1.0
       ajv: 8.20.0
@@ -8187,9 +8191,11 @@ snapshots:
     optionalDependencies:
       '@types/react': 19.3.0
 
-  react-hook-form@7.88.0(react@19.3.1):
+  react-hook-form@7.91.0(@types/react@19.3.0)(react@19.3.1):
     dependencies:
       react: 19.3.1
+    optionalDependencies:
+      '@types/react': 19.3.0
 
   react-hotkeys-hook@4.6.2(react-dom@19.3.1(react@19.3.1))(react@19.3.1):
     dependencies:
