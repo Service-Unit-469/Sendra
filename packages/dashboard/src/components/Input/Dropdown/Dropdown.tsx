@@ -131,7 +131,7 @@ export default function Dropdown({ onChange, values, selectedValue, className, w
                           onClick={() => {
                             onChange(value.value);
                             setQuery("");
-                            setOpen(!open);
+                            setOpen(false);
                           }}
                           onKeyDown={(event) => {
                             if (event.key !== "Enter" && event.key !== " ") {
@@ -140,7 +140,7 @@ export default function Dropdown({ onChange, values, selectedValue, className, w
                             event.preventDefault();
                             onChange(value.value);
                             setQuery("");
-                            setOpen(!open);
+                            setOpen(false);
                           }}
                         >
                           <span className="truncate">{value.name.charAt(0).toUpperCase() + value.name.slice(1).toLowerCase()}</span>
