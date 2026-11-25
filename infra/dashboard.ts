@@ -1,12 +1,12 @@
 import { existsSync } from "node:fs";
 import { api } from "./api";
-import { sendraPath } from "./paths";
+import { sendraPath, sendraRelativePath } from "./paths";
 
 const workspaceRoot = sendraPath("");
 const isWorkspaceDeployment = existsSync(`${workspaceRoot}/pnpm-workspace.yaml`);
 
 export const dashboard = new sst.aws.StaticSite("Dashboard", {
-  path: sendraPath("packages/dashboard"),
+  path: sendraRelativePath("packages/dashboard"),
   build: {
     command: isWorkspaceDeployment ? "pnpm run build" : 'node -e ""',
     output: "dist",
