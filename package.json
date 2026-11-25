@@ -4,7 +4,7 @@
   "private": true,
   "license": "agpl-3.0",
   "engines": {
-    "node": ">=20.x",
+    "node": ">=24.0.0",
     "pnpm": ">=10.x"
   },
   "packageManager": "pnpm@10.13.1",

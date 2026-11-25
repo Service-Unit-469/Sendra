@@ -42,7 +42,7 @@ Before deploying Sendra, ensure you have the following:
 
 ### Required Software
 
-- **Node.js**: Version 20.x or higher
+- **Node.js**: Version 24.x or higher
 - **pnpm**: Version 10.x or higher
 - **AWS CLI**: Version 2.x configured with credentials
 - **AWS Account**: Active AWS account with appropriate permissions
