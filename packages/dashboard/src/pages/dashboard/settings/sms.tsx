@@ -1,4 +1,4 @@
-import type { SmsConfig } from "@sendra/shared";
+import type { SmsConfig } from "@service-unit-469/sendra-shared";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { BlackButton } from "../../../components/Buttons/BlackButton";

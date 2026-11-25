@@ -1,5 +1,5 @@
-import type { Template } from "@sendra/shared";
-import { startupDynamoDB, stopDynamoDB } from "@sendra/test";
+import type { Template } from "@service-unit-469/sendra-shared";
+import { startupDynamoDB, stopDynamoDB } from "@service-unit-469/sendra-test";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { ActionPersistence } from "../../src/persistence/ActionPersistence";
 import { TemplatePersistence } from "../../src/persistence/TemplatePersistence";

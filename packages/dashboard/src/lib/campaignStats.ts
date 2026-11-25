@@ -1,4 +1,4 @@
-import type { Campaign } from "@sendra/shared";
+import type { Campaign } from "@service-unit-469/sendra-shared";
 
 type CampaignStats = NonNullable<Campaign["stats"]>;
 

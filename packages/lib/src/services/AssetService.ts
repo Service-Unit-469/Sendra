@@ -1,6 +1,6 @@
 import { DeleteObjectCommand, HeadObjectCommand, type HeadObjectCommandOutput, ListObjectsV2Command, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import type { Asset } from "@sendra/shared";
+import type { Asset } from "@service-unit-469/sendra-shared";
 import { rootLogger } from "../logging/Logger";
 import { HttpException } from "../persistence/utils/HttpException";
 import { getAssetsConfig } from "./AppConfig";

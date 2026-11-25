@@ -1,6 +1,6 @@
 import { z } from "@hono/zod-openapi";
-import { AssetService } from "@sendra/lib";
-import { AssetSchema, AssetSchemas, UtilitySchemas } from "@sendra/shared";
+import { AssetService } from "@service-unit-469/sendra-lib";
+import { AssetSchema, AssetSchemas, UtilitySchemas } from "@service-unit-469/sendra-shared";
 import type { AppType } from "../../app";
 import { getProblemResponseSchema } from "../../exceptions/responses";
 import { BearerAuth, isAuthenticatedProjectMember } from "../../middleware/auth";

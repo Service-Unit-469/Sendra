@@ -1,5 +1,5 @@
-import type { Contact, Project } from "@sendra/shared";
-import { startupDynamoDB, stopDynamoDB } from "@sendra/test";
+import type { Contact, Project } from "@service-unit-469/sendra-shared";
+import { startupDynamoDB, stopDynamoDB } from "@service-unit-469/sendra-test";
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { ContactPersistence } from "../../src/persistence/ContactPersistence";
 import { EventPersistence } from "../../src/persistence/EventPersistence";

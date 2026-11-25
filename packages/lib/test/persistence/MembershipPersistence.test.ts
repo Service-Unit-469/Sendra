@@ -1,5 +1,5 @@
-import type { Membership } from "@sendra/shared";
-import { startupDynamoDB, stopDynamoDB } from "@sendra/test";
+import type { Membership } from "@service-unit-469/sendra-shared";
+import { startupDynamoDB, stopDynamoDB } from "@service-unit-469/sendra-test";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { MembershipPersistence } from "../../src/persistence/MembershipPersistence";
 

@@ -1,6 +1,6 @@
 import { z } from "@hono/zod-openapi";
-import { getAuthConfig, MembershipPersistence, rootLogger, UserPersistence } from "@sendra/lib";
-import { type Membership, type MembershipRole, MembershipRoleSchema, type Project, type User, type UserCredentials, type UserRequestReset, type UserVerify } from "@sendra/shared";
+import { getAuthConfig, MembershipPersistence, rootLogger, UserPersistence } from "@service-unit-469/sendra-lib";
+import { type Membership, type MembershipRole, MembershipRoleSchema, type Project, type User, type UserCredentials, type UserRequestReset, type UserVerify } from "@service-unit-469/sendra-shared";
 import type { Context, HonoRequest } from "hono";
 import { type JwtPayload, sign, verify } from "jsonwebtoken";
 import type { StringValue } from "ms";

@@ -1,5 +1,5 @@
 import type { Fields } from "@measured/puck";
-import type { Action, Template, TemplateCreate } from "@sendra/shared";
+import type { Action, Template, TemplateCreate } from "@service-unit-469/sendra-shared";
 import { useMemo } from "react";
 import useSWR from "swr";
 import { ColorPickerRender } from "../../components/EmailEditor/Fields";

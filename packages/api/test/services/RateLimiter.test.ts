@@ -1,4 +1,4 @@
-import { startupDynamoDB, stopDynamoDB } from "@sendra/test";
+import { startupDynamoDB, stopDynamoDB } from "@service-unit-469/sendra-test";
 import { afterAll, beforeAll, beforeEach, describe, expect, test } from "vitest";
 import { RateLimiter } from "../../src/services/RateLimiter";
 

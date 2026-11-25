@@ -1,4 +1,4 @@
-import type { Action, Contact, Email, Membership, ProjectIdentity, ProjectKeys, PublicProject, SmsConfig } from "@sendra/shared";
+import type { Action, Contact, Email, Membership, ProjectIdentity, ProjectKeys, PublicProject, SmsConfig } from "@service-unit-469/sendra-shared";
 import { useAtom } from "jotai";
 import { useMemo } from "react";
 import useSWR from "swr";

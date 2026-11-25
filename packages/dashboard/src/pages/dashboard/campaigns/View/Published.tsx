@@ -1,4 +1,4 @@
-import type { Campaign, Email } from "@sendra/shared";
+import type { Campaign, Email } from "@service-unit-469/sendra-shared";
 import dayjs from "dayjs";
 import { Copy, Eye, LoaderCircle, Trash } from "lucide-react";
 import { useState } from "react";

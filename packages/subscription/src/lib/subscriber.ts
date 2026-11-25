@@ -1,4 +1,4 @@
-import { type Subscriber, SubscriberSchema } from "@sendra/shared";
+import { type Subscriber, SubscriberSchema } from "@service-unit-469/sendra-shared";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 export function useSubscriber() {

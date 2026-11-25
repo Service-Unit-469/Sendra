@@ -1,7 +1,7 @@
 import { VerificationStatus } from "@aws-sdk/client-ses";
 import { createRoute, z } from "@hono/zod-openapi";
-import { getEmailConfig, ProjectPersistence, rootLogger } from "@sendra/lib";
-import { IdentitySchema, IdentitySchemas, ProjectSchemas } from "@sendra/shared";
+import { getEmailConfig, ProjectPersistence, rootLogger } from "@service-unit-469/sendra-lib";
+import { IdentitySchema, IdentitySchemas, ProjectSchemas } from "@service-unit-469/sendra-shared";
 import type { AppType } from "../../app";
 import { Conflict, NotFound } from "../../exceptions";
 import { getProblemResponseSchema } from "../../exceptions/responses";

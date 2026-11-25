@@ -10,8 +10,8 @@ import {
   ProjectPersistence,
   rootLogger,
   TemplatePersistence,
-} from "@sendra/lib";
-import type { Action, Campaign, Email, SendEmailTaskSchema } from "@sendra/shared";
+} from "@service-unit-469/sendra-lib";
+import type { Action, Campaign, Email, SendEmailTaskSchema } from "@service-unit-469/sendra-shared";
 import type { z } from "zod";
 
 type SendEmailTask = z.infer<typeof SendEmailTaskSchema>;

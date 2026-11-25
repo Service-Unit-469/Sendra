@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ActionSchemas, type ActionUpdate } from "@sendra/shared";
+import { ActionSchemas, type ActionUpdate } from "@service-unit-469/sendra-shared";
 import dayjs from "dayjs";
 import { motion } from "framer-motion";
 import { Edit3, Save, Trash, Workflow } from "lucide-react";

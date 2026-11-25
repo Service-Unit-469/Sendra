@@ -1,6 +1,6 @@
 import { VerificationStatus } from "@aws-sdk/client-ses";
-import { ProjectPersistence } from "@sendra/lib";
-import { startupDynamoDB, stopDynamoDB } from "@sendra/test";
+import { ProjectPersistence } from "@service-unit-469/sendra-lib";
+import { startupDynamoDB, stopDynamoDB } from "@service-unit-469/sendra-test";
 import {
   afterAll,
   beforeAll,

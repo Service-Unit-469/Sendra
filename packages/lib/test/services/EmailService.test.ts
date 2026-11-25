@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { Action, Contact, Email, PublicProject } from "@sendra/shared";
+import type { Action, Contact, Email, PublicProject } from "@service-unit-469/sendra-shared";
 
 // Mock AWS SDK
 vi.mock("@aws-sdk/client-ses", () => {

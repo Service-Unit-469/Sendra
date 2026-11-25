@@ -1,6 +1,6 @@
 import { UpdateCommand } from "@aws-sdk/lib-dynamodb";
-import type { Campaign } from "@sendra/shared";
-import { CAMPAIGN_QUEUE_ERROR_LOG_MAX, CampaignSchema } from "@sendra/shared";
+import type { Campaign } from "@service-unit-469/sendra-shared";
+import { CAMPAIGN_QUEUE_ERROR_LOG_MAX, CampaignSchema } from "@service-unit-469/sendra-shared";
 import { type MetricsLogger, Unit } from "aws-embedded-metrics";
 import { withMetrics } from "../metrics";
 import { BasePersistence, type Embeddable, type IndexInfo } from "./BasePersistence";

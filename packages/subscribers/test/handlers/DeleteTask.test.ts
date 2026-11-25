@@ -7,8 +7,8 @@ import {
 	MembershipPersistence,
 	TemplatePersistence,
 	UserPersistence,
-} from "@sendra/lib";
-import { startupDynamoDB, stopDynamoDB } from "@sendra/test";
+} from "@service-unit-469/sendra-lib";
+import { startupDynamoDB, stopDynamoDB } from "@service-unit-469/sendra-test";
 import { afterAll, beforeAll, beforeEach, describe, expect, test } from "vitest";
 import { handleDelete } from "../../src/handlers/DeleteTask";
 import { createTestAction, createTestCampaign, createTestContact, createTestEmail, createTestSetup, createTestTemplate } from "../utils/test-helpers";

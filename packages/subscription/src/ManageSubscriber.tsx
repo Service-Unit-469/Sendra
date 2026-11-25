@@ -1,6 +1,6 @@
 import "../styles/index.css";
 
-import type { Subscriber } from "@sendra/shared";
+import type { Subscriber } from "@service-unit-469/sendra-shared";
 import { motion } from "framer-motion";
 import { LoaderCircle } from "lucide-react";
 import { useEffect, useState } from "react";

@@ -1,5 +1,5 @@
-import { MembershipPersistence, UserPersistence } from "@sendra/lib";
-import { startupDynamoDB, stopDynamoDB } from "@sendra/test";
+import { MembershipPersistence, UserPersistence } from "@service-unit-469/sendra-lib";
+import { startupDynamoDB, stopDynamoDB } from "@service-unit-469/sendra-test";
 import { afterAll, beforeAll, beforeEach, describe, expect, test, vi } from "vitest";
 import { Auth, AuthService } from "../../src/services/AuthService";
 import { ses } from "../../src/services/SystemEmailService";

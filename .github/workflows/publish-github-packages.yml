@@ -1,0 +1,55 @@
+name: Publish to GitHub Packages
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 20.x
+          registry-url: https://npm.pkg.github.com
+          scope: '@service-unit-469'
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.13.1
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run build
+
+      - name: Publish shared package
+        run: pnpm --filter @service-unit-469/sendra-shared publish --no-git-checks
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish library package
+        run: pnpm --filter @service-unit-469/sendra-lib publish --no-git-checks
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish API package
+        run: pnpm --filter @service-unit-469/sendra-api publish --no-git-checks
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish subscribers package
+        run: pnpm --filter @service-unit-469/sendra-subscribers publish --no-git-checks
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish Sendra package
+        run: pnpm --filter @service-unit-469/sendra publish --no-git-checks
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

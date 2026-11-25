@@ -1,6 +1,6 @@
-import type { Campaign } from "@sendra/shared";
-import { CAMPAIGN_QUEUE_ERROR_LOG_MAX } from "@sendra/shared";
-import { startupDynamoDB, stopDynamoDB } from "@sendra/test";
+import type { Campaign } from "@service-unit-469/sendra-shared";
+import { CAMPAIGN_QUEUE_ERROR_LOG_MAX } from "@service-unit-469/sendra-shared";
+import { startupDynamoDB, stopDynamoDB } from "@service-unit-469/sendra-test";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { CampaignPersistence } from "../../src/persistence/CampaignPersistence";
 

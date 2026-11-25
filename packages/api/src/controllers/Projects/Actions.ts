@@ -1,6 +1,6 @@
 import { createRoute, z } from "@hono/zod-openapi";
-import { ActionPersistence, TemplatePersistence } from "@sendra/lib";
-import { ActionSchema, ActionSchemas, EmailSchema, EventSchema } from "@sendra/shared";
+import { ActionPersistence, TemplatePersistence } from "@service-unit-469/sendra-lib";
+import { ActionSchema, ActionSchemas, EmailSchema, EventSchema } from "@service-unit-469/sendra-shared";
 import type { AppType } from "../../app";
 import { NotFound } from "../../exceptions";
 import { getProblemResponseSchema } from "../../exceptions/responses";

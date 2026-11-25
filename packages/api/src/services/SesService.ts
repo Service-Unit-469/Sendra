@@ -1,6 +1,6 @@
 import { SES, VerificationStatus } from "@aws-sdk/client-ses";
-import { rootLogger } from "@sendra/lib";
-import type { ProjectIdentity } from "@sendra/shared";
+import { rootLogger } from "@service-unit-469/sendra-lib";
+import type { ProjectIdentity } from "@service-unit-469/sendra-shared";
 
 const logger = rootLogger.child({
   module: "SES",

@@ -1,4 +1,4 @@
-import type { Asset } from "@sendra/shared";
+import type { Asset } from "@service-unit-469/sendra-shared";
 import useSWR, { mutate } from "swr";
 import { network } from "../network";
 import { useCurrentProject } from "./projects";

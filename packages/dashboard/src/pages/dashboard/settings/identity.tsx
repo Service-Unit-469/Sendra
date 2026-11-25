@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { IdentitySchemas, type ProjectIdentity } from "@sendra/shared";
+import { IdentitySchemas, type ProjectIdentity } from "@service-unit-469/sendra-shared";
 import { Copy, Plus, Unlink } from "lucide-react";
 import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";

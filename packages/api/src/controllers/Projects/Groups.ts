@@ -1,6 +1,6 @@
 import { createRoute, z } from "@hono/zod-openapi";
-import { GroupPersistence } from "@sendra/lib";
-import { ContactSchema, GroupSchema, GroupSchemas } from "@sendra/shared";
+import { GroupPersistence } from "@service-unit-469/sendra-lib";
+import { ContactSchema, GroupSchema, GroupSchemas } from "@service-unit-469/sendra-shared";
 import type { AppType } from "../../app";
 import { getProblemResponseSchema } from "../../exceptions/responses";
 import { isAuthenticatedProjectMemberOrSecretKey } from "../../middleware/auth";

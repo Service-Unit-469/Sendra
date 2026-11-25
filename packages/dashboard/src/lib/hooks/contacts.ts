@@ -1,4 +1,4 @@
-import type { Contact, Email, Event } from "@sendra/shared";
+import type { Contact, Email, Event } from "@service-unit-469/sendra-shared";
 import useSWR from "swr";
 import useSWRInfinite from "swr/infinite";
 import { useCurrentProject } from "./projects";

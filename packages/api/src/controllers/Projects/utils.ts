@@ -1,4 +1,4 @@
-import { ProjectPersistence } from "@sendra/lib";
+import { ProjectPersistence } from "@service-unit-469/sendra-lib";
 import { NotAllowed } from "../../exceptions";
 
 export const validateEmail = async (projectId: string, email?: string) => {

@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { Data, DefaultComponents } from "@measured/puck";
-import type { TemplateCreate } from "@sendra/shared";
-import { TemplateSchemas } from "@sendra/shared";
+import type { TemplateCreate } from "@service-unit-469/sendra-shared";
+import { TemplateSchemas } from "@service-unit-469/sendra-shared";
 import { Save } from "lucide-react";
 import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";

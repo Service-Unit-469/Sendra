@@ -1,5 +1,5 @@
 import { toPlainText } from "@react-email/render";
-import type { Campaign, Template } from "@sendra/shared";
+import type { Campaign, Template } from "@service-unit-469/sendra-shared";
 import { useEffect, useState } from "react";
 import { StyledInput } from "../Input/Input/StyledInput";
 import { StyledLabel } from "../Label/StyledLabel";

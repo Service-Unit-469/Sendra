@@ -1,5 +1,5 @@
 import { SES } from "@aws-sdk/client-ses";
-import type { Action, Contact, Email, PublicProject } from "@sendra/shared";
+import type { Action, Contact, Email, PublicProject } from "@service-unit-469/sendra-shared";
 import Handlebars from "handlebars";
 import { createMimeMessage } from "mail-mime-builder";
 import { rootLogger } from "../logging/Logger";

@@ -1,6 +1,6 @@
 import { createRoute, z } from "@hono/zod-openapi";
-import { MembershipPersistence, ProjectPersistence, rootLogger, UserPersistence } from "@sendra/lib";
-import { MembershipSchema, MembershipSchemas } from "@sendra/shared";
+import { MembershipPersistence, ProjectPersistence, rootLogger, UserPersistence } from "@service-unit-469/sendra-lib";
+import { MembershipSchema, MembershipSchemas } from "@service-unit-469/sendra-shared";
 import type { AppType } from "../../app";
 import { NotAllowed, NotFound } from "../../exceptions";
 import { getProblemResponseSchema } from "../../exceptions/responses";

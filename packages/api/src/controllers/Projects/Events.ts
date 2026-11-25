@@ -10,8 +10,8 @@ import {
   getRequestInfo,
   ProjectPersistence,
   rootLogger,
-} from "@sendra/lib";
-import { type Contact, type ContactSchemas, type Event, EventSchema, EventSchemas, id, OOTB_EVENT_VALUES } from "@sendra/shared";
+} from "@service-unit-469/sendra-lib";
+import { type Contact, type ContactSchemas, type Event, EventSchema, EventSchemas, id, OOTB_EVENT_VALUES } from "@service-unit-469/sendra-shared";
 import type { AppType } from "../../app";
 import { BadRequest, HttpException, NotFound } from "../../exceptions";
 import { getProblemResponseSchema } from "../../exceptions/responses";

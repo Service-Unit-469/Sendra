@@ -1,5 +1,5 @@
 {
-	"name": "@sendra/dashboard",
+	"name": "@service-unit-469/sendra-dashboard",
 	"version": "1.0.0",
 	"private": true,
 	"scripts": {
@@ -47,8 +47,8 @@
 		"@rjsf/core": "catalog:",
 		"@rjsf/utils": "catalog:",
 		"@rjsf/validator-ajv8": "catalog:",
-		"@sendra/lib": "workspace:*",
-		"@sendra/shared": "workspace:*",
+		"@service-unit-469/sendra-lib": "workspace:*",
+		"@service-unit-469/sendra-shared": "workspace:*",
 		"@tailwindcss/postcss": "catalog:",
 		"@tippyjs/react": "catalog:",
 		"@tiptap/extension-color": "catalog:",
@@ -90,7 +90,7 @@
 	"devDependencies": {
 		"@babel/core": "catalog:",
 		"@playwright/test": "catalog:",
-		"@sendra/api": "workspace:*",
+		"@service-unit-469/sendra-api": "workspace:*",
 		"@tailwindcss/aspect-ratio": "catalog:",
 		"@tailwindcss/forms": "catalog:",
 		"@tailwindcss/typography": "catalog:",

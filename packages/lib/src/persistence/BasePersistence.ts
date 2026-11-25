@@ -1,7 +1,7 @@
 import { type ConsumedCapacity, QueryCommand } from "@aws-sdk/client-dynamodb";
 import { BatchGetCommand, BatchWriteCommand, DeleteCommand, DynamoDBDocumentClient, GetCommand, PutCommand, type QueryCommandInput } from "@aws-sdk/lib-dynamodb";
 import { unmarshall } from "@aws-sdk/util-dynamodb";
-import type { Action, Email, Event, Template } from "@sendra/shared";
+import type { Action, Email, Event, Template } from "@service-unit-469/sendra-shared";
 import { type MetricsLogger, Unit } from "aws-embedded-metrics";
 import { uuidv7 } from "uuidv7";
 import type { ZodType } from "zod";

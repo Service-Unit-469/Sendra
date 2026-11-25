@@ -1,6 +1,6 @@
 import { z } from "@hono/zod-openapi";
-import { ActionPersistence, TemplatePersistence } from "@sendra/lib";
-import { ActionSchema, type TemplateCreate, TemplateSchema, TemplateSchemas } from "@sendra/shared";
+import { ActionPersistence, TemplatePersistence } from "@service-unit-469/sendra-lib";
+import { ActionSchema, type TemplateCreate, TemplateSchema, TemplateSchemas } from "@service-unit-469/sendra-shared";
 import type { AppType } from "../../app";
 import { HttpException, NotAllowed } from "../../exceptions";
 import { registerProjectEntityCrudRoutes } from "./ProjectEntity";

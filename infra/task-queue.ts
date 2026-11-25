@@ -1,6 +1,7 @@
+import { z } from "zod";
 import { dataTable } from "./data";
 import { passEnvironmentVariables } from "./env";
-import { z } from "zod";
+import { lambdaHandler } from "./paths";
 
 type QueueBatchWindow = `${number} ${"second" | "seconds" | "minute" | "minutes"}`;
 
@@ -56,7 +57,9 @@ export const delayedTaskStateMachine = new sst.aws.StepFunctions(
 if (isSqsPollerEnabled) {
   taskQueue.subscribe(
     {
-      handler: "packages/subscribers/src/TaskQueueSubscriber.handler",
+      handler: lambdaHandler(
+        "@service-unit-469/sendra-subscribers/task-queue-handler",
+      ),
       timeout: "15 minutes",
       logging: {
         retention: "1 week",

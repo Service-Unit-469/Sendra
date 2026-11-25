@@ -1,5 +1,5 @@
-import { CampaignPersistence, ContactPersistence, EmailPersistence, getRequestInfo, rootLogger, TaskQueue } from "@sendra/lib";
-import type { QueueCampaignTaskSchema } from "@sendra/shared";
+import { CampaignPersistence, ContactPersistence, EmailPersistence, getRequestInfo, rootLogger, TaskQueue } from "@service-unit-469/sendra-lib";
+import type { QueueCampaignTaskSchema } from "@service-unit-469/sendra-shared";
 import type { z } from "zod";
 
 type QueueCampaignTask = z.infer<typeof QueueCampaignTaskSchema>;

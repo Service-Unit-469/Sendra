@@ -1,6 +1,6 @@
 import { createRoute, z } from "@hono/zod-openapi";
-import { ActionPersistence, ContactPersistence, EmailPersistence, EventPersistence } from "@sendra/lib";
-import type { Action, Contact, Email, Event } from "@sendra/shared";
+import { ActionPersistence, ContactPersistence, EmailPersistence, EventPersistence } from "@service-unit-469/sendra-lib";
+import type { Action, Contact, Email, Event } from "@service-unit-469/sendra-shared";
 import dayjs from "dayjs";
 import type { AppType } from "../../app";
 import { getProblemResponseSchema } from "../../exceptions/responses";

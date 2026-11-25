@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { Fields } from "@measured/puck";
-import type { CampaignUpdate } from "@sendra/shared";
-import { CampaignSchemas } from "@sendra/shared";
+import type { CampaignUpdate } from "@service-unit-469/sendra-shared";
+import { CampaignSchemas } from "@service-unit-469/sendra-shared";
 import { Save } from "lucide-react";
 import { useCallback, useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";

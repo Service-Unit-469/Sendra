@@ -1,5 +1,5 @@
-import type { Event } from "@sendra/shared";
-import { startupDynamoDB, stopDynamoDB } from "@sendra/test";
+import type { Event } from "@service-unit-469/sendra-shared";
+import { startupDynamoDB, stopDynamoDB } from "@service-unit-469/sendra-test";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { EventPersistence } from "../../src/persistence/EventPersistence";
 

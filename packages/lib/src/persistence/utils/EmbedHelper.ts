@@ -1,4 +1,4 @@
-import type { Action, BaseType, Email, Event } from "@sendra/shared";
+import type { Action, BaseType, Email, Event } from "@service-unit-469/sendra-shared";
 import { ActionPersistence } from "../ActionPersistence";
 import type { Embeddable, EmbeddedObject, StopFn } from "../BasePersistence";
 import { EmailPersistence } from "../EmailPersistence";

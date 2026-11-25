@@ -1,4 +1,4 @@
-import { startupDynamoDB, stopDynamoDB } from "@sendra/test";
+import { startupDynamoDB, stopDynamoDB } from "@service-unit-469/sendra-test";
 import { afterAll, beforeAll, describe, expect, test } from "vitest";
 import { app } from "../../src/app";
 

@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { Email, Event } from "@sendra/shared";
-import { EventSchemas } from "@sendra/shared";
+import type { Email, Event } from "@service-unit-469/sendra-shared";
+import { EventSchemas } from "@service-unit-469/sendra-shared";
 import dayjs from "dayjs";
 import DOMPurify from "dompurify";
 import { Mail, TerminalSquare, Trash, Workflow } from "lucide-react";

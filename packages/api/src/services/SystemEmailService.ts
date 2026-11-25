@@ -1,5 +1,5 @@
 import { SES } from "@aws-sdk/client-ses";
-import { getEmailConfig, getRequestInfo, rootLogger } from "@sendra/lib";
+import { getEmailConfig, getRequestInfo, rootLogger } from "@service-unit-469/sendra-lib";
 
 const logger = rootLogger.child({
   module: "SystemEmailService",

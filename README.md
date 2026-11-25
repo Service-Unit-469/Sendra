@@ -36,7 +36,7 @@ Comprehensive documentation is available to help you get started with Sendra:
 
 ## Self-hosting Sendra
 
-The easiest way to self-host Sendra is to fork the project and run it in your AWS account.
+Sendra can be deployed from this repository or from an end-user SST project that installs the `@service-unit-469/sendra` package from GitHub Packages. Neither route requires a fork. See the [deployment guide](https://service-unit-469.github.io/Sendra/setup.html) for both options.
 
 ### Quick Start
 
@@ -46,6 +46,8 @@ The easiest way to self-host Sendra is to fork the project and run it in your AW
 4. **Deploy**: `pnpm run deploy`
 
 A complete guide on how to deploy Sendra can be found in the [deployment documentation](https://service-unit-469.github.io/Sendra/setup.html).
+
+You can also deploy Sendra from your own SST project by installing `@service-unit-469/sendra` and importing `deploySendra` from `@service-unit-469/sendra/sst` in your `sst.config.ts`. This lets you own the deployment configuration while consuming versioned Sendra releases.
 
 ## Contributing
 

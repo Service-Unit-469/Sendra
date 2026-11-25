@@ -1,4 +1,4 @@
-import type { Action, Contact, Project, Template } from "@sendra/shared";
+import type { Action, Contact, Project, Template } from "@service-unit-469/sendra-shared";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
   ActionPersistence,

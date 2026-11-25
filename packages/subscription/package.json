@@ -1,5 +1,5 @@
 {
-	"name": "@sendra/subscription",
+	"name": "@service-unit-469/sendra-subscription",
 	"version": "1.0.0",
 	"private": true,
 	"scripts": {
@@ -13,7 +13,7 @@
 		"clean": "rimraf dist node_modules .turbo .vite"
 	},
 	"dependencies": {
-		"@sendra/shared": "workspace:*",
+		"@service-unit-469/sendra-shared": "workspace:*",
 		"@tailwindcss/postcss": "catalog:",
 		"framer-motion": "catalog:",
 		"lucide-react": "catalog:",

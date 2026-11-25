@@ -1,5 +1,5 @@
 import type { CustomField } from "@measured/puck";
-import type { Asset } from "@sendra/shared";
+import type { Asset } from "@service-unit-469/sendra-shared";
 import { useState } from "react";
 import { useAssets } from "../../../lib/hooks/assets";
 

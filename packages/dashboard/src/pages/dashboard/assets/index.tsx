@@ -1,4 +1,4 @@
-import type { Asset } from "@sendra/shared";
+import type { Asset } from "@service-unit-469/sendra-shared";
 import dayjs from "dayjs";
 import { FileImage, FileText, Plus, Trash2, Upload } from "lucide-react";
 import { useCallback, useRef, useState } from "react";

@@ -1,4 +1,4 @@
-import type { UserGet } from "@sendra/shared";
+import type { UserGet } from "@service-unit-469/sendra-shared";
 import { atom } from "jotai";
 
 export type LoginStatus = "logged-in" | "logged-out" | "loading";

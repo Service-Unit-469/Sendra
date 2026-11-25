@@ -1,5 +1,5 @@
 import { createRoute, z } from "@hono/zod-openapi";
-import type { BaseItem, BasePersistence, Embeddable, EmbedLimit, QueryResult } from "@sendra/lib";
+import type { BaseItem, BasePersistence, Embeddable, EmbedLimit, QueryResult } from "@service-unit-469/sendra-lib";
 import type { AppType } from "../../app";
 import { BadRequest, NotFound } from "../../exceptions";
 import { getProblemResponseSchema } from "../../exceptions/responses";

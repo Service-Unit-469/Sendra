@@ -1,10 +1,29 @@
 {
-	"name": "@sendra/api",
+	"name": "@service-unit-469/sendra-api",
 	"version": "1.0.0",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Service-Unit-469/Sendra.git"
+	},
 	"main": "dist/index.js",
-	"private": true,
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"default": "./dist/index.js"
+		},
+		"./handler": {
+			"types": "./dist/app.d.ts",
+			"default": "./dist/app.js"
+		}
+	},
+	"private": false,
+	"publishConfig": {
+		"registry": "https://npm.pkg.github.com"
+	},
+	"files": ["dist/**"],
 	"scripts": {
 		"build": "tsc && pnpm run openapi:export && pnpm run openapi:validate",
+		"dev": "tsc --watch --preserveWatchOutput",
 		"lint": "biome check src",
 		"lint:fix": "biome check --write src",
 		"lint:fix:unsafe": "biome check --write src --unsafe",
@@ -16,7 +35,7 @@
 		"openapi:validate": "pnpm --package=@seriousme/openapi-schema-validator dlx validate-api ../../docs/openapi.json"
 	},
 	"devDependencies": {
-		"@sendra/test": "workspace:*",
+		"@service-unit-469/sendra-test": "workspace:*",
 		"@types/compression": "catalog:",
 		"@types/jsonwebtoken": "catalog:",
 		"@types/ms": "^2.1.0",
@@ -32,8 +51,8 @@
 		"@aws-sdk/lib-dynamodb": "catalog:",
 		"@aws-sdk/s3-request-presigner": "catalog:",
 		"@hono/zod-openapi": "catalog:",
-		"@sendra/lib": "workspace:*",
-		"@sendra/shared": "workspace:*",
+		"@service-unit-469/sendra-lib": "workspace:*",
+		"@service-unit-469/sendra-shared": "workspace:*",
 		"ajv": "catalog:",
 		"ajv-formats": "catalog:",
 		"aws-embedded-metrics": "catalog:",

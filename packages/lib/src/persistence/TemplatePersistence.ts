@@ -1,5 +1,5 @@
-import type { Template } from "@sendra/shared";
-import { TemplateSchema } from "@sendra/shared";
+import type { Template } from "@service-unit-469/sendra-shared";
+import { TemplateSchema } from "@service-unit-469/sendra-shared";
 import { BasePersistence, type Embeddable, type EmbeddedObject, type IndexInfo } from "./BasePersistence";
 import { type EmbedLimit, embedHelper } from "./utils/EmbedHelper";
 import { HttpException } from "./utils/HttpException";

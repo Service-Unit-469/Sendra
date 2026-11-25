@@ -1,4 +1,4 @@
-import type { Contact } from "@sendra/shared";
+import type { Contact } from "@service-unit-469/sendra-shared";
 import { useMemo } from "react";
 import type { MetadataFilterGroupType, MetadataFilterType } from "../Input/MetadataFilter/types";
 
