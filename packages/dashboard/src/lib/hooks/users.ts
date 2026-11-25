@@ -1,4 +1,4 @@
-import type { UserGet } from "@sendra/shared";
+import type { UserGet } from "@service-unit-469/sendra-shared";
 import { useAtom } from "jotai";
 import { useEffect } from "react";
 import useSWR from "swr";

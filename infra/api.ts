@@ -1,6 +1,7 @@
 import { assetsBucket } from "./assets";
 import { dataTable } from "./data";
 import { passEnvironmentVariables } from "./env";
+import { lambdaHandler } from "./paths";
 import { rateLimitTable } from "./rateLimit";
 import { jwtSecret } from "./secrets";
 import { delayedTaskStateMachine, taskQueue } from "./task-queue";
@@ -30,7 +31,7 @@ export const api = new sst.aws.ApiGatewayV2("ApiGateway", {
 });
 
 api.route("ANY /api/v1/{proxy+}", {
-  handler: "packages/api/src/app.handler",
+  handler: lambdaHandler("@service-unit-469/sendra-api/handler"),
   link: [
     assetsBucket,
     delayedTaskStateMachine,

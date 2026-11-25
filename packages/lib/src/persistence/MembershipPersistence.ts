@@ -1,5 +1,5 @@
-import type { Membership } from "@sendra/shared";
-import { MembershipSchema } from "@sendra/shared";
+import type { Membership } from "@service-unit-469/sendra-shared";
+import { MembershipSchema } from "@service-unit-469/sendra-shared";
 import { type IndexInfo, LOCAL_INDEXES, UnembeddingBasePersistence } from "./BasePersistence";
 import { HttpException } from "./utils/HttpException";
 

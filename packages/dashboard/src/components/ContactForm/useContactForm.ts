@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { type ContactCreate, ContactSchemas, type ContactUpdate } from "@sendra/shared";
+import { type ContactCreate, ContactSchemas, type ContactUpdate } from "@service-unit-469/sendra-shared";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { network } from "../../lib/network";

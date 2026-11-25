@@ -1,6 +1,6 @@
 import { createRoute } from "@hono/zod-openapi";
-import { UserPersistence } from "@sendra/lib";
-import { UserSchemas } from "@sendra/shared";
+import { UserPersistence } from "@service-unit-469/sendra-lib";
+import { UserSchemas } from "@service-unit-469/sendra-shared";
 import type { AppType } from "../app";
 import { NotAuthenticated } from "../exceptions";
 import { getProblemResponseSchema } from "../exceptions/responses";

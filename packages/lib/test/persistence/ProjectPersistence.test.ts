@@ -1,5 +1,5 @@
-import type { Project } from "@sendra/shared";
-import { startupDynamoDB, stopDynamoDB } from "@sendra/test";
+import type { Project } from "@service-unit-469/sendra-shared";
+import { startupDynamoDB, stopDynamoDB } from "@service-unit-469/sendra-test";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { ProjectPersistence } from "../../src/persistence/ProjectPersistence";
 import { TaskQueue } from "../../src/services/TaskQueue";

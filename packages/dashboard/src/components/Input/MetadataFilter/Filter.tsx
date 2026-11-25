@@ -1,4 +1,4 @@
-import type { Contact } from "@sendra/shared";
+import type { Contact } from "@service-unit-469/sendra-shared";
 import { Trash } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import Dropdown from "../Dropdown/Dropdown";

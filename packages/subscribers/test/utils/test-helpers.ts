@@ -7,7 +7,7 @@ import {
 	ProjectPersistence,
 	TemplatePersistence,
 	UserPersistence,
-} from "@sendra/lib";
+} from "@service-unit-469/sendra-lib";
 
 /**
  * Creates a complete test setup with user, project, and membership

@@ -12,8 +12,8 @@ import {
   TaskQueue,
   TemplatePersistence,
   UserPersistence,
-} from "@sendra/lib";
-import { CampaignSchema, CampaignSchemas, EmailSchema, type Project } from "@sendra/shared";
+} from "@service-unit-469/sendra-lib";
+import { CampaignSchema, CampaignSchemas, EmailSchema, type Project } from "@service-unit-469/sendra-shared";
 import type { AppType } from "../../app";
 import { HttpException, NotFound } from "../../exceptions";
 import { getProblemResponseSchema } from "../../exceptions/responses";

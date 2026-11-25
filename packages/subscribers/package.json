@@ -1,10 +1,29 @@
 {
-	"name": "@sendra/subscribers",
+	"name": "@service-unit-469/sendra-subscribers",
 	"version": "1.0.0",
-	"main": "dist/index.js",
-	"private": true,
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Service-Unit-469/Sendra.git"
+	},
+  "exports": {
+    "./email-topic-handler": {
+			"types": "./dist/EmailTopicSubscriber.d.ts",
+			"default": "./dist/EmailTopicSubscriber.js"
+		},
+		"./task-queue-handler": {
+			"types": "./dist/TaskQueueSubscriber.d.ts",
+			"default": "./dist/TaskQueueSubscriber.js"
+		}
+	},
+	"private": false,
+	"publishConfig": {
+		"registry": "https://npm.pkg.github.com"
+	},
+	"files": ["dist/**"],
 	"scripts": {
+		"prepack": "pnpm run build",
 		"build": "tsc",
+		"dev": "tsc --watch --preserveWatchOutput",
 		"lint": "biome check src",
 		"lint:fix": "biome check --write src",
 		"lint:fix:unsafe": "biome check --write src --unsafe",
@@ -15,7 +34,7 @@
 	},
 	"devDependencies": {
 		"@aws-sdk/client-dynamodb": "catalog:",
-		"@sendra/test": "workspace:*",
+		"@service-unit-469/sendra-test": "workspace:*",
 		"@types/aws-lambda": "catalog:",
 		"sst": "catalog:",
 		"ts-node-dev": "catalog:",
@@ -24,8 +43,8 @@
 	},
 	"dependencies": {
 		"@aws-sdk/client-sns": "catalog:",
-		"@sendra/lib": "workspace:*",
-		"@sendra/shared": "workspace:*",
+		"@service-unit-469/sendra-lib": "workspace:*",
+		"@service-unit-469/sendra-shared": "workspace:*",
 		"aws-embedded-metrics": "catalog:",
 		"pino": "catalog:",
 		"zod": "catalog:"

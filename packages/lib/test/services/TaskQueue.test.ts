@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { Task } from "@sendra/shared";
+import type { Task } from "@service-unit-469/sendra-shared";
 
 // Mock AWS SDK clients
 vi.mock("@aws-sdk/client-sqs", () => {

@@ -1,14 +1,17 @@
 /// <reference path="../.sst/platform/config.d.ts" />
 
-import { dataTable } from "./data";
-import { passEnvironmentVariables } from "./env";
 import * as aws from "@pulumi/aws";
 import * as pulumi from "@pulumi/pulumi";
+import { dataTable } from "./data";
+import { passEnvironmentVariables } from "./env";
+import { lambdaHandler } from "./paths";
 
 export const emailTopic = new sst.aws.SnsTopic("EmailTopic");
 
 emailTopic.subscribe("EmailTopicSubscriber", {
-  handler: "packages/subscribers/src/EmailTopicSubscriber.handler",
+  handler: lambdaHandler(
+    "@service-unit-469/sendra-subscribers/email-topic-handler",
+  ),
   timeout: "15 minutes",
   link: [dataTable],
   logging: {

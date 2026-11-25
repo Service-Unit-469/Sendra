@@ -1,5 +1,5 @@
-import { rootLogger, setRequestInfo, withMetrics } from "@sendra/lib";
-import { TaskSchema } from "@sendra/shared";
+import { rootLogger, setRequestInfo, withMetrics } from "@service-unit-469/sendra-lib";
+import { TaskSchema } from "@service-unit-469/sendra-shared";
 import type { Context, SQSBatchItemFailure, SQSBatchResponse, SQSEvent, SQSRecord } from "aws-lambda";
 import { handleDelete } from "./handlers/DeleteTask";
 import { queueCampaign } from "./handlers/QueueCampaignTask";

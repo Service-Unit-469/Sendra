@@ -1,6 +1,6 @@
 import { createRoute, z } from "@hono/zod-openapi";
-import { getRateLimitConfig } from "@sendra/lib";
-import { email, id, UserSchemas } from "@sendra/shared";
+import { getRateLimitConfig } from "@service-unit-469/sendra-lib";
+import { email, id, UserSchemas } from "@service-unit-469/sendra-shared";
 import type { AppType } from "../app";
 import { getProblemResponseSchema } from "../exceptions/responses";
 import { createRateLimitMiddleware } from "../middleware/rateLimit";

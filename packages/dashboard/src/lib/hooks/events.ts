@@ -1,5 +1,5 @@
-import type { EmbedLimit } from "@sendra/lib";
-import type { Event } from "@sendra/shared";
+import type { EmbedLimit } from "@service-unit-469/sendra-lib";
+import type { Event } from "@service-unit-469/sendra-shared";
 import useSWR from "swr";
 import { useCurrentProject } from "./projects";
 

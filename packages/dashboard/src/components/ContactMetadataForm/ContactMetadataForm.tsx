@@ -1,4 +1,4 @@
-import type { ContactCreate } from "@sendra/shared";
+import type { ContactCreate } from "@service-unit-469/sendra-shared";
 import { Plus, Trash } from "lucide-react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { StyledInput } from "../Input/Input/StyledInput";

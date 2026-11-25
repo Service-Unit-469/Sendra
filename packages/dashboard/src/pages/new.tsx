@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { ProjectCreate, PublicProject } from "@sendra/shared";
-import { ProjectSchemas } from "@sendra/shared";
+import type { ProjectCreate, PublicProject } from "@service-unit-469/sendra-shared";
+import { ProjectSchemas } from "@service-unit-469/sendra-shared";
 import { motion } from "framer-motion";
 import { useAtom } from "jotai";
 import { LoaderCircle, Rocket } from "lucide-react";

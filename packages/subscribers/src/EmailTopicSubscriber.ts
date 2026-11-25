@@ -1,5 +1,5 @@
-import { ActionsService, CampaignPersistence, ContactPersistence, ContactService, EmailPersistence, EventPersistence, ProjectPersistence, rootLogger, withMetrics } from "@sendra/lib";
-import { type DeliveryEvent, DeliveryEventSchema, type Email, OOTB_EVENT_VALUES } from "@sendra/shared";
+import { ActionsService, CampaignPersistence, ContactPersistence, ContactService, EmailPersistence, EventPersistence, ProjectPersistence, rootLogger, withMetrics } from "@service-unit-469/sendra-lib";
+import { type DeliveryEvent, DeliveryEventSchema, type Email, OOTB_EVENT_VALUES } from "@service-unit-469/sendra-shared";
 import { Unit } from "aws-embedded-metrics";
 import type { SNSEvent, SNSEventRecord } from "aws-lambda";
 import type { Logger } from "pino";

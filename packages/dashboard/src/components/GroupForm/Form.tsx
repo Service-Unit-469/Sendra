@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { type GroupCreate, GroupSchemas } from "@sendra/shared";
+import { type GroupCreate, GroupSchemas } from "@service-unit-469/sendra-shared";
 import Tippy from "@tippyjs/react";
 import { motion } from "framer-motion";
 import { Eye, Save } from "lucide-react";

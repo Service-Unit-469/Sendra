@@ -1,5 +1,5 @@
-import type { User } from "@sendra/shared";
-import { startupDynamoDB, stopDynamoDB } from "@sendra/test";
+import type { User } from "@service-unit-469/sendra-shared";
+import { startupDynamoDB, stopDynamoDB } from "@service-unit-469/sendra-test";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { UserPersistence } from "../../src/persistence/UserPersistence";
 import { TaskQueue } from "../../src/services/TaskQueue";

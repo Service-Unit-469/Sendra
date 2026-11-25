@@ -1,5 +1,5 @@
-import type { Action } from "@sendra/shared";
-import { ActionSchema } from "@sendra/shared";
+import type { Action } from "@service-unit-469/sendra-shared";
+import { ActionSchema } from "@service-unit-469/sendra-shared";
 import { BasePersistence, type Embeddable, type EmbeddedObject, type IndexInfo, LOCAL_INDEXES } from "./BasePersistence";
 import { type EmbedLimit, embedHelper } from "./utils/EmbedHelper";
 import { HttpException } from "./utils/HttpException";

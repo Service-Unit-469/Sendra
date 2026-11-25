@@ -1,5 +1,5 @@
 import { DynamoDBDocumentClient, GetCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
-import { getPersistenceConfig, getRateLimitConfig, rootLogger } from "@sendra/lib";
+import { getPersistenceConfig, getRateLimitConfig, rootLogger } from "@service-unit-469/sendra-lib";
 
 const logger = rootLogger.child({ module: "rateLimit" });
 

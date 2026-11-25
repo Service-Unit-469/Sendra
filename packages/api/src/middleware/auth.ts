@@ -1,5 +1,5 @@
-import { ProjectPersistence, rootLogger } from "@sendra/lib";
-import type { Project } from "@sendra/shared";
+import { ProjectPersistence, rootLogger } from "@service-unit-469/sendra-lib";
+import type { Project } from "@service-unit-469/sendra-shared";
 import type { HonoRequest } from "hono";
 import { createMiddleware } from "hono/factory";
 import { LRUCache } from "lru-cache";

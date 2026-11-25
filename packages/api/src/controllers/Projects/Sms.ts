@@ -1,6 +1,6 @@
 import { createRoute, z } from "@hono/zod-openapi";
-import { ProjectPersistence } from "@sendra/lib";
-import { SmsConfigSchema } from "@sendra/shared";
+import { ProjectPersistence } from "@service-unit-469/sendra-lib";
+import { SmsConfigSchema } from "@service-unit-469/sendra-shared";
 import type { AppType } from "../../app";
 import { BadRequest, NotFound } from "../../exceptions";
 import { getProblemResponseSchema } from "../../exceptions/responses";

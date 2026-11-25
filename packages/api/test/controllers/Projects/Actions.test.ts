@@ -1,7 +1,7 @@
 import {
   ActionPersistence,
-} from "@sendra/lib";
-import { startupDynamoDB, stopDynamoDB } from "@sendra/test";
+} from "@service-unit-469/sendra-lib";
+import { startupDynamoDB, stopDynamoDB } from "@service-unit-469/sendra-test";
 import { afterAll, beforeAll, describe, expect, test } from "vitest";
 import { app } from "../../../src/app";
 import { AuthService } from "../../../src/services/AuthService";

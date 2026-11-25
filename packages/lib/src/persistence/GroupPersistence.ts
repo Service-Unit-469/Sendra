@@ -1,5 +1,5 @@
-import type { Group } from "@sendra/shared";
-import { GroupSchema } from "@sendra/shared";
+import type { Group } from "@service-unit-469/sendra-shared";
+import { GroupSchema } from "@service-unit-469/sendra-shared";
 import { type IndexInfo, UnembeddingBasePersistence } from "./BasePersistence";
 import { ContactPersistence } from "./ContactPersistence";
 import { HttpException } from "./utils/HttpException";

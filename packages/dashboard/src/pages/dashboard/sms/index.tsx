@@ -1,4 +1,4 @@
-import type { Contact } from "@sendra/shared";
+import type { Contact } from "@service-unit-469/sendra-shared";
 import { Check, Hammer, Send } from "lucide-react";
 import { useCallback, useState } from "react";
 import { BlackButton } from "../../../components/Buttons/BlackButton";

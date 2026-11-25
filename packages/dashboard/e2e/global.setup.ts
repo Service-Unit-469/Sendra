@@ -1,5 +1,5 @@
 import { test as setup } from "@playwright/test";
-import { createHash } from "@sendra/api";
+import { createHash } from "@service-unit-469/sendra-api";
 
 import { randomUUID } from "node:crypto";
 import { writeFileSync } from "node:fs";
@@ -21,7 +21,7 @@ setup("creating E2E user", async ({ }) => {
     MembershipPersistence,
     ProjectPersistence,
     UserPersistence
-  } = require("@sendra/lib");
+  } = require("@service-unit-469/sendra-lib");
 
   const email = "e2e@example.com";
   const rawPassword = randomUUID();

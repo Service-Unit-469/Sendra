@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { createRoute, z } from "@hono/zod-openapi";
-import { MembershipPersistence, ProjectPersistence, UserPersistence } from "@sendra/lib";
-import { MembershipSchema, ProjectSchemas } from "@sendra/shared";
+import { MembershipPersistence, ProjectPersistence, UserPersistence } from "@service-unit-469/sendra-lib";
+import { MembershipSchema, ProjectSchemas } from "@service-unit-469/sendra-shared";
 import type { AppType } from "../../app";
 import { NotFound } from "../../exceptions";
 import { getProblemResponseSchema } from "../../exceptions/responses";

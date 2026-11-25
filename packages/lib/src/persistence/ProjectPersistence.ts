@@ -1,5 +1,5 @@
-import type { Project } from "@sendra/shared";
-import { ProjectSchema } from "@sendra/shared";
+import type { Project } from "@service-unit-469/sendra-shared";
+import { ProjectSchema } from "@service-unit-469/sendra-shared";
 import { TaskQueue } from "../services/TaskQueue";
 import { type IndexInfo, UnembeddingBasePersistence } from "./BasePersistence";
 import { HttpException } from "./utils/HttpException";

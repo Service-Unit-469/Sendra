@@ -1,4 +1,4 @@
-import type { Contact } from "@sendra/shared";
+import type { Contact } from "@service-unit-469/sendra-shared";
 import { AnimatePresence, motion } from "framer-motion";
 import { LoaderCircle, Search, Users2, XIcon } from "lucide-react";
 import { useState } from "react";

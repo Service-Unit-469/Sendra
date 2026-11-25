@@ -1,5 +1,5 @@
-import { ActionPersistence, CampaignPersistence, ContactPersistence, EmailPersistence, EventPersistence, MembershipPersistence, rootLogger, TemplatePersistence } from "@sendra/lib";
-import type { BatchDeleteRelatedSchema } from "@sendra/shared";
+import { ActionPersistence, CampaignPersistence, ContactPersistence, EmailPersistence, EventPersistence, MembershipPersistence, rootLogger, TemplatePersistence } from "@service-unit-469/sendra-lib";
+import type { BatchDeleteRelatedSchema } from "@service-unit-469/sendra-shared";
 import type { z } from "zod";
 
 type DeleteTask = z.infer<typeof BatchDeleteRelatedSchema>;

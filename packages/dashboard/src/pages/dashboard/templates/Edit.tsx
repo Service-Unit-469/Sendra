@@ -1,7 +1,7 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { TemplateUpdate } from "@sendra/shared";
-import { TemplateSchemas } from "@sendra/shared";
+import type { TemplateUpdate } from "@service-unit-469/sendra-shared";
+import { TemplateSchemas } from "@service-unit-469/sendra-shared";
 import { Copy, Save, Trash } from "lucide-react";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";

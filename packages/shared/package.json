@@ -1,9 +1,17 @@
 {
-	"name": "@sendra/shared",
+	"name": "@service-unit-469/sendra-shared",
 	"version": "1.0.0",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Service-Unit-469/Sendra.git"
+	},
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
-	"private": true,
+	"private": false,
+	"publishConfig": {
+		"registry": "https://npm.pkg.github.com"
+	},
+	"files": ["dist/**"],
 	"dependencies": {
 		"zod": "catalog:"
 	},
@@ -12,6 +20,7 @@
 		"typescript": "catalog:"
 	},
 	"scripts": {
+		"prepack": "pnpm run build",
 		"lint": "biome check src",
 		"lint:fix": "biome check --write src",
 		"lint:fix:unsafe": "biome check --write src --unsafe",

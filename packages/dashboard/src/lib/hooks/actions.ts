@@ -1,4 +1,4 @@
-import type { Action, Email, Event } from "@sendra/shared";
+import type { Action, Email, Event } from "@service-unit-469/sendra-shared";
 import useSWR from "swr";
 import { useCurrentProject } from "./projects";
 

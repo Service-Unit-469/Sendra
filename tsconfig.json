@@ -16,13 +16,13 @@
     "declaration": true,
     "experimentalDecorators": true,
     "paths": {
-      "@sendra/lib": [
+      "@service-unit-469/sendra-lib": [
         "./packages/lib/"
       ],
-      "@sendra/shared": [
+      "@service-unit-469/sendra-shared": [
         "./packages/shared/"
       ],
-      "@sendra/test": [
+      "@service-unit-469/sendra-test": [
         "./packages/test/"
       ]
     }

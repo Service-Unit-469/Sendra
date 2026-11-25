@@ -1,5 +1,5 @@
-import { CampaignPersistence, ContactPersistence, EmailPersistence, EventPersistence } from "@sendra/lib";
-import { startupDynamoDB, stopDynamoDB } from "@sendra/test";
+import { CampaignPersistence, ContactPersistence, EmailPersistence, EventPersistence } from "@service-unit-469/sendra-lib";
+import { startupDynamoDB, stopDynamoDB } from "@service-unit-469/sendra-test";
 import type { SNSEvent } from "aws-lambda";
 import { afterAll, beforeAll, beforeEach, describe, expect, test } from "vitest";
 import { handler } from "../src/EmailTopicSubscriber";

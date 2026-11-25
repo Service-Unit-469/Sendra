@@ -1,5 +1,5 @@
-import type { Group } from "@sendra/shared";
-import { startupDynamoDB, stopDynamoDB } from "@sendra/test";
+import type { Group } from "@service-unit-469/sendra-shared";
+import { startupDynamoDB, stopDynamoDB } from "@service-unit-469/sendra-test";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { ContactPersistence } from "../../src/persistence/ContactPersistence";
 import { GroupPersistence } from "../../src/persistence/GroupPersistence";

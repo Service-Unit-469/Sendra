@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ProjectSchemas, type ProjectUpdate } from "@sendra/shared";
+import { ProjectSchemas, type ProjectUpdate } from "@service-unit-469/sendra-shared";
 import { Trash } from "lucide-react";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";

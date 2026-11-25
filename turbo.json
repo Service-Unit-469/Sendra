@@ -32,9 +32,9 @@
       "cache": false,
       "persistent": true,
       "dependsOn": [
-        "@sendra/test#dev",
-        "@sendra/shared#dev",
-        "@sendra/lib#dev"
+        "@service-unit-469/sendra-test#dev",
+        "@service-unit-469/sendra-shared#dev",
+        "@service-unit-469/sendra-lib#dev"
       ]
     },
     "clean": {

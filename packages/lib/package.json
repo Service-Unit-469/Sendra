@@ -1,34 +1,19 @@
 {
-  "name": "@sendra/lib",
+  "name": "@service-unit-469/sendra-lib",
   "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Service-Unit-469/Sendra.git"
+  },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "private": true,
-  "dependencies": {
-    "@aws-sdk/client-dynamodb": "catalog:",
-    "@aws-sdk/client-s3": "catalog:",
-    "@aws-sdk/client-ses": "catalog:",
-    "@aws-sdk/client-sfn": "catalog:",
-    "@aws-sdk/client-sqs": "catalog:",
-    "@aws-sdk/lib-dynamodb": "catalog:",
-    "@aws-sdk/s3-request-presigner": "catalog:",
-    "@aws-sdk/util-dynamodb": "^3.996.9",
-    "@sendra/shared": "workspace:*",
-    "aws-embedded-metrics": "catalog:",
-    "handlebars": "catalog:",
-    "mail-mime-builder": "catalog:",
-    "pino": "catalog:",
-    "pino-pretty": "catalog:",
-    "uuidv7": "catalog:",
-    "zod": "catalog:"
+  "private": false,
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
   },
-  "devDependencies": {
-    "@sendra/test": "workspace:*",
-    "sst": "catalog:",
-    "typescript": "catalog:",
-    "vitest": "catalog:"
-  },
+  "files": ["dist/**"],
   "scripts": {
+    "prepack": "pnpm run build",
     "lint": "biome check src",
     "lint:fix": "biome check --write src",
     "lint:fix:unsafe": "biome check --write src --unsafe",
@@ -38,5 +23,29 @@
     "clean": "rimraf dist",
     "test": "vitest run",
     "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "catalog:",
+    "@aws-sdk/client-s3": "catalog:",
+    "@aws-sdk/client-ses": "catalog:",
+    "@aws-sdk/client-sfn": "catalog:",
+    "@aws-sdk/client-sqs": "catalog:",
+    "@aws-sdk/lib-dynamodb": "catalog:",
+    "@aws-sdk/s3-request-presigner": "catalog:",
+    "@aws-sdk/util-dynamodb": "^3.996.9",
+    "@service-unit-469/sendra-shared": "workspace:*",
+    "aws-embedded-metrics": "catalog:",
+    "handlebars": "catalog:",
+    "mail-mime-builder": "catalog:",
+    "pino": "catalog:",
+    "pino-pretty": "catalog:",
+    "uuidv7": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@service-unit-469/sendra-test": "workspace:*",
+    "sst": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
   }
 }

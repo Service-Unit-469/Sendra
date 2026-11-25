@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { UserGet, UserRequestReset } from "@sendra/shared";
-import { UserSchemas } from "@sendra/shared";
+import type { UserGet, UserRequestReset } from "@service-unit-469/sendra-shared";
+import { UserSchemas } from "@service-unit-469/sendra-shared";
 import { AnimatePresence, motion } from "framer-motion";
 import { CheckCircle } from "lucide-react";
 import { useEffect, useState } from "react";

@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { Membership, MembershipInvite } from "@sendra/shared";
-import { MembershipSchemas } from "@sendra/shared";
+import type { Membership, MembershipInvite } from "@service-unit-469/sendra-shared";
+import { MembershipSchemas } from "@service-unit-469/sendra-shared";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";

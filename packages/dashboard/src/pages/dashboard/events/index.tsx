@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { EmbedLimit } from "@sendra/lib";
-import { EventSchemas } from "@sendra/shared";
+import type { EmbedLimit } from "@service-unit-469/sendra-lib";
+import { EventSchemas } from "@service-unit-469/sendra-shared";
 import dayjs from "dayjs";
 import { Plus, TerminalSquare } from "lucide-react";
 import { useCallback, useMemo, useState } from "react";

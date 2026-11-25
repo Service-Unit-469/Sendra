@@ -1,9 +1,14 @@
+import { existsSync } from "node:fs";
 import { api } from "./api";
+import { sendraPath } from "./paths";
+
+const workspaceRoot = sendraPath("");
+const isWorkspaceDeployment = existsSync(`${workspaceRoot}/pnpm-workspace.yaml`);
 
 export const subscription = new sst.aws.StaticSite("Subscription", {
-  path: "packages/subscription",
+  path: sendraPath("packages/subscription"),
   build: {
-    command: "pnpm run build",
+    command: isWorkspaceDeployment ? "pnpm run build" : 'node -e ""',
     output: "dist",
   },
   assets: {

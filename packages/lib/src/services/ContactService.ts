@@ -1,4 +1,4 @@
-import type { Contact } from "@sendra/shared";
+import type { Contact } from "@service-unit-469/sendra-shared";
 import { rootLogger } from "../logging";
 import type { ContactPersistence } from "../persistence/ContactPersistence";
 import { EventPersistence } from "../persistence/EventPersistence";

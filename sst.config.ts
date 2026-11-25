@@ -3,19 +3,19 @@
 export default $config({
   app(input) {
     return {
-      name: "sendra",
+      name: process.env.SENDRA_APP_NAME ?? "sendra",
       removal: input?.stage === "production" ? "retain" : "remove",
       protect: ["production"].includes(input?.stage),
       home: "aws",
       providers: {
         aws: {
-          region: "us-east-2",
+          region: process.env.SENDRA_AWS_REGION ?? "us-east-2",
         },
       },
     };
   },
   async run() {
-    const { dashboard, subscription, dataTable, rateLimitTable, router } = await import("./infra");
-    return { dashboard, subscription, dataTable, rateLimitTable, router };
+    const { deploySendra } = await import("./sst");
+    return deploySendra();
   },
 });

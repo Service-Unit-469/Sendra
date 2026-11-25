@@ -1,5 +1,5 @@
-import type { User } from "@sendra/shared";
-import { UserSchema } from "@sendra/shared";
+import type { User } from "@service-unit-469/sendra-shared";
+import { UserSchema } from "@service-unit-469/sendra-shared";
 import { TaskQueue } from "../services/TaskQueue";
 import { type IndexInfo, LOCAL_INDEXES, UnembeddingBasePersistence } from "./BasePersistence";
 import { HttpException } from "./utils/HttpException";

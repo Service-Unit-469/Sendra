@@ -1,4 +1,4 @@
-import type { ContactCreate } from "@sendra/shared";
+import type { ContactCreate } from "@service-unit-469/sendra-shared";
 import { Save } from "lucide-react";
 import { useState } from "react";
 import { useCurrentProject } from "../../lib/hooks/projects";

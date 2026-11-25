@@ -1,6 +1,6 @@
 import { createRoute, z } from "@hono/zod-openapi";
-import { ContactPersistence, ContactService, ProjectPersistence, rootLogger } from "@sendra/lib";
-import { ContactSchema, ContactSchemas, EmailSchema, EventSchema } from "@sendra/shared";
+import { ContactPersistence, ContactService, ProjectPersistence, rootLogger } from "@service-unit-469/sendra-lib";
+import { ContactSchema, ContactSchemas, EmailSchema, EventSchema } from "@service-unit-469/sendra-shared";
 import Ajv from "ajv";
 import addFormats from "ajv-formats";
 import type { AppType } from "../../app";

@@ -1,4 +1,4 @@
-import { type Contact, OOTB_EVENT_VALUES, type Project } from "@sendra/shared";
+import { type Contact, OOTB_EVENT_VALUES, type Project } from "@service-unit-469/sendra-shared";
 import { Unit } from "aws-embedded-metrics";
 import { rootLogger } from "../logging";
 import { withMetrics } from "../metrics/Logger";

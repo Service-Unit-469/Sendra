@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { type UserCredentials, UserSchemas } from "@sendra/shared";
+import { type UserCredentials, UserSchemas } from "@service-unit-469/sendra-shared";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";

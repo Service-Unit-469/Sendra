@@ -14,6 +14,7 @@ This guide covers everything you need to deploy Sendra to your AWS account.
 - [How do I deploy Sendra?](#how-do-i-deploy-sendra)
 - [AWS Setup](#aws-setup)
 - [Installation](#installation)
+- [Deploy from GitHub Packages](#deploy-from-github-packages)
 - [Project Settings](#project-settings)
 - [Deployment](#deployment)
 - [Setup Sendra](#setup-sendra)
@@ -62,7 +63,7 @@ Your AWS user/role needs permissions for:
 
 ## How do I deploy Sendra?
 
-You can either deploy Sendra using this repository directly or creating your own fork if you want the control or two make modifications. 
+You can deploy Sendra directly from this repository, or use the published `sendra` npm package from your own SST project. The package approach lets you manage your deployment configuration without maintaining a fork. Forking or cloning the repository is still useful when developing Sendra itself.
 
 Either way, to deploy Sendra, you use [SST](https://sst.dev/) which will deploy all of the required resources to AWS to run Sendra.
 
@@ -94,14 +95,73 @@ This should return your AWS account ID and user information.
 
 ## Installation
 
-### 1. Clone the Repository
+### Deploy from GitHub Packages
+
+After the first GitHub Release is published, configure npm and create a small project for your deployment:
+
+Configure npm to use GitHub Packages for the `@service-unit-469` scope. For local installs, add this to `~/.npmrc` and provide a GitHub personal access token with `read:packages` permission through `NODE_AUTH_TOKEN`:
+
+```ini
+@service-unit-469:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}
+```
+
+```bash
+mkdir my-sendra
+cd my-sendra
+npm init -y
+npm install @service-unit-469/sendra sst
+```
+
+Create `sst.config.ts` in that project. The app name, AWS region, SST stage, and Sendra-specific settings belong to your deployment:
+
+```ts
+export default $config({
+  app(input) {
+    return {
+      name: "my-sendra",
+      removal: input?.stage === "production" ? "retain" : "remove",
+      protect: input?.stage === "production",
+      home: "aws",
+      providers: {
+        aws: { region: "us-east-2" },
+      },
+    };
+  },
+  async run() {
+    const { deploySendra } = await import("@service-unit-469/sendra/sst");
+    return deploySendra({
+      appUrl: process.env.APP_URL,
+      defaultEmail: process.env.DEFAULT_EMAIL,
+      disableSignups: process.env.DISABLE_SIGNUPS === "true",
+      allowDuplicateProjectIdentities:
+        process.env.ALLOW_DUPLICATE_PROJECT_IDENTITIES !== "false",
+      apiUrl: process.env.API_URL,
+      cloudFrontCertificateArn: process.env.CLOUDFRONT_CERT_ARN,
+    });
+  },
+});
+```
+
+Set the JWT secret and deploy as usual with SST:
+
+```bash
+npx sst secret set JwtSecret "your-strong-random-secret-key-here"
+npx sst deploy --stage production
+```
+
+The package includes the deployment definitions and prebuilt dashboard assets. `deploySendra` accepts the supported application settings as a typed object; the caller retains ownership of SST app configuration, AWS credentials, and stage lifecycle. Packages are published to GitHub Packages when a GitHub Release is published. The first release creates the package entries; configure package visibility and grant consumers read access in the GitHub package settings. Before each later release, bump the versions in the root, `packages/shared`, `packages/lib`, `packages/api`, and `packages/subscribers` manifests; the workflow publishes all five packages, and the registry does not allow reusing a package version. For the complete list of settings and AWS prerequisites, continue with the sections below.
+
+### Deploy from this repository
+
+#### 1. Clone the Repository
 
 ```bash
 git clone https://github.com/Service-Unit-469/Sendra.git
 cd Sendra
 ```
 
-### 2. Install Dependencies
+#### 2. Install Dependencies
 
 Install all dependencies for the monorepo:
 
@@ -111,7 +171,7 @@ pnpm install
 
 This will install dependencies for all packages in the workspace.
 
-### 3. Build Dependencies
+#### 3. Build Dependencies
 
 Build the shared packages that other packages depend on:
 
@@ -119,7 +179,7 @@ Build the shared packages that other packages depend on:
 pnpm run build:deps
 ```
 
-This builds the `@sendra/shared` and `@sendra/lib` packages.
+This builds the API, subscribers, dashboard, and their workspace dependencies.
 
 ## Project Settings
 
@@ -220,10 +280,10 @@ pnpm run dev
 ```
 
 This command:
-- Builds the dependencies
+- Builds the API, subscriber, and dashboard packages and their dependencies
+- Watches API and subscriber TypeScript and rebuilds their `dist` files on changes
 - Starts SST in development mode
-- Deploys to AWS with live Lambda development
-- Watches for file changes and hot-reloads
+- Deploys to AWS with live Lambda development, where SST reloads the handlers when the built files change
 
 ### Deploy to Production
 

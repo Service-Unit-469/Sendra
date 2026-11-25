@@ -1,4 +1,4 @@
-import { startupDynamoDB, stopDynamoDB } from "@sendra/test";
+import { startupDynamoDB, stopDynamoDB } from "@service-unit-469/sendra-test";
 import type { Context, SQSEvent } from "aws-lambda";
 import { afterAll, beforeAll, beforeEach, describe, expect, test, vi } from "vitest";
 import { handler } from "../src/TaskQueueSubscriber";

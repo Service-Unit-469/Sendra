@@ -1,8 +1,8 @@
 import { QueryCommand } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
 import { unmarshall } from "@aws-sdk/util-dynamodb";
-import type { Contact } from "@sendra/shared";
-import { ContactSchema } from "@sendra/shared";
+import type { Contact } from "@service-unit-469/sendra-shared";
+import { ContactSchema } from "@service-unit-469/sendra-shared";
 import { rootLogger } from "../logging";
 import { getPersistenceConfig } from "../services/AppConfig";
 import { BasePersistence, type Embeddable, type IndexInfo, LOCAL_INDEXES } from "./BasePersistence";

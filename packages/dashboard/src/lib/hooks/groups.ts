@@ -1,4 +1,4 @@
-import type { Group } from "@sendra/shared";
+import type { Group } from "@service-unit-469/sendra-shared";
 import useSWR from "swr";
 import { useCurrentProject } from "./projects";
 

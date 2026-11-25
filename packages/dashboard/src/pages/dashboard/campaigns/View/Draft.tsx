@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { Campaign, CampaignUpdate } from "@sendra/shared";
-import { CampaignSchemas } from "@sendra/shared";
+import type { Campaign, CampaignUpdate } from "@service-unit-469/sendra-shared";
+import { CampaignSchemas } from "@service-unit-469/sendra-shared";
 import { Copy, Edit, FlaskConical, Save, Send, Trash } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { type FieldError, useForm } from "react-hook-form";

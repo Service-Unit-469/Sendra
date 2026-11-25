@@ -5,7 +5,7 @@ import {
   ProjectPersistence,
   TemplatePersistence,
   UserPersistence,
-} from "@sendra/lib";
+} from "@service-unit-469/sendra-lib";
 import { AuthService } from "../../src/services/AuthService";
 
 /**

@@ -1,5 +1,5 @@
-import type { Event } from "@sendra/shared";
-import { EventSchema } from "@sendra/shared";
+import type { Event } from "@service-unit-469/sendra-shared";
+import { EventSchema } from "@service-unit-469/sendra-shared";
 import { type IndexInfo, LOCAL_INDEXES, UnembeddingBasePersistence } from "./BasePersistence";
 import { HttpException } from "./utils/HttpException";
 

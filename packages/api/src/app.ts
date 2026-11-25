@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { OpenAPIHono } from "@hono/zod-openapi";
-import { getRequestCapacityUsed, rootLogger, setRequestCapacityUsed, setRequestInfo, withMetrics } from "@sendra/lib";
+import { getRequestCapacityUsed, rootLogger, setRequestCapacityUsed, setRequestInfo, withMetrics } from "@service-unit-469/sendra-lib";
 import { Unit } from "aws-embedded-metrics";
 import type { Context, Next } from "hono";
 import { handle } from "hono/aws-lambda";

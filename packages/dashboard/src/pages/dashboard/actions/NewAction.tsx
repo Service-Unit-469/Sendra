@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { Action, ActionCreate } from "@sendra/shared";
-import { ActionSchemas } from "@sendra/shared";
+import type { Action, ActionCreate } from "@service-unit-469/sendra-shared";
+import { ActionSchemas } from "@service-unit-469/sendra-shared";
 import { AnimatePresence, motion } from "framer-motion";
 import { Plus } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";

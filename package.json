@@ -1,8 +1,21 @@
 {
-  "name": "sendra",
+  "name": "@service-unit-469/sendra",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
   "license": "agpl-3.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Service-Unit-469/Sendra.git"
+  },
+  "exports": {
+    "./sst": "./sst.ts"
+  },
+  "files": [
+    "sst.ts",
+    "infra/**",
+    "packages/dashboard/dist/**",
+    "packages/subscription/dist/**"
+  ],
   "engines": {
     "node": ">=24.0.0",
     "pnpm": ">=10.x"
@@ -16,26 +29,28 @@
     "@testing-library/dom": "catalog:",
     "@types/node": "catalog:",
     "@vitest/coverage-v8": "catalog:",
+    "concurrently": "^10.0.7",
     "jsdom": "catalog:",
     "rimraf": "catalog:",
     "turbo": "catalog:",
     "vitest": "catalog:"
   },
   "scripts": {
-    "build": "turbo run build --filter=!sendra",
-    "build:deps": "turbo run build --filter=...@sendra/dashboard",
-    "clean": "turbo run clean --filter=!sendra",
+    "build": "turbo run build --filter=!@service-unit-469/sendra",
+    "build:deps": "turbo run build --filter=@service-unit-469/sendra-api --filter=@service-unit-469/sendra-subscribers --filter=@service-unit-469/sendra-dashboard",
+    "clean": "turbo run clean --filter=!@service-unit-469/sendra",
     "deploy": "sst deploy",
-    "deploy:integration": "pnpm run deploy && pnpm --filter @sendra/dashboard test:e2e",
-    "deploy:integration:ui": "pnpm run deploy && pnpm --filter @sendra/dashboard test:e2e:ui",
-    "dev": "pnpm run build:deps && sst dev",
-    "lint": "turbo run lint --filter=!sendra",
-    "lint:fix": "turbo run lint:fix --filter=!sendra",
+    "deploy:integration": "pnpm run deploy && pnpm --filter @service-unit-469/sendra-dashboard test:e2e",
+    "deploy:integration:ui": "pnpm run deploy && pnpm --filter @service-unit-469/sendra-dashboard test:e2e:ui",
+    "dev": "pnpm run build:deps && concurrently --kill-others --names api,subscribers,sst \"pnpm --filter @service-unit-469/sendra-api run dev\" \"pnpm --filter @service-unit-469/sendra-subscribers run dev\" \"sst dev\"",
+    "lint": "turbo run lint --filter=!@service-unit-469/sendra",
+    "lint:fix": "turbo run lint:fix --filter=!@service-unit-469/sendra",
     "remove": "sst remove",
     "sst": "sst",
-    "test": "turbo run test --filter=!sendra --concurrency 1",
-    "typecheck": "turbo run typecheck --filter=!sendra",
-    "wait:deployment": "node scripts/wait-for-deployment-readiness.mjs"
+    "test": "turbo run test --filter=!@service-unit-469/sendra --concurrency 1",
+    "typecheck": "turbo run typecheck --filter=!@service-unit-469/sendra",
+    "wait:deployment": "node scripts/wait-for-deployment-readiness.mjs",
+    "prepack": "pnpm run build"
   },
   "workspaces": [
     "packages/test",
@@ -47,8 +62,17 @@
     "packages/subscription"
   ],
   "dependencies": {
+    "@pulumi/aws": "catalog:",
+    "@pulumi/pulumi": "^3.272.0",
+    "@service-unit-469/sendra-api": "workspace:*",
+    "@service-unit-469/sendra-lib": "workspace:*",
+    "@service-unit-469/sendra-shared": "workspace:*",
+    "@service-unit-469/sendra-subscribers": "workspace:*",
     "sst": "catalog:",
     "zod": "catalog:"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
   },
   "overrides": {
     "hono": "^4.10.4",

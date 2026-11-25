@@ -1,4 +1,4 @@
-import type { EventTrack } from "@sendra/shared";
+import type { EventTrack } from "@service-unit-469/sendra-shared";
 import { LoaderCircle } from "lucide-react";
 import pMap from "p-map";
 import Papa from "papaparse";

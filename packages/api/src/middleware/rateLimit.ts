@@ -1,4 +1,4 @@
-import { getRateLimitConfig, rootLogger } from "@sendra/lib";
+import { getRateLimitConfig, rootLogger } from "@service-unit-469/sendra-lib";
 import type { Context } from "hono";
 import { createMiddleware } from "hono/factory";
 import { HttpException } from "../exceptions";

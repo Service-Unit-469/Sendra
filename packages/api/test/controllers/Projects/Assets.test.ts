@@ -1,5 +1,5 @@
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { startupDynamoDB, stopDynamoDB } from "@sendra/test";
+import { startupDynamoDB, stopDynamoDB } from "@service-unit-469/sendra-test";
 import { afterAll, beforeAll, beforeEach, describe, expect, test, vi } from "vitest";
 import { app } from "../../../src/app";
 import { AuthService } from "../../../src/services/AuthService";

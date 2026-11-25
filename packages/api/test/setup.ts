@@ -14,8 +14,8 @@ vi.mock("sst", () => ({
   },
 }));
 
-vi.mock("@sendra/lib", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("@sendra/lib")>();
+vi.mock("@service-unit-469/sendra-lib", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@service-unit-469/sendra-lib")>();
   return {
     ...actual,
     TaskQueue: {

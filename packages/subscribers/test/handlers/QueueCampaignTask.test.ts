@@ -2,15 +2,15 @@ import {
     CampaignPersistence,
     EmailPersistence,
     TaskQueue
-} from "@sendra/lib";
-import { startupDynamoDB, stopDynamoDB } from "@sendra/test";
+} from "@service-unit-469/sendra-lib";
+import { startupDynamoDB, stopDynamoDB } from "@service-unit-469/sendra-test";
 import { afterAll, beforeAll, beforeEach, describe, expect, test, vi } from "vitest";
 import { queueCampaign } from "../../src/handlers/QueueCampaignTask";
 import { createTestContact, createTestSetup, createTestTemplate } from "../utils/test-helpers";
 
 // Mock TaskQueue
-vi.mock("@sendra/lib", async (importOriginal) => {
-	const actual = await importOriginal<typeof import("@sendra/lib")>();
+vi.mock("@service-unit-469/sendra-lib", async (importOriginal) => {
+	const actual = await importOriginal<typeof import("@service-unit-469/sendra-lib")>();
 	return {
 		...actual,
 		TaskQueue: {
