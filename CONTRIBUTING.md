@@ -4,7 +4,7 @@ You can greatly support Sendra by contributing to this repository.
 
 ### 1. Requirements
 
-- [Node JS v20](https://nodejs.org/en/download)
+- [Node.js v24](https://nodejs.org/en/download)
 
 ### 2. Install dependencies
 
