@@ -22,7 +22,7 @@ jobs:
           registry-url: https://npm.pkg.github.com
           scope: '@service-unit-469'
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
         with:
           version: 10.13.1
 
