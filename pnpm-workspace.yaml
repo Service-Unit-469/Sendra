@@ -67,7 +67,7 @@ catalog:
   '@types/node': ^26.6.5
   '@types/nprogress': ^0.2.3
   '@types/papaparse': ^5.5.1
-  '@types/react': 19.3.0
+  '@types/react': 19.3.1
   '@types/to-json-schema': ^0.2.4
   '@types/uuid': ^10.0.0
   '@uiw/react-codemirror': ^4.25.12
